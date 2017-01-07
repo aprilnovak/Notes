@@ -1,0 +1,840 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{color}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage[font=small,labelfont=bf,labelsep=period]{caption}
+\usepackage[english]{babel}
+\usepackage{indentfirst}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{arydshln}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{xfrac}
+\usepackage{etoolbox}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{dcolumn}
+\usepackage{hyperref}
+\usepackage{courier}
+\usepackage{url}
+\usepackage{esvect}
+\usepackage{commath}
+\usepackage{verbatim} % for block comments
+\usepackage{enumitem}
+\usepackage{hyperref} % for clickable table of contents
+\usepackage{braket}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{gensymb}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{cancel}
+\usepackage{tcolorbox}
+\usepackage[mathscr]{euscript}
+\lstset{
+    frame=single,
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}
+
+% for circled numbers
+\usepackage{tikz}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+% define new command for triple sub sections
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\newcommand{\volume}{\mathop{\ooalign{\hfil$V$\hfil\cr\kern0.08em--\hfil\cr}}\nolimits}
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+
+\title{C++}
+\author{April Novak}
+\begin{document}
+
+\maketitle
+\section{Introduction}
+
+C++ was developed as an enhancement to the C language by Bjarne Stroustrup in 1979 at Bell Labs, and was originally called C with Classes (renamed C++ several years later). C++ is considered a mid-level programming language. C++ is a superset of C, and virtually any C program is also a legal C++ program. Standard C++ consists of three main parts - 1) the core of the language, 2) the C++ Standard Library, which contains functions and classes for common use, and 3) the Standard Template Library (STL), which contains methods for manipulating information.
+
+C++ is primarily used for its object-oriented features - the four main pillars of object oriented programming are 1) encapsulation, 2) data hiding, 3) inheritance, and 4) polymorphism - these will all be discussed in this reference.
+
+File extensions for C++ source files are typically \texttt{.cpp, .cp, .c}.
+
+\section{C++ Compilers}
+
+A compiler converts the text file containing your program into an executable that is understood by the computer. All major C++ compilers meet the ANSI standard, which seeks to ensure that code written on one operating system can be equivalently compiled on a different operating system. When you compile a file, the compiler will give an executable, which by default is named \texttt{a.out}. Then, to run the C++ program, one needs to run the executable, passing in the name of the C++ program file. 
+
+\subsection{clang}
+
+\subsection{g++}
+
+The GCC compiler
+
+\section{C++ Program Structure}
+
+\subsection{Preprocessor Directives}
+
+At the top of every C++ program will be the preprocessor directives, which are all preceded by the \# character. The preprocessor examines the code before compilation, and resolves all of these directives before any executable is generated. Preprocessor directives are listed outside of any function definition, include \texttt{main()}, and do not need to be terminated by a semicolon because technically they are not statements - only the \textbackslash character can be used to extend these statements over multiple lines.
+
+Preprocessor statements occur before any syntax checking is performed by the compiler, and can therefore lead to many errors. 
+
+\subsubsection{Include Directives}
+
+These directives consist of 1) include directives, which allow you to use standard functions provided by your compiler, and 2) other preprocessor directives. Include directives essentially take everything in the header that you are including and paste it into your program. 
+
+\begin{lstlisting}[language=C++]
+#include <iostream> // cout, cin, cerr, clog
+#include <iomanip> // setw, setprecision
+#include <fstream> // file processing
+#include <sstream> // stringstream
+\end{lstlisting}
+
+Entire files can also be included using include directives. This replaces the entire contents of the preprocessor directive by the file contents. The PATH is searched for the included files. 
+
+\begin{lstlisting}[language=C++]
+#include "file.h" // copies entire contents of file.h into present file
+\end{lstlisting}
+
+\subsubsection{Macros}
+
+Macros can be defined in preprocessor directives, and are signaled by the \texttt{\# define} keyword. There are two general flavors to macros, the first begin a simple find-and-replace of an identifier by its replacement, throughout an entire file. This replacement is performed by the preprocessor before compilation begins.
+
+\begin{lstlisting}[language=C++]
+#define identifier replacement // replace <identifier> by <replacement>
+\end{lstlisting}
+
+Macros can also be used to define simple functions. Then, anywhere that the name of the function appears, the macro is evaluated. 
+
+\begin{lstlisting}[language=C++]
+#define getmin(a,b) a < b ? a:b // simple function
+\end{lstlisting}
+
+Macros are defined until they are undefined using the \texttt{undef} keyword:
+
+\begin{lstlisting}[language=C++]
+#undef identifier
+\end{lstlisting}
+
+Macros can be redefined without first un-defining them and then re-defining them, though you will get a warning if you try to do this.
+
+\subsubsection{Conditional Statements}
+
+Conditional statements can also be present in the preprocessor directives. These conditional statements are used to control which statements are compiled, whereas conditional statements within C++ functions are used to determine which statements are executed (all statements in a C++ file not guarded by conditional statements will be compiled). If-statements test whether or not a macro has been defined, and perform various compilation options based on the result.
+
+\begin{lstlisting}[language=C++]
+#ifdef my_macro // equivalent to #if defined my_macro
+	// do stuff
+#else
+	// do stuff
+#endif
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++]
+#ifndef my_macro // equivalent to #if !defined my_macro
+	// do stuff
+#else
+	// do stuff
+#endif
+\end{lstlisting}
+
+\subsection{Remaining Structure}
+
+All C++ programs must contain the \texttt{main()} function, which is the driver for the overall execution. This is the only function that is guaranteed to be executed. 
+
+C++ allows flexible formatting - every statement must be terminated with a semicolon, but each statement does not need to be on its own line. You may put multiple statements on one line, or even separate a statement out over multiple lines as long as it is ended by a semicolon somewhere.
+
+A block is a set of logically-connected statements that are enclosed in curly braces.
+
+\section{Fundamental Data Types}
+
+C++ is a \textit{statically-typed} language, meaning that type checking is performed at compile-time as opposed to during run-time. This is advantageous because it allows the compiler to easily detect errors, optimize for size and speed, in addition to allowing easier documentation. However, explicit type declarations are sometimes cumbersome, and creating generic algorithms can be difficult.
+
+C++ has several fundamental data types, each of which occupies a different amount of space in memory. A bit, or a binary digit, is the smallest unit of data, and can be either a 0 or 1. A byte is a sequence of 8 bits that is operated on by a computer as a single unit. The common fundamental data types and their typical memory requirements for storage are shown below. Note that the memory taken up by a particular variable type sometimes depends on the compiler and computer being used, and except for the case of char, all sizes given represent the minimum sizes across systems. Because each bit can hold either a 0 or a 1, a single byte can hold 256 (\(2^8\)) possible values, and so the advantage of using an unsigned version of a variable is that you are able to represent a larger magnitude number, since signed variables have to save one bit for storage of the sign of the variable. 
+
+\begin{center}
+\begin{tabular} {l l}
+char & exactly 1 byte \\
+signed int & 4 bytes\\
+unsigned int & 4 bytes\\
+short int & 2 bytes\\
+long int & 8 bytes\\
+float & 4 bytes\\
+double & 8 bytes\\
+\end{tabular}
+\end{center}
+
+To determine the actual size in bytes (specific to your computer) of a fundamental data type or a variable on your system, use:
+
+\begin{lstlisting}[language=C++]
+std::cout << sizeof(int) // size of a fundamental data type
+std::cout << sizeof(var) // size of a variable
+\end{lstlisting}
+
+Other fundamental types include \texttt{bool} and \texttt{void} (valueless). Boolean variables can be assigned either the words true/false or the values 1/0. Variables cannot be declared as void, rather this is reserved for return values from functions. Note that \texttt{string} is not a fundamental data type - rather, strings are essentially arrays of characters.
+
+The keywords \texttt{signed, unsigned, long, short} are modifiers that change the meaning of the base type. All four of these can be applied to integer types, while only signed/unsigned can be applied to characters, and long to double. More than one modified type can be combined, where the signed/unsigned modifier is listed first. As a shorthand, because these types are most commonly used with integers, you can omit the \texttt{int} from the declaration.
+
+Unless otherwise specified with the \texttt{unsigned} option, all variable are assumed \texttt{signed}. Any of the fundamental data types listed above can be combined with the \texttt{unsigned} option to extend the manitude of representable values. If you attempt to declare \texttt{unsigned int foo = -3}, you will not simply obtain the absolute value.
+
+\subsection{Auto, Decltype, Typedef, and Type Casting}
+
+Instead of explicitly specifying the type of a variable, you can use \texttt{auto} to initialize the variable type to the type inferred from an initialization. This requires that the variable be initialized at the time of declaration.
+
+\begin{lstlisting}[language=C++]
+auto foo = 3; // will declare variable to be an integer
+\end{lstlisting}
+
+Alternatively, if you do not want to initialize a variable yet, but you still want its type to be inferred from some other parameter, use \texttt{decltype}. This deduces the variable type as being the same type as another variable.
+
+\begin{lstlisting}[language=C++]
+decltype(bar) = foo; // declares a variable with the same type as foo
+\end{lstlisting}
+
+New names can be created for existing types using \texttt{typedef}; this can be used for both regular variables and structures.
+
+\begin{lstlisting}[language=C++]
+typedef int custom_int; // creates a new name for the integer type
+typedef struct { } new_name; // creates a new name for the struct
+\end{lstlisting}
+
+Type casting allows conversion of one variable type to another after that variable type has already been declared as some other type. Type casting will not work for fundamentally different data types such as integers and strings. Type casting can be performed with four different types of syntax:
+
+\begin{lstlisting}[language=C++]
+i = (int) pi; 
+i = int (pi); // parentheses can be around either the type or variable
+int i = static_cast<int>(pi);
+int * i = dynamic_cast<int*>(pi); // for pointers and references to classes
+\end{lstlisting}
+
+\subsection{Enumerated Types}
+
+Enumerated types have a syntax very similar to data structures and classes. They define a new variable type, \texttt{type\_name}, with a restricted number of possible values. Additionally, the syntax allows you to optionally declare an \texttt{object\_name} in the enumeration declaration.
+
+\begin{lstlisting}[language=C++]
+enum enum_name {value1, value2, value3} object_names;
+\end{lstlisting}
+
+You must include either the \texttt{type\_name} (and then use declarations of the type \texttt{type\_name new\_object;}) or all of the \texttt{object\_names} you will be using (and then use declarations of the type \texttt{object\_name1 = value1;}). Enumerations create new data types without being based on any fundamental data type. Enumerated objects can only be assigned values that are in the enumerated list - an error will result otherwise. 
+
+The listed values are implicitly convertible to int. Each value listed is automatically assigned an integer based on its position in the list, beginning with 0, and the listed value is therefore an alias for this integer value. To override this default numbering, modify each (or simply the first to begin sequential counting from there) listed value by appending an assignment to the integer that you'd like that entry to be an alias for. For example, to begin counting at 3, \texttt{value1 = 3} would replace \texttt{value1}. If you modify the integer value of any item in the list, and if the following items are not also modified, by default they are counted by 1 from the last assigned value.
+
+It is also possible to create enumerated types that aren't implicitly convertible to integer type, and which aren't of integer type either, which preserves type safety. To forbid implicit conversion to integer type, include the keyword \texttt{class} following \texttt{enum}.
+
+\subsection{Declaring Variables}
+
+There are three ways to declare a variable:
+
+\begin{lstlisting}[language=C++]
+int x = 0; // C-like initialization
+int x (0); // constructor initialization
+int x {0}; // uniform initialization
+\end{lstlisting}
+
+Uniform initialization was introduced in the C++11 standard to avoid confusion between constructors and function declarations, since functions always use curved parentheses. Multiple variables (of the same type) can be specified on 
+
+\subsection{Variable Scope}
+
+A variable can have one of three scopes:
+
+\begin{center}
+\begin{tabular}{l l}
+local variable & within a block \{\} statement\\
+formal variable & as a function parameter\\
+global variable & outside all functions\\
+\end{tabular}
+\end{center}
+
+Local variables are only accessible from within the block within which they are defined (and all sub-blocks). A program can have the same name for local and global variables, but the local variables will have precedence. Based on this scoping, variables defined within one function are not available to other functions unless they are passed in as inputs.
+
+\subsubsection{Global Variables}
+
+Global variables are defined outside all functions, but you must declare them with the \texttt{extern} keyword in at least one file that uses the global variable so that the compiler knows that the variable declaration exists somewhere, and then you only need to declare it once in another file (could be the same one). 
+
+\begin{lstlisting}[language=C++]
+extern int a; // forward declaration of global variable (seen by all files)
+static int a; // forward declaration of global variable (seen by present file)
+\end{lstlisting}
+
+To easily include a global variable, you would likely include the \texttt{extern} declaration in your Header.h file. This declaration occurs outside the main function. This is very similar to forward definitions of functions that you would perform outside main(), where the actual definition of the variable must still be included somewhere. You cannot also initialize a global variable in the same line - \texttt{extern} simply represents forward declaration of a global variable.
+
+After this line is included in your Header.h file, in one of your source files, you would still need to initialize the global variable outside all functions. If you want to explicitly state that you don't want other files to be able to access a global variable, declare it using the \texttt{static} keyword.
+
+While a local variable is not, by default, initialized by the compiler, global variables are automatically initialized when they are declared; only initializing will change this default value. The default values are 0 (for int, float, and double), `\textbackslash 0' for char, and NULL for pointers.
+
+\subsection{Volatile Variables}
+
+Volatile variables are declared so that the compiler knows a variable's value might change in ways not explicitly defined by the program to limit the default optimization that the compiler might perform, since the value of a variable is not always as it may appear from the program.
+
+\begin{lstlisting}[language=C++]
+volatile int a;
+\end{lstlisting}
+
+\subsection{Constants and Literals}
+
+Constants have fixed values (they cannot be modified), and hence are also referred to as literals. Constants can be defined for any of the fundamental types. Integer literals can be prefixed with \texttt{0x} to specify hexadecimal (base 16) or \texttt{0} for octal (base 8). Integer literals can also have suffixes, with an combination of \texttt{u} for unsigned and \texttt{l} for long.
+
+Character literals are enclosed in single quotes, and can be either a plain character such as `a', an escape sequence, or a universal character. Some common escape sequences are given below.
+
+\begin{center}
+\begin{tabular}{l l}
+\textbackslash n & new line\\
+\textbackslash r & carriage return\\
+\textbackslash t & tab\\
+\textbackslash a & beep noise\\
+\textbackslash v & vertical tab (carriage return + tab)\\
+\textbackslash b & backspace\\
+\textbackslash f & form feed (skips to next page)\\
+\textbackslash\textbackslash & backslash character\\
+\textbackslash? & ?\\
+\end{tabular}
+\end{center}
+
+Universal characters are encoded in ASCII (originally) or Unicode. Computers use ASCII tables to encode characters as numbers for storage. Standard ASCII defines 128 character codes. Because computer data is organized into bytes, each containing 256 bits, extended ASCII contains 256 character codes, where the additional characters depend on the system. The two most common of these systems are OEM and ANSI. You could entirely type out strings by writing each ASCII character within single quotes. Unicode is a character encoding that can encode all possible characters, by extending the memory required for each character from 1 byte up to multiple bytes. UTF-8 is a version of Unicode that uses a maximum of 4 bytes to describe a character. 
+
+Constants can be defined in two different ways, and are typically defined with all capital letters for easier distinction.
+
+\begin{lstlisting}[language=C++]
+const int MYCONST = 3; // using the const keyword
+\#define MYCONST 3 // preprocessor directive
+\end{lstlisting}
+
+Preprocessor directives don't define a variable type, so if you use them later in the program in an inconsistent way, you'll get an error. 
+
+\subsection{Storage Classes}
+
+Storage classes define the scope and lifetime of a variable or function. An object can only have one storage class. The \texttt{auto} storage class is the default for all local variables, meaning that the variable is not visible outside the block in which it is defined. It can only be used within functions. Note that this is not the same as automatic determination of type!
+
+\begin{lstlisting}[language=C++]
+auto int a; // default storage class
+register int a; // store variable in register
+static int a; // keep a local variable within scope
+\end{lstlisting}
+
+\texttt{register} is used to specify that a local variable should be stored in a register instead of RAM. The register is the CPU - use \texttt{register} for very quick retrieval, such as for counters. Using this storage class does not necessarily mean that a variable will be stored in the register, but it might depending on hardware and implementation restrictions. Registered variables technically have no address, so the address-of operator \& cannot be used with them. The variable has a maximum size equal to the register size.
+
+\texttt{static} tells the compiler to keep a local variable in existence for the entire duration of a program instead of creating and destroying it each time it comes into and goes out of scope. For static variables within a function, the declaration line is only called once, and hence this can be useful for counting how many times a function operates, for instance, since this prevents variables from being reinitialized each time a function or loop is entered.
+
+A \texttt{mutable} storage specifier allows a member of an object to override const-ness. So, a mutable member can be modified by a const member function.
+
+\subsection{Strings}
+
+There are two types of strings - the C-style string that is an array of character type terminated by the null character `\textbackslash0'. Alternatively, the string class represents a compound data type that requires you to include the preprocessor directive \texttt{\#include <string>}. These string literals are enclosed in double quotes.
+
+\begin{lstlisting}[language=C++]
+char str [] = ``Hello''; 
+char str [6] = ``Hello''; // implicitly contains terminating `\0'
+char str [] = {`H',`e',`l',`l',`o'};
+string str = ``Hello''; // string class
+\end{lstlisting}
+
+Strings defined as arrays can only be modified element by element. Null-terminated sequences and strings can easily be converted into the other type.
+
+Strings are concatenated by simply listing their values next to one another, as in \texttt{cout << ``Hi'' ``there'';}. Alternatively, you can concatenate by using a plus sign between two strings. To type a very long line as a string, you cannot simply \textbackslash n in the middle of the string, but you can use the line continuation character \texttt{\textbackslash}.
+
+\subsection{Arrays}
+
+Arrays are a series of elements of the same type placed in contiguous memory locations. This allows multiple elements to be accessed with only a single identifier - the position within the array (the memory location). Because arrays are blocks of static memory, their size is determined at compile time, and cannot be made variable without dynamic memory allocation. To declare an array, you either need to specify the number of elements, the elements themselves, or both.
+
+\begin{lstlisting}[language=C++]
+int arr [5]; // declare number of elements
+int arr [] = {1, 2, 3, 4, 5} // declare contents (C-like)
+int arr [] {1, 2, 3, 4, 5} // declare contents (uniform)
+\end{lstlisting}
+
+If you declare the array to have more elements than you explicitly type out, then the remaining are set to default values (for both global and local arrays, since both are static blocks of memory). Bidimensional arrays are declared as:
+
+\begin{lstlisting}[language=C++]
+int arr[3][5];
+\end{lstlisting}
+
+To access a specific member of an array, access the index within square brackets as \texttt{arr[2];}. For historical reasons, arrays cannot be copied into functions - rather, pass in their address using a pointer. To pass in an array to a function, either pass in a pointer to the array or the unsized version of the array (which represents a pointer to the first element).
+
+\begin{lstlisting}[language=C++]
+int func (int *arr); 	// pass pointer to array
+int func (int arr[]); 	// pass in unsized array
+int func (int arr[2]); 	// pass in sized array
+\end{lstlisting}
+
+An entire array cannot be returned by a function, but you can return a pointer to the array. Because it is not advisable to return the address of a local variable to outside the function to which its scope belongs, it is best to define that return pointer as static. 
+
+\section{References and Pointers}
+
+A computer's memory is a succession of locations, where data larger than one byte is stored in adjacent positions. The environment decides where to store a variable, and this placement is decided at runtime. A pointer stores the address of another variable, through which they can also access the information stored at that location. This is useful because it is often much easier to pass an address into a function rather than a large block of data itself. Pointers are also needed for dynamically allocating memory, since you also  need to deallocate when finished. Pointers also facilitate shared memory. Values use to only be able to be passed by reference, which is the motivation for creating pointers that can save memory like passing by reference. References are aliases for an existing variable, so once they are initialized to a variable, references cannot be changed to another object (pointers can change what they point to at any time unless they are constant). The other two differences between references and pointers is that you cannot have null references (references have to be connected to real pieces of storage), and a reference has to be initialized when it is created. To create a reference to another variable, simply use the \& operator immediately following the variable (or return type for functions) type.\\
+\\
+\color{red}\texttt{int\& ref = original;}\color{black}\\
+\\
+References are most commonly used for function argument lists and function return values. It is not legal to return a reference to a local variable that goes out of scope once the function ends. To address this, you can return a reference to a static variable.\\
+\\
+The value held by a pointer is an address (so \texttt{cout \textless\textless ptr} will give the address that the pointer points to. There are several important operators. The address-of operator gives the address of a variable:\\
+\\
+\color{red}\texttt{\&x;}\color{black}\\
+\\
+The dereference operator returns the value of the variable to which something points:\\
+\\
+\color{red}\texttt{*ptr;}\color{black}\\
+\\
+Pointers have different properties depending on the data type to which they point, so when declaring a pointer, you need to list the type of the variable to which it will point. You can also use \texttt{auto}. To declare multiple pointers at once, you need to include the asterisk after each comma.\\
+\\
+\color{red}\texttt{int * ptr = \&a;}\color{black}\\
+\color{red}\texttt{auto * ptr = \&a;}\color{black}\\
+\color{red}\texttt{auto * ptr1, * ptr2;}\color{black}\\
+\\
+Despite pointing to data of different types, all pointers are likely to be the same size. The type of the pointer is \texttt{type *}. Arrays are pointers to their first element, and hence they can always be converted to a pointer. Assuming that \texttt{array} and \texttt{ptr} have been initialized, the following two statements would be equivalent, since ommitting the square brackets after an array name is equivalent to a pointer to its first element. The fundamental difference therefore between arrays and pointers is that an array cannot change its memory location, while a pointer can change the address to which it points.\\
+\\
+\color{red}\texttt{ptr = array;}\color{black}\\
+\color{red}\texttt{ptr = \&array[0]}\color{black}\\
+\\
+If you try to dereference a pointer that has not yet been assigned an address, you will get a seg fault. Segmentation fault 11 indicates that the computer tried to access a memory location that was not assigned. However, if a pointer has not yet been assigned an address, they still point to a random address that was likely the most recently held memory. Pointers can only be assigned an address with the address-of operator or to another pointer, in which case it points to the same address. Pointers have their own addresses, since they too have to store information in memory. Incrementing a pointer by a number will move it that many ``steps'' forward in memory from its starting location. To increment a pointer, all the following expressions are equivalent:\\
+\\
+\color{red}\texttt{*(ptr++) = 3;}\color{black}\\
+\color{red}\texttt{*(ptr + 1) = 3;}\color{black}\\
+\color{red}\texttt{ptr[1] = 3;}\color{black}\\
+\\
+When you increment a pointer, it increments the correct number of whole bytes based on the data type of the pointer. Because arrays (without the square brackets) actually represent pointers to their first elements, the square brackets represents an offset operator that tells the pointer how many units to move from the first element. So, the following two expressions are equivalent, which also shows why the indexing begins at zero for arrays, such that the increment moved from the first element equals the index. \\
+\\
+\color{red}\texttt{array[5];}\color{black}\\
+\color{red}\texttt{*(array+5)}\color{black}\\
+\\
+Postfix operators have higher precedence than prefix operators.
+
+\begin{center}
+\begin{tabular}{l l l}
+*ptr++; & *(ptr++); & *(ptr); ptr++;\\
+*++ptr; & *(++ptr); & ptr++; *(ptr);\\
+++*ptr; & ++(*ptr); & \\
+\end{tabular}
+\end{center}
+
+To ensure that you don't change the value of the variable to which the pointer points, you can declare pointers as constant. There are two types of constant pointers - ones that cannot modify the value to which they point through a dereference operator, and those that cannot change what they point to. A pointer can be both types of constant. For variables, on the other hand, \texttt{const} can be listed before or after the variable type with no difference.
+
+\begin{center}
+\begin{tabular}{l l}
+const int * ptr = \&x; & cannot modify x through a dereference statement\\
+int * const ptr = \&x; & cannot change what ptr points to\\
+\end{tabular}
+\end{center}
+
+Pointers can point to other pointers (to the address of another pointer), so simply add two asterisks in their declaration.\\
+\\
+\color{red}\texttt{int** ptr = \&ptr2;}\color{black}\\
+\\
+Void pointers point to data of void type, which produces pointers with undefined dereferncing properties. Void pointers can point to any data type, with the consequence that they cannot be directly dereferenced since there is no type to dereference to. To dereference a void pointer, you need to assign the dereferenced output to another pointer of the correct type for reading. This can be used to pass generic parameters to a function. If you try to dereference a void pointer to the incorrect data type, you'll get an error. \\
+\\
+\color{red}\texttt{void * ptr;}\color{black}\\
+\color{red}\texttt{int * ptr2}\color{black}\\
+\color{red}\texttt{ptr2 = (int*) ptr}\color{black}\\
+\\
+Null pointers do not point to anything. Both of the following expressions are equivalent, and the program will recognize the keyword NULL/nullptr if \#include \textless iostream\textgreater is included. Null pointers are not intended to point to accessible memory locations. A pointer can be determined to be a null pointer with a conditional statement, since a null pointer has a value of 0 (points to the memory location 0). Any pointer can be made into a null pointer.\\
+\\
+\color{red}\texttt{int * ptr = NULL;}\color{black}\\
+\color{red}\texttt{int * ptr = nullptr;}\color{black}\\
+\color{red}\texttt{int * ptr = 0;}\color{black}\\
+\\
+Pointers can point to functions in order to pass a function as an argument to another function. To declare a pointer as pointing to a function has syntax very similar to a regular function declaration, except that the pointer name (?) is put in parentheses with another set of parentheses defining the parameters of the function to which it points.\\
+\\
+\color{red}\texttt{return\_type (*pointer\_name) (function\_parameters) = function\_to\_which\_it\_points}\color{black}\\
+\newline
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{centering}
+\color{blue}\textbf{Operators}\color{black}
+\end{centering}
+\begin{flushleft}\justify
+Assignment operators can themselves contain nested assignments, where the assignments are performed from right to left.\\
+\\
+\color{red}\texttt{y = 0 + (x = 3);}\color{black}\\
+\color{red}\texttt{y = x = 3;}\color{black}\\
+\\
+Compound assignments allow a variable to be modified, and then assigned to update the same variable (+, -, *, /, and \% are all allowed). The following is equivalent to \texttt{y = y +2}. There can be no spaces between compound assignment terms.
+\\
+\color{red}\texttt{y += 2;}\color{black}\\
+\\
+Increment (++) and decrement (--) operators can either increase or decrease a variable value by 1. The result of appending as either a prefix or suffix should be read from left to right. This technicality only makes a difference when assigning an incremented variable to another.
+
+\begin{center}
+\begin{tabular}{l l}
+y = x++; & assign x to y, and then update x\\
+y = ++x; & update x, and then assign to y\\
+\end{tabular}
+\end{center}
+
+Several logical operators are:
+
+\begin{center}
+\begin{tabular}{l l}
+== & equal\\
+!= & not equal\\
+\&\& & AND statement\\
+|| & OR statement\\
+!(expression) & inverts the expression\\
+\end{tabular}
+\end{center}
+
+Logical operators do not strictly have to follow flow control statements such as \texttt{if} and \texttt{while}. Because conditional statements evaluate to a boolean expression, they can be assigned to a variable (if that variable is either boolean (true/false) or int (1/0)), such as in \texttt{int a = !(x==3);}.
+\\
+Note that only what is strictly necessary to evaluate to determine the value of a conditional statement is performed (moving from left to right). This can have important consequences if one of the conditions increments a variable, but that condition is never reached. An infinite loop, or a loop that is never entered, has either while (1) or while (0) as the conditional statement.\\
+\\
+Conditional operators are basically short-hand notation for if-else statements.\\
+\\
+\color{red}\texttt{( x==3 ) ? value\_if\_true : value\_if\_false}\color{black}\\
+\\
+To perform 2+ commands, a comma operator can be used to evaluate all included expressions from left to right. Variables cannot be declared from within this comma operator.\\
+\\
+\color{red}\texttt{x = ( j=3, j+=4, j+1 )}\color{black}\\
+\\
+\newline
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Statements and Flow Control}
+
+Conditional statements in general evaluate the need to perform the following block, which are enclosed in curly braces to signify that they belong to the condition statement. If there is only a single statement, you can drop the curly braces, since it is implied that the conditional statement will only evaluate the statement immediately following.
+
+Statements are entered if the conditional expression evaluates to TRUE, or a nonzero number. FALSE statements evaluated to zero. Conditional statements will therefore provide a return value upon evaluation - zero for false and one for true. 
+
+\subsection{If-Statements}
+
+In general, if-statements can contain an if, else if, and else statement. 
+
+\begin{lstlisting}[language=C++]
+if (x == 1)
+{
+	// do stuff
+}
+else if (x == 2)
+{
+	// do stuff
+}
+else
+{
+	// do stuff
+}
+\end{lstlisting}
+
+\color{red}\texttt{while (x < 1) \{\} }\color{black}\\
+\\
+A do-while loop differs from a while loop only in that the statement is performed regardless of whether the condition is true, so use this if you need to evaluate a condition at least once.\\
+\\
+\color{red}\texttt{do \{\} while (x < 1);}\color{black}\\
+\\
+Each of the fields in a for statement are optional, and can be left empty as long as the separating semicolons remain. With no condition, then the for loop is equivalent to an infinite loop because by default the condition is true, and with no initialization, the for loop is equivalent to a while loop. Multiple expressions can be separated by commas within the three for loop statements.\\
+\\
+\color{red}\texttt{for (int i = 1; i < 10; i++) \{\} }\color{black}\\
+\\
+An alternative version of the for loop can cycle a permissible variable through a sequence of elements in a range. Ranges can be sequences of characters (strings) and arrays. The loop automatically cycles through the range and assigns each value to the declaration variable, without needing some type of counter. You must declare the counter variable within the parentheses.\\
+\\
+\color{red}\texttt{for (char c : ``hello'') \{\} }\color{black}\\
+\\
+Break statements will leave only the immediate loop, but will not break out of higher nested loops.\\
+\\
+\color{red}\texttt{break;}\color{black}\\
+\\
+Continue statements will skip the current block \{\} of statements and immediately return to the conditional statement in the loop. This is useful if you don't want the loop to perform any statements for particular values.\\
+\\
+\color{red}\texttt{continue;}\color{black}\\
+\\
+Goto statements cause an immediate jump to a location without any consideration for loop structures.\\
+\\
+\color{red}\texttt{goto label;}\color{black}\\
+\color{red}\texttt{label:}\color{black}\\
+\color{red}\texttt{\t \{\}}\color{black}\\
+\\
+Switch statements check for a value among a number of constant options. Break statements are needed after each case, or else the code will evaluate all the statements for the options including and following any case statements that you match (including the default). This behavior occurs because the statements following each case are not actually statements, but rather they are labels.\\
+\\
+\color{red}\texttt{switch (expression)}\color{black}\\
+\color{red}\texttt{\{}\color{black}\\
+\color{red}\texttt{\quad case constant1:}\color{black}\\
+\color{red}\texttt{\quad\quad statement1;}\color{black}\\
+\color{red}\texttt{\quad\quad break;}\color{black}\\
+\color{red}\texttt{\quad case constant2:}\color{black}\\
+\color{red}\texttt{\quad\quad statement2;}\color{black}\\
+\color{red}\texttt{\quad\quad break;}\color{black}\\
+\color{red}\texttt{\quad default:}\color{black}\\
+\color{red}\texttt{\quad\quad default\_statement; \}}\color{black}\\
+\newline
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{centering}
+\color{blue}\textbf{Functions}\color{black}
+\end{centering}
+\begin{flushleft}\justify
+Every C++ program has a main() function, which is always executed first without regard to the order of the other functions in the file. The parameters of a function are of the format \texttt{type name} so that the function knows the type of the input parameter. The name of the formal parameter does not need to match the name of the variable actually being passed into the function, since it only represents an alias for the information that will be used by the function. These formal parameters are local to the function. For functions that do not return anything, use \texttt{void} return type. For functions that don't accept any input parameters, you can either leave the input\_parameter\_list blank, or explicitly type in \texttt{void}. \\
+\\
+\color{red}\texttt{return\_type function\_name (input\_parameter\_list) \{return return\_var;\}}\color{black}\\
+\\
+If a function ends normally (successfully) without encountering a return statement, the default is to return zero, but this only applies to main for historical reasons. All other functions need an explicit return statement unless they are of return type \texttt{void}. All functions will obey the following exit signals:\\
+
+\begin{center}
+\begin{tabular}{l l}
+return 0; & success\\
+return EXIT\_SUCCESS; & success (have to \#include \textless cstdlib\textgreater)\\
+return EXIT\_FAILURE; & failure (have to \#include \textless cstdlib\textgreater)\\
+\end{tabular}
+\end{center}
+
+A failure signal is equivalent to returning 1. All functions must be fully defined or else at least declared before they are called so that the compiler knows that the function definition exists somewhere. Function declarations do not specify the statements, but rather put a semicolon immediately after the list of formal parameters. This list can list only the variable types if desired, or you can use the full syntax and type each type and name of the formal parameters (where these names don't have to match those used later on in the real definition). Declarations are very important, since they allow your program structure to be flexible, since you don't need to know the order in which functions will be called.\\
+\\
+\color{red}\texttt{return\_type function\_name (type1, type2);}\color{black}\\
+\\
+There are two different ways to pass variables into a function as formal parameters - by value (the default) and by reference. Passing in by reference basically creates a copy of the passed-in variable, such that the variable itself is not modified. Passing by reference modifies the actual value of the variable passed in. Passing by reference uses the \& symbol:\\
+\\
+\color{red}\texttt{return\_type function\_name (int\& a);}\color{black}\\
+\\
+Passing by reference is advantageous when you would need to pass in very large pieces of data, since then you can avoid making a copy of that information to unnecessarily take up memory. However, this gives you the possibility of modifying that data in the remainder of the program, so when passing by reference it is advisable to pass the information as const-qualified so that the function cannot modify the data.\\
+\\
+\color{red}\texttt{return\_type function\_name (const int\& a);}\color{black}\\
+\\
+Default values can be given for the last formal parameter in the input list if that corresponding argument is left blank when calling the function. This signifies that the last parameter is optional. If the parameter is specified in the function call, then the default value is overridden.\\
+\\
+\color{red}\texttt{return\_type function\_name (int a, int b = 10);}\color{black}\\
+\\
+Function calls incur a certain amount of overhead, so compilers allow functions to be expanded inline - if it is more efficient, then the function is evaluated as if it were another regulare statement on a line. Most compilers already optimize to produce inline functions. Simply use the \texttt{inline} keyword before the return type in the function definition.\\
+\\
+\color{red}\texttt{inline return\_type function\_name (input\_parameter\_list) \{return return\_var;\}}\color{black}\\
+\newline
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{centering}
+\color{blue}\textbf{C++ Libraries}\color{black}
+\end{centering}
+\begin{flushleft}\justify
+\texttt{\textless cmath\textgreater} allows you to calculate common math operations, such as raising a number to an exponent:\\
+\\
+\color{red}\texttt{pow(x, 3);}\color{black}\\
+\\
+or taking the absolute value:\\
+\\
+\color{red}\texttt{abs(x);}\color{black}\\
+\\
+hj
+\newline
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Input/Output}
+
+Input/output occurs in streams, which are sequences of bytes. Bytes flow from main memory to a display screen in output operations, for example. \texttt{cout} is an instance of the \texttt{ostream} class. The \texttt{cout} object is connected to the standard output device, which is typically the terminal. \texttt{cin} is an instance of the \texttt{istream} class. The default input is from the keyboard, and is used in conjunction with the stream insertion operator \texttt{>>}. The compiler also determines the data type of the entered value and chooses the appropriate stream extraction operator to store that information in a variable. To receive information from the keyboard and store it in a variable:
+
+\begin{lstlisting}[language=C++]
+std::cin >> var; // receive input from the std::cin (keyboard)
+std::cin >> var1 >> var2; // multiple insertions
+std::cin.get(); // function call that reads input with a delimiter `\n'
+std::cin.ignore(); // ignore the `\n' delimiter 
+\end{lstlisting}
+
+If the user enters a type that is not compatible with the variable to which it is being assigned, the extraction fails. Multiple input requests can be chained together using multiple stream insertion operators. A space, tab, or a newline character all signify that the stream insertion is to proceed to the next-requested information. For this reason, input with strings is more difficult, since there are inherently spaces between words, so to input an entire string, use \texttt{getline}, which can only be used to input data to a string data type. The delimiter states when to stop input (based on when this character is reached). The default delimiter (if this field is blank) is a newline character. Extraction also stops once the end of the file is reached, and if used within a loop, \texttt{getline} automatically advances one line each iteration.
+
+\begin{lstlisting}[language=C++]
+getline(cin, str, `<delimiter>');
+\end{lstlisting}
+
+\texttt{cerr} is the standard error output stream, and is an instance of the \texttt{ostream} class. The standard error device is the terminal, but is unbuffered so that \texttt{cerr} shows its output immediately. \texttt{clog} is an instance of the \texttt{ostream} class, which is also attached to the terminal but whose buffer is flushed.\\
+\\
+\texttt{stringstream} is used to allow strings to be treated as streams, which means that extraction and insertion operations can be performed directly on strings. This allows strings to be converted to other types. If the string contains multiple valid values, then insertion operations can be chained together with several \textgreater\textgreater statements.\\
+\\
+\color{red}\texttt{string my\_string = ``100'';}\color{black}\\
+\color{red}\texttt{stringstream(str) \textgreater\textgreater i;}\color{black}\\
+\\
+\texttt{std::endl} produces a newline character, just as `\textbackslash n' does, but it also flushes the buffer's stream, meaning that the output is physically written to the device, so this takes slightly longer than `\textbackslash n'. While `\textbackslash n' is a special character, \texttt{endl} is a stream manipulator. The difference between these two is only important for fully buffered streams (of which \texttt{cout} is not).\\
+\\
+k
+\newline
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{centering}
+\color{blue}\textbf{Data Structures}\color{black}
+\end{centering}
+\begin{flushleft}\justify
+While arrays allow you to combine data items of the same type, data structures allow you to combine data items of different types. Each of the data elements is a \textit{member} of that data structure. To define a structure, you either need to include the type\_name or an object\_name. Once a structure has been defined, it basically creates a new type that has members of different types. The advantage of structures is that you can easily refer to either the entire object or just its members.\\
+\\
+\color{red}\texttt{struct type\_name \{}\color{black}\\
+\color{red}\quad\texttt{member\_type1 name1;}\color{black}\\
+\color{red}\quad\texttt{member\_type2 name2; \}} object\_names;\color{black}\\
+\\
+To access members of an object, use the member access operator:\\
+\\
+\color{red}\texttt{object\_name.member\_type;}\color{black}\\
+\\
+Structures obey the same scoping rules as regular variables. Objects can be passed into functions just as normal variables are, except that you don't need to explicitly pass each member - you only need to pass in the object, since their members are accessible.\\
+\\
+Pointers to a structure point to the objects.\\
+\\
+\color{red}\texttt{type\_name* ptr = \& object\_name;}\color{black}\\
+\\
+A special arrow operator is a dereference operator that is used exclusively with points to objects that have members. This operator accesses a member of the object to which the pointer is pointing. The following two statements are equivalent.\\
+\\
+\color{red}\texttt{ptr -\textgreater member\_name;}\color{black}\\
+\color{red}\texttt{(*ptr).member\_name;}\color{black}\\
+\\
+Instead, \texttt{*(ptr.member\_name)} would attempt to access the quantity pointed to by pointer member of object \texttt{ptr}.\\
+\\
+\newline
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Object-Oriented Programming}
+
+A C++ program is a collection of objects that interact with each other by invoking each other's methods. This section discusses object-oriented programming. A class is a template that describes the behaviors and states of its instances. For example, an \texttt{animal} class has behaviors such as \texttt{moving, making\_noise, eating}. An object is an instantiation of a class; an animal such as a \texttt{dog} would make noise by barking, but a cat would make noise by meowing - however, both animals make noise, and hence in their unique ways would modify the \texttt{making\_noise} method. A method belongs to a class, and defines a behavior for that class. A method is essentially a function that belongs to a particular class. Finally, instance variables are variables associated with a class, which do not define behavior but rather define properties. For example, an instance variable such as \texttt[weight} might define the weight of a particular animal.
+
+\begin{centering}
+\color{blue}\textbf{Classes}\color{black}
+\end{centering}
+\begin{flushleft}\justify
+C++ was developed to add object-oriented programming into C, and classes are the central feature of C++ that allows this. Because data and functions can both be members of an object, classes reduce the need to pass data or carry other information as arguments to functions. Classes are basically blueprints for a new data type. An object is an instantiation of a class (basically a variable of type class\_name). Classes can be defined using either the \texttt{struct} or \texttt{class} keyword, where the only difference is that members of a structure are public by default, while for classes they are private by default. The format of a structure was historically not changed because all C code was supposed to also be valid C++ code and so classes were created with this single differentiating feature. If C++ had been created from scratch, structures would probably not exist. To define a class:\\
+\\
+\color{red}\texttt{class class\_name \{ }\color{black}\\
+\color{red}\quad\texttt{public:}\color{black}\\
+\color{red}\quad\quad\texttt{member\_type1 name1;}\color{black}\\
+\color{red}\quad\texttt{protected:}\color{black}\\
+\color{red}\quad\quad\texttt{member\_type2 name2;}\color{black}\\
+\color{red}\quad\texttt{private:}\color{black}\\
+\color{red}\quad\quad\texttt{member\_type3 name3; \} object\_names;}\color{black}\\
+\\
+The access specifiers \texttt{public, protected, private} are optional, but the default for classes is \texttt{private}. Access specifiers are important for object-oriented programming because it prevents functions of a pgram from directly accessing the internal representation of a class type.
+
+\begin{center}
+\begin{tabular}{l l}
+public & members are accessible from anywhere outside the class as long as still within the scope of the class object\\
+protected & members are only accessible from other members of the same class, in addition to from members of derived classes\\
+private & members are only accessible from other members of the same class and friends\\
+\end{tabular}
+\end{center}
+
+Because public members are accessible from anywhere, we don't need to use any scoping operator to access them - you can use the simple (.) member access specifier used with data structures.\\
+\\
+\color{red}\texttt{object\_name.public\_member;}\color{black}\\
+\\
+Member functions can either be defined inline, within the class definition, or outside the class with the use of the scoping operator. You always need to include the scoping operator when defining a function outside the class structure, since it is possible that there exist two different functions with the same name, one belonging to the class, and one belonging to the program in general. However, you don't need the scoping operator (obviously) if defining the function with in the class definition. For instance, to define a member function outside the class structure:\\
+\\
+\color{red}\texttt{double class\_name::func (int a, int b) \{\};}\color{black}\\
+\\
+Members need to be assigned values before other member functions try to use their values, but to avoid this, special functions called constructors are automatically executed whenever a new object of the class is created, allowing the class to initialize members. A constructor can only be called once for a particular object. Constructors are defined with no return type, because they cannot return anything. Constructors have the same name as the class\_name. There are two types of constructor - the normal constructor (which specifies how to initialize the members), and the default constructor (which specifies how to initialize the members by default). The normal and default constructors can be called in several ways when declaring an instance of a class (declaring an object):
+
+\begin{center}
+\begin{tabular}{l l}
+class\_name object\_name (parameters); & normal constructor, constructor initialization\\
+class\_name object\_name = parameter; & normal constructor, c-like initialization, for only 1 parameter\\
+class\_name object\_name = \{parameters\}; & normal constructor, uniform initialization\\
+class\_name object\_name \{parameters\}; & normal constructor, uniform initialization\\
+class\_name object\_name; & default constructor\\
+class\_name object\_name \{\}; & default constructor\\
+class\_name object\_name (); & NOT a constructor! - this represents function declaration\\
+\end{tabular}
+\end{center}
+
+If a class is defined with no constructors, then a default constructor is assumed. But, if you have a non-default constructor, but are missing a default constructor, then you can no longer declare objects using the once-was default constructor syntax. If you have a non-default constructor, then you automatically need to define the default constructor as well if you want that feature to work.\\
+\\
+The actual syntax defining the constructor can be placed either in the class structure (in which case no scoping operator is needed), or outside. The syntax for defining a cosntructor outside the class structure is:\\
+\\
+\color{red}\texttt{class\_name::class\_name (int a, int b) \{member1 = a; member2 = b;\}}\color{black}\\
+\\
+Alternatively, the constructor can take another syntax so that repeatedly typing equals signs can be avoided. Uniform initialization could also be used below, replacing \texttt{member1(a)} by \texttt{member1\{a\}}. You still need to include the empty brackets, however, because members are initialized outside the body. Other actions could still be taken within the curly braces, of course.\\
+\\
+\color{red}\texttt{class\_name::class\_name (int a, int b): member1(a), member2(b) \{\}}\color{black}\\
+\\
+Similar to a constructor, a destructor is executed whenever an object of it's class goes out of scope or whenever the \texttt{delete} expression is applied to a point of the object of that class. This is useful if a class allocates memory. Destructors have the same name as class\_name, except that they are preceded by a \textasciitilde. A destructor can be defined within the class structure, in which case the scoping operator is not needed, or outside the class structure:\\
+\\
+\color{red}\texttt{class\_name::\textasciitilde class\_name (parameters) \{\}}\color{black}\\
+\\
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{centering}
+\color{blue}\textbf{Compiling Multiple Files Together}\color{black}
+\end{centering}
+\begin{flushleft}\justify
+\color{red}g++ file1.cpp file2.cpp -o executable\_name\color{black}
+\newline
+\noindent\rule{16.5cm}{0.4pt}
+\end{flushleft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Vocabulary}
+
+\begin{tabular}{l l l}
+statically-typed & --- & Variable type-checking is performed at compile time\\
+standard library & std & Standard library associated with C++\\
+Standard Template Library & STL & Commonly-used C++ library\\
+\end{tabular}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
