@@ -1,0 +1,209 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{color}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage[font=small,labelfont=bf,labelsep=period]{caption}
+\usepackage[english]{babel}
+\usepackage{indentfirst}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{arydshln}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{xfrac}
+\usepackage{etoolbox}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{dcolumn}
+\usepackage{hyperref}
+\usepackage{courier}
+\usepackage{url}
+\usepackage{esvect}
+\usepackage{commath}
+\usepackage{verbatim} % for block comments
+\usepackage{enumitem}
+\usepackage{hyperref} % for clickable table of contents
+\usepackage{braket}
+\usepackage{titlesec}
+\usepackage{gensymb}
+
+\begin{comment}
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+\end{comment}
+
+
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\begin{document}
+\tableofcontents
+\clearpage
+
+\section{Control Rods}
+
+The functionality of the control rods ensures shutdown margin can be met in all conditions. High worth control rods could lead to as low as a 50 second period when withdrawn, and so a great deal of effort is spent ensuring the reliability of the control rod system. This section will describe the specifics associated with BWR and PWR control rods, and their associated support systems. 
+
+Control rods are manufactured by either GE (BWR rods) or Westinghouse (BWR and PWR rods), and the designs of the rods differ substantially between BWRs and PWRs, but the two variations of the BWR control rods are fairly similar. A core will typically consists of a mix of different control blade models as older blades are incrementally replaced as needed. For instance, LaSalle has eight different control blade models in their core (a mix of GE and Westinghouse blades of various models). 
+
+The movement and operation of the control rods is performed with the desire of obtaining a haling distribution. This means that the control rods are operated such that the core obtains approximately the same axial power shape throughout the entire cycle. While this is not difficult to obtain for PWRs, this can be challenging to design for BWR rods. 
+
+
+\subsection{BWR Control Rods}
+
+BWR control blades contain stainless steel tubes in a cruciform shape with \(\textrm{B}_4\)C (natural B, which is 20\% B-10) powder. BWR control rods have cruciform shape in order to obtain a large surface area, which increases their reactivity worth while also helping better distribute the absorber through the fuel matrix. Each blade touches four fuel assemblies. 
+
+All blades contain rollers of some form that touch the channels when the blade is inserted, helping the control rod move evenly up its path. Because the control blades touch the assemblies, structural changes to the channels or blades can have a large impact on the ability to insert reliably.
+
+The control rod density in the core is calcualted as the number of notches inserted (24 notches/rod) divided by the total number of notches. In BOC, the control rod density is about 10-12\%. In the beginning of a fuel cycle, the poisons deplete faster than the fuel is consumed, and so control rods actually have to be inserted to maintain constant power. The maximum control rod density will be on the order of 15-16\% at 1/3 to 1/2 the length of the fuel cycle. In BOC, it is better to have a bottom-peaked core, since this will burn the fuel such that the burnup decreases the risks of power peaking later in the cycle once the burnable poisons begin to deplete and control rods need to be withdrawn. Shallow rods are withdrawn as soon as possible to ensure that withdrawal later in cycle will not suddenly uncover essentially “fresh” fuel. 
+
+\subsubsection{Core Layout}
+
+There are 185 control blades in LaSalle’s core, where each controls four assemblies. There are 764 total assemblies, meaning that there are 24 peripheral bundles that are not part of a control cell.
+
+During refueling, at least two bundles diagonally must be in a control cell to support a control blade and prevent it from falling over. To ensure blade stability, a double- or single-blade-guide can be inserted into the core location. A blade guide essentially looks like a channel box, and simulates a fuel assembly supporting a control blade, since control blades touch channel walls as they are inserted into the core.
+
+\subsubsection{Control Rod Sequences}
+
+BWR control rods are intended to remain inserted during the entire fuel cycle, though with a density between 10-15\%. Control rod sequences describe the procedure by which to change the control rod pattern in the core, either to ensure even burnup by swapping patterns about once every 3 months (sequence exchange), to approach critical, to shutdown, or to perform settling testing. 
+
+Target rod patterns are developed by the fuel vendor. The rod pattern should be designed as close as possible to that provided by the vendor, otherwise the power shape could be too top-peaked, resulting in less Pu-239 buildup from fast neutron absorption in U-238, which could lead to a shorter fuel cycle. Alternatively, if the core is too bottom-peaked, then shallow control rods must be used, which can also shorten cycle length. 
+
+The rules governing allowable control rod movements in a BWR are referred to as the Banked Position Withdrawal Sequence (BPWS). The 185 control rods in the LaSalle core are grouped into 10 groups, where there are restrictions on the order and how many groups can be withdrawn at any one time. 50\% of the control rods are in groups 1-4. 
+
+
+\subsubsubsection{Sequence Exchanges}
+
+Sequence exchanges occur about once every three months, with the purpose of changing the operating control rod core pattern to ensure even burnup. Control rod groups are arranged in checkerboard patterns in the core to keep relatively flat radial profiles as they are withdrawn, while keeping blade worths approximately equal. Spacing between rods in the same group reduces neutronic coupling so that shorter-than-expected periods are not obtained. 
+
+\subsubsubsection{Approach to Critical}
+
+One group of rods is withdrawn all the way out, and another group is notched from 00 to some intermediate notch. Then, nearing criticality, rods are pulled single notches. Criticality is reached when a period of 200-300 seconds is observed. These sequences are designed to keep reactor periods longer rather than shorter, and to avoid reaching criticality on a peripheral rod. Because xenon production is a function of the power profile, the xenon profile in a core is fairly low on the periphery, so withdrawing a peripheral rod can lead to a potentially high worth. Control rods should be inserted if the period drops below 50 seconds. A high notch worth is about 0.0008 \(\Delta\)k/k. 
+
+\subsubsubsection{Shutdown}
+
+\subsubsubsection{Settle Testing}
+
+Settle testing is performed periodically to assess the reliability of control rod insertion. The time for a control rod to fall from one position to another is recorded, and correlated with friction coefficients to determine if the rod is behaving as expected. 
+
+
+
+\subsubsection{Replacement Requirements}
+
+Control blades are replaced once they reach an end-of-life criteria that is either based on a neutronic limit due to absorber depletion or a mechanical limit related to structural warping/loss of absorber material due to cracking. The large majority of failures are neutronic failures, both because mechanical failures are typically only discovered if there is chemical evidence and the replacement requirements are structued such that neutronic failure typically occurs before mechanical failure.
+
+Control blades can be shuffled around in the core to optimize life. Blades are to be replaced if they exceed 90\% of their EOL criteria or if they exceed 37 years of in-reactor residence time. At Dresden, an OEM blade that had been in the core for 37 years experienced a bail handle crack in the SFP, prompting the 37 year maximum residence time. Once they have exceeded the EOL criteria, control blades (and channels) are put in the SFP for short periods before they are crushed and sent offsite in special SNM dry casks. 
+
+\subsubsubsection{Neutronic Failure}
+
+Neutronic failure occurs when any three-foot segment experiences a 10\% reduction in relative cold reactivity worth due to B-10 and Hf depletion.  The actual depletion cutoff depends on blade design, but at its lowest is 34\% B-10 depletion for the D-100 blades. This maximum B-10 depletion has steadily improved with advancements in blade design. 
+
+\subsubsubsection{Mechanical Failure}
+
+Most mechanical failures occur due to SCC, which can challenge the integrity of the tubes and their ability to reliably hold poison materials. If boron carbide leaches into the coolant, reactivity will increase. Mechanical limits account for:
+
+\begin{enumerate}
+\item Swelling \(\textrm{B}_4\)C
+\item Tube pressurization due to the production of He-4 through neutron absorption by B-10 (B-10 + n  Li-7 +\(\alpha\))
+\item Manufacturing flaws
+\end{enumerate}
+
+Halfnium is often included in blades to reduce the probability of mechanical failure, since Hf absorption does not prouce alpha particles and Hf has a lower swelling tendency. Hence, there are no mechanical limits for Hf blades. Hf blades are particularly advantageous because upon neutron absorption, they transmute to other isotopes of Hf which also have considerable absorption cross sections, allowing longer blade life. 
+
+Like neutronic limits, mechanical limits for blades are expressed in terms of \% B-10 depletion, and at their minimum occur at 55\% B-10 depletion. 
+
+\subsubsection{Manufacturing}
+
+\subsubsubsection{GE Blades}
+
+GE manufactures(d) Duralife, Marathon, and Ultra MD/HD (Medium Duty/High Duty) blades. Each blade has on the order of 84 rods, with 21 rods per 1/4 blade. 
+
+The Duralife blades were the original blades manufactured by GE. These blades consist of four U-shaped stainless steel sheaths that enclose vertical absorber rods. These four sheaths are then welded to a central stainless steel rod. Holes in the sheath allow coolant flow. There are several models of this blade, all of which use hafnium except the D-100 and D-120 blades. Of problematic design are the D-100 blades, which were the original equipment manufacturer (OEM) blades installed at LaSalle. This design used stellite, which in radiation conditions results in Co-59 transmuting to Co-60, causing dose concerns. In addition, the D-100 blades have more restrictive mechanical limits because the stainless steel alloy is more susceptible to SCC, and the absence of hafnium results in greater swelling for the same reactivity worth. 
+
+Marathon blades consist of square tubes welded together, without a stainless steel sheath. A pure stainless steel portion exists at the handle. The roller exists in a hole that spans the entire width of the blade. 
+
+\subsubsubsection{Westinghouse Blades}
+
+Westinghouse blades use horizontal absorber tubes within a stainless steel sheath. 
+
+
+\subsubsection{Associated Systems}
+
+\subsubsubsection{Control Rod Drive Mechanism (CRDM)}
+
+The control rod drive mechanism is responsible for inserting and withdrawing control blades. The CRDM for a single control blade is housed within a guide tube, which is welded to the bottom of the RPV and allows the blade to extend up through the cruciform opening in the fuel support pieces. The control rod drive housing is the gridded lattice in the undervessel region that prevents control rod ejection. About 63 gpm (0.03 Mlb/hr) is used to cool the CRDMs. This water is taken from the Cycled Condensate (CY) tank, and is injected into the bottom of the guide tubes, which then flows up slowly into the reactor coolant system. The CY tank holds a surge volume of radioactive water that is of high enough purity for return to the reactor.
+
+\subsubsubsection{Hydraulic Control Unit (HCU)}
+
+High pressure water and nitrogen are used to insert a control rod. The pressurized nitrogen causes water in the accumulator to go up into the control rod to force the rod upwards. In shutdown conditions when the reactor is depressurized, there exists insufficient pressure to scram the rods, but this is not an issue because you would never be in the depressurized state without all control rods inserted. Under normal conditions, the scram valves are kept closed by the air in the scram air header. To initiate a scram, air is vented from the scram valves to open the scram valves. To insert a control rod, water is inserted from below the velocity delimiter, causing upwards motion, whereas for withdrawal, water is inserted from above, causing downwards motion. 
+
+
+\subsection{PWR Control Rods}
+
+PWR control rods are often referred to with a special name - Rod Control Cluster Assemblies (RCCAs). PWR control rods are spider-like stainless steel structures that contain an Ag-In-Cd neutron poison. The Ag and In have resonance absorption peaks, while Cd has a large thermal neutron cross section. 
+
+These RCCAs are arranged into four ``banks'' that can be inserted, where the rods are arranged in a checkerboard pattern in the core so that not every assembly accepts an RCCA. This is an important consideration in fuel design, since assemblies to be placed beneath an RCCA must have open guide tubes (no WABA poisons). The shutdown bank is located primarily surrounding the Ring of Fire. The control bank may be used to compensate for various reactivity changes during operation. The RCCAs enter by gravity when power to a magnet holding them up is lost. The RCCAs enter assemblies through guide thimbles. Each fuel assembly contains 25 guide thimbles, where 24 accept an RCCA tube, with the center thimble used for detector instrumentation for calibration activities. 
+
+
+\section{Diesel Generators}
+
+The diesel generators will turn on to power the safety loads in a LOOP. Diesel fuel is stored in a day tank and a much larger tank underground. The day tank has enough fuel to power the DGs for several hours. The day tank is automatically refilled from the larger tank. This larger tank holds about seven days of fuel. 
+
+\section{Nuclear Instrumentation}
+
+\subsection{BWR Instrumentation}
+\subsubsection{Traversing In-Core Probes (TIPs)}
+
+The five TIPs are used to calibrate the LPRMs every 2000 EFPH. All TIPs pass through a common central channel (channel 10), allowing calibration of the TIPs to the heat balance power. The current supplied to the LPRMs is then changed so that their readings match the readings of the TIPs. 
+
+TIPs are inserted into the core only for calibration purposes – they are stored within either a detector room or within the drywell (BWR-6’s only) to prevent depletion when not in use. Many inadvertent high dose accidents (up to 30 rem in some cases) have occurred due to personnel entry into the in-core detector room closely following a detector calibration. 
+
+
+
+
+
+
+
+\end{document}
