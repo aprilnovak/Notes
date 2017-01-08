@@ -135,6 +135,7 @@ These directives consist of 1) include directives, which allow you to use standa
 #include <iomanip> // setw, setprecision
 #include <fstream> // file processing
 #include <sstream> // stringstream
+#include <typeinfo> // typeid
 \end{lstlisting}
 
 Entire files can also be included using include directives. This replaces the entire contents of the preprocessor directive by the file contents. The PATH is searched for the included files. 
@@ -218,6 +219,12 @@ std::cout << sizeof(int) // size of a fundamental data type
 std::cout << sizeof(var) // size of a variable
 \end{lstlisting}
 
+To determine the type of a variable:
+
+\begin{lstlisting}[language=C++]
+typeid(var);
+\end{lstlisting}
+
 Other fundamental types include \texttt{bool} and \texttt{void} (valueless). Boolean variables can be assigned either the words true/false or the values 1/0. Variables cannot be declared as void, rather this is reserved for return values from functions. Note that \texttt{string} is not a fundamental data type - rather, strings are essentially arrays of characters.
 
 The keywords \texttt{signed, unsigned, long, short} are modifiers that change the meaning of the base type. All four of these can be applied to integer types, while only signed/unsigned can be applied to characters, and long to double. More than one modified type can be combined, where the signed/unsigned modifier is listed first. As a shorthand, because these types are most commonly used with integers, you can omit the \texttt{int} from the declaration.
@@ -238,10 +245,11 @@ Alternatively, if you do not want to initialize a variable yet, but you still wa
 decltype(bar) = foo; // declares a variable with the same type as foo
 \end{lstlisting}
 
-New names can be created for existing types using \texttt{typedef}; this can be used for both regular variables and structures.
+New names can be created for existing types using \texttt{typedef}; this can be used for both regular variables and structures. This aliasing can also be performed using the \texttt{using} keyword, where the \texttt{typedef} method is the older of the two. Aliasing is useful to abstract programs from specific data types by allowing you to change the type of a variable throughout an entire program without modifying type throughout.
 
 \begin{lstlisting}[language=C++]
 typedef int custom_int; // creates a new name for the integer type
+using custom_int = int; // same as above
 typedef struct { } new_name; // creates a new name for the struct
 \end{lstlisting}
 
@@ -352,13 +360,14 @@ A \texttt{mutable} storage specifier allows a member of an object to override co
 
 \subsection{Strings}
 
-There are two types of strings - the C-style string that is an array of character type terminated by the null character `\textbackslash0'. Alternatively, the string class represents a compound data type that requires you to include the preprocessor directive \texttt{\#include <string>}. These string literals are enclosed in double quotes, while the char data type is always enclosed in single quotes. 
+There are two types of strings - the C-style string that is an array of character type terminated by the null character `\textbackslash0'. Alternatively, the string class represents a compound data type that requires you to include the preprocessor directive \texttt{\#include <string>}. These string literals are enclosed in double quotes, while the char data type is always enclosed in single quotes. Each element of a string literal (of string type) are of type \texttt{const char}, so they cannot be individually changed. 
 
 \begin{lstlisting}[language=C++]
 char str [] = ``Hello''; 
 char str [6] = ``Hello''; // implicitly contains terminating `\0'
 char str [] = {`H',`e',`l',`l',`o'};
 string str = ``Hello''; // string class
+const char [6] = "Hello"; // same as above
 \end{lstlisting}
 
 Strings defined as arrays can only be modified element by element. Null-terminated sequences and strings can easily be converted into the other type.
@@ -567,7 +576,7 @@ Several important logical operators are:
 \end{tabular}
 \end{center}
 
-Logical operators do not strictly have to follow flow control statements such as if-statements. Because conditional statements evaluate to a boolean expression, they can be assigned to a variable (if that variable is either boolean (true/false) or int (1/0)), such as in \texttt{int a = !(x == 3);}.
+The logical operator AND is always evaluated before OR. Logical operators do not strictly have to follow flow control statements such as if-statements. Because conditional statements evaluate to a boolean expression, they can be assigned to a variable (if that variable is either boolean (true/false) or int (1/0)), such as in \texttt{int a = !(x == 3);}.
 
 Note that only what is strictly necessary to evaluate to determine the value of a conditional statement is performed (moving from left to right). This can have important consequences if one of the conditions increments a variable, but that condition is never reached. 
 
@@ -610,60 +619,91 @@ else
 }
 \end{lstlisting}
 
-\color{red}\texttt{while (x < 1) \{\} }\color{black}\\
-\\
-A do-while loop differs from a while loop only in that the statement is performed regardless of whether the condition is true, so use this if you need to evaluate a condition at least once.\\
-\\
-\color{red}\texttt{do \{\} while (x < 1);}\color{black}\\
-\\
-Each of the fields in a for statement are optional, and can be left empty as long as the separating semicolons remain. With no condition, then the for loop is equivalent to an infinite loop because by default the condition is true, and with no initialization, the for loop is equivalent to a while loop. Multiple expressions can be separated by commas within the three for loop statements.\\
-\\
-\color{red}\texttt{for (int i = 1; i < 10; i++) \{\} }\color{black}\\
-\\
-An alternative version of the for loop can cycle a permissible variable through a sequence of elements in a range. Ranges can be sequences of characters (strings) and arrays. The loop automatically cycles through the range and assigns each value to the declaration variable, without needing some type of counter. You must declare the counter variable within the parentheses.\\
-\\
-\color{red}\texttt{for (char c : ``hello'') \{\} }\color{black}\\
-\\
-Break statements will leave only the immediate loop, but will not break out of higher nested loops.\\
-\\
-\color{red}\texttt{break;}\color{black}\\
-\\
-Continue statements will skip the current block \{\} of statements and immediately return to the conditional statement in the loop. This is useful if you don't want the loop to perform any statements for particular values.\\
-\\
-\color{red}\texttt{continue;}\color{black}\\
-\\
-Goto statements cause an immediate jump to a location without any consideration for loop structures.\\
-\\
-\color{red}\texttt{goto label;}\color{black}\\
-\color{red}\texttt{label:}\color{black}\\
-\color{red}\texttt{\t \{\}}\color{black}\\
-\\
-Switch statements check for a value among a number of constant options. Break statements are needed after each case, or else the code will evaluate all the statements for the options including and following any case statements that you match (including the default). This behavior occurs because the statements following each case are not actually statements, but rather they are labels.\\
-\\
-\color{red}\texttt{switch (expression)}\color{black}\\
-\color{red}\texttt{\{}\color{black}\\
-\color{red}\texttt{\quad case constant1:}\color{black}\\
-\color{red}\texttt{\quad\quad statement1;}\color{black}\\
-\color{red}\texttt{\quad\quad break;}\color{black}\\
-\color{red}\texttt{\quad case constant2:}\color{black}\\
-\color{red}\texttt{\quad\quad statement2;}\color{black}\\
-\color{red}\texttt{\quad\quad break;}\color{black}\\
-\color{red}\texttt{\quad default:}\color{black}\\
-\color{red}\texttt{\quad\quad default\_statement; \}}\color{black}\\
-\newline
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{While Loops}
 
-\begin{centering}
-\color{blue}\textbf{Functions}\color{black}
-\end{centering}
-\begin{flushleft}\justify
-Every C++ program has a main() function, which is always executed first without regard to the order of the other functions in the file. The parameters of a function are of the format \texttt{type name} so that the function knows the type of the input parameter. The name of the formal parameter does not need to match the name of the variable actually being passed into the function, since it only represents an alias for the information that will be used by the function. These formal parameters are local to the function. For functions that do not return anything, use \texttt{void} return type. For functions that don't accept any input parameters, you can either leave the input\_parameter\_list blank, or explicitly type in \texttt{void}. \\
-\\
-\color{red}\texttt{return\_type function\_name (input\_parameter\_list) \{return return\_var;\}}\color{black}\\
-\\
-If a function ends normally (successfully) without encountering a return statement, the default is to return zero, but this only applies to main for historical reasons. All other functions need an explicit return statement unless they are of return type \texttt{void}. All functions will obey the following exit signals:\\
+Unlike the case for for-loops, an empty condition in a while loop is not allowed.
+
+\begin{lstlisting}[language=C++]
+while (x < 1) {// do stuff}
+\end{lstlisting}
+
+\subsection{Do-While Loops}
+
+A do-while loop differs from a while loop only in that the statement is performed regardless of whether the condition is true, so use this if you need to evaluate a condition at least once. The do-while loop is the only conditional statement (of if, for, do-while, and while) that must be terminated by a semicolon. The do-while loop can be thought of as requiring a terminating semicolon because it is always evaluated at least once, and in this sense is somewhat of a statement.
+
+\begin{lstlisting}[language=C++]
+do {// stuff}
+while (x < 1);
+\end{lstlisting}
+
+\subsection{For Loops}
+
+Each of the fields in a for statement are optional, and can be left empty as long as the separating semicolons remain. With no condition, then the for loop is equivalent to an infinite loop because by default the condition is true, and with no initialization, the for loop is equivalent to a while loop. Multiple expressions can be separated by commas within the three for loop statements. Except for the first loop, the increment is performed before checking the logical condition.
+
+\begin{lstlisting}[language=C++]
+for (int i = 1; i < 10; ++i)
+{
+    // do stuff
+}
+\end{lstlisting}
+
+An alternative version of the for loop can cycle a permissible variable through a sequence of elements in a range. Ranges can be sequences of characters (strings) and arrays. The loop automatically cycles through the range and assigns each value to the declaration variable, without needing some type of counter. You must declare the counter variable within the parentheses.
+
+\begin{lstlisting}[language=C++]
+for (char c: ``hello'')
+{
+    // do stuff
+}
+\end{lstlisting}
+
+\subsection{Special Statements}
+
+Break statements (\texttt{break;}) will leave only the immediate do-while, while, or for loop, but will not break out of higher nested loops. Continue statements (\texttt{continue;}) will skip the current block of statements and immediately return to the conditional statement in the loop. This is useful if you don't want the loop to perform any statements for particular values. Goto statements cause an immediate jump to a location without any consideration for loop structures.
+
+\begin{lstlisting}[language=C++]
+goto label;		// jump to location ``label''
+label:		// specifier somewhere in your code
+    {// do stuff}
+\end{lstlisting}
+
+\subsection{Switch Statements}
+
+Switch statements check for a value among a number of constant options. To be more precise, switch statements can be used for any integral value, i.e. a value that can be expressed as an integer, such as char. Hence, switch statements can only be used for variables that are constant. Break statements are needed after each case, or else the code will evaluate all the statements for the options including and following any case statements that you match (including the default). This behavior occurs because the statements following each case are not actually statements, but rather they are labels.
+
+\begin{lstlisting}[language=C++]
+switch (var)
+{
+    case constant1:
+        // do stuff
+        break;
+    case constant2:
+        // do stuff
+        break;
+    default:
+        // default behavior
+        break;
+}
+\end{lstlisting}
+
+\section{Functions}
+
+Every C++ program has a main() function, which is always executed first without regard to the order of the other functions in the file. It is common practice to prototype functions, which means that in header files (usually with a .h extension), the function is forward-declared. This is equivalent in a sense to forward-declaring a variable in one file with \texttt{int a;}, and then in a second file actually defining the value of \texttt{a = 3;}. A function prototype is of the following form, where no behavior is defined for the function. Simply the input and return types are defined, as well as the number of parameters. This list can list only the variable types if desired, or you can use the full syntax and type each type and name of the formal parameters (where these names don't have to match those used later on in the real definition).
+
+\begin{lstlisting}[language=C++]
+return-type func (int a, int b);
+\end{lstlisting}
+
+As long as the prototype is present, a function can be used even if it has no defined behavior - there will be no compilation error, though the code will not run correctly. Either the function definition must occur before it is used, or the prototype occur before the function is used - this makes large programming projects easier because all the prototypes can be placed in one file and then included with a \# include statement that avoids the need to have all of the functions in one file. Also, if you don't know the order in which the functions will be called, it is imperative to use prototyping of functions.
+
+The name of the formal parameter does not need to match the name of the variable actually being passed into the function, since it only represents an alias for the information that will be used by the function. These formal parameters are local to the function. For functions that do not return anything, use \texttt{void} return type. For void functions, you do not need to write the return statement, though \texttt{return;} will not given any errors, and is technically correct. 
+
+For functions that don't accept any input parameters, you can either leave the input parameter list blank, or explicitly type in \texttt{void}. All functions except \texttt{main()} must return something.
+
+\begin{lstlisting}[language=C++]
+int func(int a, int b) {return a + b;}
+\end{lstlisting}
+
+If a function ends normally (successfully) without encountering a return statement, the default is to return zero, but this only applies to main for historical reasons. Hence, the return type of \texttt{main()} is integer. All other functions need an explicit return statement unless they are of return type \texttt{void}. A failure signal is equivalent to returning 1. All functions will obey the following exit signals:
 
 \begin{center}
 \begin{tabular}{l l}
@@ -673,34 +713,27 @@ return EXIT\_FAILURE; & failure (have to \#include \textless cstdlib\textgreater
 \end{tabular}
 \end{center}
 
-A failure signal is equivalent to returning 1. All functions must be fully defined or else at least declared before they are called so that the compiler knows that the function definition exists somewhere. Function declarations do not specify the statements, but rather put a semicolon immediately after the list of formal parameters. This list can list only the variable types if desired, or you can use the full syntax and type each type and name of the formal parameters (where these names don't have to match those used later on in the real definition). Declarations are very important, since they allow your program structure to be flexible, since you don't need to know the order in which functions will be called.\\
-\\
-\color{red}\texttt{return\_type function\_name (type1, type2);}\color{black}\\
-\\
-There are two different ways to pass variables into a function as formal parameters - by value (the default) and by reference. Passing in by reference basically creates a copy of the passed-in variable, such that the variable itself is not modified. Passing by reference modifies the actual value of the variable passed in. Passing by reference uses the \& symbol:\\
-\\
-\color{red}\texttt{return\_type function\_name (int\& a);}\color{black}\\
-\\
-Passing by reference is advantageous when you would need to pass in very large pieces of data, since then you can avoid making a copy of that information to unnecessarily take up memory. However, this gives you the possibility of modifying that data in the remainder of the program, so when passing by reference it is advisable to pass the information as const-qualified so that the function cannot modify the data.\\
-\\
-\color{red}\texttt{return\_type function\_name (const int\& a);}\color{black}\\
-\\
-Default values can be given for the last formal parameter in the input list if that corresponding argument is left blank when calling the function. This signifies that the last parameter is optional. If the parameter is specified in the function call, then the default value is overridden.\\
-\\
-\color{red}\texttt{return\_type function\_name (int a, int b = 10);}\color{black}\\
-\\
-Function calls incur a certain amount of overhead, so compilers allow functions to be expanded inline - if it is more efficient, then the function is evaluated as if it were another regulare statement on a line. Most compilers already optimize to produce inline functions. Simply use the \texttt{inline} keyword before the return type in the function definition.\\
-\\
-\color{red}\texttt{inline return\_type function\_name (input\_parameter\_list) \{return return\_var;\}}\color{black}\\
-\newline
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+There are two different ways to pass variables into a function as formal parameters - by value (the default) and by reference. Passing by reference modifies the actual value of the variable passed in, without making a copy of the information. Passing by reference is advantageous when you would need to pass in very large pieces of data, since then you can avoid making a copy of that information to unnecessarily take up memory. However, this gives you the possibility of modifying that data in the remainder of the program, so when passing by reference it is advisable to pass the information as const-qualified so that the function cannot modify the data.
 
-\begin{centering}
-\color{blue}\textbf{C++ Libraries}\color{black}
-\end{centering}
-\begin{flushleft}\justify
+\begin{lstlisting}[language=C++]
+int func (int & a); // pass by reference
+int func (const int & a); // pass by reference, but don't modify variable
+\end{lstlisting}
+
+Default values can be given for the last formal parameter in the input list if that corresponding argument is left blank when calling the function. This signifies that the last parameter is optional. If the parameter is specified in the function call, then the default value is overridden.
+
+\begin{lstlisting}[language=C++]
+int func (int a, int b = 10);
+\end{lstlisting}
+
+Function calls incur a certain amount of overhead, so compilers allow functions to be expanded inline. If it is more efficient, then the function is evaluated as if it were another regular statement on a line. Most compilers already optimize to produce inline functions. Simply use the \texttt{inline} keyword before the return type in the function definition.
+
+\begin{lstlisting}[language=C++]
+inline int func (int a, int b) {// do stuff}
+\end{lstlisting}
+
+\section{C++ Libraries}
+
 \texttt{\textless cmath\textgreater} allows you to calculate common math operations, such as raising a number to an exponent:\\
 \\
 \color{red}\texttt{pow(x, 3);}\color{black}\\
@@ -710,10 +743,6 @@ or taking the absolute value:\\
 \color{red}\texttt{abs(x);}\color{black}\\
 \\
 hj
-\newline
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Input/Output}
 
@@ -876,6 +905,10 @@ Constant member functions are defined by inserting the \texttt{const} keyword be
 int func(int a, int b) const {// do stuff}; // constant member function
 const int func(int a, int b) {// do stuff}; // returns a constant int
 \end{lstlisting}
+
+\section{Overloads and Templates}
+
+Functions can have the same name as long as their required parameters are different (different type or number of parameters). Overloaded functions have the same name, but different inputs and or \{statements\}. You can use function templates to ensure that a function can keep the same body but take many different types of input so that you don't need to define a function for each possible type of input - for instance, it would be better to use a template to define a function that adds two numbers so that you don't need a function for adding two integers and then a second function for adding two doubles. 
 
 \section{Dynamic Memory}
 
