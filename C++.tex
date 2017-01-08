@@ -112,6 +112,12 @@ A compiler converts the text file containing your program into an executable tha
 
 The GCC compiler
 
+\subsection{Compiling Multiple Files Together}
+
+\begin{lstlisting}[language=C++]
+g++ file1.cpp file2.cpp -o a.out
+\end{lstlisting}
+
 \section{C++ Program Structure}
 
 \subsection{Preprocessor Directives}
@@ -248,20 +254,6 @@ int i = static_cast<int>(pi);
 int * i = dynamic_cast<int*>(pi); // for pointers and references to classes
 \end{lstlisting}
 
-\subsection{Enumerated Types}
-
-Enumerated types have a syntax very similar to data structures and classes. They define a new variable type, \texttt{type\_name}, with a restricted number of possible values. Additionally, the syntax allows you to optionally declare an \texttt{object\_name} in the enumeration declaration.
-
-\begin{lstlisting}[language=C++]
-enum enum_name {value1, value2, value3} object_names;
-\end{lstlisting}
-
-You must include either the \texttt{type\_name} (and then use declarations of the type \texttt{type\_name new\_object;}) or all of the \texttt{object\_names} you will be using (and then use declarations of the type \texttt{object\_name1 = value1;}). Enumerations create new data types without being based on any fundamental data type. Enumerated objects can only be assigned values that are in the enumerated list - an error will result otherwise. 
-
-The listed values are implicitly convertible to int. Each value listed is automatically assigned an integer based on its position in the list, beginning with 0, and the listed value is therefore an alias for this integer value. To override this default numbering, modify each (or simply the first to begin sequential counting from there) listed value by appending an assignment to the integer that you'd like that entry to be an alias for. For example, to begin counting at 3, \texttt{value1 = 3} would replace \texttt{value1}. If you modify the integer value of any item in the list, and if the following items are not also modified, by default they are counted by 1 from the last assigned value.
-
-It is also possible to create enumerated types that aren't implicitly convertible to integer type, and which aren't of integer type either, which preserves type safety. To forbid implicit conversion to integer type, include the keyword \texttt{class} following \texttt{enum}.
-
 \subsection{Declaring Variables}
 
 There are three ways to declare a variable:
@@ -360,7 +352,7 @@ A \texttt{mutable} storage specifier allows a member of an object to override co
 
 \subsection{Strings}
 
-There are two types of strings - the C-style string that is an array of character type terminated by the null character `\textbackslash0'. Alternatively, the string class represents a compound data type that requires you to include the preprocessor directive \texttt{\#include <string>}. These string literals are enclosed in double quotes.
+There are two types of strings - the C-style string that is an array of character type terminated by the null character `\textbackslash0'. Alternatively, the string class represents a compound data type that requires you to include the preprocessor directive \texttt{\#include <string>}. These string literals are enclosed in double quotes, while the char data type is always enclosed in single quotes. 
 
 \begin{lstlisting}[language=C++]
 char str [] = ``Hello''; 
@@ -372,6 +364,12 @@ string str = ``Hello''; // string class
 Strings defined as arrays can only be modified element by element. Null-terminated sequences and strings can easily be converted into the other type.
 
 Strings are concatenated by simply listing their values next to one another, as in \texttt{cout << ``Hi'' ``there'';}. Alternatively, you can concatenate by using a plus sign between two strings. To type a very long line as a string, you cannot simply \textbackslash n in the middle of the string, but you can use the line continuation character \texttt{\textbackslash}.
+
+Raw strings preserve the actual meaning of all characters, i.e. escaped characters are left as-is, and are not expanded to their escaped meanings. To create a raw string, put a capital R before the string.
+
+\begin{lstlisting}[language=C++]
+string str = R"hello\n"
+\end{lstlisting}
 
 \subsection{Arrays}
 
@@ -399,137 +397,193 @@ int func (int arr[2]); 	// pass in sized array
 
 An entire array cannot be returned by a function, but you can return a pointer to the array. Because it is not advisable to return the address of a local variable to outside the function to which its scope belongs, it is best to define that return pointer as static. 
 
+\subsection{Enumerated Types}
+
+Enumerated types have a syntax very similar to data structures and classes. They define a new variable type, \texttt{type\_name}, with a restricted number of possible values. Additionally, the syntax allows you to optionally declare an \texttt{object\_name} in the enumeration declaration.
+
+\begin{lstlisting}[language=C++]
+enum enum_name {value1, value2, value3} object_names;
+\end{lstlisting}
+
+You must include either the \texttt{type\_name} (and then use declarations of the type \texttt{type\_name new\_object;}) or all of the \texttt{object\_names} you will be using (and then use declarations of the type \texttt{object\_name1 = value1;}). Enumerations create new data types without being based on any fundamental data type. Enumerated objects can only be assigned values that are in the enumerated list - an error will result otherwise. 
+
+The listed values are implicitly convertible to int. Each value listed is automatically assigned an integer based on its position in the list, beginning with 0, and the listed value is therefore an alias for this integer value. To override this default numbering, modify each (or simply the first to begin sequential counting from there) listed value by appending an assignment to the integer that you'd like that entry to be an alias for. For example, to begin counting at 3, \texttt{value1 = 3} would replace \texttt{value1}. If you modify the integer value of any item in the list, and if the following items are not also modified, by default they are counted by 1 from the last assigned value.
+
+It is also possible to create enumerated types that aren't implicitly convertible to integer type, and which aren't of integer type either, which preserves type safety. To forbid implicit conversion to integer type, include the keyword \texttt{class} following \texttt{enum}.
+
+\subsection{Unions}
+
+Unions allow one portion of memory to be accessed as different data types - all of the objects of type union occupy the same physical location in memory, and the size of the particular union depends on the size of the largest member type. Each member of the union can be of a different type. Because all of the members are at the same location in memory, modifying one value impacts all of the members - only one member can hold meaningful data at a time, since all objects share the same memory location. The purpose of unions is to save memory by using the same location to store information that might be given in different formats.
+
+\begin{lstlisting}[language=C++]
+union union-name
+{
+    type1 value1;
+    type2 value2;
+} object_names;
+\end{lstlisting}
+
+When unions are members of a class or structure, they can be declared without a name - these are known as anonymous unions. Then, the members of an anonymous union are directly accessible from objects in the structure by the union member names without having to include the name of a union in-between access specifiers.
+
+\begin{lstlisting}[language=C++]
+struct book		// could access book-1.dollars directly
+{
+    int year;
+    char title [50];
+    union {float dollars; int yen;}
+} book-1;
+\end{lstlisting}
+
+\section{Name Visibility}
+
+Namespace
+
 \section{References and Pointers}
 
-A computer's memory is a succession of locations, where data larger than one byte is stored in adjacent positions. The environment decides where to store a variable, and this placement is decided at runtime. A pointer stores the address of another variable, through which they can also access the information stored at that location. This is useful because it is often much easier to pass an address into a function rather than a large block of data itself. Pointers are also needed for dynamically allocating memory, since you also  need to deallocate when finished. Pointers also facilitate shared memory. Values use to only be able to be passed by reference, which is the motivation for creating pointers that can save memory like passing by reference. References are aliases for an existing variable, so once they are initialized to a variable, references cannot be changed to another object (pointers can change what they point to at any time unless they are constant). The other two differences between references and pointers is that you cannot have null references (references have to be connected to real pieces of storage), and a reference has to be initialized when it is created. To create a reference to another variable, simply use the \& operator immediately following the variable (or return type for functions) type.\\
-\\
-\color{red}\texttt{int\& ref = original;}\color{black}\\
-\\
-References are most commonly used for function argument lists and function return values. It is not legal to return a reference to a local variable that goes out of scope once the function ends. To address this, you can return a reference to a static variable.\\
-\\
-The value held by a pointer is an address (so \texttt{cout \textless\textless ptr} will give the address that the pointer points to. There are several important operators. The address-of operator gives the address of a variable:\\
-\\
-\color{red}\texttt{\&x;}\color{black}\\
-\\
-The dereference operator returns the value of the variable to which something points:\\
-\\
-\color{red}\texttt{*ptr;}\color{black}\\
-\\
-Pointers have different properties depending on the data type to which they point, so when declaring a pointer, you need to list the type of the variable to which it will point. You can also use \texttt{auto}. To declare multiple pointers at once, you need to include the asterisk after each comma.\\
-\\
-\color{red}\texttt{int * ptr = \&a;}\color{black}\\
-\color{red}\texttt{auto * ptr = \&a;}\color{black}\\
-\color{red}\texttt{auto * ptr1, * ptr2;}\color{black}\\
-\\
-Despite pointing to data of different types, all pointers are likely to be the same size. The type of the pointer is \texttt{type *}. Arrays are pointers to their first element, and hence they can always be converted to a pointer. Assuming that \texttt{array} and \texttt{ptr} have been initialized, the following two statements would be equivalent, since ommitting the square brackets after an array name is equivalent to a pointer to its first element. The fundamental difference therefore between arrays and pointers is that an array cannot change its memory location, while a pointer can change the address to which it points.\\
-\\
-\color{red}\texttt{ptr = array;}\color{black}\\
-\color{red}\texttt{ptr = \&array[0]}\color{black}\\
-\\
-If you try to dereference a pointer that has not yet been assigned an address, you will get a seg fault. Segmentation fault 11 indicates that the computer tried to access a memory location that was not assigned. However, if a pointer has not yet been assigned an address, they still point to a random address that was likely the most recently held memory. Pointers can only be assigned an address with the address-of operator or to another pointer, in which case it points to the same address. Pointers have their own addresses, since they too have to store information in memory. Incrementing a pointer by a number will move it that many ``steps'' forward in memory from its starting location. To increment a pointer, all the following expressions are equivalent:\\
-\\
-\color{red}\texttt{*(ptr++) = 3;}\color{black}\\
-\color{red}\texttt{*(ptr + 1) = 3;}\color{black}\\
-\color{red}\texttt{ptr[1] = 3;}\color{black}\\
-\\
-When you increment a pointer, it increments the correct number of whole bytes based on the data type of the pointer. Because arrays (without the square brackets) actually represent pointers to their first elements, the square brackets represents an offset operator that tells the pointer how many units to move from the first element. So, the following two expressions are equivalent, which also shows why the indexing begins at zero for arrays, such that the increment moved from the first element equals the index. \\
-\\
-\color{red}\texttt{array[5];}\color{black}\\
-\color{red}\texttt{*(array+5)}\color{black}\\
-\\
+A computer's memory is a succession of locations, where data larger than one byte is stored in adjacent positions. The environment decides where to store a variable, and this placement is decided at runtime. A pointer stores the address of another variable, through which they can also access the information stored at that location. This is useful because it is often much easier to pass an address into a function rather than a large block of data itself. Pointers are also needed for dynamically allocating memory, since you also need to deallocate when finished. Pointers also facilitate shared memory. 
+
+Values used to only be able to be passed by value, which is the motivation for creating pointers that can save memory by passing by reference. References are aliases for an existing variable, so once they are initialized to a variable, references cannot be changed to another object (pointers can change what they point to at any time unless they are constant). The other two differences between references and pointers is that you cannot have null references (references have to be connected to real pieces of storage), and a reference has to be initialized when it is created. To create a reference to another variable, simply use the \& operator immediately following the variable (or return type for functions) type.
+
+\begin{lstlisting}[language=C++]
+int & ref = original; // create reference to original
+\end{lstlisting}
+
+References are most commonly used for function argument lists and function return values. It is not legal to return a reference to a local variable that goes out of scope once the function ends. To address this, you can return a reference to a static variable.
+
+The value held by a pointer is an address (so \texttt{cout << ptr} will give the address that the pointer points to. There are several important operators associated with pointers. The address-of operator (\&) gives the address of a variable. The dereference operator returns the value of the variable to which a pointer points. 
+
+\begin{lstlisting}[language=C++]
+int * ptr = &x; 	// initialize pointer to point to x
+&x; 			// gives address of variable x
+*ptr; 			// gives x
+\end{lstlisting}
+
+Pointers have different properties depending on the data type to which they point, so when declaring a pointer, you need to list the type of the variable to which it will point. You can also use \texttt{auto}. To declare multiple pointers at once, you need to include the asterisk after each comma. Despite pointing to data of different types, all pointers are likely to be the same size. The type of the pointer is \texttt{type *}. 
+
+\begin{lstlisting}[language=C++]
+int * ptr = & a;
+auto * ptr = & a;
+auto * ptr1, * ptr2;
+\end{lstlisting}
+
+Arrays are pointers to their first element, and hence they can always be converted to a pointer. Assuming that \texttt{array} and \texttt{ptr} have been initialized, the following two statements would be equivalent, since omitting the square brackets after an array name is equivalent to a pointer to its first element. The fundamental difference therefore between arrays and pointers is that an array cannot change its memory location, while a pointer can change the address to which it points. Arrays are automatically degraded to pointers when passed into a function, so you don't have to worry that you'll accidentally pass in an entire array by copying it. Array access is essentially pointer arithmetic.
+
+\begin{lstlisting}[language=C++]
+ptr = array;
+ptr = & array[0];
+\end{lstlisting}
+
+If you try to dereference a pointer that has not yet been assigned an address, you will get a seg fault. Segmentation fault 11 indicates that the computer tried to access a memory location that was not assigned. However, if a pointer has not yet been assigned an address, they still point to a random address that was likely the most recently held memory. Pointers can only be assigned an address with the address-of operator or to another pointer, in which case it points to the same address. Pointers have their own addresses, since they too have to store information in memory. Incrementing a pointer by a number will move it that many ``steps'' forward in memory from its starting location. To increment a pointer, all the following expressions are equivalent:
+
+\begin{lstlisting}[language=C++]
+*(ptr++) = 3;
+*(ptr + 1) = 3;
+ptr[1] = 3;
+\end{lstlisting}
+
+When you increment a pointer, it increments the correct number of whole bytes based on the data type of the pointer. Because arrays (without the square brackets) actually represent pointers to their first elements, the square brackets represents an offset operator that tells the pointer how many units to move from the first element. So, the following two expressions are equivalent, which also shows why the indexing begins at zero for arrays, such that the increment moved from the first element equals the index.
+
+\begin{lstlisting}[language=C++]
+array[5] = 1;
+*(array + 5) = 1;
+\end{lstlisting}
+
 Postfix operators have higher precedence than prefix operators.
 
 \begin{center}
-\begin{tabular}{l l l}
-*ptr++; & *(ptr++); & *(ptr); ptr++;\\
-*++ptr; & *(++ptr); & ptr++; *(ptr);\\
-++*ptr; & ++(*ptr); & \\
+\begin{tabular}{l l}
+*ptr++; & *(ptr++);\\
+*++ptr; & *(++ptr);\\
+++*ptr; & ++(*ptr);\\
 \end{tabular}
 \end{center}
 
 To ensure that you don't change the value of the variable to which the pointer points, you can declare pointers as constant. There are two types of constant pointers - ones that cannot modify the value to which they point through a dereference operator, and those that cannot change what they point to. A pointer can be both types of constant. For variables, on the other hand, \texttt{const} can be listed before or after the variable type with no difference.
 
-\begin{center}
-\begin{tabular}{l l}
-const int * ptr = \&x; & cannot modify x through a dereference statement\\
-int * const ptr = \&x; & cannot change what ptr points to\\
-\end{tabular}
-\end{center}
+\begin{lstlisting}[language=C++]
+const int * ptr = &x; // cannot modify x through dereferencing
+int * const ptr = &x; // cannot change that ptr points to x
+\end{lstlisting}
 
-Pointers can point to other pointers (to the address of another pointer), so simply add two asterisks in their declaration.\\
-\\
-\color{red}\texttt{int** ptr = \&ptr2;}\color{black}\\
-\\
-Void pointers point to data of void type, which produces pointers with undefined dereferncing properties. Void pointers can point to any data type, with the consequence that they cannot be directly dereferenced since there is no type to dereference to. To dereference a void pointer, you need to assign the dereferenced output to another pointer of the correct type for reading. This can be used to pass generic parameters to a function. If you try to dereference a void pointer to the incorrect data type, you'll get an error. \\
-\\
-\color{red}\texttt{void * ptr;}\color{black}\\
-\color{red}\texttt{int * ptr2}\color{black}\\
-\color{red}\texttt{ptr2 = (int*) ptr}\color{black}\\
-\\
-Null pointers do not point to anything. Both of the following expressions are equivalent, and the program will recognize the keyword NULL/nullptr if \#include \textless iostream\textgreater is included. Null pointers are not intended to point to accessible memory locations. A pointer can be determined to be a null pointer with a conditional statement, since a null pointer has a value of 0 (points to the memory location 0). Any pointer can be made into a null pointer.\\
-\\
-\color{red}\texttt{int * ptr = NULL;}\color{black}\\
-\color{red}\texttt{int * ptr = nullptr;}\color{black}\\
-\color{red}\texttt{int * ptr = 0;}\color{black}\\
-\\
-Pointers can point to functions in order to pass a function as an argument to another function. To declare a pointer as pointing to a function has syntax very similar to a regular function declaration, except that the pointer name (?) is put in parentheses with another set of parentheses defining the parameters of the function to which it points.\\
-\\
-\color{red}\texttt{return\_type (*pointer\_name) (function\_parameters) = function\_to\_which\_it\_points}\color{black}\\
-\newline
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pointers can point to other pointers (to the address of another pointer), so simply add two asterisks in their declaration.
 
-\begin{centering}
-\color{blue}\textbf{Operators}\color{black}
-\end{centering}
-\begin{flushleft}\justify
-Assignment operators can themselves contain nested assignments, where the assignments are performed from right to left.\\
-\\
-\color{red}\texttt{y = 0 + (x = 3);}\color{black}\\
-\color{red}\texttt{y = x = 3;}\color{black}\\
-\\
-Compound assignments allow a variable to be modified, and then assigned to update the same variable (+, -, *, /, and \% are all allowed). The following is equivalent to \texttt{y = y +2}. There can be no spaces between compound assignment terms.
-\\
-\color{red}\texttt{y += 2;}\color{black}\\
-\\
+\begin{lstlisting}[language=C++]
+int ** ptr = & ptr2;
+\end{lstlisting}
+
+Void pointers point to data of void type, which produces pointers with undefined dereferencing properties. Void pointers can point to any data type, with the consequence that they cannot be directly dereferenced since there is no type to dereference to. To dereference a void pointer, you need to assign the dereferenced output to another pointer of the correct type for reading. This can be used to pass generic parameters to a function. If you try to dereference a void pointer to the incorrect data type, you'll get an error. 
+
+\begin{lstlisting}[language=C++]
+void * ptr;
+int * ptr2;
+ptr2 = (int*) ptr;
+\end{lstlisting}
+
+Null pointers do not point to anything, and are not intended to point to accessible memory locations. Both of the following expressions are equivalent, and the program will recognize the keyword NULL/nullptr if \texttt{\#include <iostream>} is included. A pointer can be determined to be a null pointer with a conditional statement, since a null pointer has a value of 0 (points to the memory location 0). Any pointer can be made into a null pointer.
+
+\begin{lstlisting}[language=C++]
+int * ptr = NULL; // three ways to define a null pointer
+int * ptr = nullptr;
+int * ptr = 0;
+\end{lstlisting}
+
+Pointers can point to functions in order to pass a function as an argument to another function. To declare a pointer as pointing to a function has syntax very similar to a regular function declaration, except that the pointer name (?) is put in parentheses with another set of parentheses defining the parameters of the function to which it points.
+
+\begin{lstlisting}[language=C++]
+int (*ptr) (int a, int b) = func; // ptr points to func
+\end{lstlisting}
+
+\section{Operators}
+
+Assignment operators can themselves contain nested assignments, where the assignments are performed from right to left.
+
+\begin{lstlisting}[language=C++]
+y = 0 + (x = 3);
+y = x = 3;
+\end{lstlisting}
+
+Compound assignments allow a variable to be modified, and then assigned to update the same variable (+, -, *, /, and \% are all allowed). There can be no spaces between compound assignment terms.
+
+\begin{lstlisting}[language=C++]
+y +=2; // equivalent to y = y + 2
+\end{lstlisting}
+
 Increment (++) and decrement (--) operators can either increase or decrease a variable value by 1. The result of appending as either a prefix or suffix should be read from left to right. This technicality only makes a difference when assigning an incremented variable to another.
 
-\begin{center}
-\begin{tabular}{l l}
-y = x++; & assign x to y, and then update x\\
-y = ++x; & update x, and then assign to y\\
-\end{tabular}
-\end{center}
+\begin{lstlisting}[language=C++]
+y = x++; // assign x to y, then update x
+y = ++x; // update x, then assign x to y
+\end{lstlisting}
 
-Several logical operators are:
+Several important logical operators are:
 
 \begin{center}
 \begin{tabular}{l l}
 == & equal\\
 != & not equal\\
 \&\& & AND statement\\
-|| & OR statement\\
+\(\|\) & OR statement\\
 !(expression) & inverts the expression\\
 \end{tabular}
 \end{center}
 
-Logical operators do not strictly have to follow flow control statements such as \texttt{if} and \texttt{while}. Because conditional statements evaluate to a boolean expression, they can be assigned to a variable (if that variable is either boolean (true/false) or int (1/0)), such as in \texttt{int a = !(x==3);}.
-\\
-Note that only what is strictly necessary to evaluate to determine the value of a conditional statement is performed (moving from left to right). This can have important consequences if one of the conditions increments a variable, but that condition is never reached. An infinite loop, or a loop that is never entered, has either while (1) or while (0) as the conditional statement.\\
-\\
-Conditional operators are basically short-hand notation for if-else statements.\\
-\\
-\color{red}\texttt{( x==3 ) ? value\_if\_true : value\_if\_false}\color{black}\\
-\\
-To perform 2+ commands, a comma operator can be used to evaluate all included expressions from left to right. Variables cannot be declared from within this comma operator.\\
-\\
-\color{red}\texttt{x = ( j=3, j+=4, j+1 )}\color{black}\\
-\\
-\newline
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Logical operators do not strictly have to follow flow control statements such as if-statements. Because conditional statements evaluate to a boolean expression, they can be assigned to a variable (if that variable is either boolean (true/false) or int (1/0)), such as in \texttt{int a = !(x == 3);}.
+
+Note that only what is strictly necessary to evaluate to determine the value of a conditional statement is performed (moving from left to right). This can have important consequences if one of the conditions increments a variable, but that condition is never reached. 
+
+Conditional operators are basically short-hand notation for if-else statements.
+
+\begin{lstlisting}[language=C++]
+(condition) ? value-if-true: value-if-false
+\end{lstlisting}
+
+To combine two or more statements, a comma operator can be used to evaluate all included expressions from left to right. Variables cannot be declared from within this comma operator.
+
+\begin{lstlisting}[language=C++]
+x = (j = 3, j += 4, j + 1);
+\end{lstlisting}
+
+Bitwise operators can be used to manipulate data at the bit level. This is not often needed, but would be used for file compression, where you save a byte in less than 8 bits. Every bitwise operator is applied to a single byte - individual bits cannot be accessed. 
 
 \section{Statements and Flow Control}
 
@@ -693,116 +747,157 @@ k
 \end{flushleft}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{centering}
-\color{blue}\textbf{Data Structures}\color{black}
-\end{centering}
-\begin{flushleft}\justify
-While arrays allow you to combine data items of the same type, data structures allow you to combine data items of different types. Each of the data elements is a \textit{member} of that data structure. To define a structure, you either need to include the type\_name or an object\_name. Once a structure has been defined, it basically creates a new type that has members of different types. The advantage of structures is that you can easily refer to either the entire object or just its members.\\
-\\
-\color{red}\texttt{struct type\_name \{}\color{black}\\
-\color{red}\quad\texttt{member\_type1 name1;}\color{black}\\
-\color{red}\quad\texttt{member\_type2 name2; \}} object\_names;\color{black}\\
-\\
-To access members of an object, use the member access operator:\\
-\\
-\color{red}\texttt{object\_name.member\_type;}\color{black}\\
-\\
-Structures obey the same scoping rules as regular variables. Objects can be passed into functions just as normal variables are, except that you don't need to explicitly pass each member - you only need to pass in the object, since their members are accessible.\\
-\\
-Pointers to a structure point to the objects.\\
-\\
-\color{red}\texttt{type\_name* ptr = \& object\_name;}\color{black}\\
-\\
-A special arrow operator is a dereference operator that is used exclusively with points to objects that have members. This operator accesses a member of the object to which the pointer is pointing. The following two statements are equivalent.\\
-\\
-\color{red}\texttt{ptr -\textgreater member\_name;}\color{black}\\
-\color{red}\texttt{(*ptr).member\_name;}\color{black}\\
-\\
-Instead, \texttt{*(ptr.member\_name)} would attempt to access the quantity pointed to by pointer member of object \texttt{ptr}.\\
-\\
-\newline
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Data Structures}
+
+While arrays allow you to combine data items of the same type, data structures allow you to combine data items of different types. Each of the data elements is a member of that data structure. To define a structure, you either need to include the type\_name or an object\_name. Once a structure has been defined, it basically creates a new type that has members of different types. The advantage of structures is that you can easily refer to either the entire object or just its members.
+
+\begin{lstlisting}[language=C++]
+struct struct-name 
+{
+    type1 name1;
+    type2 name2;
+} object-names;
+\end{lstlisting}
+
+To access members of an object, use the member access operator:
+
+\begin{lstlisting}[language=C++]
+struct-name.member-name;
+\end{lstlisting}
+
+Structures obey the same scoping rules as regular variables. Objects can be passed into functions just as normal variables are, except that you don't need to explicitly pass each member - you only need to pass in the object, since their members are accessible. Pointers to a structure point to the objects of the structure. 
+
+\begin{lstlisting}[language=C++]
+struct-name* ptr = & object-name; // pointer to object-name
+\end{lstlisting}
+
+A special arrow operator is a dereference operator that is used exclusively with pointers to objects that have members. This operator accesses a member of the object to which the pointer is pointing. The following two statements are equivalent.
+
+\begin{lstlisting}[language=C++]
+(*ptr).member-name; 
+ptr -> member-name;
+\end{lstlisting}
+
+Instead, \texttt{*(ptr.member\_name)} would attempt to access the quantity pointed to by pointer member of object \texttt{ptr}.
 
 \section{Object-Oriented Programming}
 
 A C++ program is a collection of objects that interact with each other by invoking each other's methods. This section discusses object-oriented programming. A class is a template that describes the behaviors and states of its instances. For example, an \texttt{animal} class has behaviors such as \texttt{moving, making\_noise, eating}. An object is an instantiation of a class; an animal such as a \texttt{dog} would make noise by barking, but a cat would make noise by meowing - however, both animals make noise, and hence in their unique ways would modify the \texttt{making\_noise} method. A method belongs to a class, and defines a behavior for that class. A method is essentially a function that belongs to a particular class. Finally, instance variables are variables associated with a class, which do not define behavior but rather define properties. For example, an instance variable such as \texttt[weight} might define the weight of a particular animal.
 
-\begin{centering}
-\color{blue}\textbf{Classes}\color{black}
-\end{centering}
-\begin{flushleft}\justify
-C++ was developed to add object-oriented programming into C, and classes are the central feature of C++ that allows this. Because data and functions can both be members of an object, classes reduce the need to pass data or carry other information as arguments to functions. Classes are basically blueprints for a new data type. An object is an instantiation of a class (basically a variable of type class\_name). Classes can be defined using either the \texttt{struct} or \texttt{class} keyword, where the only difference is that members of a structure are public by default, while for classes they are private by default. The format of a structure was historically not changed because all C code was supposed to also be valid C++ code and so classes were created with this single differentiating feature. If C++ had been created from scratch, structures would probably not exist. To define a class:\\
-\\
-\color{red}\texttt{class class\_name \{ }\color{black}\\
-\color{red}\quad\texttt{public:}\color{black}\\
-\color{red}\quad\quad\texttt{member\_type1 name1;}\color{black}\\
-\color{red}\quad\texttt{protected:}\color{black}\\
-\color{red}\quad\quad\texttt{member\_type2 name2;}\color{black}\\
-\color{red}\quad\texttt{private:}\color{black}\\
-\color{red}\quad\quad\texttt{member\_type3 name3; \} object\_names;}\color{black}\\
-\\
-The access specifiers \texttt{public, protected, private} are optional, but the default for classes is \texttt{private}. Access specifiers are important for object-oriented programming because it prevents functions of a pgram from directly accessing the internal representation of a class type.
+\subsection{Classes}
 
-\begin{center}
-\begin{tabular}{l l}
-public & members are accessible from anywhere outside the class as long as still within the scope of the class object\\
-protected & members are only accessible from other members of the same class, in addition to from members of derived classes\\
-private & members are only accessible from other members of the same class and friends\\
-\end{tabular}
-\end{center}
+C++ was developed to add object-oriented programming into C, and classes are the central feature of C++ that allows this. Because data and functions can both be members of an object, classes reduce the need to pass data or carry other information as arguments to functions. Classes are basically blueprints for a new data type. An object is an instantiation of a class (basically a variable of type class\_name). Classes can be defined using either the \texttt{struct} or \texttt{class} keyword, where the only difference is that members of a structure are public by default, while for classes they are private by default. The format of a structure was historically not changed because all C code was supposed to also be valid C++ code and so classes were created with this single differentiating feature. If C++ had been created from scratch, structures would probably not exist. To define a class:
 
-Because public members are accessible from anywhere, we don't need to use any scoping operator to access them - you can use the simple (.) member access specifier used with data structures.\\
-\\
-\color{red}\texttt{object\_name.public\_member;}\color{black}\\
-\\
-Member functions can either be defined inline, within the class definition, or outside the class with the use of the scoping operator. You always need to include the scoping operator when defining a function outside the class structure, since it is possible that there exist two different functions with the same name, one belonging to the class, and one belonging to the program in general. However, you don't need the scoping operator (obviously) if defining the function with in the class definition. For instance, to define a member function outside the class structure:\\
-\\
-\color{red}\texttt{double class\_name::func (int a, int b) \{\};}\color{black}\\
-\\
-Members need to be assigned values before other member functions try to use their values, but to avoid this, special functions called constructors are automatically executed whenever a new object of the class is created, allowing the class to initialize members. A constructor can only be called once for a particular object. Constructors are defined with no return type, because they cannot return anything. Constructors have the same name as the class\_name. There are two types of constructor - the normal constructor (which specifies how to initialize the members), and the default constructor (which specifies how to initialize the members by default). The normal and default constructors can be called in several ways when declaring an instance of a class (declaring an object):
+\begin{lstlisting}[language=C++]
+class class-name
+{
+    public:
+        type1 name1;
+    protected:
+	type2 name2;
+    private:
+	type3 name3;
+} object-names;
+\end{lstlisting}
 
-\begin{center}
-\begin{tabular}{l l}
-class\_name object\_name (parameters); & normal constructor, constructor initialization\\
-class\_name object\_name = parameter; & normal constructor, c-like initialization, for only 1 parameter\\
-class\_name object\_name = \{parameters\}; & normal constructor, uniform initialization\\
-class\_name object\_name \{parameters\}; & normal constructor, uniform initialization\\
-class\_name object\_name; & default constructor\\
-class\_name object\_name \{\}; & default constructor\\
-class\_name object\_name (); & NOT a constructor! - this represents function declaration\\
-\end{tabular}
-\end{center}
+The access specifiers public, protected, and private are optional, since the default for classes is private. Access specifiers are important for object-oriented programming because it prevents functions of a C++ program from directly accessing the internal representation of a class type. Public members are accessible from anywhere outside the class as long as the access is still within the scope of the class object. Protected members are only accessible from other members of the same class and from members of derived classes. Private members are only accessible from other members of the same class and friends. Because public members are accessible from anywhere, we don't need to use any scoping operator to access them - you can use the simple (.) member access specifier used with data structures.
 
-If a class is defined with no constructors, then a default constructor is assumed. But, if you have a non-default constructor, but are missing a default constructor, then you can no longer declare objects using the once-was default constructor syntax. If you have a non-default constructor, then you automatically need to define the default constructor as well if you want that feature to work.\\
-\\
-The actual syntax defining the constructor can be placed either in the class structure (in which case no scoping operator is needed), or outside. The syntax for defining a cosntructor outside the class structure is:\\
-\\
-\color{red}\texttt{class\_name::class\_name (int a, int b) \{member1 = a; member2 = b;\}}\color{black}\\
-\\
-Alternatively, the constructor can take another syntax so that repeatedly typing equals signs can be avoided. Uniform initialization could also be used below, replacing \texttt{member1(a)} by \texttt{member1\{a\}}. You still need to include the empty brackets, however, because members are initialized outside the body. Other actions could still be taken within the curly braces, of course.\\
-\\
-\color{red}\texttt{class\_name::class\_name (int a, int b): member1(a), member2(b) \{\}}\color{black}\\
-\\
-Similar to a constructor, a destructor is executed whenever an object of it's class goes out of scope or whenever the \texttt{delete} expression is applied to a point of the object of that class. This is useful if a class allocates memory. Destructors have the same name as class\_name, except that they are preceded by a \textasciitilde. A destructor can be defined within the class structure, in which case the scoping operator is not needed, or outside the class structure:\\
-\\
-\color{red}\texttt{class\_name::\textasciitilde class\_name (parameters) \{\}}\color{black}\\
-\\
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[language=C++]
+object-name.public-member; // access public member using . operator
+\end{lstlisting}
 
-\begin{centering}
-\color{blue}\textbf{Compiling Multiple Files Together}\color{black}
-\end{centering}
-\begin{flushleft}\justify
-\color{red}g++ file1.cpp file2.cpp -o executable\_name\color{black}
-\newline
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Member functions can either be defined inline, within the class definition, or outside the class with the use of the scoping operator. You always need to include the scoping operator when defining a function outside the class structure, since it is possible that there exist two different functions with the same name, one belonging to the class, and one belonging to the program in general. However, you don't need the scoping operator (obviously) if defining the function within the class definition. For instance, to define a member function outside the class structure:
 
+\begin{lstlisting}[language=C++]
+double class-name::func-name (int a, int b) {};
+\end{lstlisting}
+
+\subsection{Constructors and Destructors}
+
+Members need to be assigned values before other member functions try to use their values, but to avoid this, special functions called constructors are automatically executed whenever a new object of the class is created, allowing the class to initialize members. A constructor can only be called once for a particular object. Constructors are defined with no return type, because they cannot return anything - they simply initialize the object. Constructors have the same name as the class\_name. There are two types of constructor - the normal constructor (which specifies how to initialize the members), and the default constructor (which specifies how to initialize the members by default). The normal and default constructors can be called in several ways when declaring an instance of a class (declaring an object).
+
+\begin{lstlisting}[language=C++]
+class-name object-name (parameters); 	// normal constructor
+class-name object-name = parameter; 	// normal constructor, 1 parameter
+class-name object-name = {parameters};  // normal constructor
+class-name object-name {parameters};	// normal constructor
+class-name object-name;			// default constructor
+class-name object-name {};		// default constructor
+class-name object-name ();		// NOT a constructor - function!
+\end{lstlisting}
+
+If a class is defined with no constructors, then a default constructor is assumed. But, if you have a non-default constructor, but are missing a default constructor, then you can no longer declare objects using the once-was default constructor syntax. If you have a non-default constructor, then you automatically need to define the default constructor as well if you want that feature to work.
+
+The actual syntax defining the constructor can be placed either in the class structure (in which case no scoping operator is needed), or outside. The syntax for defining a constructor outside the class structure is:
+
+\begin{lstlisting}[language=C++]
+class-name::class-name (int a, int b)
+{
+    member1 = a;
+    member2 = b;
+}
+
+class-name::class-name (int a, int b): // alternative method
+    member1(a),
+    member2(b)
+{
+    // do stuff
+}
+\end{lstlisting}
+
+Alternatively, the constructor can take another syntax so that repeatedly typing equals signs can be avoided. Uniform initialization could also be used above, replacing \texttt{member1(a)} by \texttt{member1\{a\}}. You still need to include the empty brackets, however, because members are initialized outside the body. Other actions could still be taken within the curly braces, of course. Constructors are called even when an object is declared at the very end of a class definition (outside the curly braces but before the trailing semicolon). 
+
+Similar to a constructor, a destructor is executed whenever an object of it's class goes out of scope or whenever the \texttt{delete} expression is applied to a point of the object of that class. This is useful if a class allocates memory. Destructors have the same name as class\_name, except that they are preceded by a \textasciitilde. A destructor can be defined within the class structure, in which case the scoping operator is not needed, or outside the class structure:
+
+\begin{lstlisting}[language=C++]
+~ class-name::class-name (parameters) {}
+\end{lstlisting}
+
+\subsection{Static Members}
+
+Static members are data or functions that are class variables, which means that they are common to all objects of a particular class. Static members are therefore used to share information between all objects of a class. Because static members are shared by all objects of a class, they can be accessed by either the dot operator (used to refer to a member of an object) or the scoping operator (used to refer to a member of a class), since all objects of the class will share the same value for the static member.
+
+\begin{lstlisting}[language=C++]
+object1.static-member; // member of object
+class1::static-member; // member of class
+\end{lstlisting}
+
+\subsection{Constant Objects}
+
+Objects can be declared as constant, meaning that its data members are read-only. However, you can still call the constructor for initialization. The members cannot be edited outside the class, and the member functions of a constant object can only be called if they are also defined as constant. 
+
+\begin{lstlisting}[language=C++]
+const class-name object-name;
+\end{lstlisting}
+
+Constant member functions are defined by inserting the \texttt{const} keyword before the function declaration within curly braces.
+
+\begin{lstlisting}[language=C++]
+int func(int a, int b) const {// do stuff}; // constant member function
+const int func(int a, int b) {// do stuff}; // returns a constant int
+\end{lstlisting}
+
+\section{Dynamic Memory}
+
+Dynamic memory allocation is needed whenever the memory required depends on the user input. Memory is allocated using pointers. The \texttt{new} operator returns a pointer to the first element of the new memory allocated. The size of this memory block can be variables, and hence doesn't need to be known at compile-time. This dynamic memory is allocated from the memory heap, so there is no guarantee that it can be allocated. If the allocation fails (which may occur if you request too much memory), then an exception of type \texttt{bad-alloc} will be thrown, and if this exception isn't handled correctly, then the program will fail. 
+
+\begin{lstlisting}[language=C++]
+ptr = new int; // pointer to a new memory location of type int
+ptr = new int [5]; // pointer to a new memory location of type int of 5 values
+\end{lstlisting}
+
+Alternatively, \texttt{nothrow} can be used, in which case instead of throwing an exception and terminating the program, the pointer returned by \texttt{new} will be a null pointer, and the program can resume execution normally. However, using this method produces less efficient code than using exceptions, since the pointer value has to be checked after allocation attempts to ensure that the allocation was successful. 
+
+\begin{lstlisting}[language=C++]
+ptr = new (nothrow) int; // ptr will be NULL if allocation fails
+\end{lstlisting}
+
+Memory should be deallocated after use using the \texttt{delete} operator.
+
+\begin{lstlisting}[language=C++]
+delete ptr;
+delete [] ptr;
+\end{lstlisting}
 
 \section{Vocabulary}
 
@@ -811,30 +906,5 @@ statically-typed & --- & Variable type-checking is performed at compile time\\
 standard library & std & Standard library associated with C++\\
 Standard Template Library & STL & Commonly-used C++ library\\
 \end{tabular}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 \end{document}
