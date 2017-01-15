@@ -98,7 +98,7 @@
 \section{Introduction}
 \begin{flushleft}\justify
 
-This document will cover transport theory, the derivation of the diffusion equation, solutions of the diffusion equation, and neutronics applications in reactor systems. While diffusion theory is very accurate for heat conduction or gaseous diffusion, it is less accurate for neutron diffusion due to the uncharged nature of the particles, which in some situations can lead to path lengths on the order of several cm, producing large distances between interactions. For nonhomogeneous media, diffusion theory breaks down when changes in geometry occurs within several mean free paths. Hence, it is necessary to begin with a study neutron transport, understand why directly solving the neutron transport equation is very difficult, and then perform simplifications to the transport equation that permit easy analytic solution. The neutron transport equation is particularly difficult to solve due to the high dimensionality of phase space and the integro-differential form of the equation.
+This document will cover transport theory, the derivation of the diffusion equation, solutions of the diffusion equation, and neutronics applications in reactor systems. While diffusion theory is very accurate for heat conduction or gaseous diffusion, it is less accurate for neutron diffusion due to the uncharged nature of the particles, which in some situations can lead to path lengths on the order of several cm, producing large distances between interactions. For nonhomogeneous media, diffusion theory breaks down when changes in geometry occurs within several mean free paths. Hence, it is necessary to begin with a study neutron transport, understand why directly solving the neutron transport equation is very difficult, and then perform simplifications to the transport equation that permit easy analytic solution. The neutron transport equation is particularly difficult to solve due to the high dimensionality of phase space and the integro-differential form of the equation. The neutron transport equation is the linear version of the general Boltzmann transport equation developed to describe gases. Despite this great reduction in complexity from the Boltzmann equation, the solution can only be obtained in the simplest of geometries. A complication of the transport equation is that its solutions are not necessarily smooth, which complicates computational solutions. 
 
 Initially, the people who worked with the Bolztmann transport equation were satisfied by only applying it in semi-infinite media, since it was used for atmospheric and stellar applications. Its application to more finite domains really began with the field of nuclear engineering. 
 
@@ -1121,46 +1121,173 @@ However, this is really only acceptable at lower neutron energies where the cros
 
 \section{The Adjoint Neutron Transport Equation}
 
-The term ``adjoint'' has mathematical origins, and defines a specific version of an operator. The adjoint form of an operator \(\zeta\) is defined as \(\zeta^\dagger\) such that the inner product, defined in Eq. \ref{eq:innerproduct}, gives:
+The adjoint form of an operator \(\zeta\) is defined such that the inner product, defined in Eq. \ref{eq:innerproduct}, gives:
 
 \begin{equation}
 \label{eq:AdjointDefinition}
-<w, \zeta u> = <u, \zeta^\dagger, w>
+<w, \zeta u> = <u, \zeta^\dagger w>
 \end{equation}
 
-To find the adjoint of an operator \(\zeta\), applied to an arbitrary function \(u\), we take the inner product of \(w\) with \(\zeta u\), and then use integration by parts and other properties, such as the divergence theorem, to switch the operation as much as possible from \(u\) to \(w\). When this is complete, and \(u\) is free from any operator action, then the operator acting on \(w\) is the adjoint of \(\zeta\). In general, due to the integration by parts, \(\zeta\) will not equal \(\zeta^\dagger\) exactly due to boundary terms \(P[u,w]\):
+where \(\zeta^\dagger\) is the adjoint form of \(\zeta\). An operator is self-adjoint if \(\zeta=\zeta^\dagger\). The adjoint flux, or the solution to the adjoint neutron transport equation, can be interpreted as an importance function relative to a desired physical quantity, such as a tally response, and are therefore useful for variance reduction methods in Monte Carlo simulations. In addition, the adjoint function is central to perturbation theory and variational methods. To contrast with the adjoint transport equation, the transport equation discussed in this document thus far is sometimes referred to as the forward transport equation, as opposed to the ``backward'' transport equation. 
+
+To find the adjoint of an operator \(\zeta\), applied to an arbitrary function \(u\), we take the inner product of \(w\) with \(\zeta u\), and then use integration by parts and other properties, such as the divergence theorem, to switch the operation as much as possible from \(u\) to \(w\). When this is complete, and \(u\) is free from any operator action, then the operator acting on \(w\) is the adjoint of \(\zeta\). In general, due to the integration by parts, \(\zeta\) will not equal \(\zeta^\dagger\) exactly due to boundary terms \(P[u,w]\). Without regard to boundary conditions, \(\zeta^\dagger\) is technically the formal adjoint of \(\zeta\). If \(\zeta=\zeta^\dagger\), the operator is formally self-adjoint.
 
 \begin{equation}
 \label{eq:FormalAdjointDefinition}
-<w, \zeta u> = P[u,w] + <u, \zeta^\dagger, w>
+<w, \zeta u> = P[u,w] + <u, \zeta^\dagger w>
 \end{equation}
 
-An operator is therefore formally self-adjoint if \(\zeta = \zeta^\dagger\) without regard to the boundary terms that appear in Eq. \ref{eq:FormalAdjointDefinition}. The adjoint neutron transport equation can be derived by multiplying Eq. \ref{eq:TE} by an arbitrary weight function \(w\), then integrating each term by parts, switching the operators to act on \(w\) alone. Because the adjoint equation will be in terms of \(w\), to allow this to have more physical intuitive meaning that a simple weight function, we will multiply each term by \(\psi^\dagger\), since we will show that this weight function then actually becomes our interpretation of the adjoint flux. This is nothing more than a notation change from that in Eq. \ref{eq:AdjointDefinition}. This process will be completed in parts and then all terms will be summed in the end to give the total adjoint equation. Integration over the entire phase space will be represented short-hand by:
+\begin{tcolorbox}[breakable]
+An example derivation of the adjoint of an operator is useful to illustrate how it is determined. Consider the second-order operator \(\zeta\) acting on \(u\):
+
+\begin{equation}
+\zeta u=a_2(x)\frac{d^2u(x)}{dx^2}+a_1(x)\frac{du(x)}{dx}+a_0(x)u(x)
+\end{equation}
+
+To determine the adjoint of \(\zeta\), take the inner product of the above with an arbitrary function \(w\), and integrate by parts as much as possible to switch the operator to \(w\) from \(u\).
+
+\begin{equation}
+\begin{aligned}
+<w,\zeta u> = & <w, \zeta_2 u> + <w, \zeta_1 u> + <w, \zeta_0 u>\\
+= & \int \left(a_2(x)\frac{d^2u(x)}{dx^2}w(x)+a_1(x)\frac{du(x)}{dx}w(x)+a_0u(x)w(x)\right)dx\\
+= & \int_a^b \left(-\frac{du(x)}{dx}\frac{d}{dx}\left\lbrack a_2(x)w(x)\right\rbrack -u(x)\frac{d}{dx}\left\lbrack a_1(x)w(x)\right\rbrack + a_0(x)u(x)w(x)\right) dx\\ 
+& + \left\lbrack w(x)a_2(x)\frac{du(x)}{dx}+a_1(x)u(x)w(x)\right\rbrack_a^b\\
+= & \int_a^b \left(u(x)\frac{d^2}{dx^2}\left\lbrack a_2(x)w(x)\right\rbrack-u(x)\frac{d}{dx}\left\lbrack a_1(x)w(x)\right\rbrack + a_0(x)u(x)w(x)\right)dx\\
+& + \underbrace{\left\lbrack w(x)a_2(x)\frac{du(x)}{dx}+a_1(x)u(x)w(x)-\frac{d}{dx}\left\lbrack a_2(x)w(x)\right\rbrack u(x)\right\rbrack_a^b}_{P[u,w]}\\
+\end{aligned}
+\end{equation}
+
+So, the adjoint of \(\zeta\) is:
+
+\begin{equation}
+\zeta^\dagger w= \frac{d^2}{dx^2}\left\lbrack a_2(x)w(x)\right\rbrack -\frac{d}{dx}\left\lbrack(a_1(x)w(x)\right\rbrack+a_0(x)w(x)+P[u,w]
+\end{equation}
+
+And so, of these operators, only the multiplication is self-adjoint. The second derivative operator is self-adjoint if \(a_2\) is constant such that one of the boundary terms drops out, and if the second derivative appears in the symmetric form, which in general three dimensions equates to \(\nabla\cdot(a_2\nabla \phi)\), as opposed to the non-symmetric form (\(a_2\nabla^2 \phi\)). Despite these limitations, any second-order operator can be converted to a self-adjoint form using an appropriate transformation of coefficients. This is the basis by which the optimal weighting parameters are determined for one-dimensional upwinding stabilization schemes used for the Navier-Stokes equations - optimal stabilization occurs when the equation is forced to be self-adjoint. To select the boundary conditions, a consistent set of conditions can be obtained by requiring the entirety of the boundary functional \(P[u,w]\) to vanish. 
+\end{tcolorbox}
+
+The adjoint neutron transport equation can be derived by multiplying Eq. \ref{eq:TE} by an arbitrary weight function \(w\), then integrating each term by parts, switching the operators to act on \(w\) alone. Because the adjoint equation will be in terms of \(w\), to allow this to have more physical intuitive meaning that a simple weight function, we will multiply each term by \(\psi^\dagger\), since we will show that this weight function then actually becomes our interpretation of the adjoint flux. This is nothing more than a notation change from that in Eq. \ref{eq:AdjointDefinition}. This process will be completed in parts and then all terms will be summed in the end to give the total adjoint equation. Integration over the entire phase space will be represented short-hand by:
 
 \begin{equation}
 \label{eq:PhaseSpaceIntegration}
 \int d\oslash = \int dVdEd\hat{\Omega}dt
 \end{equation}
 
-The time-dependent term becomes:
+where for simplicity the generic phase space is denoted as \(\oslash\). This derivation is performed in parts due to the linearity of the transport equation.
+
+\begin{enumerate}
+\item The time-dependent term becomes:
 
 \begin{equation}
 \label{eq:AdjointTime}
 \begin{aligned}
-<\psi^\dagger, \zeta_t\psi> = \int d\oslash \psi^\dagger \frac{1}{v} \frac{\partial\psi}{\partial t} = -\int d\oslash \frac{\partial}{\partial t} \left(\frac{1}{v}\psi^\dagger\right)\psi + [\psi^\dagger \frac{1}{v} \psi]= <\psi, \zeta^\dagger\psi^\dagger> + [\psi^\dagger \frac{1}{v} \psi]\\
-\zeta^\dagger = -\frac{\partial}{\partial t}\left(\frac{1}{v}(.)\right)
+<\psi^\dagger, \zeta_t\psi> = & \int d\oslash \psi^\dagger \frac{1}{v} \frac{\partial\psi}{\partial t}\\
+= & -\int d\oslash \frac{\partial}{\partial t} \left(\frac{1}{v}\psi^\dagger\right)\psi + [\psi^\dagger \frac{1}{v} \psi]\\
+= & <\psi, \zeta^\dagger\psi^\dagger> + \int_{\partial\oslash}\psi^\dagger \frac{1}{v} \psi
 \end{aligned}
 \end{equation}
 
-The time-dependent term is non-self adjoint, since the boundary term, which integrates from \(t_o to t_f\), is is general nonzero. 
+where the adjoint form of the time operator is:
 
+\begin{equation}
+\zeta^\dagger = -\frac{\partial}{\partial t}\left\lbrack\frac{1}{v}(.)\right\rbrack
+\end{equation}
 
+The time-dependent term is non-self adjoint, since the boundary term, which integrates from \(t_o\) to \(t_f\), is in general nonzero. This boundary term is a boundary term in \textit{time}, and not in space - hence, it only takes values at the start and end of the domain. In addition, the adjoint form of the operator, without the boundary term, is the negative of the forward form. 
 
+\item The removal term becomes:
 
+\begin{equation}
+\begin{aligned}
+<\psi^\dagger,\zeta_r\psi>= & \int d\oslash \psi^\dagger \Sigma_t\psi\\
+= & <\psi,\zeta^\dagger\psi^\dagger>\\
+\end{aligned}
+\end{equation}
 
+where the adjoint form of the removal operator is self-adjoint:
 
+\begin{equation}
+\zeta_r=\Sigma_t(.)
+\end{equation}
 
-In a bare reactor, the adjoint flux and flux actually have the same exact profile. 
+\item The streaming (leakage) term becomes:
+
+\begin{equation}
+\begin{aligned}
+<\psi^\dagger,\zeta_l\psi>= & \int d\oslash \psi^\dagger\hat{\Omega}\cdot\nabla\psi\\
+= & \int d\oslash \left(\nabla\cdot(\hat{\Omega}\psi\psi^\dagger)-\psi\hat{\Omega}\cdot\nabla\psi^\dagger\right)\\
+= & -\int d\oslash \left(\hat{\Omega}\psi\psi^\dagger +\psi\hat{\Omega}\cdot\nabla\psi^\dagger\right)+ \int_{\partial\oslash}\hat{\Omega}\psi\psi^\dagger\cdot\hat{n}\\
+\end{aligned}
+\end{equation}
+
+where the first step applies an identity to the dot product, and second the divergence theorem. The streaming term is non-self-adjoint. The adjoint form of the streaming term is:
+
+\begin{equation}
+\zeta_l=-\hat{\Omega}(.)-\hat{\Omega}\cdot\nabla(.)+\left\lbrack\hat{\Omega}(.)\right\rbrack
+\end{equation}
+
+\item The (in)scattering term becomes:
+
+\begin{equation}
+\begin{aligned}
+<\psi^\dagger,\zeta_s\psi>=& \int d\oslash\psi^\dagger(\vv{r},\hat{\Omega},E,t)\int_0^\infty dE'\int_{4\pi}d\hat{\Omega}^{'}\Sigma_s(\hat{\Omega}^{'}\rightarrow\hat{\Omega}, E^{'}\rightarrow E)\psi(\vv{r},\hat{\Omega}^{'},E^{'},t)\\
+=& \int d\oslash\int_0^\infty dE\int_{4\pi}d\hat{\Omega}\psi^\dagger(\vv{r},\hat{\Omega},E,t)\Sigma_s(\hat{\Omega}^{'}\rightarrow\hat{\Omega}, E^{'}\rightarrow E)\psi(\vv{r},\hat{\Omega}^{'},E^{'},t)\\
+=& \int d\oslash\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega}^{'},E^{'},t)\Sigma_s(\hat{\Omega}\rightarrow\hat{\Omega}^{'}, E\rightarrow E^{'})\psi(\vv{r},\hat{\Omega},E,t)\\
+=& \int d\oslash\psi(\vv{r},\hat{\Omega},E,t)\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega}^{'},E^{'},t)\Sigma_s(\hat{\Omega}\rightarrow\hat{\Omega}^{'}, E\rightarrow E^{'})\\
+=& <\psi, \zeta_s^\dagger\psi^\dagger>
+\end{aligned}
+\end{equation}
+
+where the adjoint form of the scattering operator is:
+
+\begin{equation}
+\zeta_s^\dagger= \int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}(.)\Sigma_s(\hat{\Omega}\rightarrow\hat{\Omega}^{'}, E\rightarrow E^{'})
+\end{equation}
+
+First, the order of integration of the pre- and post-collision energies and angles are interchanged, since integrating over either all of the starting energies, or all of the ending energies, will equally capture the total number of scattering interactions. Then, the adjoint flux must be moved inside of the integration, since it depends on the variables of integration. Second, the symbols for the pre- and post-collision energies and angles are swapped, since the symbols are dummy symbols. Finally, the forward flux is brought outside the integral. The adjoint of the scattering operator is obtained by simply reversing the order of the pre- and post-collision energies and angles. Scattering is generally rotationally symmetric (dependent on only one angle), so this only impacts the energy loss portion of the kernel. If there is no energy loss in scattering, such as in coherent scattering, then the scattering operator is self-adjoint. However, if there is energy loss in scattering, then the scattering operator is non-self-adjoint.
+
+\item The fission term becomes:
+
+\begin{equation}
+\begin{aligned}
+<\psi^\dagger,\zeta_f\psi>=& \int d\oslash\psi^\dagger(\vv{r},\hat{\Omega},E,t)\frac{\chi_p(E)}{4\pi}\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\nu\Sigma_f(E^{'})\psi(\vv{r},\hat{\Omega}^{'},E^{'},t)\\
+=& \int d\oslash\int_0^\infty dE\int_{4\pi}d\hat{\Omega}\psi^\dagger(\vv{r},\hat{\Omega},E,t)\frac{\chi_p(E)}{4\pi}\nu\Sigma_f(E^{'})\psi(\vv{r},\hat{\Omega}^{'},E^{'},t)\\
+=& \int d\oslash\psi(\vv{r},\hat{\Omega},E,t)\nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega}^{'},E^{'},t)\frac{\chi_p(E^{'})}{4\pi}\\
+=& <\psi,\zeta^\dagger\psi^\dagger>\\
+\end{aligned}
+\end{equation}
+
+where the adjoint form of the fission operator is:
+
+\begin{equation}
+\zeta_f^\dagger=\nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}(.)\frac{\chi_p(E^{'})}{4\pi}\\
+\end{equation}
+
+In a similar process as that performed for the scattering term, first the pre- and post-collision energy and angular variables are switched, since integration over either all of the starting energies, or over all of the ending energies, will still fully account for all fission events. Then, the dummy variables for pre- and post-collision energies and angular variables are swapped, whereupon the forward flux can be brought outside the integration. The fission operator is also non-self adjoint with respect to energy, since the angular distribution of fission neutrons is assumed isotropic. This operator becomes self-adjoint if all neutrons are born with the same energy (\(\chi_p=1\)) and the fission cross section is energy-independent. These are both true for the one-speed approximation.
+\end{enumerate}
+
+The adjoint neutron transport equation becomes, summing all of these terms together:
+
+\begin{equation} % verify
+\begin{aligned}
+-\frac{1}{v}\frac{\partial\psi^\dagger(\vv{r},\hat{\Omega},E,t)}{\partial t}
+& -\hat{\Omega}\cdot\nabla\psi^\dagger(\vv{r},\hat{\Omega},E,t)
++\Sigma_t\psi^\dagger(\vv{r},\hat{\Omega},E,t)=\\
+& \int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega},E,t)\Sigma_s(\hat{\Omega}\rightarrow\hat{\Omega}^{'}, E\rightarrow E^{'})+\\
+& \nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega},E,t)\frac{\chi_p(E^{'})}{4\pi} + Q^\dagger(\vv{r},\hat{\Omega},E,t)\\
+\end{aligned}
+\end{equation}
+
+for an adjoint source \(Q^\dagger\) and appropriate boundary and initial conditions. The solution to the adjoint transport equation is the adjoint flux, which represents a flow of pseudo-particles that differ from the transport of neutrons in several important ways. The adjoint particles
+
+\begin{itemize}
+\item Are born in the phase space according to the adjoint source, and are born at some terminal time
+\item Stream in reverse directions to earlier times (from the adjoint form of the leakage term)
+\item Gain energy in collisions (from the adjoint form of the scattering term), but the inscattering and outscattering terms don't balance, since the outscattering term is self-adjoint while the inscattering term is not unless there is no energy loss in scattering. Hence, the energy-dependent form of the adjoint equation is nonconservative!
+\item Are emitted isotropically in fission, but the fission cross section is proportional to the energy spectrum of the fission neutrons being born, instead of on the starting neutron energy. The spectrum of the adjoint fission particles depends on the neutron fission energy.
+\end{itemize}
+
+Based on these interpretations, it is clear why the adjoint transport equation is often referred to as the backward transport equation. The dominant eigenvalue of the adjoint problem is equivalent to that of the forward problem. In a bare reactor, the adjoint flux and flux actually have the same exact profile. 
 
 
 
