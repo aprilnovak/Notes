@@ -96,6 +96,8 @@
 \maketitle
 \section{Introduction}
 
+The purpose of this document is to serve as a quick-reference for me of the things that I think are the most important about the C++ language.
+
 C++ was developed as an enhancement to the C language by Bjarne Stroustrup in 1979 at Bell Labs, and was originally called C with Classes (renamed C++ several years later). C++ is considered a mid-level programming language. C++ is a superset of C, and virtually any C program is also a legal C++ program. Standard C++ consists of three main parts - 1) the core of the language, 2) the C++ Standard Library, which contains functions and classes for common use, and 3) the Standard Template Library (STL), which contains methods for manipulating information.
 
 C++ is primarily used for its object-oriented features - the four main pillars of object oriented programming are 1) encapsulation, 2) data hiding, 3) inheritance, and 4) polymorphism - these will all be discussed in this reference.
@@ -360,7 +362,7 @@ A \texttt{mutable} storage specifier allows a member of an object to override co
 
 \subsection{Strings}
 
-There are two types of strings - the C-style string that is an array of character type terminated by the null character `\textbackslash0'. Alternatively, the string class represents a compound data type that requires you to include the preprocessor directive \texttt{\#include <string>}. These string literals are enclosed in double quotes, while the char data type is always enclosed in single quotes. Each element of a string literal (of string type) are of type \texttt{const char}, so they cannot be individually changed. 
+There are two types of strings - 1) the C-style string that is an array of character type terminated by the null character `\textbackslash0', and 2) the string class that was introduced in C++ to represent a compound data type, that requires you to include the preprocessor directive \texttt{\#include <string>}. These string literals are enclosed in double quotes, while the char data type is always enclosed in single quotes. Each element of a string literal (of string type) are of type \texttt{const char}, so they cannot be individually changed. 
 
 \begin{lstlisting}[language=C++]
 char str [] = ``Hello''; 
@@ -382,7 +384,7 @@ string str = R"hello\n"
 
 \subsection{Arrays}
 
-Arrays are a series of elements of the same type placed in contiguous memory locations. This allows multiple elements to be accessed with only a single identifier - the position within the array (the memory location). Because arrays are blocks of static memory, their size is determined at compile time, and cannot be made variable without dynamic memory allocation. To declare an array, you either need to specify the number of elements, the elements themselves, or both.
+Arrays are a series of elements of the same type placed in contiguous memory locations. This allows multiple elements to be accessed with only a single identifier - the position within the array (the memory location). Because arrays are blocks of static memory, their size is determined at compile time, and cannot be made variable without dynamic memory allocation. To declare an array, you either need to specify the number of elements, the elements themselves, or both. Arrays can be made out of any data type, including structures and classes.
 
 \begin{lstlisting}[language=C++]
 int arr [5]; // declare number of elements
@@ -445,7 +447,29 @@ struct book		// could access book-1.dollars directly
 
 \section{Name Visibility}
 
-Namespace
+Namespaces allow you to group names entities that would otherwise have global scope into a narrower scope. To then access named entities outside of the namespace, you need the scoping operator ::. Namespaces are useful for avoiding name collisions. Both variables and functions can be defined in namespaces, and namespaces can be physically split, i.e. you don't need to put all of the namespace definition in one location. 
+
+\begin{lstlisting}[language=C++]
+namespace space-name
+{
+    int a, b; // named entities
+}
+
+space-name::a; // how to access named entities outside of namespace
+\end{lstlisting}
+
+An entire namespace can be introduced into a program with the \texttt{using} statement. Then, any named entities in that namespace don't need to be referred to with the scoping operator. This is not recommended, since it can make code more confusing. All variables, types, constants, and functions of C++ are defined in the std namespace. Namespaces can also be renamed. 
+
+\begin{lstlisting}[language=C++]
+using namespace std;
+namespace std = new_std; // rename a namespace
+\end{lstlisting}
+
+If you only want to use one variable in a namespace, then you don't need to bring in the entire namespace - rather, you can use the \texttt{using} statement again, but only refer to a single variable or function.
+
+\begin{lstlisting}[language=C++]
+using std::cout; // can now use cout as unqualified
+\end{lstlisting}
 
 \section{References and Pointers}
 
@@ -459,7 +483,7 @@ int & ref = original; // create reference to original
 
 References are most commonly used for function argument lists and function return values. It is not legal to return a reference to a local variable that goes out of scope once the function ends. To address this, you can return a reference to a static variable.
 
-The value held by a pointer is an address (so \texttt{cout << ptr} will give the address that the pointer points to. There are several important operators associated with pointers. The address-of operator (\&) gives the address of a variable. The dereference operator returns the value of the variable to which a pointer points. 
+The value actually held by a pointer is an address (so \texttt{cout << ptr} will give the address that the pointer points to. There are several important operators associated with pointers. The address-of operator (\&) gives the address of a variable. The dereference operator returns the value of the variable to which a pointer points. You can initialize a pointer to point at a variable that has not itself been initialized. An uninitialized pointer, however, could be pointing to anything. Your computer will prevent you from using memory that isn't owned by your program, and you will receive errors if you try to use a pointer that has not been initialized.
 
 \begin{lstlisting}[language=C++]
 int * ptr = &x; 	// initialize pointer to point to x
@@ -478,7 +502,7 @@ auto * ptr1, * ptr2;
 Arrays are pointers to their first element, and hence they can always be converted to a pointer. Assuming that \texttt{array} and \texttt{ptr} have been initialized, the following two statements would be equivalent, since omitting the square brackets after an array name is equivalent to a pointer to its first element. The fundamental difference therefore between arrays and pointers is that an array cannot change its memory location, while a pointer can change the address to which it points. Arrays are automatically degraded to pointers when passed into a function, so you don't have to worry that you'll accidentally pass in an entire array by copying it. Array access is essentially pointer arithmetic.
 
 \begin{lstlisting}[language=C++]
-ptr = array;
+ptr = array; // array is already a pointer to the first element
 ptr = & array[0];
 \end{lstlisting}
 
@@ -788,7 +812,7 @@ struct struct-name
 } object-names;
 \end{lstlisting}
 
-To access members of an object, use the member access operator:
+Structures can also be returned by functions - simply specify the return type of the function to be the struct-name. To access members of an object, use the member access operator:
 
 \begin{lstlisting}[language=C++]
 struct-name.member-name;
@@ -925,7 +949,7 @@ Alternatively, \texttt{nothrow} can be used, in which case instead of throwing a
 ptr = new (nothrow) int; // ptr will be NULL if allocation fails
 \end{lstlisting}
 
-Memory should be deallocated after use using the \texttt{delete} operator.
+Memory should be deallocated after use using the \texttt{delete} operator. After deleting a pointer, it is a good idea to reset the pointer to be a null pointer, since this will prevent you from doing damage later.
 
 \begin{lstlisting}[language=C++]
 delete ptr;
