@@ -1289,15 +1289,140 @@ for an adjoint source \(Q^\dagger\) and appropriate boundary and initial conditi
 
 Based on these interpretations, it is clear why the adjoint transport equation is often referred to as the backward transport equation. The dominant eigenvalue of the adjoint problem is equivalent to that of the forward problem. In a bare reactor, the adjoint flux and flux actually have the same exact profile. 
 
+The adjoint neutron transport equation can in some situations lead to a more efficient solution to a physical problem than the traditional forward approach. Both the forward and adjoint problems satisfy the following generic statement:
 
+\begin{equation}
+\begin{aligned}
+\zeta\psi=& Q\\
+\zeta^\dagger\psi^\dagger=& Q^\dagger\\
+\end{aligned}
+\end{equation}
 
+Taking the inner product of the first of these equations with the adjoint flux, and the inner product of the second of these equations with the forward flux:
 
+\begin{equation}
+\begin{aligned}
+<\zeta\psi,\psi^\dagger>=& <\psi^\dagger,Q>\\
+<\zeta^\dagger\psi^\dagger,\psi>=& <\psi,Q^\dagger>\\
+\end{aligned}
+\end{equation}
+ 
+ Subtracting these two equations from each other:
+ 
+ \begin{equation}
+ <\zeta\psi,\psi^\dagger>-<\zeta^\dagger\psi^\dagger,\psi>=<\psi^\dagger,Q>-<\psi,Q^\dagger>
+ \end{equation}
 
+The only two terms in the transport equation that had resulting boundary terms were the time and streaming terms. The LHS above equals zero if those boundary terms are zero. In general, however, the above simplifies to:
 
+\begin{equation}
+\label{eq:ReciprocityCondition}
+\begin{aligned}
+<\psi^\dagger,Q>-<\psi,Q^\dagger> \ =& \int_0^\infty dE\int_{4\pi}d\hat{\Omega}\int dV\psi^\dagger (\vv{r},\hat{\Omega},E,t)\frac{1}{v} \psi(\vv{r},\hat{\Omega},E,t)\biggr\rvert_{0}^{t=T} +\\
+& \int_0^{T}dt\int_0^\infty dE\int d\hat{\Omega}\int_{\partial V}dA\hat{n}\cdot\hat{\Omega}\psi(\vv{r},\hat{\Omega},E,t)\psi^\dagger\psi(\vv{r},\hat{\Omega},E,t)\biggr\rvert_{\hat{n}\cdot\hat{\Omega}<0}^{\hat{n}\cdot\hat{\Omega}>0}
+\end{aligned}
+\end{equation}
 
+Eq. \eqref{eq:ReciprocityCondition} is often referred to as the ``reciprocity condition.'' So, the functionals of the forward and adjoint fluxes are related at initial and final times along incoming and outgoing directions at the surface of the body with those functionals on the interior of the body with fixed sources. This allows transport problems to be posed as either forward or adjoint. 
 
+\subsection{Source-Detector Problems}
 
+The adjoint form of the neutron transport equation is widely used for source-detector problems, where a given source distribution and free surface boundary condition is used to compute the response of a detector. The ``response'' of a detector is typically some quantity of interest that is proportional to the neutron flux, such as the flux itself or a reaction rate. The response of a detector is, in general simply an inner product of the flux with some parameter \(f\) over the body \(R\) of the detector:
 
+\begin{equation}
+\label{eq:Response}
+\textrm{Response}=\int_0^\infty dE\int_{4\pi}d\hat{\Omega}\int_RdVf(\vv{r},\hat{\Omega},E)\psi(\vv{r},\hat{\Omega},E)
+\end{equation}
+
+For instance, to calculate the absorption rate in the detector, \(f\) would be \(\Sigma_a\). Note that the use of the word ``detector'' simply refers to the fact that adjoint problems are usually applied to realistic problems, where the quantity measured by a detector is to be predicted. Source-detector problems are often assumed to be in steady-state, whereupon the time terms in Eq. \eqref{eq:ReciprocityCondition} are eliminated to give:
+
+\begin{equation}
+\label{eq:ReciprocityCondition2}
+<\psi^\dagger,Q>-<\psi,Q^\dagger> \ = \int_0^{T}dt\int_0^\infty dE\int d\hat{\Omega}\int_{\partial V}dA\hat{n}\cdot\hat{\Omega}\psi(\vv{r},\hat{\Omega},E,t)\psi^\dagger\psi(\vv{r},\hat{\Omega},E,t)\biggr\rvert_{\hat{n}\cdot\hat{\Omega}<0}^{\hat{n}\cdot\hat{\Omega}>0}
+\end{equation}
+
+If we require that the outward-directed adjoint flux at the boundary is zero, then the term on the RHS also goes to zero. Finally, because the adjoint source is arbitrary, we can specify that it is to be the detector response. These two assumptions lead Eq. \eqref{eq:ReciprocityCondition2} to simplify to:
+
+\begin{equation}
+\label{eq:ReciprocityCondition3}
+<\psi^\dagger,Q>=<\psi,f>
+\end{equation}
+
+This shows that the desired detector response (\(<f,\psi>\) from Eq. \eqref{eq:Response}) can be expressed as the inner product of the adjoint flux with the physical source. The adjoint flux is determined by solving the adjoint neutron transport equation, with \(Q^\dagger=f\) and \(\psi^\dagger=0\) for \(\hat{\Omega}\cdot\hat{n}>0\) on the boundary of the detector region. 
+
+This adjoint formulation is very useful for two reasons. First, the adjoint flux is independent of the actual source distribution - it only depends on the detector response. So, a single adjoint calculation can be performed in order to calculate the adjoint flux for any number of physical sources. It is easier to evaluate the inner product of the adjoint flux and the physical source than to perform multiple forward calculations. 
+
+Second, the adjoint flux can be interpreted as an importance function. Suppose the forward source consists of a single particle injected into phase space with a given position, direction, and energy:
+
+\begin{equation}
+Q=\delta(\vv{r}-\vv{r}_0)\delta(\hat{\Omega}-\hat{\Omega}_0)\delta(E-E_0)
+\end{equation}
+
+Then, from Eq. \eqref{eq:ReciprocityCondition3}, the detector response is equal to the adjoint flux at the point of injection of the forward neutron. So, the adjoint flux is often interpreted as the importance of forward neutrons at those locations to a contribution towards the detector response. The \(\psi^\dagger=0\) outgoing boundary condition also supports this interpretation, since neutrons leaving the boundary of the system obviously have no impact on the flux or reaction rates within the body. 
+
+\begin{equation}
+\label{eq:ReciprocityCondition3}
+\psi^\dagger(\vv{r}_0,\hat{\Omega}_0,E_0)=<\psi,f>
+\end{equation}
+
+\subsection{Acceleration of Monte Carlo Computations}
+
+The adjoint form of the neutron transport equation is often used to accelerate Monte Carlo calculations by reducing the variance of the statistical results, requiring less particle histories to be run to obtain the same level of accuracy. Note that the actual computation time for the same number of histories is reduced - the ``acceleration'' comes from the fact that less overall histories will need to be run. The objective of using a deterministic calculation to accelerate Monte Carlo computations is to developed an importance function that represents the importance of particles to a particular tally response. 
+
+These methods use a forward deterministic calculation to generate a forward-weighted source for a deterministic adjoint calculation. The adjoint calculation then results in an adjoint flux that is used to generate consistent space- and energy-dependent source biasing parameters and weight windows that are used in forward Monte Carlo calculations to achieve effective variance reduction. 
+
+Source biasing is the process by which the original forward source which is known to the modeler is changed such that the source contains a higher proportion of particles that are significant with respect to the objective tally. For example, if a physical problem consists of two neutrons sources, one fully exposed and the other highly shielded, the fully-exposed neutrons are the only neutrons that will contribute significantly to a flux tally in the domain. So, instead of using both sources, the source may be biased to only contain the fully exposed source. Knowledge of the important particles for more complex problems can be estimated using the adjoint flux and the forward source as described in the previous section. 
+
+\subsubsection{CADIS}
+
+The CADIS method generates a biased source \(\hat{q}\) from the forward source \(q\), where that biased source is weighted by the adjoint flux and normalized by the detector response:
+
+\begin{equation}
+\label{eq:CADIS}
+\begin{aligned}
+\hat{q}= \frac{\psi^\dagger(\vv{r},\hat{\Omega},E)q(\vv{r},\hat{\Omega},E)}{\int_{4\pi}\hat{\Omega}\int dE\int_RdV\psi^\dagger(\vv{r},\hat{\Omega},E)q(\vv{r},\hat{\Omega},E)}= \frac{\psi^\dagger(\vv{r},\hat{\Omega},E)q(\vv{r},\hat{\Omega},E)}{\textrm{Response}}\\
+\end{aligned}
+\end{equation}
+
+where \(R\) is the detector physical bounds. This is an intuitive biasing, since the source particles are biased according to their contribution to the detector response. Because the biased source particles are sampled from a biased probability density function, their statistical weight also must be corrected such that the product of the weight and source is equivalent for both no biasing and biasing, a basic statement of conservation of the number of particles:
+
+\begin{equation}
+\label{eq:WeightsCADIS}
+w(\vv{r},\hat{\Omega},E)\hat{q}(\vv{r},\hat{\Omega},E)=w_0q(\vv{r},\hat{\Omega},E)
+\end{equation}
+
+where \(w\) and \(w_0\) reflect particle weights. Substituting the biased source from Eq. \eqref{eq:CADIS} into Eq. \eqref{eq:WeightsCADIS} gives the second equivalent form for the new biased particle weights:
+
+\begin{equation}
+\label{eq:WeightsCADIS2}
+w(\vv{r},\hat{\Omega},E)=\frac{w_0\textrm{Response}}{\psi^\dagger(\vv{r},\hat{\Omega},E)}
+\end{equation}
+
+Hence, the statistical weight is inversely proportional to the importance function. This method is ``consistent'' because the particle weights are consistent with those used in source sampling and the particle transport process.
+
+\subsubsection{FW-CADIS}
+
+One rough method for obtaining uniform uncertainty throughout a domain is to obtain a uniform distribution of particles throughout the system. This should \textit{roughly} lead to equally-merited statistics throughout the domain. The FW-CADIS method is based upon the objective of developing an importance function that represents the importance of particles to achieving a uniform distribution throughout the domain. Then, instead of optimizing a detector response, we optimize for the particle density throughout the domain by setting \(f\) in Eq. \eqref{eq:Response} such that the response represents the particle density throughout the domain. This function \(f\) must convert flux to Monte Carlo particle density. The physical particle density \(n\) is equal to the product of the average particle weight \(\bar{w}\) with the Monte Carlo particle density \(m\):
+
+\begin{equation}
+n(\vv{r},\hat{\Omega},E)=\bar{w}(\vv{r},\hat{\Omega},E)m(\vv{r},\hat{\Omega},E)
+\end{equation}
+
+And the angular flux is defined as \(\psi=nv\), where \(v\) is the particle velocity. The Monte Carlo particle density can be estimated by combining these two definitions:
+
+\begin{equation}
+\label{eq:MCDensity}
+m(\vv{r},\hat{\Omega},E)=\frac{\psi(\vv{r},\hat{\Omega},E)}{\bar{w}(\vv{r},\hat{\Omega},E)v(\vv{r},\hat{\Omega},E)}
+\end{equation}
+
+The total Monte Carlo particle density is obtained by integrating Eq. \eqref{eq:MCDensity} over the entire domain. If the average particle weight is set proportional to the physical particle density \(n\), then the Monte Carlo particle density should be nearly uniform. In this case, \(\bar{w}\) can be replaced by \(n\) in Eq. \eqref{eq:MCDensity}, giving the following optimized response:
+
+\begin{equation}
+\label{eq:FWCADISResponse}
+\textrm{Response}=\int_0^\infty dE\int_{4\pi}d\hat{\Omega}\int_RdV\psi(\vv{r},\hat{\Omega},E)\left(\frac{1}{\psi(\vv{r},\hat{\Omega},E)}\right)
+\end{equation}
+
+From Eq. \eqref{eq:ReciprocityCondition2}, Eq. \eqref{eq:FWCADISResponse} is effectively setting the adjoint source equal to the inverse of the forward flux. So, the FW-CADIS method computes the adjoint source as the inverse of the forward flux in an effort to obtain approximately uniform statistical uncertainties. Once this adjoint source is used to compute the adjoint flux, the CADIS method is executed to calculate consistent source biasing parameters.
 
 \section{The Self-Adjoint Angular Flux (SAAF) Equation}
 
