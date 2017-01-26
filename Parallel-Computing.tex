@@ -44,6 +44,7 @@
 \usepackage[makeroom]{cancel}	% to cancel out text
 \usepackage{breqn}
 \usepackage[mathscr]{euscript}
+\usepackage{listings}
 
 % for circled numbers
 \usepackage{tikz}
@@ -85,11 +86,27 @@
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 
+% Generate the glossary of acronyms
+\usepackage[acronym]{glossaries}
+\makeglossaries
+
+\newacronym{ai}{AI}{Arithmetic Intensity}
+\newacronym{blas}{BLAS}{Basic Linear Algebra Subroutines}
+\newacronym{dram}{DRAM}{Dynamic Random Access Memory}
+\newacronym{fma}{FMA}{Fused Multiply-Add}
+\newacronym{gpu}{GPU}{Graphics Processing Unit}
+\newacronym{ilp}{ILP}{Instruction Level Programming}
+\newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
+\newacronym{smp}{SMP}{Symmetric Multiprocessor}
+\newacronym{sram}{SRAM}{Second Random Access Memory}
+\newacronym{tlb}{TLB}{Translation Look-Aside Buffer}
+\newacronym{uma}{UMA}{Uniform Memory Access}
+\newacronym{upc}{UPC}{Unified Parallel C}
 
 \begin{document}
 
 \begin{centering}
-\textbf{\Large CS 267: Applications of Parallel Computing\\
+\Large CS 267: Applications of Parallel Computing\\
 \end{centering}
 
 \tableofcontents
@@ -98,9 +115,296 @@
 \section{Introduction}
 \begin{flushleft}\justify
 
-This document contains my course notes for CS 267. 
+This document contains my course notes for CS 267, as well as my notes on general topics such as computer architecture.
+
+\section{Common Terminology}
+
+A flop is a floating point operation, which is usually in double precision unless otherwise noted. While the fastest computer has a clock rate of 55 Pflop/s, most laptops are in the Gflop/s range. 
 
 \section{Computer Architecture}
+
+\subsection{Benchmarks}
+
+All of the fastest computers in the world are evaluated based on their performance with regard to several benchmarks, most famous of which is the Linpack benchmark. This benchmark asks the computers to solve a dense \(Ax=b\) multiply, and report peak speeds. While this benchmark is fairly representative of overall performance, it should be noted that a computer's peak speed is faster than the speed at which the Linpack benchmark is completed, and is sometimes two times as fast. The Gordon Bell prize is given to the faster Pflop/s speed of a machine on any task.
+
+The peak speed is currently around 100 Pflop/s, and the total computing speed of the top 500 list is approaching an Exaflop/s speed. The faster computer accounts for roughly 10\% of the sum of the top 500. The average system age on the top 500 list has been increasing in the past several years, which shows that the performance is starting to slow in the industry.
+
+\section{A Motivation for Parallel Computing}
+
+Up until around 2005, many did not believe that parallel computing would succeed, and many of the early startups attempting parallel computing failed due to Moore's law. Moore's law, hypothesized by one of the cofounders of Intel, predicted that the transistor density on a computer chip would double every 1.5 years as the transistor size shrinks. Shrinking a transistor size by a factor of \(x\) results in a factor of \(x\) increase in the clock speed since the wires connecting the transistors are shorter. In addition, due to manufacturing improvements, the die size, or the size of silicon that is allocated to each computer chip, has also increased by a factor of \(x\). Decreasing the size of the transistor then also leads to an increase in the number of transistors per unit area by a factor of \(x^2\). Overall, this leads to an \(x^4\) improvement in computational speed every 1.5 years without any effort required for modification of a serial program. The actual performance observed improved by a factor of \(x^3\), however. This improvement was realized by 1) improving the on-chip parallelism with \gls{ilp}, where parallelism is implemented on each chip itself, and 2) by increasing locality by building caches, which reduces data movement. More transistors on a chip, however, does not necessarily lead to faster processors. We wanted to take advantage of having more transistors on a chip, so we added speculation into the processor logic - the program would guess where the execution would go next and would then go preemptively execute a header somewhere. In some cases, this wastes power.
+
+However, this improvement in computational speed of serial programs could not continue forever due to several important limitations.
+
+\begin{itemize}
+\item Manufacturing limits - only with extremely high probability would all 8 processors on an 8-core chip function correctly - some chips were sold with 7/8 processors guaranteed to function
+\item Cost to build a chip increases exponentially
+\item Power density continues to increase, which makes the chips difficult to cool. Power scales as \(V^2fC\), where \(V\) is the voltage, \(f\) the frequency, and \(C\) the number of processors. Power increases as \(x^4\) with Moore's law, and hence the power density had to be reduced by lowering the clock speed.
+\end{itemize}
+
+Experts predict that Moore's law will continue through the early 2020s, but will then level out. Improvements in the clock speed have already begun to level out. So, the accommodate demands for improved computing, the number of cores on a computer chip has begun to increase. So, instead of getting faster processors in terms of frequency, we're getting more cores, which requires programming to be done in a parallel setting. Today, all major computer vendors produce multicore chips, and it's really not even possible to buy a sequential computer anymore.
+
+\subsection{Challenges to Parallel Computing}
+
+There are several key challenges that face the ability of parallel computing to speed up our computations. First, there must be enough parallelism in the task at hand. Some tasks in a program will be inherently serial, and those may turn out to be severe bottlenecks. Amdahl's law predicts the speedup, or reduction in runtime when using \(P\) processors instead of 1 processor, for \(s\) the fraction of the program that must be run in serial.
+
+\begin{equation}
+\textrm{Speedup}=\frac{\textrm{Time(1)}}{\textrm{Time(P)}}\leq\frac{1}{s/1+(1-s)/P}\leq\frac{1}{s}
+\end{equation}
+
+Second, the degree of parallelism must be sufficiently granular to amortize the cost of parallel programming. Moving data costs significantly more than arithmetic, so the chunks of parallel actions must be sufficiently large. However, the parallel chunks should not be too large that there is not enough parallel work. Parallel programming incurs overhead due to:
+
+\begin{itemize}
+\item Cost of starting a thread or process
+\item 
+\end{itemize}
+
+\section{Single Processor Machines}
+ 
+Even if you're running on a single processor, chances are you're not going to be operating at the peak performance speed, or the guaranteed-to-not-exceed speed advertised by the manufacturer and computed as the multiplication of the flops/cycle with the clock speed and number of nodes. Most applications run at around 10\% of the peak performance (flops/cycle * clock rate * processors). So, before parallelizing code, you should first try to run as fast as possible on one processor before splitting up operations among multiple processors. Most of this lost performance (both time and energy) is due to interacting with the memory system, moving data between different locations. 
+
+The compiler will try to generate optimal code based on your hardware, but in practice the compiler does not know what is the best way to optimize. 
+
+\subsection{Costs in Modern Processors}
+
+Processors name bytes and words in its address space. These represents integers, floats, arrays, etc. Operations include read/write on this information, arithmetic, and logical operations. Each of the arithmetic and logical operations has \textit{roughly} the same cost, but the read and write operations are much more expensive. The compiler translates the human-typed code into assembly language that is understood by the computer (the code that is run on the processor), which adds in the read/write commands that are not explicitly written in human-typed code. For instance, to use a variable in a program, I simply type the name of that variable - I don't write the instructions to go find it in memory and then read it. Likewise, I use equal signs to write values. You could write assembly language to influence the registers, but this is typically done by the compiler. The compiler performs register allocation, which is the process by which information read from memory is written to a physical data structure called a register. All information to be used by the processor must first be loaded into a register. Registers are physical quantities that have very small, very fast memory to hold variables that are actually being used by the processor; they are located adjacent to the processor, on the computer chip. Then, arithmetic and logical operations are performed on the registers, where output results are written to registers (?) before being moved to other locations in memory if needed. By tailoring your program, you can encourage the compiler to act in a certain way with the memory system.
+
+Processors also have caches, which are small amounts of fast memory that are physically located close to the processor on the computer chip, or off the chip. The caches are controlled by hardware, not by software (?). The hardware moves information into the caches, which can dramatically impact read operations. The cache is used to store values of recently used or nearby data that will not fit into the registers. When you actually need data, you move it from memory to cache, and then from cache to register. 
+
+\subsection{Memory Hierarchies}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\linewidth]{figures/memory-heirarchy.pdf}
+\caption{Memory hierarchy in a single processor.}
+\end{figure}
+
+\begin{itemize}
+\item The \textbf{processor} is the part of the computer that performs actions. 
+	\begin{itemize}
+	\item Directly on the processor are \textbf{registers}, which are used when presently performing operations on variables. These registers are typically 16 bytes. The cost of register access is essentially zero.
+	\item The processor typically also has an on-chip cache, referred to as the L1-cache (level-1 cache), or simply the cache. The size of the L1-cache is on the order of 16 kB, and is limited in size because it has to fit on the chip. The cost of L1-cache access takes about 1-2 cycles.
+	\end{itemize}
+\item Off the chip is the \gls{sram}, or other caches that are typically referred to as the L2-cache (\(\sim\)2 MB), L3-cache, etc., though some of these caches could also be on the chip. A large cache will always have delays, since hardware has to check longer addresses and due to associativity rules. More generally, the further from the chip, the greater the time delays due to the transit times through longer wires. The Cray T3E eliminated one cache to speed up misses of the cache. When a cache miss occurs, you waste time moving through the memory hierarchy to get to main memory. If you have a program that is well-optimized to the caches closer to the processor, then you don't need some of the further-away caches. IBM uses a ``victim cache,'' so that data in the cache that is about to be thrown away due to new incoming data that is to be stored in the same cache location can be stored in the victim cache. This is overall cheaper than sending back to \gls{dram} again.
+\item \gls{dram}
+\item Disk. Supercomputers don't have a disk attached, so they do not have any virtual memory (?). Clouds, on the other hand, do have virtual memory.
+\item Supercomputers have tertiary storage, where robots move \textbf{disks/tape} into computers for reading.
+\end{itemize}
+
+Historically, while the CPU has been improving according to Moore's law, the DRAM latency (time for data to move off-chip and onto DRAM) has been improving at a much slower rate, so these memory hierarchies are getting deeper. We want to develop algorithms that touch memory as infrequently as possible. 
+
+Cache is fast (expensive) memory that keeps a \textit{copy} of data, and the information about where it came from, in main memory; it is hidden from software. For data at memory address xxxxx1101, it will be stored at cache location 1101. So, every address location that ends with 1101 will be mapped to this same cache location (for a direct-mapped cache). When data is read in from memory, it is moved into the cache so that the next time you access that value it is faster. A cache hit occurs when, upon requesting a value for a register, that value is already stored in the cache. Alternatively, a cache miss occurs when that data is not already in the cache, and you have to go out further in memory to obtain it. Then, the hardware will store the requested data in cache and eliminate whatever was previously in cache to avoid such a miss in the future. With parallel programming, taking advantage of the fact that data is moved into the cache may be more difficult if the data is needed on every processor, since then the data movement which would only have to be performed one time has to be performed once for each processor. But, sometimes it is still worth it for processors to perform duplicate actions so that they don't need to communicate information.
+
+The cache line length is the number of bytes loaded together in one entry - caches always load more than one value at a time, even though you may only request one line; this takes advantage of spatial locality. Loading in a single value will load in its \(n\) neighbors for a cache line length of \(n\). A direct-mapped cache can store only one address in a given range of cache (all xxxxx1101 values would be stored in cache location 1101). Because this can lead to bad behavior, associative caches, or \(n\)-way caches, which can store \(n\) of the xxxxx1101 locations at cache location 1101. Up to 16 xxxxx1101 entries can be stored in an associative cache. Associative caches reduce collision issues.
+
+Also in the memory hierarchy are several other levels, such as virtual memory. Even if your program will not fit in main memory, some of the program will be put out on disk by providing extra address on the disk, where the hardware system maps those address. The \gls{tlb} determines whether information is held on disk or in main memory. A page is the amount of memory that can be read from disk to main memory in a group, and is 8 kB, and could be determined from a memory benchmark by looking for the plateau on an array size that can be read in to the L2-cache in entirety.
+
+Latency is the time to transfer a single piece of data, and is typically denoted as \(\alpha\). The bandwidth is the speed of data transfer (bytes/second), and because the bandwidth is improving faster than the latency (23\% vs. 7\% per year), we want to use spatial locality and temporal locality to avoid unnecessary data transfer. The inverse bandwidth is typically denoted as \(\beta\), and is the more commonly-used bandwidth metric because it has the same units as latency. Both latency and bandwidth are hardware parameters, and we prefer to be limited by bandwidth instead of latency. We can handle these two aspects of slow memory operations, through the following concepts.
+
+\begin{itemize}
+\item Spatial locality is the desire to reduce the need to transfer data by reading in a chunk of data and using it all at the same time so that multiple read/use statements are not required.
+\item Temporal locality attempts to reuse an item that was previously accessed so that you don't have to repeatedly access the same value and waste read time. Each time you read a value from memory, it is saved in registers or cache, eliminating another slow memory operation the next time you need it provided it has not been overwritten on the cache - this is known as bandwidth filtering.
+\item We can take advantage of the fact that bandwidth is better than latency by allowing the processor to issue multiple reads/writes with a single instruction through vector operations.
+\item We can take advantage of better bandwidth by using prefetching, which is the process by which the hardware guesses what you are going to require next. Then, the hardware goes and fetches that information ahead of time, whether or not you actually want to use it next.
+\item We can issue writes, and then buffer them, so that they are sent to slow memory at a later stage. Both prefetching and write buffering require that nothing dependent is happening.
+\item Because memory is run by separate hardware, you can run a bunch of memory instructions that can be run in parallel while the processor is doing arithmetic. So, the runtime is then the maximum of the arithmetic time and the memory retrieval time.
+\end{itemize}
+
+Supercomputers tend to have quieter environments (less background activity) than a laptop, so benchmarks will give much steadier runtime results. 
+
+\subsubsection{Memory Benchmarks}
+
+Data is read in from memory with varying strides and for varying array sizes, the smaller the stride the better, since cache lines larger than or equal to the stride will take advantage of data already read in from the previous stride. If the entire length of the data array fits in the L1-cache, then you will never experience the increase in cost of the further-away caches, and the stride has no impact on the retrieval cost, because when you load the data in once it stays in cache and you don't need to read it in any more times, and the total cost becomes equivalent to the cache hit time (time to access the L1-cache).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{figures/membench.pdf}
+\caption{Memory benchmark results, for a computer with only one level of cache.}
+\end{figure}
+
+If the data array does not fit in the L1-cache, then a plateau is reached that signifies the memory cost that is incurred every time there is a cache miss. The cost increases with stride initially because you will be able to reuse some data due to the cache line length, but for large enough strides, you don't get to reuse any of this information. The left corner on the plateau occurs at the cache line length. The right corner on the plateau occurs because the data may again be able to fit in the L1-cache (?).
+
+A second memory benchmark involves the Stanza Triad, which attempts to evaluate the efficiency of prefetching. Read a bunch of consecutive memory locations, then skip a bunch, and then read consecutive again, and so on. The highest bandwidth would occur if we read in consecutive memory locations. The larger the stanza length, the closer we get to this optimal performance. Prefetching gets the next cache line (pipelining) while using the current one. This does not kick in immediately, but instead the performance depends on the length of data being read in. Prefetching will improve your performance if you're using the information just past the cache line you just loaded. Prefetching essentially increases the cache line size, if used successfully.
+
+\subsection{The Roofline Model}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{figures/roofline.pdf}
+\caption{The roofline model.}
+\end{figure}
+
+The \gls{ai} is the total number of flops/total \gls{dram} bytes moved. Because memory operations are slow, the \gls{ai} should be large for high performance - because this is an algorithmic characteristic, we can tailor this. The goal is to attain as high as possible Gflop/s. \gls{ilp} \gls{simd}, and \gls{fma}, for instance, will raise the highest attainable Gflop/s (up to the peak performance). 
+
+The diagonal line of the plot is determined by the peak \gls{dram} bandwidth. Lack of proper prefetching, for instance, will lower the attainable bandwidth. You want both a high bandwidth and a high \gls{ai}. There is no point trying to improve the arithmetic performance if you are bandwidth-limited.
+
+\subsection{Parallelism within Single Processors}
+
+The parallelism within a single processor is hidden from software. The hardware will automatically try to take advantage of parallelism within a single processor using pipelining and \gls{simd}. Depending on how you write your code, the compiler may or may not optimize correctly using these single-processor parallelism techniques. Compilers have optimization flags that tell the compiler to optimize in certain ways. 
+
+Autotuning is the process by which you simply test every code configuration to figure out which one works best for your application - this was first used in CS 267. ATLAS, a matrix-matrix multiply tuner, is used in Matlab. For some algorithms, autotuning can be performed off-line, instead of at runtime. For example, for matrix multiplication, all that matters is the size of the matrix - the actual entries of the matrix don't have an impact, since a multiplication is always the same cost regardless of the numeric values themselves. Autotuning performs about as well as hand-optimized code.
+
+\subsubsection{Pipelining}
+
+If you have enough stages in an operation, then you can do many things at once. For example, to do several loads of laundry, its best to run the dryer while running the washer for the next load. Pipelining helps bandwidth, but not latency (the time to do a single load of laundry still takes the same length of time). Bandwidth is limited by the slowest part of the pipeline, and the potential speedup is the number of pipe stages. Pipelining is also used within arithmetic units. 
+
+\subsubsection{Single Instruction, Multiple Data}
+
+\gls{simd} is the process by which a single instruction is used to perform an operation on multiple registers at the same time. Using bigger registers, you can load multiple values into these registers and perform a single instruction to act on the multiple values in the register. The compiler will try to find \gls{simd} instructions and use them as much as possible. Because a register contains 16 bytes, \gls{simd} behaves differently if you're using different data types - because doubles are 8 bytes, while floats are 4 bytes, you can only achieve 2x parallelism with doubles, but 4x parallelism with floats. The challenge with \gls{simd} is that the data must be in contiguous memory locations when loaded - this requires a good degree of spatial locality. The instructions also have to move data around from one part of the register to another. With \gls{gpu}s, you can be performing single instructions with thousands of data pieces at the same time, a principle that is similar to \gls{simd} instructions. 
+
+\subsubsection{Fused Multiply-Add}
+
+Single processors also typically have a special operation called a \gls{fma} to perform the multiplication of two numbers and add it to a third in a single instruction. This can be done at the same bandwidth as an add or multiply alone. This is very commonly-used in linear algebra.
+
+\subsection{Matrix Multiplication}
+
+Matrix multiplication is probably the most well-studied algorithm, as it appears very frequently in scientific computing. In addition, matrix multiplication benefits greatly from optimization. A matrix is a 2-D array of elements, but it is stored in memory 1-D. The default in C is to store by rows, and in Fortran is to store by columns. Running down a column of a row-major matrix is very expensive, and hence the programming language used has an important impact on matrix multiplication algorithms. If the matrix size is not a multiple of the cache line size, you can get complicated behavior.
+
+Assuming that there are only two levels of memory hierarchy, and that all the data is initially in slow memory, that \(m\) is the number of memory elements (words) moved between fast and slow memory, \(t_m\) and \(t_f\) the slow and fast memory operation times, \(f\) the number of arithmetic operations, and \(q=f/m\) the average number of flops per slow memory access, or \gls{ai}. The minimum possible run time is \(ft_f\), which occurs when all the data can be held in fast memory. But, the actual time is:
+
+\begin{equation}
+\begin{aligned}
+\textrm{actual time}=& ft_f+mt_m\\
+=& ft_f\left(1+\frac{t_m}{t_f}\frac{1}{q}\right)\\
+\end{aligned}
+\end{equation}
+
+\(t_m/t_f\) is a purely hardware characteristic, and is referred to as the machine balance. To get to half of the peak speed, \(q\geq t_m/t_f\), where the machine balance is typically in the range of 5 to 40. This analysis ignored, however, the fact that arithmetic operations can overlap memory operations - you wouldn't add the memory and flop times, you would instead take their maximum.
+
+\begin{enumerate}
+\item Two-loop matrix-vector multiplication (DGEMV):
+
+\begin{lstlisting}
+// read x into fast memory
+// read y into fast memory
+for (int i = 0; i < n; ++i)
+{
+	// read row i of A into fast memory
+	for (int j = 0; j < n; ++j)
+	{
+		y(i) = y(i) + A(i, j) * x(j);
+	}
+// write y back to slow memory
+}
+\end{lstlisting}
+
+Assuming that \(x\) and \(y\) can be read into fast memory, we have three read/write operations performed on \(x\) and \(y\), and \(n^2\) read operations for the matrix \(A\) (since it has \(n^2\) total values). So, we have \(3n+n^2\) slow memory references. We have one multiply and one add for each loop, and there are \(n^2\) total loop evaluations, so we have \(2n^2\) arithmetic operations. So, \(q=(3n+n^2)/2n^2\approx2\). \(q\) must be anywhere from 5 to 40 to achieve 50\% of peak speed for most machines. This simple analysis ignored the parallelism between memory and arithmetic in the processor - some analyses drop the arithmetic term entirely, since the memory and arithmetic usually occur in parallel, and only the maximum of these run times is the actual run time (and because the memory operations are so slow, it will almost always be memory-dominated). Matrix-vector multiplication tends to run right at the peak bandwidth of the machine, since the operation is so memory-dominated (not a lot of reuse of information).
+
+\item Three-loop matrix-matrix multiplication (DGEMM): 
+
+\begin{lstlisting}
+for (int i = 0; i < n; ++i)
+{
+	// read row i of A into fast memory
+	for (int j = 0; j < n; ++j)
+	{	
+		// read C(i, j) into fast memory
+		// read column j of B into fast memory
+		for (int k = 0; k < n; ++k)
+		{
+			C(i, j) = C(i, j) + A(i, k) * B(k, j);
+		}
+	}
+// write C(i, j) back to slow memory
+}
+\end{lstlisting}
+
+Because there is one multiplication and one add, which occurs in the \(n^3\) total loops, this algorithm has \(2n^3\) flops. Each column of \(B\) is read in to \(n^2\) loops, giving \(n^3\) memory operations, each row of \(A\) is read in once, giving \(n^2\) operations, and each element of \(C\) is read/written one time, giving \(2n^2\) operations. The total number of memory operations is therefore \(n^3+3n^2\). \(q=2n^3/(n^3+3n^2)\approx 2\), which does not give any advantage over matrix-vector multiply.
+
+Matrix-matrix multiply has much greater algorithmic intensity than matrix-vector multiply because values are reused during the multiplication process, while values can only be used once during matrix-vector multiplication (matrix-vector multiplication necessarily has a lower \gls{ai}). Matrix-matrix multiplication is more limited by the peak performance than the bandwidth of the machine.
+
+\item Blocked (tiled) matrix-multiply (DGEMM):
+
+\begin{lstlisting}
+for (int i = 0; i < n/N; ++i)
+{
+	for (int j = 0; j < n/N; ++j)
+	{	
+		// read block C(i, j) into fast memory
+		for (int k = 0; k < n/N; ++k)
+		{
+			// read block A(i, k) into fast memory
+			// read block B(k, j) into fast memory
+			
+			// itself contains 3 nested loops containing the matrix-multiplication
+			C(i, j) = C(i, j) + A(i, k) * B(k, j); 
+		}
+	}
+// write block C(i, j) back to slow memory
+}
+\end{lstlisting}
+
+This is very similar to the previous algorithm, except that we only read in blocks of \(A, B, C\) into fast memory, performing matrix multiplies on the blocks. People have developed this algorithm both for cache tiling and register tiling (though register tiling will look somewhat different from cache tiling because you may just want to write the multiplication of the blocks by hand because they are so small - this is referred to as ``loop unrolling''). This takes advantage of temporal locality by repeatedly using the values of the matrices until they have all been used up, and only then reading in more information. 
+
+Each block of \(C\) is read/written \(n^2\) times, giving \(2n^2\) memory operations. Each block of \(A\) and \(B\) are of size \(b^2\), where \(b\) is the block size. This will be read in \(N^3\) times, so that for each \(A\) and \(B\), the slow memory operations are \(Nn^2\). The total number of memory operations is therefore \((2N+2)n^2\), so the \gls{ai} is \(q=2n^3/((2N+2)n^2)\approx n/N\). So, we can improve the performance by increasing the block size. But, you cannot make the block sizes arbitrarily large, since all three matrices must fit in fast memory. If we have \(M_{fast}\) fast memory, then \(3b^2\leq M_{fast}\) for this tiling algorithm to be efficient. Rearranging, \(q\approx b\leq (M_{fast}/3)^{1/2}\) shows that the fast memory size limits the possible algorithmic intensity. To run at half peak speed, \(q=t_m/t_f\), so plugging this into the previous expression will give the approximate fast memory required. This required size is reasonable for the L1-cache, but not for the registers. The lower bound for matrix-matrix multiplication is given by \(q=(M_{fast}/3)^{1/2}\), so the computational intensity is bounded by the fast memory size. This lower bound also extends to anything similar enough to the three nested loop structure of matrix-matrix multiply.
+
+Each of the matrix-multiplies contains three nested loops. There are three nested loops for each level of memory (including slow memory), where the block for each level of memory is assumed to fit (?). The matrix block sizes are machine-dependent. The blocks cannot be too large, or else they won't fit in the cache, but if they are too small, you algorithm loses \gls{ai}. For strange block sizes, if you have a direct-mapped cache, you may have more cache misses due to interference. Often, you select non-square block sizes to take advantage of row-major or column-major matrices, since reading in one direction will be must faster than in the other. The block sizes may not have symmetric behavior (2x3 behaves differently from 3x2) due to differences in row and column major. Too small of blocks is usually not an issue.
+
+Note that the reason why we are seeking to run at half of peak speed is that we are not accounting for the fact that single processors have some parallelism in that they can perform arithmetic and memory operations at the same time. Assuming our program is split 50/50 between these two tasks, then we should shoot for 50\% peak speed. The lower the bandwidth of your machine, the higher the amount of fast memory that you need; vice vera, higher bandwidths allow you to have smaller fast memories. The blocked algorithm will give slightly different results from the three-nested-loop algorithm due to roundoff, but this is okay. But, for this reason, most compilers will not do this optimization for you due to changes in floating point arithmetic unless you pass in a high-enough optimization flag.
+
+\item Because we need to minimize communication between \textit{all} levels of memory, the tiled algorithm may not be a good choice because it requires the selection of a good block size. Cache Oblivious Algorithms treat a matrix multiplication as a set of smaller problems that, if divided recursively, will eventually fit in the cache. These algorithms will asymptotically minimize the amount of data transferred between every level of the memory hierarchy, and are oblivious to the number and size of the levels.
+
+\begin{lstlisting}
+double func RMM(A, B, n)
+{
+	C11 = RMM(A11, B11, n/2) + RMM(A12, B21, n/2);
+	C12 = RMM(A11, B12, n/2) + RMM(A12, B22, n/2);
+	C21 = RMM(A21, B11, n/2) + RMM(A22, B21, n/2);
+	C22 = RMM(A21, B12, n/2) + RMM(A22, B22, n/2);
+}
+
+C = RMM(A, B, n);
+\end{lstlisting}
+
+The required flops is 8 times the number of operations required for multiplication of matrices of size \(n/2\) plus \(4(n/2)^2\), the required number of additions of matrices of size \(n/2\). By a geometric series, the number of operations is \(2n^3\), which is the same as with the three nested loops. The number of slow memory operations is 8 times the data movement cost of each of the subproblems of size \(n/2\) plus \(4\cdot3(n/2)^2\) due to the four adds of the three matrices \(A, B, C\) that we assume we have to load into fast memory from slow memory for each loop (assuming none of the matrices can fit into fast memory - otherwise, this contribution would be \(3n^2\)). Once the three matrices fit into fast memory, you no longer have any memory operation costs. This algorithm does not require knowledge of the fast memory size.
+
+In practice, you need to cut off the recursion at some point, because for small enough matrices, the function overhead becomes significant. You also need to very carefully implement the code in the micro-kernel, which is executed once you stop recursion. Prefetching is also necessary to compete with other codes. You also won't run at the fastest speed possible because the recursion cutoff point is likely smaller than the maximum possible cutoff point where you would perfectly utilize the fast memory size.
+
+\item Z-Morton Ordering may be used to achieve a better matrix ordering in memory. Matrices are stored as a contiguous arrangement of entries, but in the tiled method we want to access blocks at a time, which will, depending on the cache line size, require us to jump around in memory (non-zero stride). Blocked orderings use different orderings for the matrix entries - each block is in contiguous memory locations. This improves spatial locality. These orderings are sometimes implemented by copying the matrix to a new, recursive layout, but leaving the normal layout in memory in another location so that indexing the values for other purposes (such as finding \(A(4,7)\)) is easy - this is referred to as a copy optimization. Copy optimization may not always be a time-saving algorithm.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.25\linewidth]{figures/Z-morton-ordering.pdf}
+\caption{Z-Morton Ordering of a matrix in memory.}
+\end{figure}
+
+\item Strassen's method is a matrix multiplication method that is \(O(n^{log_2(7)})\), as opposed to \(O(n^3)\) flops. Where matrix multiplication normally takes 8 multiplies and 4 additions, Strassen's method uses 7 multiplies and 18 adds, which extends to larger matrices by divide and conquer. Strassen's method is actually forbidden to be used on the benchmarks for the Top 500 computers, since the benchmarks are designed to test the computer speed, not algorithm choice. The point at which Strassen's method outperforms conventional matrix-matrix multiply is machine-dependent.
+
+\end{enumerate}
+
+It is possible to asymptotically achieve lower than \(O(n^3)\) operations, but aside from Strassen's method, these asymptotic methods requires excessively high matrix sizes to overcome the leading coefficients in the order-of-magnitude estimates. However, matrix multiplication can't get any better than \(O(n^2)\), since you must at least read in the matrices.
+
+\subsection{Other Performance Tips}
+
+\begin{itemize}
+\item Remove false dependencies in the code. For two variables, the compiler will not know if they are pointing to the same location in memory. If two variables actually point to the same location, you don't want to read in both values. With Fortran, you can pass two variables into a function, which tells the compiler that neither of the variables is an alias to the other. In C, the restrict keyword can be used on pointers.
+\item Try to get variables that you're going to use very often into registers, instead of the cache - the compiler may not do this automatically. For example, ahead of a loop that is going to repeatedly use some variables, assign those variables other names just outside the loop so that they are already stored in the registers before entering the loop. There is also a {\tt register} keyword in some languages.
+\item Use loop unrolling, where you explicitly type out instructions instead of having extra language features such as loops that have their own overhead. This can be tricky, however, and you might need cleanup code to account for a loss of logical operations. You can also fill the instruction cache (holds the assembly language instructions) if you have too many instructions in your code. As opposed to the instruction cache, the data cache contains the L1, L2, etc. caches.
+\item Reduce instruction latency by writing operations in the correct order to take advantage of \gls{ilp}.
+\end{itemize}
+
+\subsection{Basic Linear Algebra Subroutines}
+
+The \gls{blas} is an industry standard for how to perform certain linear algebra actions in your code, which began in the 1970s because the compiler didn't always do a good job of optimizing code. In addition, \gls{blas} was used to ensure correctness, and to ensure that you don't exceed overflow or underflow by testing for these rare events. Further versions of \gls{blas} performed the operations with higher computational intensity to achieve faster run times. Then, all linear algebra libraries, such as LAPACK, used \gls{blas} to write their subroutines.
+
+\section{Parallel Machines and Programming Models}
+
+While there is not a one-to-one correspondence between the machine type and the programming model, there are general trends that work best. During the development of programming models, it was important that the software be portable among different machines, but recently that has been a redux in that we are now developing machine-specific models because people are starting to use \gls{gpu}s.
+
+A parallel machine has multiple processors, multiple memory locations, and an interconnection network that connects everything together. There may be memory right next to each processor, or memory in a central location that each processor reads and writes to. The processors can also communicate in unique ways - can they all communicate, or is there some hierarchy there? 
+
+\subsection{Shared Memory}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.25\linewidth]{figures/shared-memory.pdf}
+\caption{A shared memory machine.}
+\end{figure}
+
+The program is a collection of threads of control - each thread is essentially a processor. You can dynamically create more threads, and act as if you have more processors than there actually are. Each thread has a set of private variables (local stack variables). All threads access a shared memory, which includes static variables, shared common blocks, or the global heap. Threads communicate implicitly by writing and reading shared variables, and coordinate by synchronizing on shared variables.
+
+A race condition, or data race, occurs when two threads access the same variable and at least one thread does a write. Because the action is performed on the register, which sits right next to the processor, two threads should not attempt to write to the same value at the same time. These accesses, if not controlled, are not synchronized, and at least one write will be lost, even though the hardware makes such nothing catastrophic occurs if two threads try to write to the same location at the same time. To avoid race conditions, put locks in the code ({\tt static lock lk;}) - only one thread can hold a lock at a time, which prevents simultaneous read/write operations. Most work should not be in the critical region (the locked region).
+
+All the processors in a shared memory machine are connected to a large shared memory - these processors are typically called \gls{smp}s. Examples of this memory system include SGI, Sun, HP, Intel, AMD, and IBM. Each chip has multiple cores, but all the caches are shared (but each processor also has its own cache). The bus is the interconnect, which acts like the lock that synchronizes the processors. This machine has \gls{uma}, but it does not scale well to large numbers of processors because the memory bus becomes a bottleneck.
 
 \end{flushleft}
 \end{document}
