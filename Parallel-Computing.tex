@@ -388,15 +388,17 @@ The \gls{blas} is an industry standard for how to perform certain linear algebra
 
 \section{Parallel Machines and Programming Models}
 
-While there is not a one-to-one correspondence between the machine type and the programming model, there are general trends that work best. During the development of programming models, it was important that the software be portable among different machines, but recently that has been a redux in that we are now developing machine-specific models because people are starting to use \gls{gpu}s.
+While there is not a one-to-one correspondence between the machine type and the programming model, there are general trends that work best. Historically, when people developed a new parallel machine, they also developed a new programming model. This contributed to the delay in accepting parallel programming. During the development of programming models, it was important that the software be portable among different machines, but recently that has been a redux in that we are now developing machine-specific models because people are starting to use \gls{gpu}s.
 
-A parallel machine has multiple processors, multiple memory locations, and an interconnection network that connects everything together. There may be memory right next to each processor, or memory in a central location that each processor reads and writes to. The processors can also communicate in unique ways - can they all communicate, or is there some hierarchy there? 
+A parallel machine has multiple processors, multiple memory locations, and an interconnection network that connects everything together. There may be memory right next to each processor, or memory in a central location that each processor reads and writes to. The processors can also communicate in unique ways - can they all communicate, or is there some hierarchy there?
 
 \subsection{Shared Memory}
 
+Shared memory is the most common parallel machine hardware - most laptops are shared memory systems. This parallel machine hardware is the most difficult to scale to large processors, and scaling becomes dramatically more difficult beyond 32 processors.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.25\linewidth]{figures/shared-memory.pdf}
+\includegraphics[width=0.5\linewidth]{figures/shared-memory.pdf}
 \caption{A shared memory machine.}
 \end{figure}
 
@@ -405,6 +407,26 @@ The program is a collection of threads of control - each thread is essentially a
 A race condition, or data race, occurs when two threads access the same variable and at least one thread does a write. Because the action is performed on the register, which sits right next to the processor, two threads should not attempt to write to the same value at the same time. These accesses, if not controlled, are not synchronized, and at least one write will be lost, even though the hardware makes such nothing catastrophic occurs if two threads try to write to the same location at the same time. To avoid race conditions, put locks in the code ({\tt static lock lk;}) - only one thread can hold a lock at a time, which prevents simultaneous read/write operations. Most work should not be in the critical region (the locked region).
 
 All the processors in a shared memory machine are connected to a large shared memory - these processors are typically called \gls{smp}s. Examples of this memory system include SGI, Sun, HP, Intel, AMD, and IBM. Each chip has multiple cores, but all the caches are shared (but each processor also has its own cache). The bus is the interconnect, which acts like the lock that synchronizes the processors. This machine has \gls{uma}, but it does not scale well to large numbers of processors because the memory bus becomes a bottleneck.
+
+\subsection{Shared Address Space}
+
+Most people believe that programming with shared memory is the easiest, and the shared address space hardware is at attempt to make this easy - you can access memory locations as if they belonged to all the processors, though this is not exactly the case. This hardware format also does not scale to many processors.
+
+\subsection{Message Passing}
+
+Every processor has its own memory, and processors communicate by sending messages to each other. This hardware format can scale to arbitrarily many processors. This is also one of the most portable ways of programming, since there are standards for sending and receiving data.
+
+\subsection{Data Parallel}
+
+
+
+\subsection{Clusters of SMPs or GPUs}
+
+The largest machines on the Top 500 list are actually clusters of the machines listed previously. 
+
+\subsection{Grid}
+
+The grid is a collection of computers connected over the internet. 
 
 \end{flushleft}
 \end{document}
