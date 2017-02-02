@@ -92,10 +92,13 @@
 
 \newacronym{ai}{AI}{Arithmetic Intensity}
 \newacronym{blas}{BLAS}{Basic Linear Algebra Subroutines}
+\newacronym{clump}{CLUMP}{Cluster of Symmetric Multiprocessor}
 \newacronym{dram}{DRAM}{Dynamic Random Access Memory}
 \newacronym{fma}{FMA}{Fused Multiply-Add}
 \newacronym{gpu}{GPU}{Graphics Processing Unit}
 \newacronym{ilp}{ILP}{Instruction Level Programming}
+\newacronym{mpi}{MPI}{Message Passing Interface}
+\newacronym{ni}{NI}{Network Interface}
 \newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
 \newacronym{smp}{SMP}{Symmetric Multiprocessor}
 \newacronym{sram}{SRAM}{Second Random Access Memory}
@@ -121,7 +124,7 @@ This document contains my course notes for CS 267, as well as my notes on genera
 
 A flop is a floating point operation, which is usually in double precision unless otherwise noted. While the fastest computer has a clock rate of 55 Pflop/s, most laptops are in the Gflop/s range. 
 
-\section{Computer Architecture}
+A node is a multicore processor.
 
 \subsection{Benchmarks}
 
@@ -386,15 +389,21 @@ It is possible to asymptotically achieve lower than \(O(n^3)\) operations, but a
 
 The \gls{blas} is an industry standard for how to perform certain linear algebra actions in your code, which began in the 1970s because the compiler didn't always do a good job of optimizing code. In addition, \gls{blas} was used to ensure correctness, and to ensure that you don't exceed overflow or underflow by testing for these rare events. Further versions of \gls{blas} performed the operations with higher computational intensity to achieve faster run times. Then, all linear algebra libraries, such as LAPACK, used \gls{blas} to write their subroutines.
 
-\section{Parallel Machines and Programming Models}
+\section{Parallel Programming Models}
 
-While there is not a one-to-one correspondence between the machine type and the programming model, there are general trends that work best. Historically, when people developed a new parallel machine, they also developed a new programming model. This contributed to the delay in accepting parallel programming. During the development of programming models, it was important that the software be portable among different machines, but recently that has been a redux in that we are now developing machine-specific models because people are starting to use \gls{gpu}s.
+While there is not a one-to-one correspondence between the machine type and the programming model, there are general trends that work best. Historically, when people developed a new parallel machine, they also developed a new programming model. This contributed to the delay in accepting parallel programming due to the complications. During the development of programming models, it was important that the software be portable among different machines, but recently that has been a redux in that we are now developing machine-specific models because people are starting to use \gls{gpu}s. However, there are many standards that have been enacted to make sure \gls{mpi} can run correctly 10 years in the future.  
 
-A parallel machine has multiple processors, multiple memory locations, and an interconnection network that connects everything together. There may be memory right next to each processor, or memory in a central location that each processor reads and writes to. The processors can also communicate in unique ways - can they all communicate, or is there some hierarchy there?
+A parallel machine has multiple processors, multiple memory locations, and an interconnection network that connects everything together. The interconnection network, if simple, is sometimes referred to as a bus. A torus is a nearest-neighbor mesh (Hopper), where processors only communicate with those nearby. A dragonfly topology (Edison)...
 
 \subsection{Shared Memory}
 
-Shared memory is the most common parallel machine hardware - most laptops are shared memory systems. This parallel machine hardware is the most difficult to scale to large processors, and scaling becomes dramatically more difficult beyond 32 processors.
+Shared memory is the most common parallel machine hardware, and also the easiest to program - most laptops are shared memory systems. A laptop contains multiple cores, with one shared memory. This parallel machine hardware is the most difficult to scale to large processors, and scaling becomes dramatically more difficult beyond 32 processors. A program is a collection of threads of control - each thread is essentially a processor. You can dynamically create more threads at runtime, and act as if you have more processors than there actually are. You begin by calling an initially-sequential program, and then initiate new threads. Each thread has a set of private variables (local stack variables). All threads access a shared memory, which includes static variables (the shared variables), shared common blocks, or the global heap. Threads communicate implicitly by writing and reading shared variables, and coordinate by synchronizing on shared variables. When a processor accesses something in shared memory, it makes a copy of that data into its own local memory before doing any actions with that data. Then, any writes to be made to the shared variable are done to the shared location. All computations take place in private registers.
+
+A race condition, or data race, occurs when two threads (or two processors) access the same variable and at least one thread does a write. Because the action is performed on the register, which sits right next to the processor, two threads should not attempt to write to the same value at the same time because it is possible that the two writes would happen simultaneously. These accesses, if not controlled, are not synchronized, and at least one write will be lost, even though the hardware makes sure nothing catastrophic occurs if two threads try to write to the same location at the same time. The atomic operations are reads and writes, and \textit{not} algebraic operations such as additions. To avoid race conditions, put locks in the code ({\tt static lock lk;}) - only one thread can hold a lock at a time, which prevents simultaneous read/write operations. Most work should not be in the critical region (the locked region). Some libraries include locks hidden in their functions so that you don't have to worry about specifying them.
+
+\subsubsection{Shared Memory}
+
+The most common variant of the shared memory programming model is the multi-core chip model that dominates laptops. All the processors in a shared memory machine are connected to a large shared memory - these processors are typically called \gls{smp}s because there are multiple processors to a chip and they are ``symmetric'' in that each processor has somewhat of an equal role. Each chip has multiple cores, but all the caches are shared (but each processor also has its own cache). The bus is the interconnect, which acts like the lock that synchronizes the processors.
 
 \begin{figure}[H]
 \centering
@@ -402,31 +411,87 @@ Shared memory is the most common parallel machine hardware - most laptops are sh
 \caption{A shared memory machine.}
 \end{figure}
 
-The program is a collection of threads of control - each thread is essentially a processor. You can dynamically create more threads, and act as if you have more processors than there actually are. Each thread has a set of private variables (local stack variables). All threads access a shared memory, which includes static variables, shared common blocks, or the global heap. Threads communicate implicitly by writing and reading shared variables, and coordinate by synchronizing on shared variables.
+Example vendors of this memory system include SGI, Sun, HP, Intel, AMD, and IBM. This machine has \gls{uma}, which means that the data shared by the processors does not take longer to access if not in the local cache for one processor than for another. The shared bus is the largest bottleneck, which is why this cannot scale to many processors. The hardware keeps the caches coherent, meaning that if one processor has outdated data, then cache protocol rules implement extra coherency traffic to make sure that any processor that needs data has the most up-to-date data. This coherency is not only a waiting bottleneck, but requires extra operations. Having a larger number of processors will not necessarily lead to a proportional improvement in overall runtime, since those processors, for large enough problems, will have to all access shared memory.
 
-A race condition, or data race, occurs when two threads access the same variable and at least one thread does a write. Because the action is performed on the register, which sits right next to the processor, two threads should not attempt to write to the same value at the same time. These accesses, if not controlled, are not synchronized, and at least one write will be lost, even though the hardware makes such nothing catastrophic occurs if two threads try to write to the same location at the same time. To avoid race conditions, put locks in the code ({\tt static lock lk;}) - only one thread can hold a lock at a time, which prevents simultaneous read/write operations. Most work should not be in the critical region (the locked region).
+\subsubsection{Multithreaded Processor}
 
-All the processors in a shared memory machine are connected to a large shared memory - these processors are typically called \gls{smp}s. Examples of this memory system include SGI, Sun, HP, Intel, AMD, and IBM. Each chip has multiple cores, but all the caches are shared (but each processor also has its own cache). The bus is the interconnect, which acts like the lock that synchronizes the processors. This machine has \gls{uma}, but it does not scale well to large numbers of processors because the memory bus becomes a bottleneck.
+Each processor is not responsible for running a single subroutine, but rather, it can run many subroutines. A single processor may be assigned multiple threads to execute - when one thread reaches a load, that processor will switch over and begin executing one of its other threads, while the load occurs in the background in parallel. For multithreaded processors, there are a given number of threads that can be assigned to each core, so that the total number of things that could be happening at once is the number of threads per core multiplied by the number of cores. One function execution may be spread over multiple cores. This model is also difficult to scale up to many processors.
 
-\subsection{Shared Address Space}
+\subsubsection{Distributed Shared Memory}
 
-Most people believe that programming with shared memory is the easiest, and the shared address space hardware is at attempt to make this easy - you can access memory locations as if they belonged to all the processors, though this is not exactly the case. This hardware format also does not scale to many processors.
+Memory is logically shared, but physically separated. Any processor can access any address in memory. When accessing something not on its private cache, a processor will look in a table to determine in which memory location that data is stored. The information might be in its local memory or further away - cache lines, or pages, are passed around the machine. The cache line size or page size must be sufficiently large to amortize the overhead of the lookup table. This model has the same cache coherency problems as the shared memory model, and hence only scales up to 512 processors. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{figures/distributed-shared-memory.pdf}
+\caption{A distributed shared memory machine.}
+\end{figure}
 
 \subsection{Message Passing}
 
-Every processor has its own memory, and processors communicate by sending messages to each other. This hardware format can scale to arbitrarily many processors. This is also one of the most portable ways of programming, since there are standards for sending and receiving data.
+All the computers on the Top 500 list are message passing machines. Every processor has its own memory, and processors communicate by sending messages to each other. This hardware format can scale to arbitrarily many processors. This is also one of the most portable ways of programming, since there are standards for sending and receiving data.
+
+A program consists of a collection of named processes that are usually fixed at program startup time. Basically, one program is executed by all the processors. There is no shared data at all - each processor has its local data that is used for its own operations. Processes communicate by explicit send/receive pairs over a network. \gls{mpi} is the standard way for executing message passing. However, the continued use of \gls{mpi} may discourage innovation. Hybrid computers will program shared memory at the local level and \gls{mpi} at higher levels to allow faster operation.
+
+A deadlock occurs when one processor attempts to send to another, but that processor never writes a receive statement, so the sending processor waits until its message is received. Avoiding deadlock becomes more difficult when you have more than two processors. 
+
+\subsubsection{Distributed Memory}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{figures/distributed-memory.pdf}
+\caption{A distributed memory machine.}
+\end{figure}
+
+A distributed memory model has processors each with their own memory, and this machine model is the most common form of message passing. Then, the processors communicate through an interconnection network. Most of the Top 500 computers are distributed memory machines, but the nodes as \gls{smp}s. Each processor has its own memory and cache, but cannot directly access another processor's memory. The \gls{ni} chip allows a processor to access the memory of another processor, and controls the message passing for a processor. This separation of roles allows distributed memory to scale to arbitrarily large numbers of processors.
+
+This machine model began development in 1994 by the simple connection of multiple computers to each other using ethernets. This PC cluster was called Beowulf, and was very cost effective since it simple combined off-the-shelf parts together. 
+
+\subsubsection{Internet and Grid Computing}
+
+The grid is a collection of computers connected over the internet. This is the largest parallel machine in the world. BOINC has 3.3 million hosts, with about 1000 CPU years per day. 
+
+\subsection{Global Address Space}
+
+This attempts to give the illusion of shared memory, even though this runs on a distributed memory machine. This is an intermediate point between shared memory and message passing. This allows scaling to arbitrarily many processors. A program consists of a collection of named threads, where each thread runs on a separate processor. There is both local and shared data, but shared data is partitioned over local processes. All the complexity of sends and receives are hidden from the programmer. This can make it difficult to think about locality if it is less obvious where the data is stored. Examples include \gls{upc}, Titanium, and Co-Array Fortran. 
+
+\subsubsection{Global Address Space}
+
+The global address space machine model can be run on any distributed memory machine that has \gls{ni} cards. The \gls{ni} do the communication between the processors - instead of loads/stores, you do puts/gets using one-sided communication. Processors are not interrupted by data transfer by the \gls{ni}s. There is still the potential for race conditions. 
 
 \subsection{Data Parallel}
 
+A single thread of control consists of parallel operations. This is easy to program because coordination is implicit - statements are executed synchronously. However, not all problems fit this model, and this is difficult to map onto coarse-grained machines.
 
+\subsubsection{SIMD}
 
-\subsection{Clusters of SMPs or GPUs}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{figures/simd.pdf}
+\caption{A \gls{simd} machine.}
+\end{figure}
 
-The largest machines on the Top 500 list are actually clusters of the machines listed previously. 
+\gls{simd} systems consists of a large number of usually small processors. A single control processor issues each instruction, and each processor then executes the same instruction. Originally, these machines were specialized to scientific computing. This programming model can be implemented directly in the compiler, but can become difficult when there is more parallelism than processors available.
 
-\subsection{Grid}
+\subsubsection{Vector}
 
-The grid is a collection of computers connected over the internet. 
+Vector machines are based on a single processor, with multiple functional units that can perform the same arithmetic operation at the same time. Some processors can be turned on or off. Vector machines were overtaken by MPPs in the 1990s where you could connect many off-the-shelf processors, but they are re-emerging in recent years. 
+
+\subsubsection{GPU}
+
+GPUs are essentially a version of vector architecture. The key idea is that the compiler does some of the work of finding parallelism so that the hardware doesn't have to. 
+
+Companies originally developed their own programming languages - Nvidia uses CUDA for programming on GPUs. While \gls{mpi} is now the standard for programming on distributed memory machines, the GPU community is now selecting a standard for programming with GPUs. OpenCL is the standard for programming with GPUs. 
+
+\subsection{Hybrid}
+
+The largest machines on the Top 500 list are actually clusters of the machines listed previously - they are heterogeneous. 14\% of the Top 500 list have accelerators, and those computers accounted for 35\% of the performance. Multicore/\gls{smp}s are a building block for a larger machine with a network. Each node is a multicore chip with many processors. The old name for this type of hybrid machine was \gls{clump}. The simplest way to program this type of machine is to treat the machine as ``flat,'' and use one \gls{mpi} process per core. Using \gls{mpi} to communicate between two processors on the same chip is a waste of resources, however, so shared memory programming should be done within on \gls{smp}, but message passing outside the \gls{smp}. One core will be dedicated to performing \gls{mpi} with all the other processors on the machine. 
+
+DARPA was involved in a project to develop a programming language to hide the duality between shared memory programming at a \gls{smp} but \gls{mpi} between processors, though this has not yet taken off. Global address space models can often call message passing libraries and vice versa. 
+
+\subsection{Cloud Computing}
+
+Cloud computing allows people to easily shared thousands of computers. You pay a fee to access these resources.
 
 \end{flushleft}
 \end{document}
