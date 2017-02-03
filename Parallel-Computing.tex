@@ -91,6 +91,7 @@
 \makeglossaries
 
 \newacronym{ai}{AI}{Arithmetic Intensity}
+\newacronym{avx}{AVX}{Advanced Vector Extensions}
 \newacronym{blas}{BLAS}{Basic Linear Algebra Subroutines}
 \newacronym{clump}{CLUMP}{Cluster of Symmetric Multiprocessor}
 \newacronym{dram}{DRAM}{Dynamic Random Access Memory}
@@ -102,6 +103,7 @@
 \newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
 \newacronym{smp}{SMP}{Symmetric Multiprocessor}
 \newacronym{sram}{SRAM}{Second Random Access Memory}
+\newacronym{sse}{SSE}{Streaming SIMD Extensions}
 \newacronym{tlb}{TLB}{Translation Look-Aside Buffer}
 \newacronym{uma}{UMA}{Uniform Memory Access}
 \newacronym{upc}{UPC}{Unified Parallel C}
@@ -120,11 +122,19 @@
 
 This document contains my course notes for CS 267, as well as my notes on general topics such as computer architecture.
 
-\section{Common Terminology}
+\section{Common Terminology and Tools}
 
 A flop is a floating point operation, which is usually in double precision unless otherwise noted. While the fastest computer has a clock rate of 55 Pflop/s, most laptops are in the Gflop/s range. 
 
-A node is a multicore processor.
+A node is a multicore processor. While there are a certain number of physical cores per CPU, \textit{virtual cores} refer to the multiplication of the number of physical cores with the number of CPUs on a node? Many cores per CPU is not necessarily advantageous, since it requires the programmer to write algorithms with a very high degree of parallelism.
+
+Leadership machines are computers that are designed to get the best performance possible, though they might not be as user-friendly.
+
+Threading occurs when you have more than one \gls{mpi} task per core. 
+
+\subsection{VTune}
+
+This software helps you profile your code - this is better than running the profilers on debug-mode code, since the optimization differs between debug code and fully-optimized code. Do profiling on the final executable.
 
 \subsection{Benchmarks}
 
@@ -401,6 +411,8 @@ Shared memory is the most common parallel machine hardware, and also the easiest
 
 A race condition, or data race, occurs when two threads (or two processors) access the same variable and at least one thread does a write. Because the action is performed on the register, which sits right next to the processor, two threads should not attempt to write to the same value at the same time because it is possible that the two writes would happen simultaneously. These accesses, if not controlled, are not synchronized, and at least one write will be lost, even though the hardware makes sure nothing catastrophic occurs if two threads try to write to the same location at the same time. The atomic operations are reads and writes, and \textit{not} algebraic operations such as additions. To avoid race conditions, put locks in the code ({\tt static lock lk;}) - only one thread can hold a lock at a time, which prevents simultaneous read/write operations. Most work should not be in the critical region (the locked region). Some libraries include locks hidden in their functions so that you don't have to worry about specifying them.
 
+OpenMP is used to program shared memory at the CPU level. Each OpenMP thread corresponds to the same program being run on another processor on the same computer chip.
+
 \subsubsection{Shared Memory}
 
 The most common variant of the shared memory programming model is the multi-core chip model that dominates laptops. All the processors in a shared memory machine are connected to a large shared memory - these processors are typically called \gls{smp}s because there are multiple processors to a chip and they are ``symmetric'' in that each processor has somewhat of an equal role. Each chip has multiple cores, but all the caches are shared (but each processor also has its own cache). The bus is the interconnect, which acts like the lock that synchronizes the processors.
@@ -467,11 +479,33 @@ A single thread of control consists of parallel operations. This is easy to prog
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\linewidth]{figures/simd.pdf}
+\includegraphics[width=0.75\linewidth]{figures/simd.pdf}
 \caption{A \gls{simd} machine.}
 \end{figure}
 
-\gls{simd} systems consists of a large number of usually small processors. A single control processor issues each instruction, and each processor then executes the same instruction. Originally, these machines were specialized to scientific computing. This programming model can be implemented directly in the compiler, but can become difficult when there is more parallelism than processors available.
+\gls{simd} systems consists of a large number of usually small processors. A single control processor issues each instruction, and each processor then executes the same instruction. Originally, these machines were specialized to scientific computing. This programming model can be implemented directly in the compiler, but can become difficult when there is more parallelism than processors available. 
+
+\gls{simd} instructions use a single instruction to perform the same operation on multiple pieces of data, while scalar operations issue one instruction per operation. Unfortunately, \gls{simd} instructions can only be used for predefined processing patterns - \gls{simd} instructions cannot be used to process multiple data in different ways (such as an add alongside a subtraction). 
+
+Data types used for \gls{simd} operations are called vector types. The length of a vector type is the length that fits into a register - 128 bits on \gls{sse} and 256 bits on \gls{avx}. So, double precision \gls{simd} operations provide the smallest degree of possible benefit from \gls{simd} instructions, since only four double precision values can be stored in a register at one time. To convert data to vector type, you need to cast a pointer to the scalar to a pointer to the vector type. 
+
+Taking advantage of vectorization is essential to obtain fast programs. Compilers will automatically try to vectorize your loops, but the compiler may not be able to do so if you have loop dependencies, where you need previous values for future iterations. Conditional statements within loops will also prevent compiler vectorization. For Intel compilers, you can pass the flag {\tt -qopt-report=3 -qopt-report-phase=vec}, and for GCC compilers, {\tt -ftree-vectorize -fopt-info-vec-missed} to investigate which loops were not vectorized. You can also use pragmas, which are directives in C that allow you to pass additional information to the compiler.
+
+In C/C++, the main thing that prevents vectorization is possible aliasing in pointers. Use the {\tt restrict} keyword for functions that accept multiple arrays or pointers. C++ doesn't have a {\tt restrict} keyword, but most compilers support {\tt \_\_restrict\_\_}. For instance, if you pass in two pointers to a function, where one pointer is pointing to the second element of the other pointer, then there is loop dependency, since any changes to a value of the first pointer also change the value of the second pointer. This prevents loop unrolling.
+
+\subsubsubsection{SSE}
+
+\gls{sse} had registers that were 128 bits each. 
+
+\subsubsubsection{AVX}
+
+Intel \gls{avx} is a set of instructions for doing \gls{simd} on Intel CPUs. The width of the \gls{simd} register, of which there are 16, was increased from 128 bits (legacy \gls{sse}) to 256 bits (32 bytes) in Intel \gls{avx}. An example of this type of architecture is the Intel Xeon Sandy-Bridge or Intel Ivy Bridge, which can perform four double precision operations concurrently. Some instructions take four-register operands. 
+
+In addition, three-operand, nondestructive operations were added, so that an operation such as \(A=A+B\), which would overwrite \(A\) in the process, can now be written as \(C=A+B\), leaving the original operands unchanged. In addition, \gls{fma} was added. 
+
+\subsubsubsection{Intel Xeon Phi}
+
+The Intel Xeon Phi can perform 8 double precision operations concurrently. A 512-bit register is now typically the norm for new computer chips that are being developed.
 
 \subsubsection{Vector}
 
@@ -489,9 +523,35 @@ The largest machines on the Top 500 list are actually clusters of the machines l
 
 DARPA was involved in a project to develop a programming language to hide the duality between shared memory programming at a \gls{smp} but \gls{mpi} between processors, though this has not yet taken off. Global address space models can often call message passing libraries and vice versa. 
 
+Within a single node, run OpenMP, and between nodes, run \gls{mpi}. It appears that the best performance is obtained by running two or four \gls{mpi} processes per node. OpenMP does not scale well to high numbers of cores due to the fork/join actions that create bottlenecks. It is generally better to reduce the number of \gls{mpi} processes in favor of increasing more OpenMP processes, but you want to obtain a balance between the two.
+
 \subsection{Cloud Computing}
 
 Cloud computing allows people to easily shared thousands of computers. You pay a fee to access these resources.
+
+\section{Sources of Parallelism and Locality in Simulation}
+
+There is often a great deal of independence between objects, and objects tend to depend much more on nearby objects than on distant objects. Dependence on distant objects can also often be simplified. In addition, when a continuous domain is discretized, time dependencies are generally limited to adjacent time steps. 
+
+\subsection{Discrete Event Systems}
+
+The objects, state, time, etc. are all discrete. The set of all variables at a given time is called the state. Each variable is updated by computing a transition function depending on the other variables. These systems can be synchronous or asynchronous. For synchronous systems, all transition functions are evaluated at each time step - this is also called a state machine. At each time step, the old state is read, and the new state is written, so there is no possibility for a race condition. This doubles the required memory, however. 
+
+The asynchronous system only evaluates the transition function if the inputs have changed - this is also referred to as event-driven simulation. This is much cheaper than always looking to your neighbors to see if something has changed from the previous time steps. Every event is associated with a time stamp, but there is no global time step. Asynchronous simulation is much more efficient, but more difficult to parallelize because it's more difficult to decide when to ``receive.'' Conservative asynchronous simulations only simulate up to and including the minimum time stamp of the inputs. However, then you need deadlock detection if there are cycles in the graph. Speculative asynchronous simulations, on the other hand, assume that no new inputs will arrive, and keep simulating. You may need to backup if this assumption is wrong. 
+
+Locality is achieved using domain decomposition, where the domain should be split up so as to minimize the amount of communication required between pieces of the domain. Basically, you want to minimize the surface to volume ratio. Graph theory is used to find the optimal domain decomposition, and graph partitioning is the process of assigning subgraphs to the different processors. You might not simultaneously be able to achieve load balancing with minimal communication between processors. This is an NP-hard algorithm, which means that the optimal algorithm requires an exponential number of processors. 
+
+\subsection{Particle Systems}
+
+Time is now continuous, but your system is largely discrete because you have a finite number of objects.
+
+\subsection{ODEs}
+
+Entities are discrete, but time is continuous.
+
+\subsection{PDEs}
+
+Everything is continuous. 
 
 \end{flushleft}
 \end{document}
