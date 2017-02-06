@@ -94,14 +94,17 @@
 \newacronym{avx}{AVX}{Advanced Vector Extensions}
 \newacronym{blas}{BLAS}{Basic Linear Algebra Subroutines}
 \newacronym{clump}{CLUMP}{Cluster of Symmetric Multiprocessor}
+\newacronym{csr}{CSR}{Compressed Sparse Row}
 \newacronym{dram}{DRAM}{Dynamic Random Access Memory}
 \newacronym{fma}{FMA}{Fused Multiply-Add}
+\newacronym{ge]{GE}{Gaussian Elimination}
 \newacronym{gpu}{GPU}{Graphics Processing Unit}
 \newacronym{ilp}{ILP}{Instruction Level Programming}
 \newacronym{mpi}{MPI}{Message Passing Interface}
 \newacronym{ni}{NI}{Network Interface}
 \newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
 \newacronym{smp}{SMP}{Symmetric Multiprocessor}
+\newacronym{spmv}{SpMV}{Sparse Matrix-Vector Multiply}
 \newacronym{sram}{SRAM}{Second Random Access Memory}
 \newacronym{sse}{SSE}{Streaming SIMD Extensions}
 \newacronym{tlb}{TLB}{Translation Look-Aside Buffer}
@@ -131,6 +134,12 @@ A node is a multicore processor. While there are a certain number of physical co
 Leadership machines are computers that are designed to get the best performance possible, though they might not be as user-friendly.
 
 Threading occurs when you have more than one \gls{mpi} task per core. 
+
+task? 
+nodes?
+Why do we have to specify the CPU frequency?
+
+A stiff matrix has large differences between the largest and smallest entries, which means that a vector that is acted upon by \(A\) will change rapidly, which makes explicit methods less accurate (cannot capture sharp gradients as well). 
 
 \subsection{VTune}
 
@@ -286,7 +295,7 @@ Assuming that there are only two levels of memory hierarchy, and that all the da
 \begin{enumerate}
 \item Two-loop matrix-vector multiplication (DGEMV):
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\small]
 // read x into fast memory
 // read y into fast memory
 for (int i = 0; i < n; ++i)
@@ -304,7 +313,7 @@ Assuming that \(x\) and \(y\) can be read into fast memory, we have three read/w
 
 \item Three-loop matrix-matrix multiplication (DGEMM): 
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\small]
 for (int i = 0; i < n; ++i)
 {
 	// read row i of A into fast memory
@@ -327,7 +336,7 @@ Matrix-matrix multiply has much greater algorithmic intensity than matrix-vector
 
 \item Blocked (tiled) matrix-multiply (DGEMM):
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\small]
 for (int i = 0; i < n/N; ++i)
 {
 	for (int j = 0; j < n/N; ++j)
@@ -356,7 +365,7 @@ Note that the reason why we are seeking to run at half of peak speed is that we 
 
 \item Because we need to minimize communication between \textit{all} levels of memory, the tiled algorithm may not be a good choice because it requires the selection of a good block size. Cache Oblivious Algorithms treat a matrix multiplication as a set of smaller problems that, if divided recursively, will eventually fit in the cache. These algorithms will asymptotically minimize the amount of data transferred between every level of the memory hierarchy, and are oblivious to the number and size of the levels.
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\small]
 double func RMM(A, B, n)
 {
 	C11 = RMM(A11, B11, n/2) + RMM(A12, B21, n/2);
@@ -539,19 +548,47 @@ The objects, state, time, etc. are all discrete. The set of all variables at a g
 
 The asynchronous system only evaluates the transition function if the inputs have changed - this is also referred to as event-driven simulation. This is much cheaper than always looking to your neighbors to see if something has changed from the previous time steps. Every event is associated with a time stamp, but there is no global time step. Asynchronous simulation is much more efficient, but more difficult to parallelize because it's more difficult to decide when to ``receive.'' Conservative asynchronous simulations only simulate up to and including the minimum time stamp of the inputs. However, then you need deadlock detection if there are cycles in the graph. Speculative asynchronous simulations, on the other hand, assume that no new inputs will arrive, and keep simulating. You may need to backup if this assumption is wrong. 
 
-Locality is achieved using domain decomposition, where the domain should be split up so as to minimize the amount of communication required between pieces of the domain. Basically, you want to minimize the surface to volume ratio. Graph theory is used to find the optimal domain decomposition, and graph partitioning is the process of assigning subgraphs to the different processors. You might not simultaneously be able to achieve load balancing with minimal communication between processors. This is an NP-hard algorithm, which means that the optimal algorithm requires an exponential number of processors. 
+Locality is achieved using domain decomposition, where the domain should be split up so as to minimize the amount of communication required between pieces of the domain. Basically, you want to minimize the surface to volume ratio. Graph theory is used to find the optimal domain decomposition, and graph partitioning is the process of assigning subgraphs to the different processors. You might not simultaneously be able to achieve load balancing with minimal communication between processors. Use a quad-tree (2-D division by recursive rectangle division) or an oct-tree (3-D) to initially obtain a good balance between load balancing and minimal communication. This is an NP-hard algorithm, which means that the optimal algorithm requires an exponential number of processors. Domain decomposition is more complicated for particle systems if there are far-field forces, however, since every particle still impacts every other particle - this is usually accounted for by passing around each processor's particle to all the others. 
 
 \subsection{Particle Systems}
 
-Time is now continuous, but your system is largely discrete because you have a finite number of objects.
+Particle systems are essentially a version of lumped systems. Time is now continuous, but your system is largely discrete because you have a finite number of objects. Forces on a particle can be divided into the external force, the nearby force, and the far-field force. External forces can be computed regardless of the other particles, and are embarrassingly parallel. Far-field forces can often be approximated as simpler forms; far-field forces are typically governed by elliptic PDEs. Nearby forces are the most difficult to parallelize. In addition, for particle systems, it is very easy to distribute an even number of particles amongst the processors to achieve good load balancing and locality.
+
+Parallelizing nearby forces scales as \(n^2\) if you need to look at all pairs of particles to determine the nearby forces - domain decomposition allows this to be simplified. The ``ghost zone'' is the boundary region between all separate domains. 
+
+\subsubsection{Particle Mesh Methods}
+
+Superimpose a mesh on the particles, and move the particles to the nearest grid point. Far field forces are easy to solve on a regular mesh, so the complexity drops to \(O(nlog(n)\) instead of \(n^2\). This method is widely-used.
+
+\subsubsection{Tree Decomposition}
+
+Forces from a group of far-away particles are simplified to a single ``large'' particle. Each node on the tree contains an approximation of its descendants. This method also scales as \(nlog(n)\) instead of \(n^2\) for approximating far-field forces. 
 
 \subsection{ODEs}
 
-Entities are discrete, but time is continuous.
+Entities are discrete, but time is continuous - ODEs represent lumped systems, because space is not continuous. 
 
 \subsection{PDEs}
 
-Everything is continuous. 
+Everything is continuous - both space and time. Elliptic equations are generally steady-state, with global space dependence. Hyperbolic equations are generally time-dependent with local space dependence (finite wave speeds limit communication with distant regions of the domain). Parabolic equation are generally time-dependent with global spatial dependence. In order of increasing difficulty of parallelization, these equations ranks 1) elliptic, 2) hyperbolic, and 3) parabolic. Global dependence results in either a lot of communication or very small time steps. From a numerical stability point of view, hyperbolic equations are the most difficult to solve. 
+
+Explicit methods only require a matrix-vector multiplication, while implicit methods require a matrix solve at each time step. Iterative solvers convert this required matrix solve into matrix-vector multiplications.
+
+\subsection{SpMV}
+
+\gls{spmv} is most commonly performed in a \gls{csr} format. You only want to store and do arithmetic on nonzero entries. All the data is stored in one array, where only the nonzero values are stored. Then, you have two additional arrays - one holding pointers to the rows, and one holding pointers to the columns. The column vector holds pointers that indicate which positions in each row (i.e. the column numbers) are nonzero. Each entry in the row vector indicates the position in the data vector that is the first nonzero value in that row. This can give a lot of cache misses in the resultant vector if the nonzero values are not clustered along the diagonal (the ideal structure for parallelization is a block diagonal matrix). There are algorithms to cluster the nonzeros together to avoid this cache miss problem. A potential issue with parallelization is that all the processors might have to access every entry in the vector \(x\). Instead of breaking up the rows into blocks, you could split them up however you want for the processors to minimize the accesses to \(x\). Locality also improves when there are few nonzeros off the diagonal. The reason that you have communication with respect to accessing \(x\), you generally want to avoid copying data to each processor because this will eat up your memory.
+
+Applying \gls{ge} or cholesky decomposition will fill in a matrix with zeros. A matrix can be reordered to reduce this fill-in if you intend to use \gls{ge}.
+
+\subsection{Graph Partitioning}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{figures/graph-partitioning.pdf}
+\caption{An illustration of the relationship between graph partitioning and a matrix.}
+\end{figure}
+
+A sparse matrix and a graph are different representations of the same concept - edges in the graph are nonzero in the matrix. The edges of the graph become off-diagonal terms.
 
 \end{flushleft}
 \end{document}
