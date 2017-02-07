@@ -88,6 +88,11 @@
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 
+\newenvironment{bash}
+{\begin{tt}
+\fontsize{8pt}{8pt}\selectfont}
+{\end{tt}}
+
 
 \title{git}
 \author{April Novak}
@@ -98,5 +103,23 @@
 
 The purpose of this document is to serve as a quick-reference for me of the things that I think are the most important about git.
 
+\section{Submodules}
+
+Submodules are git repositories held in subdirectories of another git repository. The history of these two repositories is kept separate, while allowing you to establish external dependencies. For example, MOOSE relies on LibMesh, but users of MOOSE are not typically also modifying LibMesh. So, LibMesh is set up as a submodule of MOOSE, which allows the user to pull any updates to LibMesh when desired. When cloning or pulling a repository that contains submodules, those submodules are not updated by default. Creating a submodule will create a \texttt{.gitmodules} file that contains the default URL that the submodule is cloned from.
+
+The contents of a submodule cannot be modified from within the main project. To add a submodule into an existing git repository:
+
+\begin{bash}
+\$\$ git submodule add ssh://angband:/repos/git/nkq\_analysis
+\end{bash}
+
+This will automatically clone the submodule and create the \texttt{.gitmodules} file. This file stores the mapping between the project's URL and the local subdirectory that you've pulled it into. This file, like the \texttt{.gitignore} file, are version-controlled. Git will not track the contents of a submodule unless you are within that submodule. 
+
+When you first clone a repository with submodules, those submodules will be empty, since their history is not tracked with the history of the main repository. You must run two commands - the first to initialize your local configuration file, and the second to fetch all the data from the submodule project and check out the appropriate commit. Alternatively, you can pass \texttt{--recursive} to the clone command to automatically initialize and update each submodule.
+
+\begin{bash}
+\$\$ git submodule init\\
+\$\$ git submodule update
+\end{bash}
 
 \end{document}
