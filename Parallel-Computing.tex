@@ -102,12 +102,17 @@
 \newacronym{gpu}{GPU}{Graphics Processing Unit}
 \newacronym{ilp}{ILP}{Instruction Level Programming}
 \newacronym{icv}{ICV}{Internal Control Variable}
+\newacronym{lifo}{LIFO}{Last In, First Out}
 \newacronym{mpi}{MPI}{Message Passing Interface}
+\newacronym{mpp}{MPP}{Massively Parallel Machine}
 \newacronym{ni}{NI}{Network Interface}
 \newacronym{numa}{NUMA}{Non-Uniform Memory Access}
 \newacronym{openmp}{OpenMP}{Open Multi-Processing}
+\newacronym{pci}{PCI}{Peripheral Component Interconnect}
+\newacronym{posix}{POSIX}{Portable Operating System Interface}
 \newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
 \newacronym{smp}{SMP}{Symmetric Multiprocessor}
+\newacronym{spmd}{SPMD}{Single Program, Multiple Data}
 \newacronym{spmv}{SpMV}{Sparse Matrix-Vector Multiply}
 \newacronym{sram}{SRAM}{Second Random Access Memory}
 \newacronym{sse}{SSE}{Streaming SIMD Extensions}
@@ -144,6 +149,10 @@ nodes?
 Why do we have to specify the CPU frequency?
 
 A stiff matrix has large differences between the largest and smallest entries, which means that a vector that is acted upon by \(A\) will change rapidly, which makes explicit methods less accurate (cannot capture sharp gradients as well). 
+
+The \textit{stack} is a region of memory that stores temporary variables created by each function in a program. The stack is a \gls{lifo} data structure that is managed by the CPU. Every time a function declares a new variable, it is pushed onto the stack. Then, when that function exist, all of the variables pushed onto the stack by that function are freed. Using the stack to store variables allows you to not have to worry about allocating memory by hand. Reading/writing to stack variables is very fast. Because stack variables are lost when a function exits, those variables are inherently local. There is a limit on the size of variables that can be stored on the stack. The {\tt static} keyword can be used to keep a variable on the stack around longer than it would have been otherwise (it won't be freed upon exit of the function). 
+
+Variables allocated to the \textit{heap}, on the other hand, do not have such memory limitations. The heap is a memory region that is not managed automatically for you - to allocate memory on the heap, use {\tt malloc}. You must deallocate memory once you don't need it anymore, and if you fail to do so, you have created a memory leak, which can be detected with {\tt valgrind}. Reading and writing to the heap is slower than reading from the stack because you need to use pointers to access memory on the heap. Variables created on the stack and accessible by any function, and are basically global in scope.
 
 \subsection{VTune}
 
@@ -426,9 +435,13 @@ A race condition, or data race, occurs when two threads (or two processors) acce
 
 \gls{openmp} is used to program shared memory at the CPU level. Each \gls{openmp} thread corresponds to the same program being run on another processor on the same computer chip.
 
+Some caches are located right next to the processor. There is often a writeback cache, which stores a variable until the program is completely done with it, in which case then it is sent over the bus interconnect and is written to main memory. Sometimes, a ``write-through'' is performed, where a value is simultaneously written to the writeback cache and the main memory so that other processors can see it. This leads to the possibility of there being two copies of the same variable, however. A cache coherence protocol allows the processors to ``listen'' to the bus and see if other processors have made changes that would affect the values of that data that might be held by other processors as well. This is not scalable beyond a maximum of 100 processors, however, due to capacity and bandwidth limitations. Shared memory systems implement some type of cache coherency policy. Cache coherence logic is the reason why shared memory systems cannot scale to large numbers of processors. Sequential consistency intuition is the idea that your program should behave the same if only one processor were performing an action at any one time (though you could interleave processor actions in any arbitrary order). 
+
+Frequent writes to a variable can cause a bottleneck. 
+
 \subsubsection{Shared Memory}
 
-The most common variant of the shared memory programming model is the multi-core chip model that dominates laptops. All the processors in a shared memory machine are connected to a large shared memory - these processors are typically called \gls{smp}s because there are multiple processors to a chip and they are ``symmetric'' in that each processor has somewhat of an equal role. Each chip has multiple cores, but all the caches are shared (but each processor also has its own cache). The bus is the interconnect, which acts like the lock that synchronizes the processors.
+The most common variant of the shared memory programming model is the multi-core chip model that dominates laptops. All the processors in a shared memory machine are connected to a large shared memory - these processors are typically called \gls{smp}s because there are multiple processors to a chip and they are ``symmetric'' in that each processor has somewhat of an equal role. Each chip has multiple cores, but all the caches are shared (but each processor also has its own cache). The bus is the interconnect, which acts like the lock that synchronizes the processors. 
 
 \begin{figure}[H]
 \centering
@@ -443,6 +456,8 @@ Example vendors of this memory system include SGI, Sun, HP, Intel, AMD, and IBM.
 \includegraphics[width=0.75\linewidth]{figures/shared-memory-uma.pdf}
 \caption{A shared memory machine with either \gls{uma} or \gls{numa}.}
 \end{figure}
+
+Virtually no computers in the Top 500 are \textit{only} shared memory machines. Most computers on the Top 500 are clusters of nodes, where each node is programmed as a shared memory machine. Most of the best computers also have accelerators such as the Intel Xeon Phi and the Nvidia Kepler. An ``accelerator'' is a general term for something attached on the side of a CPU with communication with the CPU through a \gls{pci} - a GPU is a particular type of accelerator.
 
 \subsubsection{Multithreaded Processor}
 
@@ -600,6 +615,10 @@ Applying \gls{ge} or cholesky decomposition will fill in a matrix with zeros. A 
 
 A sparse matrix and a graph are different representations of the same concept - edges in the graph are nonzero in the matrix. The edges of the graph become off-diagonal terms.
 
+\section{POSIX}
+
+\gls{posix} is an interface to operating system utilities. PThreads is the \gls{posix} threading interface. These are system-level calls that are use to create parallelism and synchronize threads. They can be used for multiple languages. However, the overhead of thread creation is large (much larger than for \gls{openmp}), and data race conditions are very difficult to debug. \gls{openmp} is the alternative to \gls{posix} PThreads.
+ 
 \section{OpenMP}
 
 In the early 1990s, vendors of shared memory machines provided their own, directive-based Fortran programming extensions that the users would use in their code to be used by the compiler to determine where to parallelize. The \gls{openmp} standard specification began in 1997 to allow the multitude of relatively similar \gls{smp} parallelization languages to be condensed into a single language. \gls{openmp} continues to be developed - in 2015, version 4.5 was released.
@@ -615,6 +634,8 @@ In the early 1990s, vendors of shared memory machines provided their own, direct
 \gls{openmp} programs achieve parallelism exclusively through the use of threads. A thread of execution is the smallest unit of processing that can be schedule by the operating system. Usually, the number of threads matches the number of processors. \gls{openmp} is an explicit (not automatic) programming model, which offers the programmer complete control over the degree of parallelism. \gls{openmp} uses the fork-join model of parallel execution - the master thread will fork into the number of requested threads for a parallel region - after the parallel region has ended, the threads collapse back into a single master thread, which may be again divided into multiple threads in later parallel regions. The parallel threads in a parallel region are referred to as a \textit{team}. \gls{openmp} supports nested parallelism, where parallel regions can be created inside of other parallel regions. The \gls{api} also allows the runtime environment to dynamically allocate threads for the parallel regions, which can help to more efficiently use resources. \gls{openmp} says nothing about parallel I/O, however, which is important if multiple threads try to read or write from the same location in memory.
 
 Threads are not required to maintain exact consistency with the shared memory - the programmer must ensure that threads that are trying to access a shared variable, which might have changed on some other processor since the last access, are attempting to access a variable only after it has been flushed by all threads.
+
+Local thread variables are stored on the stack, while shared variables are generally on the heap.
 
 \subsection{Compiler Directives}
 
@@ -633,7 +654,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-When a thread reaches a {\tt \#pragma omp parallel} directive, it creates a team of threads and becomes the master of the team. The master is itself a member of that team and has thread number 0 within that team. Beginning from the start of this parallel region, the code is duplicated and all threads execute that code. All parallel regions have an implied barrier at the end - only the master thread continues execution past the barrier. If any thread terminates within a parallel region (fails for some reason0, then all threads in the team will terminate, giving undefined behavior. Threads are numbered beginning at 0.
+When a thread reaches a {\tt \#pragma omp parallel} directive, it creates a team of threads and becomes the master of the team. The master is itself a member of that team and has thread number 0 within that team. Beginning from the start of this parallel region, the code is duplicated and all threads execute that code. All parallel regions have an implied barrier at the end - only the master thread continues execution past the barrier. If any thread terminates within a parallel region (fails for some reason0, then all threads in the team will terminate, giving undefined behavior. Threads are numbered beginning at 0. At the entry and exit of a parallel region, an implicit flush is performed.
 
 A parallel region must be a structured block that does not span multiple routines or source files. You cannot branch into or out of a parallel region. 
 
@@ -641,7 +662,7 @@ A parallel region must be a structured block that does not span multiple routine
 
 Work-sharing constructs are used to specify how work is to be divided amongst the processors - a work-sharing construct divides the execution of the enclosed code region among the threads that encounter it. Work-sharing does not launch new threads - they only divide up the work. There is no implied barrier at the entry to a work-sharing construct, but there is a barrier at the end. Work-sharing constructs must be enclosed within a parallel region for them to be executed in parallel - otherwise, only the master thread executes them. Work-sharing constructs must be encountered by all members of a team or none at all, and successive work-sharing constructs must be encountered in the same order by all members. 
 
-If all the iterations of a loop can be performed independently of one another, then {\tt \#pragma omp parallel for} (for for-loops) or {\tt \# pragma omp parallel do} (for do-loops) automatically split up the loop to the number of available processors. The following code will print the numbers 0 to 11 in a random order, since the printing is split up amongst the processors. The variable {\tt i} is copied to each processor, and is local to each processor.
+If all the iterations of a loop can be performed independently of one another, then {\tt omp for} or {\tt omp do} automatically split up the loop to the number of available processors. The following code will print the numbers 0 to 11 in a random order, since the printing is split up amongst the processors. The variable {\tt i} is copied to each processor, and is local to each processor.
 
 \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
 int main(void) {
@@ -651,52 +672,56 @@ int main(void) {
 }
 \end{lstlisting}
 
-For non-loop-style code, where blocks of code are independent of each other such that they can be executed by separate processors, use the {\tt \#pragma omp parallel sections {}} pragma.  
+\begin{itemize}
+\item {\tt for, do}: split up (independent) for-loop iterations among the threads. This represents a form of data parallelism, and assumes that a parallel region has already been defined, or else this executes in serial. The {\tt do} loop cannot be a do-while loop or a loop without loop control. You cannot branch out of a parallelized loop. An implicit flush is performed upon exit. \gls{spmd} is a programming technique that splits up a task amongst multiple processors and has them each perform a section of the task by passing the sections in as arguments to the task - the for construct is very similar to this.
+\item {\tt sections}: assign consecutive, but independent, code blocks to different threads - each section is executed by one thread. This can be used to implement functional parallelism. Independent {\tt section} directives are nested within a {\tt sections} directive, and each section is executed once by a thread in the team. It is possible for a thread to execute more than one section if it is fast enough. There is an implied barrier at the end of the {\tt sections} directive, which results in an implicit flush upon exit.
+\item {\tt single}: specify a code block that is executed by only one thread - a barrier is implied at the end, meaning that all threads will pause until the block has been executed and that an implicit flush is performed. This is useful for sections of code that are not thread safe, such as data I/O. 
+\item {\tt master}: the code block is only executed by the master thread, with no barrier implied at the end. Hence, all other threads skip this section of the code.
+\item {\tt collapse}: how many loops in a nested loop can be collapsed into one large iteration space and divided according to the {\tt schedule} clause. This should not be used if the loops depend on each other. In a ``square loop,'' where the loop iterations are independent, without using the collapse clause, the outer loop will be divided among four processors, and each processor will perform 100 of the inner loop iterations. However, if you have more than four processors, then the other processors are wasted - using {\tt collapse(2)} would divide the 400 iterations evenly among however many processors you have.
 
 \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
-int main(void) {
-	#pragma omp parallel sections
-	{
-		for (int i = 0; i < 10; ++i)
-			printf("%i", i);
-	}
-	
-	#pragma omp parallel sections
-	{
-		for (int i = 0; i < 20; ++i)
-			printf("%i", i);
+for (int i = 0; i < 4; ++i) { 
+	for (int j = 0; j < 100; j++) {
+		printf("Distribute this work!");
 	}
 }
 \end{lstlisting}
-
-\begin{itemize}
-\item {\tt for, do}: split up (independent) for-loop iterations among the threads. This represents a form of data parallelism, and assumes that a parallel region has already been defined, or else this executes in serial.
-\item {\tt sections}: assign consecutive, but independent, code blocks to different threads - each section is executed by one thread. This can be used to implement functional parallelism. 
-\item {\tt single}: specify a code block that is executed by only one thread - a barrier is implied at the end, meaning that all threads will pause until the block has been executed
-\item {\tt master}: the code block is only executed by the master thread, with no barrier implied at the end
+\item {\tt task}: defines a task which may be executed by the thread encountering it, or be deferred for later execution by another thread in the team
 \end{itemize}
 
-Work-sharing constructs have implicit barrier synchronization at the end.
+Work-sharing constructs have implicit barrier synchronization at the end. For convenience, \gls{openmp} allows two combined directives, {\tt parallel do/for} and {\tt parallel sections}. If there is not enough work to justify starting up a parallel work-sharing region, \gls{openmp} may not do so.
 
 \subsubsection{Clauses}
 
 Because \gls{openmp} is a shared memory programming model, most variables in the code are visible to all threads by default. But sometimes, private variables can be used to avoid race conditions, and you may want to be able to specify how the variables on a processor can be seen by the other processors. Clauses can be appended to the \gls{openmp} directive to specify special behavior. By default, all variables in the work-sharing region are shared except loop iteration counters.
 
-\subsubsubsection{Data Sharing}
+\subsubsubsection{Data Sharing/Data Scope Attributes}
+
+Global variables include file scope variables and static variables. Private variables include loop index variables and stack variables in subroutines called from parallel regions.
 
 \begin{itemize}
-\item {\tt shared}: the data within a parallel region is shared, which means that the data is visible and accessible by all threads simultaneously - this is the default data attribute clause, and only loop iteration counters are not shared. Race conditions can result if more than one processor try to read/write at the same time, since the processors are actually pointing to the same location in memory.
-\item {\tt private}: the data within the parallel region is private to each thread, meaning that each thread has a local copy of all variables, which are used as temporary variables. A private variable is not initialized or maintained for use outside of the parallel region. Loop iteration counters are by default private variables, and don't need to be specified with this clause.
-\item {\tt default}: allows the programmer to specify whether the default data scoping is to be used as opposed to {\tt none}, which would then require the programmer to manually enter to data attribute for every variable in the parallel region. 
+\item {\tt shared}: the data within a parallel region is shared, which means that the data is visible and accessible by all threads simultaneously - this is the default data attribute clause, and only loop iteration counters are not shared. A shared variable exists in only one memory location, and all threads can read/write to that address. Race conditions can result if more than one processor try to read/write at the same time, since the processors are actually pointing to the same location in memory.
+\item {\tt private}: the data within the parallel region is private to each thread, meaning that each thread has a local copy of all variables, which are used as temporary variables and are typically stored on the stack.  You could alternatively pass in a list of variables to specifically be considered private. When a variable is declared private, a new object of the same type is declared once for each thread in the team. All references to the original object are replaced with references to the new object. Variables declared private should be assumed to be uninitialized for each thread. As contrasted with {\tt threadprivate} variables, private variables are defined at the start of a parallel region or a work-sharing construct. A private variable is not maintained for use outside of the parallel region. Loop iteration counters are by default private variables, and don't need to be specified with this clause.
+\item {\tt threadprivate}: the data is global data, but is private in each parallel region during runtime. This type of variable differs from private variables because it is able to persist between different parallel regions of a code (retains its value upon exiting the parallel region). 
+\item {\tt default}: allows the programmer to specify whether the default data scoping is to be used as opposed to {\tt none}, which would then require the programmer to manually scope every variable in the parallel region. Specific variables can be exempted. 
+\item {\tt firstprivate}: the data is private to each thread, but initialized using the value of the variable of the same name from the master thread. This combines the behavior of the private clause with automatic initialization of the variables in the list. 
+\item {\tt lastprivate}: the data is private to each thread. If the current iteration is the last iteration in the parallelized loop, then the value is copied to a global variable of the same name outside the parallel region.
+\item {\tt copyin}: assigns the same value to {\tt threadprivate} variables for all threads in the team. The master thread is used as the copy source. 
+\item {\tt copyprivate}: broadcast values acquired by a single thread directly to all instances of the private variables in the other threads. This is associated with the {\tt single} directive. 
+\item {\tt reduction}: perform a reduction on the variables that appear in its list. A private copy for each list variable is created for each thread. At the end of the reduction, the reduction variable is applied to all private copies of the shared variable, and the final result is written to the global shared variable. For instance, {\tt reduction(+:result)} will perform a sum of each thread's variable {\tt result}. Reductions can only be performed for scalar variables, and not for arrays or data structures. The reduction is used only for operations such as {\tt x = x <op> <expr>, x = <expr> <op> x} (no subtraction), or any of the combined operations such as {\tt x += 4}. This defines {\tt result} as a special reduction variable - it is neither private nor shared. Local copies are reduced into a single value and combined with the original global value.
 \end{itemize}
 
 \subsubsubsection{Synchronization}
 
+Synchronization is used to update the shared memory accessed by all processors. 
+
 \begin{itemize}
-\item {\tt critical}: the enclosed code block is only executed by one thread at a time, which eliminates race conditions with shared data.
-\item {\tt ordered}: a structured block is executed in the order in which iterations would be executed had the block been entirely sequential.
-\item {\tt barrier}: each thread waits until all threads have reached this point. A barrier contains implicit flushes on all threads, so any changes to variables within the parallel region will be ``noticed'' by the other threads upon the barrier. A barrier also performs thread synchronization.
+\item {\tt critical}: the enclosed code block is only executed by one thread at a time, which eliminates race conditions with shared data. You can optionally define a name following this clause so that multiple different critical regions can exist. The names act as global identifiers, and different critical regions with the same name are treated as the same region. All critical sections that are unnamed are treated as the same section. An implicit flush is performed upon entry and exit.
+\item {\tt ordered}: a structured block is executed in the order in which iterations would be executed had the block been entirely sequential. Threads will need to wait before executing their chunk of the iterations if previous iterations have not yet been completed. An {\tt ordered} directive can only appear within a {\tt for} or {\tt do} parallel region. Only one thread is allowed in an ordered section at any one time. An implicit flush is performed upon entry and exit.
+\item {\tt barrier}: each thread waits until all threads have reached this point. A barrier contains implicit flushes on all threads, so any changes to variables within the parallel region will be ``noticed'' by the other threads upon the barrier. All threads will then resume executing in parallel the code that follows the barrier.
 \item {\tt nowait}: threads completing assigned work can proceed without all other threads in a team waiting to finish. If there are multiple independent loops within a parallel region, then you can use this clause to avoid the implied barrier at the end of loop constructs.
+\item {\tt atomic}: specifies that a memory location must be updated atomically, rather than letting multiple threads attempt to write to it. This basically creates a mini critical region, since it only applies to a single statement that immediately follows the clause.
+\item {\tt flush}: identifies a synchronization point where the implementation must provide a consistent view of memory. Thread-visible variables are written back to memory. This basically says that a variable cannot be kept in the local register as opposed to in main memory. This is required even for cache coherent systems, which are systems that will automatically update all processors when one processor performs a read/write on data so that all processors are always up-to-date on the shared data. You can optionally provide a list of variables to flush so that you don't flush all variables. For pointers in this list, the pointer itself is flushed, and not the object it points to. 
 \end{itemize}
 
 \subsubsubsection{Scheduling}
@@ -706,7 +731,9 @@ Because \gls{openmp} is a shared memory programming model, most variables in the
 	\begin{itemize}
 		\item {\tt static}: all threads are allocated iterations before they execute the loop iterations. The iterations are by default divided evenly amongst the threads. However, specifying {\tt <chunk>} will allocate that many iterations (contiguously) for each thread.
 		\item {\tt dynamic}: only some of the iterations are initially allocated, so that when a thread finishes its own allocation, it returns to get additional allocations from the iterations that are left. This can help alleviate cases when some iterations require substantially more work than others. {\tt <chunk>} now specifies the number of iterations that are allocated at a time. The default chunk size in this case is 1.
-		\item {\tt guided}: this allocation is very similar to the dynamic allocation, except that a large chunk of contiguous iterations are allocated to each thread initially, and the chunk size decreases exponentially with each successive allocation to the minimum size specified by {\tt <chunk>}.
+		\item {\tt guided}: this allocation is very similar to the dynamic allocation, except that a large chunk of contiguous iterations are allocated to each thread initially, and the chunk size decreases exponentially with each successive allocation to the minimum size specified by {\tt <chunk>}. The block size is proportional to the number of iterations divided by the number of threads, and then later to the number of remaining iterations to the number of threads. 
+		\item {\tt runtime}: the scheduling decision is deferred until runtime, and is determined by {\tt OMP\_SCHEDULE}
+		\item {\tt auto}: determine by the compiler and/or runtime system
 	\end{itemize}
 \item {\tt num\_threads}: specify the number of threads to allocate for this parallel work (can be lower than the total number of threads). This has higher precedence than using the {\tt omp\_num\_threads} library routine. If this is not specified, then the default used is usually the number of CPUs on the node, though it could be dynamic. 
 \end{itemize}
@@ -717,46 +744,36 @@ Because \gls{openmp} is a shared memory programming model, most variables in the
 \item {\tt if}: threads will parallelize the task only if a condition is met - otherwise, the block will execute serially by the master thread. Only a single if-clause can be given. 
 \end{itemize}
 
-\subsubsubsection{Initialization}
-
-\begin{itemize}
-\item {\tt firstprivate}: the data is private to each thread, but initialized using the value of the variable of the same name from the master thread
-\item {\tt lastprivate}: the data is private to each thread. If the current iteration is the last iteration in the parallelized loop, then the value is copied to a global variable of the same name outside the parallel region.
-\item {\tt threadprivate}: the data is global data, but is private in each parallel region during runtime. 
-\end{itemize}
-
-\subsubsubsection{Data Copying}
-
-\begin{itemize}
-\item {\tt copyin}: 
-\end{itemize}
-
-\subsubsubsection{Other}
-
-\begin{itemize}
-\item {\tt flush}: the value of this variable is restored from the register to the memory for using this variable outside of a parallel region - this means that all threads will have the same view of memory for all shared objects. If you pass in particular variables, then only those will be synchronized - otherwise, all memory is flushed.
-\end{itemize}
-
 \subsection{Environment Variables}
 
-\gls{openmp} acts as though there are \gls{icv}s that control the behavior of the program - these variables are set using either the \gls{openmp} library routines in {\tt omp.h} (higher precedence) or typical shell commands such as {\tt export OMP\_NUM\_THREADS=8}. Then, each parallel region has its own copy of these variables.
+\gls{openmp} acts as though there are \gls{icv}s that control the behavior of the program - these variables are set using either the \gls{openmp} library routines in {\tt omp.h} (higher precedence) or typical shell commands such as {\tt export OMP\_NUM\_THREADS=8}. Then, each parallel region has its own copy of these variables. Using the environment variables as opposed to the library routines is useful for other users using a code, since they wouldn't have to go modify the source code for it to work optimally on another machine.
 
 \subsection{Library Routines}
 
 \begin{itemize}
 \item {\tt omp\_set\_max\_active\_levels}: sets the maximum number of nested active parallel regions - there is one copy of this for the entire program
-\item {\tt omp\_set\_num\_threads}: set number of threads for parallel regions - there is one copy of this variable for each task
+\item {\tt omp\_set\_num\_threads}: set number of threads for parallel regions
 \item {\tt omp\_set\_nested}: this sets the level of nesting that is allowed for a given parallel task
 \item {\tt omp\_set\_dynamic}: passing in 0 will disable the dynamic adjustment of the number of threads. Passing in a nonzero value will allow \gls{openmp} to choose any number of threads up to the maximum available, even if {\tt num\_threads} is specified.
-\end{itemize}
-
-Some library routines are designed to tell you if certain features are enabled.
-
-\begin{itemize}
 \item {\tt omp\_get\_dynamic}: determines if dynamic threads are enabled
 \item {\tt omp\_get\_nested}: determines if nested parallel regions are enabled. If not enabled, then you can still program nested parallel regions, but the entry of a nested parallel region will create a new team that consists of a single processor.
-\item {\tt omp\_get\_num\_threads}: returns the number of threads
+\item {\tt omp\_get\_num\_threads}: returns the number of threads that are currently in the team executing the parallel region from which it is called
+\item {\tt omp\_get\_thread\_num}: returns the thread number of the thread
+\item {\tt omp\_get\_thread\_limit}: returns the maximum number of threads available to a program
+\item {\tt omp\_get\_num\_procs}: returns number of processors that are available to the program
+\item {\tt omp\_in\_parallel}: determines if the section of code is executing in parallel
+\item {\tt omp\_get\_ancestor\_thread\_num}: returns the thread number of the ancestor thread
+\item {\tt omp\_get\_team\_size}: returns the size of the thread team
+\item {\tt omp\_get\_active\_level}: returns the number of nested, active parallel regions 
+\item {\tt omp\_init\_lock}: initializes a lock associated with the lock variable
+\item {\tt omp\_destroy\_lock}: disassociates the given lock variable from any locks
+\item {\tt omp\_set\_lock}: acquires ownership of a lock
+\item {\tt omp\_unset\_lock}: releases a lock. Locks, as opposed to critical regions, should be used when you have different types of data structures.
 \end{itemize}
+
+\subsection{Stack Size and Thread Binding}
+
+The \gls{openmp} standard does not specify how much stack space a thread should have, so implementations will differ in the default thread stack size.
 
 \end{flushleft}
 \end{document}
