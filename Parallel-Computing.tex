@@ -776,7 +776,13 @@ Synchronization is used to update the shared memory accessed by all processors.
 
 \subsection{Stack Size and Thread Binding}
 
-The \gls{openmp} standard does not specify how much stack space a thread should have, so implementations will differ in the default thread stack size.
+The \gls{openmp} standard does not specify how much stack space a thread should have, so implementations will differ in the default thread stack size. Threads that exceed their stack allocation may or may not segmentation fault - an application might continue to run while its data is being corrupted. Statically linked codes may be subject to further stack restrictions. You can set the thread stack size prior to execution using the {\tt OMP\_STACKSIZE} environment variable. 
+
+In some cases, a program will perform better if its threads are bound to processors. Binding a thread to a processor means that a thread will be scheduled  by the operating system to always run on the same processor - contrarily, threads would be executed on any processor.  Thread binding is also referred to as ``thread/processor affinity.'' Binding threads to processors can result in much improved cache utilization by reducing memory accesses that would have to be repeated if a thread were bounced around among processors. The environment variable {\tt OMP\_PROC\_BIND} can be set to true to turn processor binding ``on.'' 
+
+\subsection{Debugging and Performance Analysis}
+
+TotalView is a recommended parallel debugger. For more simple analysis, the {\tt ps} Unix command shows a list of the currently running processes on your computer. The job-id is the PID, and the terminal type the TTY. {\tt ps -A} shows all of the running commands. 
 
 \section{Cloud Computing and Big Data Processing}
 
