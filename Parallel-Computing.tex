@@ -98,6 +98,7 @@
 \newacronym{csr}{CSR}{Compressed Sparse Row}
 \newacronym{dram}{DRAM}{Dynamic Random Access Memory}
 \newacronym{fma}{FMA}{Fused Multiply-Add}
+\newacronym{ftmpi}{FTMPI}{Fault Tolerant MPI}
 \newacronym{ge}{GE}{Gaussian Elimination}
 \newacronym{gpu}{GPU}{Graphics Processing Unit}
 \newacronym{ilp}{ILP}{Instruction Level Programming}
@@ -105,11 +106,13 @@
 \newacronym{lifo}{LIFO}{Last In, First Out}
 \newacronym{mpi}{MPI}{Message Passing Interface}
 \newacronym{mpp}{MPP}{Massively Parallel Machine}
+\newacronym{mr}{MR}{Map Reduce}
 \newacronym{ni}{NI}{Network Interface}
 \newacronym{numa}{NUMA}{Non-Uniform Memory Access}
 \newacronym{openmp}{OpenMP}{Open Multi-Processing}
 \newacronym{pci}{PCI}{Peripheral Component Interconnect}
 \newacronym{posix}{POSIX}{Portable Operating System Interface}
+\newacronym{rdd}{RDD}{Resilient Distributed Dataset}
 \newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
 \newacronym{smp}{SMP}{Symmetric Multiprocessor}
 \newacronym{spmd}{SPMD}{Single Program, Multiple Data}
@@ -774,6 +777,36 @@ Synchronization is used to update the shared memory accessed by all processors.
 \subsection{Stack Size and Thread Binding}
 
 The \gls{openmp} standard does not specify how much stack space a thread should have, so implementations will differ in the default thread stack size.
+
+\section{Cloud Computing and Big Data Processing}
+
+Hadoop and Spark are used to program in parallel in cloud computing and big data environments. The amount of data that we need to process is growing at a rate faster than twice every 18 months (it beats out Moore's law). This means that we cannot process all of this data on a single machine (a node). Datacenters each typically have about 10,000 machines, with 12-24 hard disks per node and 256 GB RAM cache. This results in about 50 TB of storage per machine. Datacenters initially used a tree topology, which is subject to some of the links in the tree being bottlenecks (over-subscribed), so there is a lot of research being performed to determine how to achieve full bisection bandwidth, or full network speed when communicating between any two arbitrary processors. Datacenters have higher storage, but generally slower interconnect and less cores per node - most supercomputers focus on obtaining high flops/sec.
+
+Cloud computing allows computing to be thought of as a utility. From around 2006, you can rent virtual machines in the ``cloud'' and pay as you go. The owner of those machines perform upkeep, and you simply get to use the computing power. 
+
+\subsection{Programming Models}
+
+The problem with programming in \gls{mpi} on big data centers is that processor failures are fairly common, and if one processor fails, then all of the other processors also fail. 10,000 nodes see about 10 faults/day (1 server fails about once every 3 years). Research is being performed on \gls{ftmpi} using checkpointing-based techniques to prevent failure of all processors if one fails.
+
+The main idea behind programming in data center environments is to restrict the programming interface so that it automatically handles failures. You don't specify which processors talk to each other, or where a program should run - you let the program determine this. If there is a failure, the program might retry the computation on another node. If the same task repeatedly fails, end the job. Because sections of the code might be re-run, the code should be deterministic. If one machine that has a file dies, then because that file has been copied to other nodes, it can be run on other nodes. 
+
+Some machines run slower, so you might run two copies of the same task, and simply use the output of the machine that ends first. 
+
+\subsubsection{Hadoop}
+
+Hadoop is an open-source project started at Yahoo and Facebook that implements functions that mimics the map-reduce model. 
+
+\subsubsubsection{MapReduce}
+
+In the map function, you input all of the key-value pairs in your program, and intermediate key-value pairs are output. Then, the reduce function uses all of those intermediate key-value pairs and combines them together to generate some output. The focus on \gls{mr} is how to obtain high levels of data parallelism while focusing on fault tolerance of machines and dealing with slow machines.
+
+Most applications require multiple \gls{mr} steps, which significantly increases the code complexity. \gls{mr} is also very expensive for apps that need to reuse data, since that data must be reread each time it is to be used.
+
+\subsubsection{Spark}
+
+Spark allows you to perform parallel transformations on collections. This results in 5 to 10 times less code than the typical \gls{mr} code, while having portability to multiple languages. Spark uses \gls{rdd}s, which treats a dataset as a list distributed among several machines. Transformations and actions can be performed on these lists. 
+
+\section{Distributed Memory Machines and Programming}
 
 \end{flushleft}
 \end{document}
