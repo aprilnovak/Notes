@@ -101,6 +101,7 @@
 \newacronym{ftmpi}{FTMPI}{Fault Tolerant MPI}
 \newacronym{ge}{GE}{Gaussian Elimination}
 \newacronym{gpu}{GPU}{Graphics Processing Unit}
+\newacronym{ht}{HT}{Hyper Threading}
 \newacronym{ilp}{ILP}{Instruction Level Programming}
 \newacronym{icv}{ICV}{Internal Control Variable}
 \newacronym{lifo}{LIFO}{Last In, First Out}
@@ -111,7 +112,10 @@
 \newacronym{numa}{NUMA}{Non-Uniform Memory Access}
 \newacronym{openmp}{OpenMP}{Open Multi-Processing}
 \newacronym{pci}{PCI}{Peripheral Component Interconnect}
+\newacronym{pod}{POD}{Plain Old Data}
 \newacronym{posix}{POSIX}{Portable Operating System Interface}
+\newacronym{pvm}{PVM}{Parallel Virtual Machine}
+\newacronym{pram}{PRAM}{Parallel Random Access Memory}
 \newacronym{rdd}{RDD}{Resilient Distributed Dataset}
 \newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
 \newacronym{smp}{SMP}{Symmetric Multiprocessor}
@@ -149,13 +153,20 @@ Threading occurs when you have more than one \gls{mpi} task per core.
 
 task? 
 nodes?
-Why do we have to specify the CPU frequency?
 
 A stiff matrix has large differences between the largest and smallest entries, which means that a vector that is acted upon by \(A\) will change rapidly, which makes explicit methods less accurate (cannot capture sharp gradients as well). 
 
 The \textit{stack} is a region of memory that stores temporary variables created by each function in a program. The stack is a \gls{lifo} data structure that is managed by the CPU. Every time a function declares a new variable, it is pushed onto the stack. Then, when that function exist, all of the variables pushed onto the stack by that function are freed. Using the stack to store variables allows you to not have to worry about allocating memory by hand. Reading/writing to stack variables is very fast. Because stack variables are lost when a function exits, those variables are inherently local. There is a limit on the size of variables that can be stored on the stack. The {\tt static} keyword can be used to keep a variable on the stack around longer than it would have been otherwise (it won't be freed upon exit of the function). 
 
 Variables allocated to the \textit{heap}, on the other hand, do not have such memory limitations. The heap is a memory region that is not managed automatically for you - to allocate memory on the heap, use {\tt malloc}. You must deallocate memory once you don't need it anymore, and if you fail to do so, you have created a memory leak, which can be detected with {\tt valgrind}. Reading and writing to the heap is slower than reading from the stack because you need to use pointers to access memory on the heap. Variables created on the stack and accessible by any function, and are basically global in scope.
+
+Strong scaling can be measured by keeping the problem size the same, but varying the number of processors, and hence reflects how much of your runtime is associated with the overhead of parallelism. Weak scaling, on the other hand, increases the problem size and number of processors proportional to one another; this shows you the relative amount of your runtime that is associated with parallelism overhead vs. the actual problem work.
+
+DAXPY is a shorter name for double-precision \(a*x+y\). 
+
+A scan is a parallel prefix operation that takes an original array, and performs a binary operation (such as add) among all of its elements - the first entry would be \(a_1\), the second \(a_1+a_2\), etc. 
+
+Edison nodes contain two processor with 12 cores each. Codes typically use one OpenMP thread per physical compute core, but \gls{ht} is possible, which allows two threads per physical compute core. \gls{ht} is the process by which one core can run more than one thread, where those threads then share resources such as memory and arithmetic operation abilities. Without \gls{ht}, you would only be able to have one thread per core. A processor is \textit{not} the same as a core. Using the maximum number of threads per node is not always ideal, however, and Edison performs best with 12-13 OpenMP threads per processor and 1-4 \gls{mpi} processes per node. At a maximum, you could have, on a single node, the number of \gls{mpi} tasks equalling the number of cores.
 
 \subsection{VTune}
 
@@ -530,6 +541,8 @@ Taking advantage of vectorization is essential to obtain fast programs. Compiler
 
 In C/C++, the main thing that prevents vectorization is possible aliasing in pointers. Use the {\tt restrict} keyword for functions that accept multiple arrays or pointers. C++ doesn't have a {\tt restrict} keyword, but most compilers support {\tt \_\_restrict\_\_}. For instance, if you pass in two pointers to a function, where one pointer is pointing to the second element of the other pointer, then there is loop dependency, since any changes to a value of the first pointer also change the value of the second pointer. This prevents loop unrolling.
 
+A \gls{simd} system consists of a large number of (usually) small processors with a single control processor that issues the instructions. Each processor executes the same instruction. Branches result in some processors being turned off. A useful way to think about programming data parallel machines is to assume you have an unlimited number of processors, because this should help you abstract away processor limitations. 
+
 \subsubsubsection{SSE}
 
 \gls{sse} had registers that were 128 bits each. 
@@ -624,6 +637,8 @@ A sparse matrix and a graph are different representations of the same concept - 
  
 \section{OpenMP}
 
+Multiprocessor machines initially improved performance through clock rate increases, but this has slowed down, so now performance is enhanced by increasing the number of processors per chip.
+
 In the early 1990s, vendors of shared memory machines provided their own, directive-based Fortran programming extensions that the users would use in their code to be used by the compiler to determine where to parallelize. The \gls{openmp} standard specification began in 1997 to allow the multitude of relatively similar \gls{smp} parallelization languages to be condensed into a single language. \gls{openmp} continues to be developed - in 2015, version 4.5 was released.
 
 \gls{openmp} in an \gls{api} for programming shared memory processing in C, C++, and Fortran. \gls{openmp} is used for parallelism within a (multi-core) node, while \gls{mpi} is used for parallelism between nodes. \gls{openmp} is therefore intended for shared memory programming. \gls{openmp} is an implementation of multithreading, where a master thread (a series of instructions executed consecutively) forks a specified number of slave threads and the system divides a task among them. The threads then run simultaneously. The runtime environment allocates threads to the different processors. Each thread executes the parallelize section of code independently of all other threads. \gls{openmp} functions are included in the {\tt omp.h} header file in C/C++ - compiling with the {\tt -fopenmp} option will allow you to use the pragmas. \gls{openmp} consists of compiler directives (pragmas), runtime library routines, and environment variables. In C/C++, all of the library routine are truly routines (they don't return a value - \textit{functions} are usually defined as returning something). 
@@ -676,7 +691,7 @@ int main(void) {
 \end{lstlisting}
 
 \begin{itemize}
-\item {\tt for, do}: split up (independent) for-loop iterations among the threads. This represents a form of data parallelism, and assumes that a parallel region has already been defined, or else this executes in serial. The {\tt do} loop cannot be a do-while loop or a loop without loop control. You cannot branch out of a parallelized loop. An implicit flush is performed upon exit. \gls{spmd} is a programming technique that splits up a task amongst multiple processors and has them each perform a section of the task by passing the sections in as arguments to the task - the for construct is very similar to this.
+\item {\tt for, do}: split up (independent) for-loop iterations among the threads. This represents a form of data parallelism, and assumes that a parallel region has already been defined, or else this executes in serial. The {\tt do} loop cannot be a do-while loop or a loop without loop control. An implicit flush is performed upon exit. \gls{spmd} is a programming technique that splits up a task amongst multiple processors and has them each perform a section of the task by passing the sections in as arguments to the task - the for construct is very similar to this. If already within a parallel section, and you don't want all of the threads in the team to execute the for loop, then do not include {\tt parallel} in the directive.
 \item {\tt sections}: assign consecutive, but independent, code blocks to different threads - each section is executed by one thread. This can be used to implement functional parallelism. Independent {\tt section} directives are nested within a {\tt sections} directive, and each section is executed once by a thread in the team. It is possible for a thread to execute more than one section if it is fast enough. There is an implied barrier at the end of the {\tt sections} directive, which results in an implicit flush upon exit.
 \item {\tt single}: specify a code block that is executed by only one thread - a barrier is implied at the end, meaning that all threads will pause until the block has been executed and that an implicit flush is performed. This is useful for sections of code that are not thread safe, such as data I/O. 
 \item {\tt master}: the code block is only executed by the master thread, with no barrier implied at the end. Hence, all other threads skip this section of the code.
@@ -724,7 +739,7 @@ Synchronization is used to update the shared memory accessed by all processors.
 \item {\tt barrier}: each thread waits until all threads have reached this point. A barrier contains implicit flushes on all threads, so any changes to variables within the parallel region will be ``noticed'' by the other threads upon the barrier. All threads will then resume executing in parallel the code that follows the barrier.
 \item {\tt nowait}: threads completing assigned work can proceed without all other threads in a team waiting to finish. If there are multiple independent loops within a parallel region, then you can use this clause to avoid the implied barrier at the end of loop constructs.
 \item {\tt atomic}: specifies that a memory location must be updated atomically, rather than letting multiple threads attempt to write to it. This basically creates a mini critical region, since it only applies to a single statement that immediately follows the clause.
-\item {\tt flush}: identifies a synchronization point where the implementation must provide a consistent view of memory. Thread-visible variables are written back to memory. This basically says that a variable cannot be kept in the local register as opposed to in main memory. This is required even for cache coherent systems, which are systems that will automatically update all processors when one processor performs a read/write on data so that all processors are always up-to-date on the shared data. You can optionally provide a list of variables to flush so that you don't flush all variables. For pointers in this list, the pointer itself is flushed, and not the object it points to. 
+\item {\tt flush}: identifies a synchronization point where the implementation must provide a consistent view of memory. Thread-visible variables are written back to memory. This basically says that a variable cannot be kept in the local register as opposed to in main memory. This is required even for cache coherent systems, which are systems that will automatically update all processors when one processor performs a read/write on data so that all processors are always up-to-date on the shared data. You can optionally provide a list of variables to flush so that you don't flush all variables. For pointers in this list, the pointer itself is flushed, and not the object it points to. A shared variable must be flushed by both the thread attempting to read the variable and all threads writing it before a thread can read a shared variable. You could circumvent this by declaring every shared variable as {\tt volatile}, which performs a flush before every read and write, but this disables many compiler optimizations.
 \end{itemize}
 
 \subsubsubsection{Scheduling}
@@ -738,7 +753,7 @@ Synchronization is used to update the shared memory accessed by all processors.
 		\item {\tt runtime}: the scheduling decision is deferred until runtime, and is determined by {\tt OMP\_SCHEDULE}
 		\item {\tt auto}: determine by the compiler and/or runtime system
 	\end{itemize}
-\item {\tt num\_threads}: specify the number of threads to allocate for this parallel work (can be lower than the total number of threads). This has higher precedence than using the {\tt omp\_num\_threads} library routine. If this is not specified, then the default used is usually the number of CPUs on the node, though it could be dynamic. 
+\item {\tt num\_threads}: specify the number of threads to allocate for this parallel work (can be lower than the total number of threads). This has higher precedence than using the {\tt omp\_num\_threads} library routine. If this is not specified, then the default used is usually the number of CPUs on the node, though it could be dynamic. The number of threads cannot be redefined within a parallel section using the {\tt omp\_set\_num\_threads()} routine (but it can be defined outside the parallel region). 
 \end{itemize}
 
 \subsubsubsection{If-control}
@@ -812,7 +827,144 @@ Most applications require multiple \gls{mr} steps, which significantly increases
 
 Spark allows you to perform parallel transformations on collections. This results in 5 to 10 times less code than the typical \gls{mr} code, while having portability to multiple languages. Spark uses \gls{rdd}s, which treats a dataset as a list distributed among several machines. Transformations and actions can be performed on these lists. 
 
+\section{Data Parallel Programming}
+
+Data parallel languages use a serial thread of control - there are no data races or nondeterminism. It simply consists of operations that can act on aggregate data structures to implicitly express parallelism. 
+These are also referred to as ``collection-oriented languages'' because they are built so that they operate on collections of data (similar to acting on vectors). 
+
+Broadcasting a value to \(p\) processors takes \(log(p)\) time and \(log(p)\) span (span is the length of the longest path). The lower bound on reductions is \(log(n)\) for functions of \(n\) input variables. 
+
 \section{Distributed Memory Machines and Programming}
+
+A cluster is a distributed memory machine. \gls{mpp} is simply a different name for a cluster. A cluster consists of more commodity components, where \gls{mpp}s are more custom-built. Distributed memory machines must be programmed with \gls{mpi}, \gls{upc}, \gls{upc}++, or some other message passing language. Initially, distributed memory machines connected multiple processors, and communication was performed using bi-directional queues between nearest neighbors. Algorithms for these machines focused on reducing the number of hops between further-away processors. To have a large number of data transfers occurring at the same time, you needed a large number of distinct wires. This is different from the bus required for shared memory systems. The network bandwidth is limited by the bit rate per wire and the number of wires. Latency, on the other hand, really cannot be improved beyond the speed of light.
+
+Routing algorithms determine how information is passed around between processors. In a 2-D torus, messages pass east-west and north-south to avoid deadlocks. The switching strategy determines how the messages are passed around - circuit switching occurs when the full path is reserved for the entire message (like a telephone). Packet switching occurs when a message is broken into separate packets, similar to the internet. Packet switching allows greater use of wires, but requires each of those packets to have their own headers which describes where each packet is going. The flow control procedure describes what to do if there is congestion - data might stall, be stored temporarily in buffers, or be rerouted to other nodes. The source node might be instructed to temporarily halt.
+
+The diameter is the maximum (over all pairs of nodes) of the shortest path between a given pair of nodes. The latency tends to vary widely across architectures. Vendors often report hardware latencies related purely to the wire transfer, but application programmers actually care about software latencies (user program to user program - data has to go to the network card, has to be decoded, and has to travel up the software stack). Latency differs by 1-2 orders of magnitude across network designs. The software/hardware overhead at the source/destination dominate the cost. Latency has not improved significantly, unlike Moore's law. The T3E machine had the lowest latency in the late 1990s, and thins have actually gotten slightly worse since then because it is very expensive to achieve low latency, and other factors might cause you to spend money on other improvements before latency improvements.
+
+The effective bandwidth is usually lower than the physical bandwidth due to packet overhead that describes the routing control information. There also needs to be error information that describes what to do if the data transfer fails. A lower effective bandwidth is observed if you are sending small packets of information, since then the cost of the packet overhead is not sufficiently amortized. The bisection bandwidth is the bandwidth across the smallest cut that divides the network into two equal halves. The bisection bandwidth is important for algorithms where the processors need to communicate with all others.
+
+\subsection{Topologies}
+
+The topology describes how the chips are connected to each other. In the past, there was a lot of research on network topology and in mapping algorithms to the topology, and there can be significant gains by mapping the algorithm to the toplogy. You want to minimize the number of hops between nodes. Modern networks, however, hide the hop cost so the topology becomes less of a factor.
+
+\begin{itemize}
+\item Crossbar: everyone is connected to everyone. This is very expensive due to the large numbers of cables.
+\item Ring/1-D torus: this is primarily used in single-node machines. 
+\item higher-D mesh: 
+\item higher-D torus: BlueGene Q are 5-D tori
+\item Hypercube: This was popular in early machines
+\item Tree: bottlenecks associated with binary trees led to the development of fat trees, which avoid bottlenecks by placing more (or wider) links near the top of the tree structure
+\item Butterfly: This topology is not widely used anymore, and contains many wires. Processors are connected pairwise, and then four-wise, and then eight-wise, etc. 
+\item Perfect shuffle
+\item Dragon fly: This is the topology used in Edison. Optical cables, which are most expensive, go between cabinets in the machine room, have the higher bandwidth. Electrical networks are cheaper and are faster when the distance is short. The Dragonfly has groups with all-to-all links, where each group has at least one link directly to each other group. The topology within each group can be any topology. A randomized routing algorithm is used. The result is that the programmer can usually ignore the topology and still get good performance, at the cost of variable performance.
+\end{itemize}
+
+\subsection{Performance Models}
+
+With \gls{pram}, all memory access operations are considered to be complete in one period, i.e. there is no concept of memory hierarchy. The parallel algorithm design strategy is to first do a \gls{pram} algorithm, and then worry about the memory and communication time. 
+
+A better model is the latency and bandwidth model. The time to send a message is the sum of the latency and the length of the message multiplied by the cost per word (the inverse of the bandwidth). The topology is assumed irrelevant. This is often called the \(\alpha-\beta\) model. Usually, one long message is much cheaper than many short messages. 
+
+\section{MPI}
+
+\gls{mpi} was the first (and currently only) standardized, vendor-independent message passing library. Originally, there were many message passing libraries, and the best competitor to \gls{mpi} was \gls{pvm}, developed at ORNL. \gls{mpi} is basically intended for \gls{spmd} programming. \gls{mpi} is simply a specifications for the developers and user of message passing libraries - by itself, it is not a library, but rather a specification of what such a library should be. Message passing involves moving data from the address space of one process to that of another process through cooperative operations on each process. \gls{mpi} can be used with C and Fortran. Originally, \gls{mpi} was intended for distributed memory architectures, which were becoming increasingly popular in the 1980s-1990s. Then, as architecture trends changed, shared memory \gls{smp}s were combined over networks, creating hybrid distributed memory/shared memory systems. Both types of underlying memory architectures are handled seamlessly. \gls{mpi} can run on distributed memory, shared memory, and hybrid architectures, though the programming model remains a distributed memory model (regardless of the underlying physical architecture). The first version of \gls{mpi} was introduced in 1994. 
+
+The {\tt mpi.h} header file must be included for all programs that make \gls{mpi} library calls ({\tt \#include <mpi.h>}). Parallel code begins once the \gls{mpi} environment is initialized using {\tt MPI\_Init}, and terminates once the environment is terminated using {\tt MPI\_Finalize}. \gls{mpi} calls return values - {\tt MPI\_SUCCESS} if the \gls{mpi} command was successful, for instance. \gls{mpi} uses objects called communicators and groups to define which collection of processes can communicate with each other, and most \gls{mpi} routines require you to specify a communicator as an argument. {\tt MPI\_COMM\_WORLD} is the predefined communicator that includes all of your \gls{mpi} processes. Within each communicator, every process has a unique integer identifier assigned by the system when the process initializes. This rank is referred to as the ``task ID,'' and numbering begins at 0. The task ID is used by the programmer to specify the source and destination of messages, and these are often used conditionally. Most \gls{mpi} routines return an error code parameter, but the default behavior of an \gls{mpi} call is to abort if there is an error, so you actually would probably not be able to capture a return code unless successful ({\tt MPI\_SUCCESS}). 
+
+Communication can be achieved using point-to-point operations, which pass messages between two different \gls{mpi} tasks. One task performs a send operation, while the other performs a receive operation. There are many combined send/receive routines, and any send routine can be paired with any type of receive routine. Because each send operation is not perfectly synchronized with its matching receive operation, the \gls{mpi} implementation has to deal with storing data when two tasks are out of sync. The \gls{mpi} implementation decides what happens to data in these situations. Usually, there is a system buffer area that is reserved to hold data in transit. This is referred to as ``message buffering.'' The system buffer space is managed entirely by the \gls{mpi} library, and can be exhausted fairly easily. This buffer region can exist on the sending and/or receiving sides. Alternative to the system buffer, where these messages are stored before they are ready to be sent/received is the application buffer, which contains the user-managed address space that contains your program variables. If data is stored in a system buffer upon receipt, that represents an asynchronous receive, whereas synchronous sends involve ``handshaking'' to conform the receive task sees the send.
+
+More of the \gls{mpi} point-to-point routines can be used in either blocking or non-blocking modes. A blocking send routine will only ``return'' after it is safe to modify the application buffer (your send data) for reuse. Modifications will not impact the data intended for the receive task, though a blocking send routine does not mean that the data was actually received - it could be in the system buffer of the receiving processor. Non-blocking sends/receives will return almost immediately, and they do not wait for communication events to complete, such as message copying from user memory to system buffer space. Non-blocking communications are primarily used to overlap computation with communication to exploit additional performance gains. You would need to wait or probe to see whether the communication finished. The blocked command {\tt MPI\_Send()} could be thought of equivalently as being {\tt MPI\_Isend()} followed by {\tt MPI\_Wait()}. Using blocked communication also leads to deadlocks if you have two processors both attempting to send information to each other without one first receiving it, since the blocked communication will not return until the send has been completed, which cannot happen.
+
+\gls{mpi} guarantees that messages will not overtake each other. For instance, if a processor sends out two messages, they will be received in chronological send order by the receiving processor. However, order rules do not apply if there are multiple threads participating in the communication operations. If you attempt to send two messages to a task, where that task only has one receive posted, then only one of those messages will be received. 
+
+\gls{mpi} is a library, and hence it can be implemented in a variety of ways, the most common being MPICH (Argonne National Laboratory) and Open MPI. 
+
+There are no shared variables - all communication and synchronization requires subroutine calls. Communication is performed as send-and-receive (pairwise) or as collective communication (broadcast, etc.). Collective communication could be performed using a binary tree, for example. It is very difficult to get data races in \gls{mpi}. All statements in the processes execute independently. 
+
+\subsection{Environment Management}
+
+This set of routines are used for specifying the \gls{mpi} execution environment. 
+
+\begin{itemize}
+\item {\tt MPI\_Abort(comm, errorcode)}: terminates all \gls{mpi} processes associated with the communicator. In most \gls{mpi} implementations, this will actually terminate all processes regardless of the communicator specified.
+\item {\tt MPI\_Comm\_size(comm, \&size)}: returns the total number of \gls{mpi} processes in the specified communicator. If the communicator is {\tt MPI\_COMM\_WORLD}, then this represents the number of \gls{mpi} tasks available to your application.
+\item {\tt MPI\_Comm\_rank(comm, \&rank)}: returns the rank of the calling \gls{mpi} process within the specified communicator. If a process becomes associated with other communicators, it will have a unique rank in each communicator.
+\item {\tt MPI\_Finalize()}: terminates the \gls{mpi} execution environment
+\item {\tt MPI\_Get\_processor\_name(\&name, \&resultlength)}: returns the processor name and the length of the name
+\item {\tt MPI\_Get\_version(\&version, \&subversion)}: returns the version and subversion of the \gls{mpi} standard that is implemented by the library
+\item {\tt MPI\_Init}: initializes the \gls{mpi} execution environment. This can only be called once in an \gls{mpi} program. For C programs, you can pass in command line arguments to all processes, though this isn't required ({\tt MPI\_Init(\&argc, \&argv)}).
+\item {\tt MPI\_Initialized(\&flag)}: indicates whether the \gls{mpi} environment has been initialized using {\tt MPI\_Init}. 
+\item {\tt MPI\_Wtick()}: returns the resolution of {\tt MPI\_Wtime}
+\item {\tt MPI\_Wtime()}: returns an elapsed wall clock time on the calling processor
+\end{itemize}
+
+\subsection{Point-to-Point Communication}
+
+The {\tt buffer} is the program address space that references the data that is to be sent or received. In most cases, this is simply the name of the variable that is sent/received. For C programs, this variable is passed by reference. The {\tt count} is the number of data elements of a particular type to be sent. For portability, \gls{mpi} predefines its elementary data types, prefaced by {\tt MPI}. For example, a signed int would be {\tt MPI\_INT}. The {\tt destination} is the process where the message should be delivered, and is written as the rank of the receiving process. For receive routines, you need to specify the {\tt source}, which is the originating process of the message, specified as the rank of the sending process. This could be set to {\tt MPI\_ANY\_SOURCE} to receive a message from any task. The {\tt tag} is an arbitrary, non-negative integer assigned by the programmer to uniquely identify a message. Send and receive operations should match message tags. For a receive operation, {\tt MPI\_ANY\_TAG} can be used to receive any message regardless of its tag. The {\tt comm}, or communicator, indicates the communication context, or set of processes for which the source or destination fields are valid. 
+
+For a receive operation, the {\tt status} indicates the source and tag of the message, and is a pointer to a predefined structure {\tt MPI\_Status}. The {\tt request} is used by non-blocked send and receive operations. Because non-blocking send/receives can return before the requested system buffer space is obtained, the system issues a unique request number - the user uses this handle later in the wait routine to determine completion of the non-blocking operation. In C, this is a pointer to a predefined structure {\tt MPI\_Request}. 
+
+\begin{itemize}
+\item {\tt MPI\_Get\_count (\&status, datatype, \&count)}: returns the source, tag, and number of elements of datatype received
+\item {\tt MPI\_Probe(source, tag, comm, \&status)}: performs a blocking test for a message
+\item {\tt MPI\_Iprobe(source, tag, comm, \&flag, \&status)}: performs a non-blocking test for a message
+\item {\tt MPI\_Send(\&buffer, count, type, destination, tag, comm)}: blocking send - the routine returns only after the application buffer in the sending task is free for reuse. Some implementations may use a synchronous send to implement the basic blocking send. 
+\item {\tt MPI\_Isend(\&buffer, count, type, destination, tag, comm, request)}: non-blocking send. This identifies an area in memory to serve as a send buffer - processing continues immediately without waiting for the message to be coupied out from the application buffer. A handle is returned for assess the message status. The program should not modify the application buffer until subsequent calls to {\tt MPI\_Wait} or {\tt MPI\_Test} indicate that the send has been completed.
+\item {\tt MPI\_Ssend(\&buffer, count, type, destination, tag, comm)}: synchronous blocking send - send a message and block until the application buffer in the sending task is free for reuse \textit{and} the destination process has started to receive the message. 
+\item {\tt MPI\_Issend(\&buf, count, datatype, dest, tag, comm, \&request)}: non-blocking synchronous send
+\item {\tt MPI\_Sendrecv(\&sendbuf, sendcount, sendtype, dest, sendtag, \&recvbuf, recvcount, recvtype, source, recvtag, comm \&status)}: send a message and post a receive before blocking. This will block until the sending application buffer is free for reuse and until the receiving application buffer contains the received message. This is not the same as a send following by a receive - it is more like a non-blocking send, a non-blockign receive, and a pair of waits. So, the send and receive occur in parallel. 
+\item {\tt MPI\_Recv(\&buffer, count, type, source, tag, comm, status)}: blocking receive - the routine blocks until the request data is available in the application buffer of the receiving task. 
+\item {\tt MPI\_IRecv(\&buffer, count, type, source, tag, comm, request)}: non-blocking receive - this identifies an area in memory to serve as a receive buffer. Processing continues immediately without waiting for the message to be received and copied into the application buffer. A handle is returned for assessing the message status. The program must use {\tt MPI\_Wait} or {\tt MPI\_Test} to determine when the non-blocking receive is completed. 
+\item {\tt MPI_Test(\&request, \&flag, \&status)}: checks the status of a specified non-blocking send/receive operation. The {\tt flag} parameter returns 1 if the send/receive has completed, and 0 otherwise
+\item {\tt MPI\_Wait(request, status)}: waits for a send or receive to complete. In addition, you can use {\tt Waitany}, {\tt Waitall}, or {\tt Waitsome}.
+\end{itemize}
+
+\subsection{Collective Communication}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{figures/MPICommunication.pdf}
+\caption{Forms of communication in \gls{mpi}.}
+\end{figure}
+
+Collective communication routines must involve all processes within the scope of a communicator. All processes are by default member in {\tt MPI\_COMM\_WORLD}. If one task in the communicator doesn't participate, then unexpected behavior, likely program failure, will occur. Collective communication routines don't require you to pass in a message tag. If you want only some processors to participate in a collective communication, then you need to first partition the overall processors into groups, and then attach the new groups to new communicators such that all of the processors in a new communicator are involved with the communication. Collective communication can also only be performed using \gls{mpi} predefined datatypes, and not with derived data types. 
+
+\begin{itemize}
+\item {\tt MPI\_Barrier(comm)}: barrier synchronization in a group - this is almost never used
+\item {\tt MPI\_Bcast(\&buffer, count, datatype, root, comm)}: broadcasts (sends) a message from the process with rank {\tt root} to all other processes in the group
+\item {\tt MPI\_Scatter(\&sendbuf, sendcnt, sendtype, \&recvbuf, recvcnt, recvtype, root, comm)}: distributes distinct messages from a single source task to each task in the group
+\item {\tt MPI\_Gather(\&sendbuf, sendcnt, sendtype, \&recvbuf, recvcnt, recvtype, root, comm)}: gather distinct messages from each task in the group to a single destination task
+\item {\tt MPI\_Allgather(\&sendbuf, sendcnt, sendtype, \&recvbuf, recvcnt, recvtype, comm)}: concatenation of data to all tasks in a group. Basically, each task in the group performs a one-to-all broadcasting operation within the group. 
+\item {\tt MPI\_Reduce(\&sendbuf, \&recvbuf, count, datatype, op, root, comm)}: applies a reduction operation on all tasks in the group and places the result in one task. \gls{mpi} has several predefined reduction operations, but you can also define your own using the {\tt MPI\_Op\_create} routine. 
+\item {\tt MPI\_Allreduce(\&sendbuf, \&recvbuf, count, datatype, op, comm)}: basically, perform a {\tt MPI\_Reduce}, but place the result in all tasks in the group. This is equivalent to a reduce followed by a broadcast. 
+\item {\tt MPI\_Reduce\_scatter(\&sendbuf, \&recvbuf, recvcount, datatype, op, comm)}: perform a reduction on vector elements and distribute the segments of the resulting vector across all tasks. This is equivalent to a reduce followed by a scatter.
+\item {\tt MPI\_Alltoall(\&sendbuf, sendcount, sendtype, \&recvbuf, recvcnt, recvtype, comm)}: Each task performs a scatter operation, sending a distinct message to all tasks in the group in order by index
+\item {\tt MPI\_Scan(\&sendbuf, \&recvbuf, count, datatype, op, comm)}: perform a scan operation with respect to a reduction operation across a task group
+\end{itemize}
+
+\subsection{Derived Data Types}
+
+\gls{mpi} provides the capability for you to define your own data structures based upon sequences of the \gls{mpi} primitive data types. Primitive data types are contiguous, while derived data types allow you to specify non-contiguous data in a convenient way and to treat it as if it were contiguous. You need to define these special \gls{mpi} data types if you want to share information that is not a traditional variable type. This could hurt performance if the datatypes are complicated. 
+
+\begin{itemize}
+\item {\tt MPI\_Type\_contiguous(count, oldtype, \&newtype)}: produces a new data type by making {\tt count} copies of an existing data type
+\item {\tt MPI\_Type\_vector(count, blocklength, stride, oldtype, \&newtype)}: similar to contiguous, but this allows for regular gaps (stride) in the displacements
+\item {\tt MPI\_Type\_indexed(count, blocklens[], offsets[], oldtype, \&newtype)}: an array of displacements of the input data type is provided as the map for the new data type
+\item {\tt MPI\_Type\_extent(datatype, \&extent)}: returns the size in bytes of the specified data type, which is useful for the \gls{mpi} routines that require you to specify an offset in bytes
+\item {\tt MPI\_Type\_commit(\&datatype)}: commits a new datatype to the system, which is required for all user-defined data types 
+\item {\tt MPI\_Type\_free (\&datatype)}: deallocates the specified datatype object. This is important to prevent memory exhaustion
+\end{itemize}
+
+\subsection{Group and Communicator Management Routines}
+
+A group is an ordered set of processes. In \gls{mpi}, a group is represented within memory as an object that is accessible to the programmer only by a handle. A group is always associated with a communicator object. Each process in a group is associated with a unique integer rank, beginning with zero. A communicator, on the other hand, is a group of processes that communicate with each other. All \gls{mpi} messages must specify a communicator. Like groups, communicators are represented within the system memory as objects and are accessible to the programmer only by handles. {\tt MPI\_COMM\_WORLD} is the communicator that comprises all tasks. From the programmer's perspective, a group and a communicator are the same thing. Groups and communicators allow you to enable collective communications across s subset of related tasks and organize tasks into task groups. They also permit safe communications while allowing the user flexibility in defining their own communication topologies. 
+
+Groups/communicators are dynamic, and can be created and destroyed during program execution. Processes can be within more than one group or communicator, where they will have a unique rank within each group. The main difference between a group and a communicator is that within each group, the rank is that of the enclosing communicator, but once those groups are assigned to a new communicator, they have a second rank. 
+
+\subsection{Virtual Topologies}
+
+A virtual topology is a mapping or ordering of \gls{mpi} processes into a geometric shape - the two main topologies supported by \gls{mpi} are Cartesian grid and Graph. These topologies are entirely virtual, and there might not be any relationship to the physical structure of the machine or the process topology. Virtual topologies are constructed using \gls{mpi} groups and communicators, and must be programmed by the programmer. For example, a Cartesian topology would be best for applications that require four-way communication for grid-based data. You can also optimize process mapping based upon the physical characteristics of your machine so that you naturally avoid penalizing long-distance communications. 
 
 \end{flushleft}
 \end{document}

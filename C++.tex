@@ -43,6 +43,7 @@
 \usepackage{tcolorbox}
 \usepackage[mathscr]{euscript}
 \lstset{
+	basicstyle=\ttfamily\small,
     frame=single,
     breaklines=true,
     postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
@@ -96,7 +97,7 @@
 \maketitle
 \section{Introduction}
 
-The purpose of this document is to serve as a quick-reference for me of the things that I think are the most important about the C++ language.
+The purpose of this document is to serve as a quick-reference for me of the things that I think are the most important about the C++ language. Don't try to learn C++ from this document - go do an online tutorial.
 
 C++ was developed as an enhancement to the C language by Bjarne Stroustrup in 1979 at Bell Labs, and was originally called C with Classes (renamed C++ several years later). C++ is considered a mid-level programming language. C++ is a superset of C, and virtually any C program is also a legal C++ program. Standard C++ consists of three main parts - 1) the core of the language, 2) the C++ Standard Library, which contains functions and classes for common use, and 3) the Standard Template Library (STL), which contains methods for manipulating information.
 
@@ -795,10 +796,7 @@ getline(cin, str, `<delimiter>');
 \texttt{std::endl} produces a newline character, just as `\textbackslash n' does, but it also flushes the buffer's stream, meaning that the output is physically written to the device, so this takes slightly longer than `\textbackslash n'. While `\textbackslash n' is a special character, \texttt{endl} is a stream manipulator. The difference between these two is only important for fully buffered streams (of which \texttt{cout} is not).\\
 \\
 k
-\newline
-\noindent\rule{16.5cm}{0.4pt}
-\end{flushleft}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \section{Data Structures}
 
@@ -835,7 +833,7 @@ Instead, \texttt{*(ptr.member\_name)} would attempt to access the quantity point
 
 \section{Object-Oriented Programming}
 
-A C++ program is a collection of objects that interact with each other by invoking each other's methods. This section discusses object-oriented programming. A class is a template that describes the behaviors and states of its instances. For example, an \texttt{animal} class has behaviors such as \texttt{moving, making\_noise, eating}. An object is an instantiation of a class; an animal such as a \texttt{dog} would make noise by barking, but a cat would make noise by meowing - however, both animals make noise, and hence in their unique ways would modify the \texttt{making\_noise} method. A method belongs to a class, and defines a behavior for that class. A method is essentially a function that belongs to a particular class. Finally, instance variables are variables associated with a class, which do not define behavior but rather define properties. For example, an instance variable such as \texttt[weight} might define the weight of a particular animal.
+A C++ program is a collection of objects that interact with each other by invoking each other's methods. This section discusses object-oriented programming. A class is a template that describes the behaviors and states of its instances. For example, an \texttt{animal} class has behaviors such as \texttt{moving, making\_noise, eating}. An object is an instantiation of a class; an animal such as a \texttt{dog} would make noise by barking, but a cat would make noise by meowing - however, both animals make noise, and hence in their unique ways would modify the \texttt{making\_noise} method. A method belongs to a class, and defines a behavior for that class. A method is essentially a function that belongs to a particular class. Finally, instance variables are variables associated with a class, which do not define behavior but rather define properties. For example, an instance variable such as \texttt{weight} might define the weight of a particular animal.
 
 \subsection{Classes}
 
@@ -955,6 +953,13 @@ Memory should be deallocated after use using the \texttt{delete} operator. After
 delete ptr;
 delete [] ptr;
 \end{lstlisting}
+
+\section{Vectors}
+
+In response to the difficulty of working with arrays that must either be allocated memory or must be forever fixed in size, vectors are sequence containers that represent arrays that can change in size. Vectors are stored contiguously in memory, and the usual offset operations can be applied to pointers to access their elements.The storage is handled automatically by the container. Vectors use a dynamically-allocated array to store their elements, and because this dynamic allocation is expensive for every increase in the vector's length, vectors are initialized with extra storage to accommodate some initial growth. So, compared to arrays, vectors require more memory usage at the benefit of growth in a computationally-efficient manner.Vectors are relatively efficient for adding/removing elements at the end, but not so much for adding/removing from the interior of the vector.
+
+
+
 
 \section{Vocabulary}
 
