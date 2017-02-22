@@ -45,6 +45,12 @@
 \usepackage{breqn}
 \usepackage[mathscr]{euscript}
 \usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily\small,
+    frame=single,
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}
 
 % for circled numbers
 \usepackage{tikz}
@@ -91,11 +97,14 @@
 \makeglossaries
 
 \newacronym{ai}{AI}{Arithmetic Intensity}
+\newacronym{alu}{ALU}{Arithmetic Logic Unit}
 \newacronym{api}{API}{Application Programming Interface}
 \newacronym{avx}{AVX}{Advanced Vector Extensions}
 \newacronym{blas}{BLAS}{Basic Linear Algebra Subroutines}
 \newacronym{clump}{CLUMP}{Cluster of Symmetric Multiprocessor}
+\newacronym{cpu}{CPU}{Central Processing Unit}
 \newacronym{csr}{CSR}{Compressed Sparse Row}
+\newacronym{cu}{CU}{Control Unit}
 \newacronym{dram}{DRAM}{Dynamic Random Access Memory}
 \newacronym{fma}{FMA}{Fused Multiply-Add}
 \newacronym{ftmpi}{FTMPI}{Fault Tolerant MPI}
@@ -112,6 +121,7 @@
 \newacronym{numa}{NUMA}{Non-Uniform Memory Access}
 \newacronym{openmp}{OpenMP}{Open Multi-Processing}
 \newacronym{pci}{PCI}{Peripheral Component Interconnect}
+\newacronym{pgas}{PGAS}{Partitioned Global Address Space}
 \newacronym{pod}{POD}{Plain Old Data}
 \newacronym{posix}{POSIX}{Portable Operating System Interface}
 \newacronym{pvm}{PVM}{Parallel Virtual Machine}
@@ -141,24 +151,45 @@
 
 This document contains my course notes for CS 267, as well as my notes on general topics such as computer architecture.
 
-\section{Common Terminology and Tools}
+\section{Common Terminology}
+
+\subsection{Basic Computer Architecture}
+
+\subsubsection{Processors and Cores}
+A processor (synonyms: computer chip) is the ``brain'' of the computer. There are two basic components in a (single-core) processor:
+
+\begin{enumerate}
+\item The \gls{alu} performs mathematical, logical, and decision operations
+\item The \gls{cpu} directs the operations handled by the processor
+\end{enumerate}
+
+A processor may have one or more cores - cores are the parts of the processor that receive instructions, work on those instructions, and return results. A core can run a single program, or multiple - they are the parts of a processor that do simultaneous processing of multiple tasks at a given time. The number of cores are essentially the number of operations that can be performed simultaneously by one processor, since each core has its own \gls{alu} and \gls{cpu}. Each core is itself technically a processor, since early computers has single-core processors, but the chip is manufactured in such a way that the different cores work in coordination. For most multicore chips, the cores each have their own L1 and L2 cache, but share a large L3 cache. Many cores per processor is not necessarily advantageous, since it requires the programmer to write algorithms with a very high degree of parallelism.
+
+\subsubsection{Threads}
+A thread is one (or more) hardware contexts within a single core. \gls{ht} is the process by which one core can run more than one thread, where those threads then share resources such as memory and arithmetic operation abilities within that core. Without \gls{ht}, you would only be able to have one thread per core, and the default with \gls{openmp} is to run one thread per physical core. So, with \gls{ht}, one physical core appears as multiple cores, allowing scheduling of multiple processes per core. The number of \gls{openmp} threads (per \gls{mpi} task) is specified with the {\tt -c} option.
+
+\subsubsection{Nodes}
+On the motherboard of the computer are one or more sockets. Each socket holds one processor. A node combines several sockets, such that a node contains several processors. Edison nodes contain two processors with 12 cores each. Some memory is shared between the sockets on a node, so memory is shared not only between cores on a single processor, but also between processors on a single node. Two-socket nodes are very standard, and you can also buy four-socket nodes, but improvement diminishes beyond that due to \gls{numa} issues. 
+
+A cluster is a bunch of nodes wired together using explicit networking. Nodes do not directly share memory with each other - you must pass information around on the network. So, \gls{mpi} is required to utilize multiple nodes, but \gls{mpi} has even been used to program shared memory systems, despite the fact that all cores on a node share some amount of memory with each other. The number of nodes requested for a job are indicated with the {\tt -N} sbatch option. You can specify a minimum and maximum number of nodes to allocate, but if you provide only one number, then you will use exactly that many nodes.
+
+\begin{lstlisting}
+#SBATCH -N 24
+\end{lstlisting}
+
+\subsubsection{Tasks}
+A task is a single instance of a serial application or an \gls{mpi} application - this represents the number of times that the executable for your program is launched. If using \gls{mpi} to program in a distributed memory system, setting the number of tasks equal to the number of nodes will then run one \gls{mpi} task per node. However, more than one task can be run on each node - in that case, \gls{mpi} is used in something of a shared memory programming model by passing messages between the different cores in a node and between cores in different nodes. The \textit{total} number of tasks for your program are specified using the {\tt -n} option, where by default one task is specified per node; {\tt -n} is the multiplication of the number of tasks per node by the number of compute nodes indicated by the {\tt SBATCH} directive. Alternatively (?), you can specify the number of \gls{mpi} tasks per compute node using the {\tt -N} srun option. Edison works best for 1-4 \gls{mpi} tasks per node. 
+
 
 A flop is a floating point operation, which is usually in double precision unless otherwise noted. While the fastest computer has a clock rate of 55 Pflop/s, most laptops are in the Gflop/s range. 
 
-A node is a multicore processor. While there are a certain number of physical cores per CPU, \textit{virtual cores} refer to the multiplication of the number of physical cores with the number of CPUs on a node? Many cores per CPU is not necessarily advantageous, since it requires the programmer to write algorithms with a very high degree of parallelism.
+While there are a certain number of physical cores per CPU, \textit{virtual cores} refer to the multiplication of the number of physical cores with the number of CPUs on a node? 
 
 Leadership machines are computers that are designed to get the best performance possible, though they might not be as user-friendly.
 
 Threading occurs when you have more than one \gls{mpi} task per core. 
 
-task? 
-nodes?
-
 A stiff matrix has large differences between the largest and smallest entries, which means that a vector that is acted upon by \(A\) will change rapidly, which makes explicit methods less accurate (cannot capture sharp gradients as well). 
-
-The \textit{stack} is a region of memory that stores temporary variables created by each function in a program. The stack is a \gls{lifo} data structure that is managed by the CPU. Every time a function declares a new variable, it is pushed onto the stack. Then, when that function exist, all of the variables pushed onto the stack by that function are freed. Using the stack to store variables allows you to not have to worry about allocating memory by hand. Reading/writing to stack variables is very fast. Because stack variables are lost when a function exits, those variables are inherently local. There is a limit on the size of variables that can be stored on the stack. The {\tt static} keyword can be used to keep a variable on the stack around longer than it would have been otherwise (it won't be freed upon exit of the function). 
-
-Variables allocated to the \textit{heap}, on the other hand, do not have such memory limitations. The heap is a memory region that is not managed automatically for you - to allocate memory on the heap, use {\tt malloc}. You must deallocate memory once you don't need it anymore, and if you fail to do so, you have created a memory leak, which can be detected with {\tt valgrind}. Reading and writing to the heap is slower than reading from the stack because you need to use pointers to access memory on the heap. Variables created on the stack and accessible by any function, and are basically global in scope.
 
 Strong scaling can be measured by keeping the problem size the same, but varying the number of processors, and hence reflects how much of your runtime is associated with the overhead of parallelism. Weak scaling, on the other hand, increases the problem size and number of processors proportional to one another; this shows you the relative amount of your runtime that is associated with parallelism overhead vs. the actual problem work.
 
@@ -166,17 +197,23 @@ DAXPY is a shorter name for double-precision \(a*x+y\).
 
 A scan is a parallel prefix operation that takes an original array, and performs a binary operation (such as add) among all of its elements - the first entry would be \(a_1\), the second \(a_1+a_2\), etc. 
 
-Edison nodes contain two processor with 12 cores each. Codes typically use one OpenMP thread per physical compute core, but \gls{ht} is possible, which allows two threads per physical compute core. \gls{ht} is the process by which one core can run more than one thread, where those threads then share resources such as memory and arithmetic operation abilities. Without \gls{ht}, you would only be able to have one thread per core. A processor is \textit{not} the same as a core. Using the maximum number of threads per node is not always ideal, however, and Edison performs best with 12-13 OpenMP threads per processor and 1-4 \gls{mpi} processes per node. At a maximum, you could have, on a single node, the number of \gls{mpi} tasks equalling the number of cores.
+Cores typically use one OpenMP thread per physical compute core, but \gls{ht} is possible, which allows two threads per physical compute core.   Using the maximum number of threads per node is not always ideal, however, and Edison performs best with 12-13 OpenMP threads per processor. At a maximum, you could have, on a single node, the number of \gls{mpi} tasks equalling the number of cores.
 
-\subsection{VTune}
+Each core has one or two (hyperthreading) threads and a 256 bit vector unit. 
 
-This software helps you profile your code - this is better than running the profilers on debug-mode code, since the optimization differs between debug code and fully-optimized code. Do profiling on the final executable.
+A process is an instance of a computer program that is being executed, and consists of the program code and its current activity. A process can be made up of multiple threads of execution that execute instructions concurrently. Process-based multitasking allows you to do multiple things on your computer at the same time, such as using a text editor while compiling code. Each process has a complete set of its own variables. Threads are essentially processes that run in the same memory context because they can share data during execution. 
+
+\subsection{The Stack and Heap}
+
+The stack is a region of memory that stores temporary variables created by each function in a program. The stack is a \gls{lifo} data structure that is managed by the \gls{cpu}. Every time a function declares a new variable, it is pushed onto the stack. Then, when that function exits, all of the variables pushed onto the stack by that function are freed. Because stack variables are lost when a function exits, those variables are inherently local. Using the stack to store variables allows you to not have to worry about allocating memory by hand, and hence reading/writing to stack variables is very fast. There is a limit on the size of variables that can be stored on the stack. The {\tt static} keyword can be used to keep a variable on the stack around longer than it would have been otherwise (it won't be freed upon exit of the function). A {\tt static} variable is known globally only within a single file, while an {\tt extern} variable is global to all files.
+
+Variables allocated to the heap, on the other hand, do not have such memory limitations (the limitations are those of the entire computer). The heap is a memory region that is not managed automatically for you - to allocate memory on the heap, use {\tt malloc}. You must deallocate memory once you don't need it anymore, and if you fail to do so, you have created a memory leak, which can be detected with a tool such as {\tt valgrind}. Reading and writing to the heap is slower than reading from the stack because you need to use pointers to access memory on the heap. Variables created on the heap are accessible by any function, and are basically global in scope. Both the stack and the heap are conceptual terms - there is no physical region of memory that is the ``stack'' or the ``heap.''
 
 \subsection{Benchmarks}
 
-All of the fastest computers in the world are evaluated based on their performance with regard to several benchmarks, most famous of which is the Linpack benchmark. This benchmark asks the computers to solve a dense \(Ax=b\) multiply, and report peak speeds. While this benchmark is fairly representative of overall performance, it should be noted that a computer's peak speed is faster than the speed at which the Linpack benchmark is completed, and is sometimes two times as fast. The Gordon Bell prize is given to the faster Pflop/s speed of a machine on any task.
+All of the fastest computers in the world are evaluated based on their performance with regard to several benchmarks, most famous of which is the Linpack benchmark. This benchmark solves a dense \(Ax=b\) multiply, and reports peak speeds. While this benchmark is fairly representative of overall performance, it should be noted that a computer's peak speed is faster than the speed at which the Linpack benchmark is completed, sometimes as much as two times faster. The Gordon Bell prize recognizes that some achievement should be given to fastest speed, and awards the fastest Pflop/s speed of a machine on \textit{any} task.
 
-The peak speed is currently around 100 Pflop/s, and the total computing speed of the top 500 list is approaching an Exaflop/s speed. The faster computer accounts for roughly 10\% of the sum of the top 500. The average system age on the top 500 list has been increasing in the past several years, which shows that the performance is starting to slow in the industry.
+The peak speed on the largest computers is currently around 100 Pflop/s, and the total computing speed of the top 500 list is approaching an Exaflop/s speed. The fastest computer accounts for roughly 10\% of the sum of the top 500. The average system age on the top 500 list has been increasing in the past several years, which shows that the performance is starting to slow in the industry.
 
 \section{A Motivation for Parallel Computing}
 
@@ -836,7 +873,7 @@ Broadcasting a value to \(p\) processors takes \(log(p)\) time and \(log(p)\) sp
 
 \section{Distributed Memory Machines and Programming}
 
-A cluster is a distributed memory machine. \gls{mpp} is simply a different name for a cluster. A cluster consists of more commodity components, where \gls{mpp}s are more custom-built. Distributed memory machines must be programmed with \gls{mpi}, \gls{upc}, \gls{upc}++, or some other message passing language. Initially, distributed memory machines connected multiple processors, and communication was performed using bi-directional queues between nearest neighbors. Algorithms for these machines focused on reducing the number of hops between further-away processors. To have a large number of data transfers occurring at the same time, you needed a large number of distinct wires. This is different from the bus required for shared memory systems. The network bandwidth is limited by the bit rate per wire and the number of wires. Latency, on the other hand, really cannot be improved beyond the speed of light.
+\gls{mpp} is simply a different name for a cluster. A cluster consists of more commodity components, where \gls{mpp}s are more custom-built. Distributed memory machines must be programmed with \gls{mpi}, \gls{upc}, \gls{upc}++, or some other message passing language. Initially, distributed memory machines connected multiple processors, and communication was performed using bi-directional queues between nearest neighbors. Algorithms for these machines focused on reducing the number of hops between further-away processors. To have a large number of data transfers occurring at the same time, you needed a large number of distinct wires. This is different from the bus required for shared memory systems. The network bandwidth is limited by the bit rate per wire and the number of wires. Latency, on the other hand, really cannot be improved beyond the speed of light.
 
 Routing algorithms determine how information is passed around between processors. In a 2-D torus, messages pass east-west and north-south to avoid deadlocks. The switching strategy determines how the messages are passed around - circuit switching occurs when the full path is reserved for the entire message (like a telephone). Packet switching occurs when a message is broken into separate packets, similar to the internet. Packet switching allows greater use of wires, but requires each of those packets to have their own headers which describes where each packet is going. The flow control procedure describes what to do if there is congestion - data might stall, be stored temporarily in buffers, or be rerouted to other nodes. The source node might be instructed to temporarily halt.
 
@@ -878,9 +915,11 @@ More of the \gls{mpi} point-to-point routines can be used in either blocking or 
 
 \gls{mpi} guarantees that messages will not overtake each other. For instance, if a processor sends out two messages, they will be received in chronological send order by the receiving processor. However, order rules do not apply if there are multiple threads participating in the communication operations. If you attempt to send two messages to a task, where that task only has one receive posted, then only one of those messages will be received. 
 
-\gls{mpi} is a library, and hence it can be implemented in a variety of ways, the most common being MPICH (Argonne National Laboratory) and Open MPI. 
+\gls{mpi} is a library, and hence it can be implemented in a variety of ways, the most common being MPICH (Argonne National Laboratory) and Open MPI. {\tt mpirun} determines how many copies of a process will start - you don't control how many processes are in the overall communicator at runtime - this is determined before you run. 
 
 There are no shared variables - all communication and synchronization requires subroutine calls. Communication is performed as send-and-receive (pairwise) or as collective communication (broadcast, etc.). Collective communication could be performed using a binary tree, for example. It is very difficult to get data races in \gls{mpi}. All statements in the processes execute independently. 
+
+\gls{mpi} is a language-independent \gls{api} that follows the \gls{spmd} paradigm, where the user writes a single program that runs on all distributed nodes, each operating on a different chunk of the data. The executable is launched on each of these nodes. 
 
 \subsection{Environment Management}
 
@@ -913,10 +952,10 @@ For a receive operation, the {\tt status} indicates the source and tag of the me
 \item {\tt MPI\_Isend(\&buffer, count, type, destination, tag, comm, request)}: non-blocking send. This identifies an area in memory to serve as a send buffer - processing continues immediately without waiting for the message to be coupied out from the application buffer. A handle is returned for assess the message status. The program should not modify the application buffer until subsequent calls to {\tt MPI\_Wait} or {\tt MPI\_Test} indicate that the send has been completed.
 \item {\tt MPI\_Ssend(\&buffer, count, type, destination, tag, comm)}: synchronous blocking send - send a message and block until the application buffer in the sending task is free for reuse \textit{and} the destination process has started to receive the message. 
 \item {\tt MPI\_Issend(\&buf, count, datatype, dest, tag, comm, \&request)}: non-blocking synchronous send
-\item {\tt MPI\_Sendrecv(\&sendbuf, sendcount, sendtype, dest, sendtag, \&recvbuf, recvcount, recvtype, source, recvtag, comm \&status)}: send a message and post a receive before blocking. This will block until the sending application buffer is free for reuse and until the receiving application buffer contains the received message. This is not the same as a send following by a receive - it is more like a non-blocking send, a non-blockign receive, and a pair of waits. So, the send and receive occur in parallel. 
+\item {\tt MPI\_Sendrecv(\&sendbuf, sendcount, sendtype, dest, sendtag, \&recvbuf, recvcount, recvtype, source, recvtag, comm \&status)}: send a message and post a receive before blocking (supply receive buffer at the same time as posting the send). This makes sure there is no deadlock. This will block until the sending application buffer is free for reuse and until the receiving application buffer contains the received message. This is not the same as a send following by a receive - it is more like a non-blocking send, a non-blockign receive, and a pair of waits. So, the send and receive occur in parallel. 
 \item {\tt MPI\_Recv(\&buffer, count, type, source, tag, comm, status)}: blocking receive - the routine blocks until the request data is available in the application buffer of the receiving task. 
 \item {\tt MPI\_IRecv(\&buffer, count, type, source, tag, comm, request)}: non-blocking receive - this identifies an area in memory to serve as a receive buffer. Processing continues immediately without waiting for the message to be received and copied into the application buffer. A handle is returned for assessing the message status. The program must use {\tt MPI\_Wait} or {\tt MPI\_Test} to determine when the non-blocking receive is completed. 
-\item {\tt MPI_Test(\&request, \&flag, \&status)}: checks the status of a specified non-blocking send/receive operation. The {\tt flag} parameter returns 1 if the send/receive has completed, and 0 otherwise
+\item {\tt MPI_Test(\&request, \&flag, \&status)}: checks the status of a specified non-blocking send/receive operation. The {\tt flag} parameter returns 1 if the send/receive has completed, and 0 otherwise - this allows you to just check if something has completed, and do computation if not.
 \item {\tt MPI\_Wait(request, status)}: waits for a send or receive to complete. In addition, you can use {\tt Waitany}, {\tt Waitall}, or {\tt Waitsome}.
 \end{itemize}
 
@@ -928,12 +967,13 @@ For a receive operation, the {\tt status} indicates the source and tag of the me
 \caption{Forms of communication in \gls{mpi}.}
 \end{figure}
 
-Collective communication routines must involve all processes within the scope of a communicator. All processes are by default member in {\tt MPI\_COMM\_WORLD}. If one task in the communicator doesn't participate, then unexpected behavior, likely program failure, will occur. Collective communication routines don't require you to pass in a message tag. If you want only some processors to participate in a collective communication, then you need to first partition the overall processors into groups, and then attach the new groups to new communicators such that all of the processors in a new communicator are involved with the communication. Collective communication can also only be performed using \gls{mpi} predefined datatypes, and not with derived data types. 
+Collective communication routines must involve all processes within the scope of a communicator. All processes are by default member in {\tt MPI\_COMM\_WORLD}. If one task in the communicator doesn't participate, then unexpected behavior, likely program failure, will occur - hence, if one process never calls the communicator, the program will hang, and hence collective communication is essentially a synchronization barrier as well. Collective communication routines don't require you to pass in a message tag. If you want only some processors to participate in a collective communication, then you need to first partition the overall processors into groups, and then attach the new groups to new communicators such that all of the processors in a new communicator are involved with the communication. Collective communication can also only be performed using \gls{mpi} predefined datatypes, and not with derived data types. The root process sends the data, and then everyone, including root, receives pieces of it.
 
 \begin{itemize}
 \item {\tt MPI\_Barrier(comm)}: barrier synchronization in a group - this is almost never used
-\item {\tt MPI\_Bcast(\&buffer, count, datatype, root, comm)}: broadcasts (sends) a message from the process with rank {\tt root} to all other processes in the group
-\item {\tt MPI\_Scatter(\&sendbuf, sendcnt, sendtype, \&recvbuf, recvcnt, recvtype, root, comm)}: distributes distinct messages from a single source task to each task in the group
+\item {\tt MPI\_Bcast(\&buffer, count, datatype, root, comm)}: broadcasts (sends) a message from the process with rank {\tt root} to all other processes in the group. Broadcast is usually cheaper than doing \(n\) sends due to tree algorithms.
+\item {\tt MPI\_Scatter(\&sendbuf, sendcnt, sendtype, \&recvbuf, recvcnt, recvtype, root, comm)}: distributes distinct messages from a single source task to each task in the group. The data must be contiguous in memory, and the message sizes uniform. Use {\tt MPI\_Scatterv} if the chunks of data you are sending are not contiguous in memory and are not all the same size. Data can also be distributed to processors in any order. 
+\item {\tt MPI\_Scatterv(\&sendbuf, sendcnt, displacements, sendtype, \&recvbuf, recvtype, root, comm)}
 \item {\tt MPI\_Gather(\&sendbuf, sendcnt, sendtype, \&recvbuf, recvcnt, recvtype, root, comm)}: gather distinct messages from each task in the group to a single destination task
 \item {\tt MPI\_Allgather(\&sendbuf, sendcnt, sendtype, \&recvbuf, recvcnt, recvtype, comm)}: concatenation of data to all tasks in a group. Basically, each task in the group performs a one-to-all broadcasting operation within the group. 
 \item {\tt MPI\_Reduce(\&sendbuf, \&recvbuf, count, datatype, op, root, comm)}: applies a reduction operation on all tasks in the group and places the result in one task. \gls{mpi} has several predefined reduction operations, but you can also define your own using the {\tt MPI\_Op\_create} routine. 
@@ -945,7 +985,7 @@ Collective communication routines must involve all processes within the scope of
 
 \subsection{Derived Data Types}
 
-\gls{mpi} provides the capability for you to define your own data structures based upon sequences of the \gls{mpi} primitive data types. Primitive data types are contiguous, while derived data types allow you to specify non-contiguous data in a convenient way and to treat it as if it were contiguous. You need to define these special \gls{mpi} data types if you want to share information that is not a traditional variable type. This could hurt performance if the datatypes are complicated. 
+\gls{mpi} provides the capability for you to define your own data structures based upon sequences of the \gls{mpi} primitive data types. Primitive data types are contiguous, while derived data types allow you to specify non-contiguous data in a convenient way and to treat it as if it were contiguous. You need to define these special \gls{mpi} data types if you want to share information that is not a traditional variable type, which could hurt performance if the datatypes are complicated. 
 
 \begin{itemize}
 \item {\tt MPI\_Type\_contiguous(count, oldtype, \&newtype)}: produces a new data type by making {\tt count} copies of an existing data type
@@ -965,6 +1005,18 @@ Groups/communicators are dynamic, and can be created and destroyed during progra
 \subsection{Virtual Topologies}
 
 A virtual topology is a mapping or ordering of \gls{mpi} processes into a geometric shape - the two main topologies supported by \gls{mpi} are Cartesian grid and Graph. These topologies are entirely virtual, and there might not be any relationship to the physical structure of the machine or the process topology. Virtual topologies are constructed using \gls{mpi} groups and communicators, and must be programmed by the programmer. For example, a Cartesian topology would be best for applications that require four-way communication for grid-based data. You can also optimize process mapping based upon the physical characteristics of your machine so that you naturally avoid penalizing long-distance communications. 
+
+\section{Partitioned Global Address Space Languages (UPC, UPC++)}
+
+Programming in \gls{mpi} becomes very difficult when you don't know where a message to be received is coming from, since you'd have to use wildcards. \gls{pgas} systems work by allowing threads to directly read or write remote data, providing the conveniences of shared memory. The term \gls{pgas}, as opposed to shared memory, is used when the hardware does not actually reflect a shared memory system. The data is partitioned in that it is designated as local or global, helping you to achieve better locality. You can write or read data on another processor's memory without asking that processor to post a send or receive using message passing. Local pointers can only point to the memory on the node of the current processor. Global pointers can point to something on a node \textit{and} on a different node. Writes to values that are pointed to by global pointers is done under-the-hood using message passing as a data transfer through the network, but not as a send/receive (\gls{mpi}). \gls{pgas} languages can run large problems very well.
+
+To program in \gls{upc}, you need to include the {\tt upc.h} header file. Any legal C program is also a legal \gls{upc} program. If you compile and run your code as \gls{upc} code with \(p\) threads, it will run \(p\) copies of the program. Just like \gls{mpi}, \gls{upc} is a \gls{spmd} programming model (code is ``copied'' to different processors and they each run the entire code serially). Normal C variables and objects are allocated in the private memory space for each thread. {\tt shared} variables are allocated only once, with thread 0 (and are stored in only one location (on processor 0)). Shared variables cannot have a dynamic lifetime, i.e. they cannot be defined in a function unless they are defined as {\tt static} - if thread 0 exits the function, then variables declared as shared will disappear, even though the other threads might still be trying to access them. 
+
+\gls{pgas} languages suffer from race conditions and many other characteristics of shared memory programming. \gls{upc} has two basic forms of barriers - {\tt upc\_barrier} blocks until all other threads arrive, or split-phase barriers. With split-phase barriers, {\tt upc\_notify} specifies that this thread is ready for the barrier, and computation can be performed unrelated to the barrier. {\tt upc\_wait} then denotes that the thread should wait for others to be ready. This allows you to overlap computation with waiting, and achieve better load balancing if some processors finish much sooner than others. \gls{upc} also has locks for protecting shared data. The {\tt bupc\_collectivev.h} library includes collectives that prevent you needing to use shared variables.
+
+Shared arrays are cyclic by default, and are spread over the threads. Shared arrays allow you to instead just modify the element belonging to your thread, and then at the end performing some aggregate operation - this can avoid the use of very large numbers of locks. Many \gls{upc} programs avoid these arrays in favor of directories. 
+
+Instead of performing send/receives, you do put/get. Although \gls{pgas} seems closer to shared memory, it is more like how the hardware actually looks. For small messages, it is much better to use one-sided communication than send/receive with \gls{mpi}.
 
 \end{flushleft}
 \end{document}
