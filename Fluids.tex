@@ -52,11 +52,13 @@
     postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
 }
 
-% for circled numbers
-\usepackage{tikz}
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
-
+% new commands for shorter writing of equations
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\beqa}{\begin{equation}\begin{aligned}}
+\newcommand{\eeqa}{\end{aligned}\end{equation}}
+\newcommand{\la}{\langle}
+\newcommand{\ra}{\rangle}
 
 \titleclass{\subsubsubsection}{straight}[\subsection]
 
@@ -96,11 +98,12 @@
 \usepackage[acronym]{glossaries}
 \makeglossaries
 
+\newacronym{RANS}{rans}{Reynolds-Averaged Navier Stokes}
 
 \begin{document}
 
 \begin{centering}
-\Large CS 267: Applications of Parallel Computing\\
+\large Fluid Dynamics\\
 \end{centering}
 
 \tableofcontents
@@ -110,6 +113,84 @@
 \begin{flushleft}\justify
 
 This document contains my course notes for fluids, though a large portion of the theory is included in the PRONGHORN manual, and isn't be repeated here.
+
+\section{Turbulence}
+
+In the study of turbulence, many mathematical models separate the turbulent field into the sum of the mean field and a fluctuation, where a mean is denoted with angled brackets \(\la(.)\ra\) and the fluctuation with a prime. For instance, the velocity is decomposed into:
+
+\beq
+\vv{V}(\vv{x},t)=\la\vv{V}(x,t)\rangle+\vv{V}(x,t)'
+\eeq
+
+This decomposition is sometimes referred to as a ``Reynolds decomposition.'' Likewise, density and energy can also be decomposed. 
+
+\begin{tcolorbox}[breakable]
+Some important statistical results are needed before carrying out the derivation of the averaged Navier Stokes equations. The results presented here will be often in the derivation of turbulence models. A mean is defined as:
+
+\beq
+\la U\ra\equiv\int_{0}^{\infty}Vf(V)dV
+\eeq
+
+The mean of the mean is simply equal to the mean, since the integral of \(f(V)\) from 0 to \(\infty\) is by definition unity. The mean of the fluctuation is zero:
+
+\beqa
+\la U'\ra\equiv&\int_{0}^{\infty}(V-\la V\ra)f(V)dV\\
+\equiv& \int_{0}^{\infty}Vf(V)dV - \int_{0}^{\infty}\la V\ra f(V)dV\\
+\equiv&\la U\ra - \la U\ra\\
+\equiv&\ 0\\
+\eeqa
+
+The mean of the product of a fluctuation and a mean is:
+
+\beqa
+\la U'\la\rho\ra\ra\equiv&\int_{0}^{\infty}(V-\la V\ra)\la p\ra f(V)dV\\
+\equiv&\int_{0}^{\infty}\left(V\la p\ra-\la V\ra\la p\ra\right)f(V)dV\\
+\equiv&\la V\ra\la\rho\ra-\la V\ra\la\rho\ra\\
+\equiv&\ 0\\
+\eeqa
+
+\end{tcolorbox}
+
+
+The mean flow equations are derived by substituting these decompositions into the Navier-Stokes equations and then taking the mean of the entire equation. The continuity equation becomes:
+
+\beqa
+\frac{\partial\la \left(\la\rho\ra+\rho'\right)}{\partial t}+\nabla\cdot\la \left((\la\rho\ra+\rho')(\la\vv{V}\ra+\vv{V}')\right)\ra=&0\\
+\frac{\partial\la\rho\ra}{\partial t}+\frac{\partial\rho'}{\partial t}+\nabla\cdot\la \left(\la\rho\ra\la\vv{V}\ra+\la\rho\ra\vv{V}'+\la\vv{V}\ra\rho'+\rho'\vv{V}'\right)\ra=&0\\
+\eeqa
+
+Taking the mean of the equation, and recognizing that taking the mean and differentiation with respect to both time and space commute:
+
+\beqa
+\frac{\partial\la\la\rho\ra\ra}{\partial t}+\cancel{\frac{\partial\la\rho'\ra}{\partial t}}+\nabla\cdot\left(\la\la\rho\ra\la\vv{V}\ra\ra+\la\la\rho\ra\vv{V}'\ra+\la\la\vv{V}\ra\rho'\ra+\la\rho'\vv{V}'\ra\right)=&0\\
+\frac{\partial\la\rho\ra}{\partial t}+\nabla\cdot\left(\la\rho\ra\la\vv{V}\ra+\cancel{\la\la\rho\ra\vv{V}'\ra}+\cancel{\la\la\vv{V}\ra\rho'\ra}+\la\rho'\vv{V}'\ra\right)=&0\\
+\frac{\partial\la\rho\ra}{\partial t}+\nabla\cdot\left(\la\rho\ra\la\vv{V}\ra+\la\rho'\vv{V}'\ra\right)=&0\\
+\eeqa
+
+For incompressible flow, the continuity equation simplifies to:
+
+\beq
+\label{eq:1}
+\nabla\cdot\vv{V}=0
+\eeq
+
+Taking the average of this equation:
+
+\beq
+\label{eq:2}
+\nabla\cdot\la\vv{V}\ra=0
+\eeq
+
+Alternatively, plugging in the Reynolds decomposition to Eq. \eqref{eq:1} gives:
+
+\beq
+\label{eq:3}
+\nabla\cdot\la\vv{V}\ra+\nabla\cdot\vv{V}'=0
+\eeq
+
+Subtracting Eq. \eqref{eq:2} from Eq. \eqref{eq:3} shows that, for incompressible flow, both the mean of the velocity and the fluctuation in velocity are divergence-free. 
+
+
 
 \end{flushleft}
 \end{document}
