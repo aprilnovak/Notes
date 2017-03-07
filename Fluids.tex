@@ -49,6 +49,7 @@
 	basicstyle=\ttfamily\small,
     frame=single,
     breaklines=true,
+    commentstyle=\color{magenta}\ttfamily,
     postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
 }
 
@@ -94,12 +95,6 @@
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 
-% Generate the glossary of acronyms
-\usepackage[acronym]{glossaries}
-\makeglossaries
-
-\newacronym{RANS}{rans}{Reynolds-Averaged Navier Stokes}
-
 \begin{document}
 
 \begin{centering}
@@ -114,7 +109,7 @@
 
 This document contains my course notes for fluids, though a large portion of the theory is included in the PRONGHORN manual, and isn't be repeated here.
 
-\section{Turbulence}
+\section{The Physics of Turbulence}
 
 In the study of turbulence, many mathematical models separate the turbulent field into the sum of the mean field and a fluctuation, where a mean is denoted with angled brackets \(\la(.)\ra\) and the fluctuation with a prime. For instance, the velocity is decomposed into:
 
@@ -152,11 +147,15 @@ The mean of the product of a fluctuation and a mean is:
 \end{tcolorbox}
 
 
+
+
+\subsection{The Mean Flow Equations}
+
 The mean flow equations are derived by substituting these decompositions into the Navier-Stokes equations and then taking the mean of the entire equation. The continuity equation becomes:
 
 \beqa
-\frac{\partial\la \left(\la\rho\ra+\rho'\right)}{\partial t}+\nabla\cdot\la \left((\la\rho\ra+\rho')(\la\vv{V}\ra+\vv{V}')\right)\ra=&0\\
-\frac{\partial\la\rho\ra}{\partial t}+\frac{\partial\rho'}{\partial t}+\nabla\cdot\la \left(\la\rho\ra\la\vv{V}\ra+\la\rho\ra\vv{V}'+\la\vv{V}\ra\rho'+\rho'\vv{V}'\right)\ra=&0\\
+\frac{\partial \left(\la\rho\ra+\rho'\right)}{\partial t}+\nabla\cdot \left((\la\rho\ra+\rho')(\la\vv{V}\ra+\vv{V}')\right)=&0\\
+\frac{\partial\la\rho\ra}{\partial t}+\frac{\partial\rho'}{\partial t}+\nabla\cdot \left(\la\rho\ra\la\vv{V}\ra+\la\rho\ra\vv{V}'+\la\vv{V}\ra\rho'+\rho'\vv{V}'\right)=&0\\
 \eeqa
 
 Taking the mean of the equation, and recognizing that taking the mean and differentiation with respect to both time and space commute:
@@ -188,7 +187,446 @@ Alternatively, plugging in the Reynolds decomposition to Eq. \eqref{eq:1} gives:
 \nabla\cdot\la\vv{V}\ra+\nabla\cdot\vv{V}'=0
 \eeq
 
-Subtracting Eq. \eqref{eq:2} from Eq. \eqref{eq:3} shows that, for incompressible flow, both the mean of the velocity and the fluctuation in velocity are divergence-free. 
+Subtracting Eq. \eqref{eq:2} from Eq. \eqref{eq:3} shows that, for incompressible flow, both the mean of the velocity and the fluctuation in velocity are divergence-free. The derivation for the momentum equation is more complicated. For simplicity, the incompressible momentum equation will be the basis of investigation of turbulence. Due to the incompressibility assumption, the gravitational body force can be bundled into a reduced pressure \(P'=P+\rho gz\). Inserting the same Reynolds-decomposed quantities gives:
+
+\beqa
+\frac{\partial \vv{V}}{\partial t}+\frac{\partial}{\partial x_j}(V_iV_j)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\frac{\partial^2 V_i}{\partial x_j\partial x_j}=&0\\
+\frac{\partial (\la V_i\ra+V_i')}{\partial t}+\frac{\partial}{\partial x_j}\left((\la V_j\ra+V_j')(\la V_i\ra+V_i')\right)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\frac{\partial^2 (\la V_i\ra+V_i')}{\partial x_j\partial x_j}=&0\\
+\frac{\partial \la V_i\ra}{\partial t}+\frac{\partial V_i'}{\partial t}+\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_j\ra+\la V_i\ra V_j'+\la V_j\ra V_i'+V_i'V_j'\right)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\left(\frac{\partial^2 \la V_i\ra}{\partial x_j\partial x_j}+\frac{\partial^2 V_i'}{\partial x_j\partial x_j}\right)=&0\\
+\eeqa
+
+Then, taking the mean of this equation, and recognizing that differentiation and taking the mean commute, where the decomposed pressure has also now been added and the density does not need to be decomposed because it has been assumed constant, the momentum equation becomes:
+
+\beqa
+\label{eq:AveNS}
+\frac{\partial \la V_i\ra}{\partial t}+\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_j\ra+\la V_i'V_j'\ra\right)+\frac{1}{\rho}\frac{\partial \la P\ra}{\partial x_i}-\nu\frac{\partial^2 \la V_i\ra}{\partial x_j\partial x_j}=&0\\
+\eeqa
+
+The averaged Navier-Stokes equations are identical to the Navier-Stokes equations, except that they describe averaged velocities and pressure, and include the Reynolds stress term \(\partial\la V_i'V_j'\ra/\partial x_i\). These evolution equations are not the end of the study of turbulence however, because closure relationships are needed to describe the Reynolds stresses in terms of other solution variables or known quantities. 
+
+
+
+\subsubsection{Mean Scalar Equation}
+Mean equations can also be developed for a conserved passive scalar \(\phi\) that has no impact on the flow field but is transported by both advection and diffusion governed by:
+
+\beq
+\frac{\partial\phi}{\partial t}+\nabla\cdot(\vv{V}\phi)=\Gamma\nabla^2\phi
+\eeq
+
+where \(\Gamma\) is the diffusivity. Inserting the Reynolds decomposition and taking the average of this governing equation gives:
+
+\beqa
+\frac{\partial\la\la\phi\ra+\phi'\ra}{\partial t}+\nabla\cdot\la(\la\vv{V}\ra+\vv{V}')(\la\phi\ra+\phi')\ra=&\Gamma\nabla^2\la\la\phi\ra+\phi'\ra\\
+\frac{\partial\la\phi\ra}{\partial t}+\nabla\cdot(\la\vv{V}\ra\la\phi\ra+\la\vv{V}'\phi'\ra)=&\Gamma\nabla^2\la\phi\ra\\
+\eeqa
+
+\(\la\vv{V}'\phi'\ra\) represents the flux of \(\phi\) due to the fluctuating velocity field (the turbulent transport of \(\phi\)), and plays a similar role to the Reynolds stress term in the Reynolds equations. 
+
+
+
+
+
+
+
+\subsubsection{Mean Pressure Poisson Equation}
+For incompressible flow, pressure satisfies a Pressure-Poisson equation, the mean of which is:
+
+\beqa
+-\frac{1}{\rho}\frac{\partial^2 \la\la P\ra + P'\ra}{\partial x_i^2}=&\la\frac{\partial(\la V_i\ra+V_i')}{\partial x_j}\frac{\partial(\la V_j\ra+V_j')}{\partial x_i}\ra\\
+-\frac{1}{\rho}\frac{\partial^2 \la P\ra}{\partial x_i^2}=&\la\frac{\partial\la V_i\ra}{\partial x_j}\frac{\partial\la V_j\ra}{\partial x_i}+\frac{\partial \la V_i\ra}{\partial x_j}\frac{\partial V_j'}{\partial x_i}+\frac{\partial \la V_j\ra}{\partial x_i}\frac{\partial V_i'}{\partial x_j}+\frac{\partial V_j'}{\partial x_i}\frac{\partial V_i'}{\partial x_j}\ra\\
+-\frac{1}{\rho}\frac{\partial^2\la P\ra}{\partial x_i^2}=&\frac{\partial\la V_i\ra}{\partial x_j}\frac{\partial\la V_j\ra}{\partial x_i}+\frac{\partial \la V_j'V_i'\ra}{\partial x_i\partial x_j}\\
+\eeqa
+
+The mean rate of strain \(\la e_{ij}\ra\) and mean rate of rotation \(\la\xi_{ij}\ra\) are:
+
+\beq
+\la e_{ij}\ra=\frac{1}{2}\left(\frac{\partial\la V_i\ra}{\partial x_j}+\frac{\partial\la V_j\ra}{\partial x_i}\right)
+\eeq 
+
+\beq
+\la \xi_{ij}\ra=\frac{1}{2}\left(\frac{\partial\la V_i\ra}{\partial x_j}-\frac{\partial\la V_j\ra}{\partial x_i}\right)
+\eeq 
+
+From the above, the Pressure-Poisson equation can equivalently be stated as:
+
+% exercise 4.3
+\beq
+-\frac{1}{\rho}\frac{\partial^2\la P\ra}{\partial x_i^2}=\la e_{ij}\ra^2-\la \xi_{ij}\ra^2+\frac{\partial \la V_j'V_i'\ra}{\partial x_i\partial x_j}
+\eeq
+
+
+
+
+\subsubsection{Reynolds Stresses}
+
+As can be seen from the form of the mean equations, the Reynolds stresses are essential for the development of turbulence - if the Reynolds stresses were zero, then the mean flow equations would be identical in form to the Navier-Stokes equations, and hence the mean velocity field would be identical to the actual velocity field, which is clearly not the case for turbulent flows. To show why the Reynolds stresses are indeed stresses, rewrite the average momentum equation as:
+
+\beqa
+\label{eq:RewrittenMom}
+\frac{\partial \la V_i\ra}{\partial t}+\frac{\partial(\la V_i\ra\la V_j\ra)}{\partial x_j}=&-\frac{\partial\la V_i'V_j'\ra}{\partial x_j}-\frac{1}{\rho}\frac{\partial \la P\ra}{\partial x_i}+\nu\frac{\partial^2 \la V_i\ra}{\partial x_j\partial x_j}\\
+\rho\frac{\partial \la V_i\ra}{\partial t}+\rho\frac{\partial(\la V_i\ra\la V_j\ra)}{\partial x_j}=&\frac{\partial}{\partial x_j}\left\lbrack\mu\left(\frac{\partial\la V_i\ra}{\partial x_j}+\frac{\partial\la V_j\ra}{\partial x_i}\right)-\la P\ra\delta_{ij}-\rho\la V_i'V_j'\ra\right\rbrack\\
+\eeqa
+
+where the stresses have all been written in a form that is consistent with the form of the Cauchy identity, where the viscous stress term would implicitly be simpler since we have assumed incompressibility (but we leave it in this form to be explicit). The square brackets represent the sum of three stresses - the viscous stress, the isotropic stress from the mean pressure field, and the Reynolds stress that arises from the fluctuating velocity field. To obtain units of stress, \(\la V_i'V_j'\ra\) should be multiplied by density, though often either form is referred to as a stress. Viscous stress arises due to momentum transfer at the molecular level. Similarly, Reynolds stress arises from momentum transfer due to the fluctuating velocity field. For an arbitrary control volume, the momentum flux into that volume is:
+
+\beq
+\textrm{momentum flux}=-\int_{\partial\Omega}\rho\vv{V}\vv{V}\cdot\hat{n}dS
+\eeq
+
+where the integral is negative because the normal of the surface is defined to be pointing outwards. Applying the divergence rule and taking the mean:
+
+\beq
+\la\textrm{momentum flux}\ra_i=-\int_{\Omega}\rho\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_j\ra+\la V_i'V_j'\ra\right)dV
+\eeq
+
+where the RHS can be seen to be identical to the flux of momentum into the control volume that also appears in Eq. \eqref{eq:AveNS}. So, the Reynolds stress in the Reynolds equations arises due to the mean momentum flux due to the fluctuating velocity on the boundary. So, the presence of turbulence increases the total momentum flux into a volume since the fluctuating velocity components contribute to this momentum flux - this is why turbulence produces very good mixing. 
+
+The Reynolds stresses are components of a symmetric, second-order tensor. The diagonal components are normal stresses, while off-diagonal components are shear stresses. In the principal axes of the Reynolds stress tensor, the shear stresses are zero, while the normal stresses are non-negative eigenvalues. In extreme circumstances, one of these eigenvalues may be zero. The distinction between normal and shear stresses depends on the choice of coordinate system, but you can make a definitive statement about isotropic and anisotropic components of the Reynolds stress tensor. The isotropic stress component \(i_{ij}\) is equal to one third of the trace of the Reynolds stress tensor, since this represents isotropic expansion, where the factor of \(1/3\) cancels \(\delta_{ii}\): 
+
+\beq
+i_{ij} = \frac{1}{3}\la V_i'V_i'\ra\delta_{ij}
+\eeq
+
+The Reynolds stress tensor is the sum of the isotropic part \(i_{ij}\) and the anisotropic part \(a_{ij}\):
+
+\beqa
+a_{ij}=&\la V_i'V_j'\ra-\frac{1}{3}\la V_i'V_i'\ra\delta_{ij}\\
+=& \la V_i'V_j'\ra-\frac{2}{3}k\delta_{ij}\\
+\eeqa
+
+where \(k\) is the turbulent kinetic energy defined in Eq. \eqref{eq:turbenergy}. Plugging in this expansion for \(\la V_i'V_j'\ra\) into Eq. \eqref{eq:RewrittenMom} shows that only the anisotropic component of the Reynolds stress is effective in transporting momentum, since the isotropic component could be absorbed into a modified pressure term:
+
+\beqa
+\rho\frac{\partial \la V_i\ra}{\partial t}+\rho\frac{\partial(\la V_i\ra\la V_j\ra)}{\partial x_j}=&\frac{\partial}{\partial x_j}\left\lbrack\mu\left(\frac{\partial\la V_i\ra}{\partial x_j}+\frac{\partial\la V_j\ra}{\partial x_i}\right)-\la P\ra\delta_{ij}-\rho \left(a_{ij}+\frac{2}{3}k\delta_{ij}\right)\right\rbrack\\
+=&\frac{\partial}{\partial x_j}\left\lbrack\mu\left(\frac{\partial\la V_i\ra}{\partial x_j}+\frac{\partial\la V_j\ra}{\partial x_i}\right)-\left(\la P\ra+\frac{2}{3}k\right)\delta_{ij}-\rho a_{ij}\right\rbrack
+\eeqa
+
+This is very similar to the Navier-Stokes equations, where only the anisotropic component \(2\mu e_{ij}+\nabla\cdot\vv{V}\delta_{ij}\) contributes to the stress, and the isotropic component is bundled into the pressure term (because it is defined to be the pressure itself). 
+
+The turbulent kinetic energy \(k\) is defined as the kinetic energy per unit mass associated with the fluctuating velocity field, and is equal to half the trace of the Reynolds stress tensor:
+
+\beq
+\label{eq:turbenergy}
+k\equiv\frac{1}{2}\la V_iV_i\ra
+\eeq
+
+
+
+
+\subsubsubsection{Symmetries of the Reynolds Stress Tensor}
+Often, the flow geometry can be used to conclude that certain components of the Reynolds stress are zero. When a flow is independent of the \(x_3\) coordinate, such as for axisymmetric flows that are independent of \(\theta\), statistics are therefore also independent of that coordinate. Hence, the derivative of the PDF of velocity \(f\) with respect to that coordinate will be zero:
+
+\beq
+\frac{\partial f}{\partial x_3}=0
+\eeq
+
+and \(f\) will also be invariant with respect to reflections of that axis:
+
+\beq
+f(V_1,V_2,V_3; x_1,x_2,x_3,t)=f(V_1,V_2,-V_3;x_1,x_2,-x_3,t)
+\eeq
+
+For the above equation, when \(x_3=0\), you can conclude that \(\la V_3\ra=-\la V_3\ra=0\). By similar logic, \(\la V_1V_3\ra=\la V_2V_3\ra=0\) (though \(\la V_3V_3\ra\neq0\) because the negative sign will cancel). Then, due to the fact that the flow is statistically invariant with respect to \(x_3\), these conditions apply not just at \(x_3=0\), but throughout the entire flow field. So, for statistically two-dimensional flows such as this, where the flow is statistically invariant with respect to the \(x_3\) axis, the Reynolds stress tensor simplifies to:
+
+\beq
+\la V_iV_j\ra=\begin{bmatrix}\la V_1^2\ra&\la V_1V_2\ra&0\\
+\la V_1V_2\ra & \la V_2^2\ra & 0\\
+0 & 0 & \la V_3^2\ra\end{bmatrix}
+\eeq
+
+A flow can be both independent of one coordinate, and also symmetric about other coordinates. For instance, for flow in a pipe, the flow is symmetric in the \(x_2\) coordinate (\(r\) coordinate). This implies that \(f\) is also symmetric with respect to a flip in the \(x_2\) coordinate:
+
+\beq
+f(V_1,V_2,V_3; x_1,x_2,x_3,t)=f(V_1,-V_2,V_3;x_1,-x_2,x_3,t)
+\eeq
+
+From this, we can conclude that \(\la V_1V_2\ra\) is an odd function of \(x_2\), while \(\la V_1V_1\ra\) and \(\la V_2V_2\ra\) are even functions of \(x_2\). However, because the flow is not independent of \(x_2\), we cannot conclude anything about these components being zero throughout the entire domain as we could with respect to the \(x_3\) axis.
+
+
+
+
+\section{Irrotational Motion}
+An essential feature of turbulent flows is that they are rotational. If the vorticity is zero, then \(\xi_{ij}=0\) (as well as the product of the mean rate of rotation with velocity). The average is therefore also zero:
+
+\beqa
+\label{eq:CorrinKistler}
+\la V_i'\left(\frac{\partial V_i'}{\partial x_j}-\frac{\partial V_j'}{\partial x_i}\right)\ra=&0\\
+\frac{\partial}{\partial x_j}\left(\frac{1}{2}\la V_i'V_i'\ra\right)-\frac{\partial}{\partial x_i}\la V_i'V_j'\ra=&0\\
+\frac{\partial k}{\partial x_j}-\frac{\partial}{\partial x_i}\la V_i'V_j'\ra=&0\\
+\eeqa
+
+Eq. \eqref{eq:CorrinKistler}, which has assumed incompressibility in the last term, shows that for irrotational flows, the gradient of the Reynolds stress, which is the form that appears in the momentum equation, has the same effect as the isotropic stress, and hence could be absorbed into a modified pressure term. So, for irrotational flows, the Reynolds stresses have no impact on the mean velocity field. Hence, irrotational flow essentially shows no characteristics of turbulence because the Reynolds stress has no impact on the mean velocity.
+
+
+
+
+\subsection{Free Shear Flows}
+% part (iii) on page 94
+
+
+
+
+
+
+\section{The Modeling of Turbulence}
+
+It is very difficult to develop tractable models for turbulent flows for several reasons:
+
+\begin{itemize}
+\item The flows are time-dependent, three-dimensional, and random
+\item The largest turbulent motions are on the order of the characteristic flow scale of the geometry, and hence boundary condition effects cannot be neglected
+\item There is a large range in timescales and lengthscales - the Kolmogorov timescale decreases as \(Re^{-1/2}\), while the Kolmogorov lengthscale decreases as \(Re^{-3/4}\). In wall-bounded flows, the most energetic motions, which are responsible for peak turbulence production, scale with the viscous lengthscale, which is very small and decreases as \(Re^{-0.8}\). 
+\item The nonlinear convection term and the pressure gradient term cause great numerical difficulties - when the pressure gradient term is expressed in terms of the Pressure Poisson equation, it is both nonlinear and non-local. 
+\end{itemize}
+
+Most turbulence models consists of sets of partial differential equations, and in some cases also algebraic equations. While turbulence \textit{simulations} solve for time-dependent fields that represent one realization of a turbulent flow, turbulence \textit{models} solve for the mean quantities. DNS and LES are two examples of turbulence simulations. In DNS, you solve for the actual velocity field, and because you need to have a mesh that can resolve all of the timescales and lengthscales, DNS is very computationally expensive. Computational cost scales as \(Re^3\) for 3-D simulations, and hence DNS is restricted to low Reynolds number flows, and hence is of less practical importance than other simulations or models. In LES, you solve for a filtered velocity field that is representative of the larger-scale turbulent motions, with a model for the impact of the smaller-scale motions on the larger-scale motions included in the system of equations (though the smaller scales are not directly modeled). 
+
+The RANS equations solves the Reynolds equations to determine the mean fields. The Reynolds stresses are either solved for using models such as turbulent viscosity, where that turbulent viscosity is determined from an algebraic relationship as in the mixing-length model or from turbulence quantities such as \(k\) and \(\epsilon\) with their own transport equations. In Reynolds-stress models, transport equations are solved for the Reynolds stresses, eliminating the needed for the turbulent viscosity models. Finally, because the mean velocity and the Reynolds stresses are the first and second moments of the Eulerian PDF of velocity, PDF methods solve a model transport equation for a PDF such as \(f\). 
+
+
+
+
+\subsection{Gradient-Diffusion Methods}
+This model assumes that the turbulent transport of the passive scalar \(\phi\), \(\la \vv{V}'\phi'\ra\), occurs down the mean scalar gradient, in the direction of \(-\nabla\la\phi\ra\) proportional to the turbulent diffusivity \(\Gamma_T\). This is equivalent to Fourier's law of heat conduction or Fick's law.
+
+\beq
+\la\vv{V}'\phi'\ra=-\Gamma_T\nabla\la\phi\ra
+\eeq
+
+Because this form will lead to two diffusion terms in mean equation, the two terms can be condensed into one by defining an effective diffusivity \(\Gamma_{eff}=\Gamma+\Gamma_T\). Hence, this simply model assumes that the turbulent transport of \(\phi\) occurs as if \(\phi\) were being diffused with higher diffusivity. In the Reynolds momentum equation, the gradient-diffusion approximation for incompressible flow, assuming constant \(\Gamma_T\) leads to:
+
+\beq
+\frac{\partial \la V_i\ra}{\partial t}+\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_j\ra+\la V_i'V_j'\ra\right)+\frac{1}{\rho}\frac{\partial \la P\ra}{\partial x_i}-\nu_{eff}\frac{\partial^2 \la V_i\ra}{\partial x_j\partial x_j}=0
+\eeq
+
+This model assumes that \(\la \vv{V}'\phi'\ra\) is aligned with \(\la\nabla\la\phi\ra\), which is not the case even in simple turbulent flows. 
+
+
+
+
+
+
+\subsection{Turbulent Viscosity Methods}
+Turbulent viscosity methods are similar to gradient-diffusion methods in that both result in \(\nu\) simply being increased by a constant, except that gradient-diffusion method assume that constant represents proportionality to the mean gradient via Fourier's law, while turbulent viscosity methods assume that constant represents equivalence between the deviatoric Reynolds stress and the mean rate of strain. The turbulent viscosity method is based on the relationship for the deviatoric stress tensor in the Navier-Stokes equation, which from the constitutive relationship for \(\sigma_{ij}\), is assumed proportional to \(e_{ij}\):
+
+\beq
+\sigma_{ij}=-P\delta_{ij}+c_{ijkl}e_{ij}
+\eeq
+
+The deviatoric portion of the Reynolds stress \(a_{ij}\) is assumed proportional to the mean rate of strain \(\la e_{ij}\ra\):
+
+\beq
+a_{ij}=2\nu_T\left(\frac{\partial \la V_i\ra}{\partial x_j}+\frac{\partial \la V_j\ra}{\partial x_i}\right)
+\eeq
+
+where \(\nu_T\) is the turbulent viscosity. Then, inserting this into the Reynolds momentum equation:
+
+\beq
+\rho\frac{\partial \la V_i\ra}{\partial t}+\rho\frac{\partial(\la V_i\ra\la V_j\ra)}{\partial x_j}=\frac{\partial}{\partial x_j}\left\lbrack(\mu+\mu_T)\left(\frac{\partial\la V_i\ra}{\partial x_j}+\frac{\partial\la V_j\ra}{\partial x_i}\right)-\left(\la P\ra+\frac{2}{3}k\right)\delta_{ij}\right\rbrack
+\eeq
+
+This model assumes that \(a_{ij}\) is aligned with \(\la e_{ij}\ra\), which is not the case even in simple turbulent flows. At high \(Re\), both \(\nu_T\) and \(\Gamma_T\) scale with the flow velocity and length scale, independent of the actual molecular properties of the flow:
+
+\beq
+\frac{\nu_T}{\nu}\approx\frac{VD}{\nu}
+\eeq
+
+and hence both \(\nu_T/\nu\) and \(\Gamma_T/\Gamma\) increase linearly with Reynolds number, so molecular transport becomes increasingly negligible as the Reynolds number increases. The turbulent Prandtl number \(Pr_T\) is defined as:
+
+\beq
+Pr_T=\frac{\nu_T}{\Gamma_T}
+\eeq
+
+and is often near unity for simply turbulent flows. 
+
+% exercise 4.8 and 4.9
+
+
+
+
+
+
+
+
+
+
+\clearpage
+\section{Part 3 - CUDA Programming}
+
+The purpose of this assignment is to parallelize the same particle simulation using GPUs and to obtain \(\mathscr{O}(n)\) algorithmic dependence. Each node on Stampede has two Intel Sandy Bridge processors and one Intel Xeon Phi accelerator. In addition, 128 nodes are also equipped with an NVIDIA K20 GPU. GPU programming is fundamentally different from programming in serial because GPUs are designed to maximum throughput, while CPUs are designed to minimize latency. A CPU contains three main components - 1) a fetch/decode section that interprets instructions, 2) the ALU that actually does computation, and 3) the execution context that contains registers. CPUs also contain a large data cache and more complicated control logic, branch prediction, and prefetching hardware. This extra hardware attempts to reduce latency by trying to reduce slow memory operations. However, the idea behind a GPU is to maximize bandwidth, rather than minimize latency, so a GPU does not use these hardware components that would help a single stream run quickly. Instead, GPUs take advantage of this extra space by using more cores. A CPU consists of a few cores optimized for sequential serial processing, while a GPU has a massively parallel architecture consisting of thousands of smaller, and more efficient cores that are better at handling tasks simultaneously.
+
+To have an efficient GPU workload, you need to have thousands of independent pieces of work. In addition, the workload has to be SIMD-friendly, where nearby threads run the same program. Also, the program should be compute-heavy, since a math operation has a much lower runtime than a memory operation. Algorithms that are arithmetic-bound are excellent applications for GPUs. However, most programs are bound by memory, but you'll still have an advantage on GPUs because they have high main memory bandwidth. GPUs are not independent processors - they cannot do things on their own, and they have to be connected to a CPU, since GPUs cannot talk to a network, run an operating system, etc. Large machines may have a GPU attached to every CPU. The characteristics of GPUs lend the following broad classes of techniques for optimization:
+
+\begin{itemize}
+\item Increase the data independence of the workload. To have an efficient GPU workload, you need to have thousands of independent pieces of work. In addition, the workload has to be SIMD-friendly, where nearby threads run the same program. 
+\item Reduce communication between the CPU and the GPU. GPUs are attached to a CPU through a bi-directional PCIe express bus, which is relatively slow. You need to go over this bus every time you want to load data to the GPU and eventually get it back on the CPU.
+\item Reduce the degree of branching. In CPUs, there is one instruction stream per ALU, since each branch requires different, conditional instructions for the ALUs. On a GPU, because an instruction stream is shared among threads, instructions are operated in lockstep series, so not all of the ALUs may be doing useful work - some will be waiting while other ALUs execute branches. If every thread takes a different path through the machine, then your performance drops to \(1/w\) of the original full-SIMD performance, where \(w\) is the warp-width. This is referred to as ``branch divergence.''
+\item Reduce global memory operations on the GPU, since the global memory latency is about an order of magnitude higher than for CPUs. Compared to CPU caches, shared memory and the constant and texture caches are small, and so GPUs have to use a different strategy for dealing with memory latency. By utilizing the shared memory of a GPU (shared amongst threads in a block), slow global memory operations can be reduced.
+\item Global memory is most efficient when threads in a warp access an aligned, contiguous region of memory, since the GPU will bring in a block of data (analogous to the cache line size in CPUs being bigger than 1). Coalesce the memory so that this extra fetching is useful (i.e. try to use data in row-major or column-major layout, depending on the code). 
+\end{itemize}
+
+\subsection{First Parallel CUDA Code}
+
+For our first version of the CUDA code, we define vectors of all of the particle structures on both the host and device using the thrust library - each CUDA threads works directly on these structures. The host particles are initialized with positions and cell numbers, and this information is assigned to the device particles. The cell numbers of the particles are recorded in a vector {\tt cellnos}, where each entry corresponds to a particle. 
+
+\begin{lstlisting}[language=C]
+/* include directives ... */
+
+// A template meant for a "constant" CUDA value
+// I think that basically means the value doesn't change during a kernel run.
+// In our case, we probably only ever change the value to initialize it.
+template <class T>
+class CUDAConst
+{
+    T _v;
+public:
+    // Initialize with value
+    CUDAConst (T value) { set(value); }
+    
+    CUDAConst (void) { }
+
+    // Set value from host
+    void set (T value) { cudaMemcpyToSymbol(&_v, &value, sizeof(T)); }
+
+    // Automatically convert to specialized type *on the device*
+    __device__ operator T () const { return _v; }
+
+    // Explicitly get the value on the device
+    __device__ T d () const { return _v; }
+
+    // Get the value on the host
+    __host__ T h () const {
+        T v;
+        cudaMemcpyFromSymbol(&v, &_v, sizeof(T));
+        return v;
+    }
+};
+
+// define a constant type on the device of length _t - this lives in constant memory on the device
+// using constant memory. Use constant memory for data that will not change over the course of a kernel execution. There are 64kB constant memory on the device. Reading from constant memory can be significantly faster than reading from shared memory or global memory. Constant memory should be used when your input data does not change during execution of a kernel. 
+#define cuda_const(_t) __constant__ __device__ CUDAConst< _t >
+// define the cellsize and number of cells as constant on the device
+static cuda_const(double) cellsize;
+static cuda_const(int) ncells;
+
+// use one block with n threads (one thread per particle)
+#define NUM_BLOCKS 1
+#define NUM_THREADS n
+
+#define xcellsize (1.25*0.01)
+
+/* define macros for CLAMP, XY, GET_X, GET_Y ... */
+
+
+// device function can only be called from CUDA kernels
+// compute the cell for a particle based on its position
+__device__ static inline int get_cell_for_particle (particle_t & p) {
+	/* compute particle cell ... */
+    return XY(x,y);
+}
+
+__device__ void apply_force_gpu(particle_t &particle, particle_t &neighbor) {
+	/* update acceleration of particle based on neighbor ... */
+}
+
+// CUDA kernel to compute forces on a single particle, against all other particles
+__global__ void compute_forces_gpu(particle_t * particles, int n) {
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+    
+    if (tid >= n) 
+    		return;
+
+    particles[tid].ax = particles[tid].ay = 0;
+    
+    // apply forces against the particle corresponding to the thread id (particles[tid]) and all of the other particles
+    // we can do this fully independently because all we are changing is the acceleration, and all that is needed to compute the 
+    // new forces is the position
+    for(int j = 0 ; j < n ; j++)
+        apply_force_gpu(particles[tid], particles[j]);
+}
+
+// CUDA kernel to assign new cells and positions for particle
+__global__ void move_gpu (particle_t * particles, int * cellnos, int n, double size) {
+
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+    
+    if(tid >= n) 
+    		return;
+
+    particle_t * p = &particles[tid];
+    
+    /* update velocity and position ... */
+	
+	// assign new cell for particle
+    cellnos[tid] = get_cell_for_particle(*p);
+}
+
+// CUDA kernel to assign cells to particles by writing to cellnos
+__global__ void assign_cells (particle_t * particles, int * cellnos, int n) {
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+
+    if(tid >= n) return;
+		
+    particle_t & p = particles[tid];
+    cellnos[tid] = get_cell_for_particle(p);
+}
+
+
+int main( int argc, char **argv ) {
+	/* ... */
+
+	// define a vector of particle structures for the host
+    thrust::host_vector<particle_t> particles(n);
+
+	// initialize the size, number of cells, cell size, and particles
+    set_size( n );
+    ncells.set((int)(size / xcellsize));
+    cellsize.set(size / ncells.h());
+    init_particles( n, &particles[0] );
+
+    cudaThreadSynchronize();    
+    double copy_time = read_timer( );
+
+	// define a vector of particle structures for the device, and initialize
+    thrust::device_vector<particle_t> d_particles = particles;
+
+    cudaThreadSynchronize();
+    copy_time = read_timer( ) - copy_time;
+
+    // define a vector of cells of length n that identifies the cell number of each particle
+    thrust::device_vector<int> cellnos(n);
+
+    cudaThreadSynchronize();
+    double simulation_time = read_timer( );
+
+    // Initialize cells with the cell numbers of the device particles
+    assign_cells <<< NUM_BLOCKS, NUM_THREADS >>> (thrust::raw_pointer_cast(&d_particles[0]), thrust::raw_pointer_cast(&cellnos[0]), n);
+
+    for( int step = 0; step < NSTEPS; step++ ) {
+    		// apply forces to the particles in d_particles
+        compute_forces_gpu <<< NUM_BLOCKS, NUM_THREADS >>> (thrust::raw_pointer_cast(&d_particles[0]), n);
+
+		// move particles (update position and velocity) and assign new cell numbers
+        move_gpu <<< NUM_BLOCKS, NUM_THREADS >>> (thrust::raw_pointer_cast(&d_particles[0]), thrust::raw_pointer_cast(&cellnos[0]), n, size);
+
+		// save information - does this work, since we haven't yet copied particle data back to the host?
+        if( fsave && (step%SAVEFREQ) == 0 ) {
+            particles = d_particles;
+            save( fsave, n, &particles[0]);
+    }}
+    
+    // make sure all of the CUDA threads are done before we read the runtime timer
+    cudaThreadSynchronize();
+    simulation_time = read_timer( ) - simulation_time;
+
+	
+    if( fsave ) fclose( fsave );
+
+    return 0;
+}
+\end{lstlisting}
+
+
 
 
 
