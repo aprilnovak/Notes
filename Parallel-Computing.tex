@@ -128,6 +128,8 @@
 \newacronym{pram}{PRAM}{Parallel Random Access Memory}
 \newacronym{rdd}{RDD}{Resilient Distributed Dataset}
 \newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
+\newacronym{simt}{SIMT}{Single Instruction, Multiple Thread}
+\newacronym{sm}{SM}{Streaming Multiprocessor}
 \newacronym{smp}{SMP}{Symmetric Multiprocessor}
 \newacronym{spmd}{SPMD}{Single Program, Multiple Data}
 \newacronym{spmv}{SpMV}{Sparse Matrix-Vector Multiply}
@@ -151,34 +153,9 @@
 
 This document contains my course notes for CS 267, as well as my notes on general topics such as computer architecture.
 
-\section{Common Terminology}
 
-\subsection{Basic Computer Architecture}
 
-\subsubsection{Processors and Cores}
-A processor (synonyms: computer chip) is the ``brain'' of the computer. There are two basic components in a (single-core) processor:
 
-\begin{enumerate}
-\item The \gls{alu} performs mathematical, logical, and decision operations
-\item The \gls{cpu} directs the operations handled by the processor
-\end{enumerate}
-
-A processor may have one or more cores - cores are the parts of the processor that receive instructions, work on those instructions, and return results. A core can run a single program, or multiple - they are the parts of a processor that do simultaneous processing of multiple tasks at a given time. The number of cores are essentially the number of operations that can be performed simultaneously by one processor, since each core has its own \gls{alu} and \gls{cpu}. Each core is itself technically a processor, since early computers has single-core processors, but the chip is manufactured in such a way that the different cores work in coordination. For most multicore chips, the cores each have their own L1 and L2 cache, but share a large L3 cache. Many cores per processor is not necessarily advantageous, since it requires the programmer to write algorithms with a very high degree of parallelism.
-
-\subsubsection{Threads}
-A thread is one (or more) hardware contexts within a single core. \gls{ht} is the process by which one core can run more than one thread, where those threads then share resources such as memory and arithmetic operation abilities within that core. Without \gls{ht}, you would only be able to have one thread per core, and the default with \gls{openmp} is to run one thread per physical core. So, with \gls{ht}, one physical core appears as multiple cores, allowing scheduling of multiple processes per core. The number of \gls{openmp} threads (per \gls{mpi} task) is specified with the {\tt -c} option.
-
-\subsubsection{Nodes}
-On the motherboard of the computer are one or more sockets. Each socket holds one processor. A node combines several sockets, such that a node contains several processors. Edison nodes contain two processors with 12 cores each. Some memory is shared between the sockets on a node, so memory is shared not only between cores on a single processor, but also between processors on a single node. Two-socket nodes are very standard, and you can also buy four-socket nodes, but improvement diminishes beyond that due to \gls{numa} issues. 
-
-A cluster is a bunch of nodes wired together using explicit networking. Nodes do not directly share memory with each other - you must pass information around on the network. So, \gls{mpi} is required to utilize multiple nodes, but \gls{mpi} has even been used to program shared memory systems, despite the fact that all cores on a node share some amount of memory with each other. The number of nodes requested for a job are indicated with the {\tt -N} sbatch option. You can specify a minimum and maximum number of nodes to allocate, but if you provide only one number, then you will use exactly that many nodes.
-
-\begin{lstlisting}
-#SBATCH -N 24
-\end{lstlisting}
-
-\subsubsection{Tasks}
-A task is a single instance of a serial application or an \gls{mpi} application - this represents the number of times that the executable for your program is launched. If using \gls{mpi} to program in a distributed memory system, setting the number of tasks equal to the number of nodes will then run one \gls{mpi} task per node. However, more than one task can be run on each node - in that case, \gls{mpi} is used in something of a shared memory programming model by passing messages between the different cores in a node and between cores in different nodes. The \textit{total} number of tasks for your program are specified using the {\tt -n} option, where by default one task is specified per node; {\tt -n} is the multiplication of the number of tasks per node by the number of compute nodes indicated by the {\tt SBATCH} directive. Alternatively (?), you can specify the number of \gls{mpi} tasks per compute node using the {\tt -N} srun option. Edison works best for 1-4 \gls{mpi} tasks per node. 
 
 
 A flop is a floating point operation, which is usually in double precision unless otherwise noted. While the fastest computer has a clock rate of 55 Pflop/s, most laptops are in the Gflop/s range. 
@@ -203,9 +180,17 @@ Each core has one or two (hyperthreading) threads and a 256 bit vector unit.
 
 A process is an instance of a computer program that is being executed, and consists of the program code and its current activity. A process can be made up of multiple threads of execution that execute instructions concurrently. Process-based multitasking allows you to do multiple things on your computer at the same time, such as using a text editor while compiling code. Each process has a complete set of its own variables. Threads are essentially processes that run in the same memory context because they can share data during execution. 
 
+A hash table is used to quickly look up information in a table - apply a function to your data that produces a unique key, and then that data is stored in the key-location in the hash table. This allows you to not have to search through the table every time you want to extract that data. 
+
+Avoiding communication is very important because the gap between flops/second, bandwidth, and latency are growing exponentially in time - the time per flop improves annually at 59\%, while bandwidth is about 25\% and latency 5-10\%. In addition, the energy required to communicate off-chip is two orders of magnitude greater than costs of on-chip communication. 
+
+If you can store multiple copies of the matrix, then you can reduce the total number of messages sent. Remote access bandwidth tends to be higher than the local access bandwidth because it is so much more expensive to build those long cables and that access time dominates runtime, so effort is spent on reducing that limitation as much as possible.
+
+\section{Common Terminology}
+
 \subsection{The Stack and Heap}
 
-The stack is a region of memory that stores temporary variables created by each function in a program. The stack is a \gls{lifo} data structure that is managed by the \gls{cpu}. Every time a function declares a new variable, it is pushed onto the stack. Then, when that function exits, all of the variables pushed onto the stack by that function are freed. Because stack variables are lost when a function exits, those variables are inherently local. Using the stack to store variables allows you to not have to worry about allocating memory by hand, and hence reading/writing to stack variables is very fast. There is a limit on the size of variables that can be stored on the stack. The {\tt static} keyword can be used to keep a variable on the stack around longer than it would have been otherwise (it won't be freed upon exit of the function). A {\tt static} variable is known globally only within a single file, while an {\tt extern} variable is global to all files.
+The stack is a region of memory that stores temporary variables created by each function in a program. The stack is a \gls{lifo} data structure that is managed by the CPU. Every time a function declares a new variable, it is pushed onto the stack. Then, when that function exits, all of the variables pushed onto the stack by that function are freed. Because stack variables are lost when a function exits, those variables are inherently local. Using the stack to store variables allows you to not have to worry about allocating memory by hand, and hence reading/writing to stack variables is very fast. There is a limit on the size of variables that can be stored on the stack. The {\tt static} keyword can be used to keep a variable on the stack around longer than it would have been otherwise (it won't be freed upon exit of the function). A {\tt static} variable is known globally only within a single file, while an {\tt extern} variable is global to all files.
 
 Variables allocated to the heap, on the other hand, do not have such memory limitations (the limitations are those of the entire computer). The heap is a memory region that is not managed automatically for you - to allocate memory on the heap, use {\tt malloc}. You must deallocate memory once you don't need it anymore, and if you fail to do so, you have created a memory leak, which can be detected with a tool such as {\tt valgrind}. Reading and writing to the heap is slower than reading from the stack because you need to use pointers to access memory on the heap. Variables created on the heap are accessible by any function, and are basically global in scope. Both the stack and the heap are conceptual terms - there is no physical region of memory that is the ``stack'' or the ``heap.''
 
@@ -256,31 +241,52 @@ Processors name bytes and words in its address space. These represents integers,
 
 Processors also have caches, which are small amounts of fast memory that are physically located close to the processor on the computer chip, or off the chip. The caches are controlled by hardware, not by software (?). The hardware moves information into the caches, which can dramatically impact read operations. The cache is used to store values of recently used or nearby data that will not fit into the registers. When you actually need data, you move it from memory to cache, and then from cache to register. 
 
-\subsection{Memory Hierarchies}
+\section{Computer Architecture}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1.0\linewidth]{figures/memory-heirarchy.pdf}
+\includegraphics[width=0.75\linewidth]{figures/memory-heirarchy.pdf}
 \caption{Memory hierarchy in a single processor.}
 \end{figure}
 
-\begin{itemize}
-\item The \textbf{processor} is the part of the computer that performs actions. 
-	\begin{itemize}
-	\item Directly on the processor are \textbf{registers}, which are used when presently performing operations on variables. These registers are typically 16 bytes. The cost of register access is essentially zero.
-	\item The processor typically also has an on-chip cache, referred to as the L1-cache (level-1 cache), or simply the cache. The size of the L1-cache is on the order of 16 kB, and is limited in size because it has to fit on the chip. The cost of L1-cache access takes about 1-2 cycles.
-	\end{itemize}
-\item Off the chip is the \gls{sram}, or other caches that are typically referred to as the L2-cache (\(\sim\)2 MB), L3-cache, etc., though some of these caches could also be on the chip. A large cache will always have delays, since hardware has to check longer addresses and due to associativity rules. More generally, the further from the chip, the greater the time delays due to the transit times through longer wires. The Cray T3E eliminated one cache to speed up misses of the cache. When a cache miss occurs, you waste time moving through the memory hierarchy to get to main memory. If you have a program that is well-optimized to the caches closer to the processor, then you don't need some of the further-away caches. IBM uses a ``victim cache,'' so that data in the cache that is about to be thrown away due to new incoming data that is to be stored in the same cache location can be stored in the victim cache. This is overall cheaper than sending back to \gls{dram} again.
-\item \gls{dram}
-\item Disk. Supercomputers don't have a disk attached, so they do not have any virtual memory (?). Clouds, on the other hand, do have virtual memory.
-\item Supercomputers have tertiary storage, where robots move \textbf{disks/tape} into computers for reading.
-\end{itemize}
+\subsection{Processors and Cores}
+A processor (synonyms: computer chip) is the ``brain'' of the computer. There are two basic components in a (single-core) processor:
+
+\begin{enumerate}
+\item The \gls{alu} performs mathematical, logical, and decision operations
+\item The CPU directs the operations handled by the processor
+\end{enumerate}
+
+A processor may have one or more cores - cores are the parts of the processor that receive instructions, work on those instructions, and return results. A core can run a single program, or multiple - they are the parts of a processor that do simultaneous processing of multiple tasks at a given time. The number of cores are essentially the number of operations that can be performed simultaneously by one processor, since each core has its own \gls{alu} and CPU. Each core is itself technically a processor, since early computers had single-core processors, but the chip is manufactured in such a way that the different cores work in coordination. Many cores per processor is not necessarily advantageous, since it requires the programmer to write algorithms with a very high degree of parallelism.
+
+\subsubsection{Registers}
+Directly on the processor are registers, which are used when presently performing operations on variables. These registers are typically 16 or 32 bits. The cost of register access is essentially zero. 
+
+\subsubsection{Caches}
+For most multicore chips, the cores each have their own L1 (64 kB) and L2 (256 kB) cache, but share a large L3 cache (4 - 24 MB). A large cache will always have delays, since hardware has to check longer addresses and due to associativity rules. More generally, the further from the chip, the greater the time delays due to the transit times through longer wires. The Cray T3E eliminated one cache to speed up misses of the cache so that you wasted less time checking every level of the memory hierarchy, and instead compromised by consistently increasing the instantaneous access time, but not the cycle-through-memory-time. IBM used a ``victim cache'' so that data in the cache that was about to be thrown away due to new incoming data to be stored in the same cache location could be stored in the victim cache. This is overall cheaper than sending back to \gls{dram} again.
+
+Cache is fast (expensive) memory that keeps a \textit{copy} of data, and the information about where it came from in main memory; the cache is hidden from software. The cache line length is the number of bytes loaded together in one entry - caches always load more than one value at a time, even though you may only request one line; this takes advantage of spatial locality. Loading in a single value will load in its \(n\) neighbors for a cache line length of \(n\). A direct-mapped cache can store only one address in a given range of cache (all xxxxx1101 values would be stored in cache location 1101). Because this can lead to bad behavior, associative caches, or \(n\)-way caches, can store \(n\) of the xxxxx1101 locations at cache location 1101. Up to 16 xxxxx1101 entries can be stored in an associative cache, reducing collision issues.
+
+When data is read in from memory, it is moved into the cache so that the next time you access that value it is faster. A cache hit occurs when, upon requesting a value for a register, that value is already stored in the cache. Alternatively, a cache miss occurs when that data is not already in the cache, and you have to go out further in memory to obtain it. Then, the hardware will store the requested data in cache and eliminate whatever was previously in cache to avoid such a miss in the (near) future. With parallel programming, taking advantage of the fact that data is moved into the cache may be more difficult if the data is needed on every processor, since then the data movement which would only have to be performed one time has to be performed once for each processor. But, sometimes it is still worth it for processors to perform duplicate actions so that they don't need to communicate information.
+
+\subsection{Threads}
+A thread is one (or more) hardware contexts within a single core. \gls{ht} is the process by which one core can run more than one thread, where those threads then share resources such as memory and arithmetic operation abilities within that core. Without \gls{ht}, you would only be able to have one thread per core, and the default with \gls{openmp} is to run one thread per physical core. So, with \gls{ht}, one physical core appears as multiple cores, allowing scheduling of multiple processes per core. The number of \gls{openmp} threads (per \gls{mpi} task) is specified with the {\tt -c} option.
+
+\subsection{Nodes}
+On the motherboard of the computer are one or more sockets. Each socket holds one processor. A node combines several sockets, such that a node contains several processors. Edison nodes contain two processors with 12 cores each. Some memory is shared between the sockets on a node, so memory is shared not only between cores on a single processor, but also between processors on a single node. Two-socket nodes are very standard, and you can also buy four-socket nodes, but improvement diminishes beyond that due to \gls{numa} issues. 
+
+A cluster is a bunch of nodes wired together using explicit networking. Nodes do not directly share memory with each other - you must pass information around on the network. So, \gls{mpi} is required to utilize multiple nodes, but \gls{mpi} has even been used to program shared memory systems, despite the fact that all cores on a node share some amount of memory with each other. The number of nodes requested for a job are indicated with the {\tt -N} sbatch option. You can specify a minimum and maximum number of nodes to allocate, but if you provide only one number, then you will use exactly that many nodes.
+
+\begin{lstlisting}
+#SBATCH -N 24
+\end{lstlisting}
+
+\subsection{Tasks}
+A task is a single instance of a serial application or an \gls{mpi} application - this represents the number of times that the executable for your program is launched. If using \gls{mpi} to program in a distributed memory system, setting the number of tasks equal to the number of nodes will then run one \gls{mpi} task per node. However, more than one task can be run on each node - in that case, \gls{mpi} is used in something of a shared memory programming model by passing messages between the different cores in a node and between cores in different nodes. The \textit{total} number of tasks for your program are specified using the {\tt -n} option, where by default one task is specified per node. Edison works best for 1-4 \gls{mpi} tasks per node. The maximum number of tasks per node is equal to the number of cores per node, since it does not make sense with the message passing paradigm to pass messages within the same processor. 
+
+\subsection{Memory Hierarchies}
 
 Historically, while the CPU has been improving according to Moore's law, the DRAM latency (time for data to move off-chip and onto DRAM) has been improving at a much slower rate, so these memory hierarchies are getting deeper. We want to develop algorithms that touch memory as infrequently as possible. 
-
-Cache is fast (expensive) memory that keeps a \textit{copy} of data, and the information about where it came from, in main memory; it is hidden from software. For data at memory address xxxxx1101, it will be stored at cache location 1101. So, every address location that ends with 1101 will be mapped to this same cache location (for a direct-mapped cache). When data is read in from memory, it is moved into the cache so that the next time you access that value it is faster. A cache hit occurs when, upon requesting a value for a register, that value is already stored in the cache. Alternatively, a cache miss occurs when that data is not already in the cache, and you have to go out further in memory to obtain it. Then, the hardware will store the requested data in cache and eliminate whatever was previously in cache to avoid such a miss in the future. With parallel programming, taking advantage of the fact that data is moved into the cache may be more difficult if the data is needed on every processor, since then the data movement which would only have to be performed one time has to be performed once for each processor. But, sometimes it is still worth it for processors to perform duplicate actions so that they don't need to communicate information.
-
-The cache line length is the number of bytes loaded together in one entry - caches always load more than one value at a time, even though you may only request one line; this takes advantage of spatial locality. Loading in a single value will load in its \(n\) neighbors for a cache line length of \(n\). A direct-mapped cache can store only one address in a given range of cache (all xxxxx1101 values would be stored in cache location 1101). Because this can lead to bad behavior, associative caches, or \(n\)-way caches, which can store \(n\) of the xxxxx1101 locations at cache location 1101. Up to 16 xxxxx1101 entries can be stored in an associative cache. Associative caches reduce collision issues.
 
 Also in the memory hierarchy are several other levels, such as virtual memory. Even if your program will not fit in main memory, some of the program will be put out on disk by providing extra address on the disk, where the hardware system maps those address. The \gls{tlb} determines whether information is held on disk or in main memory. A page is the amount of memory that can be read from disk to main memory in a group, and is 8 kB, and could be determined from a memory benchmark by looking for the plateau on an array size that can be read in to the L2-cache in entirety.
 
@@ -335,7 +341,7 @@ If you have enough stages in an operation, then you can do many things at once. 
 
 \subsubsection{Single Instruction, Multiple Data}
 
-\gls{simd} is the process by which a single instruction is used to perform an operation on multiple registers at the same time. Using bigger registers, you can load multiple values into these registers and perform a single instruction to act on the multiple values in the register. The compiler will try to find \gls{simd} instructions and use them as much as possible. Because a register contains 16 bytes, \gls{simd} behaves differently if you're using different data types - because doubles are 8 bytes, while floats are 4 bytes, you can only achieve 2x parallelism with doubles, but 4x parallelism with floats. The challenge with \gls{simd} is that the data must be in contiguous memory locations when loaded - this requires a good degree of spatial locality. The instructions also have to move data around from one part of the register to another. With \gls{gpu}s, you can be performing single instructions with thousands of data pieces at the same time, a principle that is similar to \gls{simd} instructions. 
+\gls{simd} is the process by which a single instruction is used to perform an operation on multiple registers at the same time. Using bigger registers, you can load multiple values into these registers and perform a single instruction to act on the multiple values in the register. The compiler will try to find \gls{simd} instructions and use them as much as possible. Because a register contains 16 bytes, \gls{simd} behaves differently if you're using different data types - because doubles are 8 bytes, while floats are 4 bytes, you can only achieve 2x parallelism with doubles, but 4x parallelism with floats. The challenge with \gls{simd} is that the data must be in contiguous memory locations when loaded - this requires a good degree of spatial locality. The instructions also have to move data around from one part of the register to another. With GPUs, you can be performing single instructions with thousands of data pieces at the same time, a principle that is similar to \gls{simd} instructions. 
 
 \subsubsection{Fused Multiply-Add}
 
@@ -474,7 +480,7 @@ The \gls{blas} is an industry standard for how to perform certain linear algebra
 
 \section{Parallel Programming Models}
 
-While there is not a one-to-one correspondence between the machine type and the programming model, there are general trends that work best. Historically, when people developed a new parallel machine, they also developed a new programming model. This contributed to the delay in accepting parallel programming due to the complications. During the development of programming models, it was important that the software be portable among different machines, but recently that has been a redux in that we are now developing machine-specific models because people are starting to use \gls{gpu}s. However, there are many standards that have been enacted to make sure \gls{mpi} can run correctly 10 years in the future.  
+While there is not a one-to-one correspondence between the machine type and the programming model, there are general trends that work best. Historically, when people developed a new parallel machine, they also developed a new programming model. This contributed to the delay in accepting parallel programming due to the complications. During the development of programming models, it was important that the software be portable among different machines, but recently that has been a redux in that we are now developing machine-specific models because people are starting to use GPUs. However, there are many standards that have been enacted to make sure \gls{mpi} can run correctly 10 years in the future.  
 
 A parallel machine has multiple processors, multiple memory locations, and an interconnection network that connects everything together. The interconnection network, if simple, is sometimes referred to as a bus. A torus is a nearest-neighbor mesh (Hopper), where processors only communicate with those nearby. A dragonfly topology (Edison)...
 
@@ -905,21 +911,30 @@ A better model is the latency and bandwidth model. The time to send a message is
 
 \section{MPI}
 
-\gls{mpi} was the first (and currently only) standardized, vendor-independent message passing library. Originally, there were many message passing libraries, and the best competitor to \gls{mpi} was \gls{pvm}, developed at ORNL. \gls{mpi} is basically intended for \gls{spmd} programming. \gls{mpi} is simply a specifications for the developers and user of message passing libraries - by itself, it is not a library, but rather a specification of what such a library should be. Message passing involves moving data from the address space of one process to that of another process through cooperative operations on each process. \gls{mpi} can be used with C and Fortran. Originally, \gls{mpi} was intended for distributed memory architectures, which were becoming increasingly popular in the 1980s-1990s. Then, as architecture trends changed, shared memory \gls{smp}s were combined over networks, creating hybrid distributed memory/shared memory systems. Both types of underlying memory architectures are handled seamlessly. \gls{mpi} can run on distributed memory, shared memory, and hybrid architectures, though the programming model remains a distributed memory model (regardless of the underlying physical architecture). The first version of \gls{mpi} was introduced in 1994. 
+\gls{mpi} was the first (and currently only) standardized, vendor-independent message passing library that can be used with C and Fortran.. Originally, there were many message passing libraries, and the best competitor to \gls{mpi} was \gls{pvm}, developed at ORNL. \gls{mpi} was developed in the 1990s as a language-independent \gls{api} that follows the \gls{spmd} paradigm, where the user writes a single program that runs on all distributed nodes, each operating on a different chunk of the data. \gls{mpi} by itself it is not a library, but rather a specification of what such a library should be. Hence, it can be implemented in a variety of ways, the most common being MPICH (Argonne National Laboratory) and Open MPI. The {\tt mpi.h} header file must be included for all programs that make \gls{mpi} library calls ({\tt \#include <mpi.h>}).
 
-The {\tt mpi.h} header file must be included for all programs that make \gls{mpi} library calls ({\tt \#include <mpi.h>}). Parallel code begins once the \gls{mpi} environment is initialized using {\tt MPI\_Init}, and terminates once the environment is terminated using {\tt MPI\_Finalize}. \gls{mpi} calls return values - {\tt MPI\_SUCCESS} if the \gls{mpi} command was successful, for instance. \gls{mpi} uses objects called communicators and groups to define which collection of processes can communicate with each other, and most \gls{mpi} routines require you to specify a communicator as an argument. {\tt MPI\_COMM\_WORLD} is the predefined communicator that includes all of your \gls{mpi} processes. Within each communicator, every process has a unique integer identifier assigned by the system when the process initializes. This rank is referred to as the ``task ID,'' and numbering begins at 0. The task ID is used by the programmer to specify the source and destination of messages, and these are often used conditionally. Most \gls{mpi} routines return an error code parameter, but the default behavior of an \gls{mpi} call is to abort if there is an error, so you actually would probably not be able to capture a return code unless successful ({\tt MPI\_SUCCESS}). 
+Originally, \gls{mpi} was intended for distributed memory architectures, which were becoming increasingly popular in the 1980s-1990s. Then, as architecture trends changed, shared memory \gls{smp}s were combined over networks, creating hybrid distributed memory/shared memory systems. Both types of underlying memory architectures are handled seamlessly. \gls{mpi} can run on distributed memory, shared memory, and hybrid architectures, though the programming model remains a distributed memory model (regardless of the underlying physical architecture).
 
-Communication can be achieved using point-to-point operations, which pass messages between two different \gls{mpi} tasks. One task performs a send operation, while the other performs a receive operation. There are many combined send/receive routines, and any send routine can be paired with any type of receive routine. Because each send operation is not perfectly synchronized with its matching receive operation, the \gls{mpi} implementation has to deal with storing data when two tasks are out of sync. The \gls{mpi} implementation decides what happens to data in these situations. Usually, there is a system buffer area that is reserved to hold data in transit. This is referred to as ``message buffering.'' The system buffer space is managed entirely by the \gls{mpi} library, and can be exhausted fairly easily. This buffer region can exist on the sending and/or receiving sides. Alternative to the system buffer, where these messages are stored before they are ready to be sent/received is the application buffer, which contains the user-managed address space that contains your program variables. If data is stored in a system buffer upon receipt, that represents an asynchronous receive, whereas synchronous sends involve ``handshaking'' to conform the receive task sees the send.
+Message passing involves moving data from the address space of one process to that of another process through cooperative operations on each process. There are no shared variables, and all communication and synchronization require subroutine calls. Communication is performed as send-and-receive (pairwise) or as collective communication. 
 
-More of the \gls{mpi} point-to-point routines can be used in either blocking or non-blocking modes. A blocking send routine will only ``return'' after it is safe to modify the application buffer (your send data) for reuse. Modifications will not impact the data intended for the receive task, though a blocking send routine does not mean that the data was actually received - it could be in the system buffer of the receiving processor. Non-blocking sends/receives will return almost immediately, and they do not wait for communication events to complete, such as message copying from user memory to system buffer space. Non-blocking communications are primarily used to overlap computation with communication to exploit additional performance gains. You would need to wait or probe to see whether the communication finished. The blocked command {\tt MPI\_Send()} could be thought of equivalently as being {\tt MPI\_Isend()} followed by {\tt MPI\_Wait()}. Using blocked communication also leads to deadlocks if you have two processors both attempting to send information to each other without one first receiving it, since the blocked communication will not return until the send has been completed, which cannot happen.
+
+
+
+It is very difficult to get data races in \gls{mpi}.
+
+
+
+ \gls{mpi} calls return values - {\tt MPI\_SUCCESS} if the \gls{mpi} command was successful, for instance. \gls{mpi} uses objects called communicators and groups to define which collection of processes can communicate with each other, and most \gls{mpi} routines require you to specify a communicator as an argument. {\tt MPI\_COMM\_WORLD} is the predefined communicator that includes all of your \gls{mpi} processes. Within each communicator, every process has a unique integer identifier assigned by the system when the process initializes. This rank is referred to as the ``task ID,'' and numbering begins at 0. The task ID is used by the programmer to specify the source and destination of messages, and these are often used conditionally. Most \gls{mpi} routines return an error code parameter, but the default behavior of an \gls{mpi} call is to abort if there is an error, so you actually would probably not be able to capture a return code unless successful ({\tt MPI\_SUCCESS}). 
+
+There are many combined send/receive routines, and any send routine can be paired with any type of receive routine. Because each send operation is not perfectly synchronized with its matching receive operation, the \gls{mpi} implementation has to deal with storing data when two tasks are out of sync. The \gls{mpi} implementation decides what happens to data in these situations. Usually, there is a system buffer area that is reserved to hold data in transit. This is referred to as ``message buffering.'' The system buffer space is managed entirely by the \gls{mpi} library, and can be exhausted fairly easily. This buffer region can exist on the sending and/or receiving sides. Alternative to the system buffer, where these messages are stored before they are ready to be sent/received is the application buffer, which contains the user-managed address space that contains your program variables. If data is stored in a system buffer upon receipt, that represents an asynchronous receive, whereas synchronous sends involve ``handshaking'' to conform the receive task sees the send.
+
+
 
 \gls{mpi} guarantees that messages will not overtake each other. For instance, if a processor sends out two messages, they will be received in chronological send order by the receiving processor. However, order rules do not apply if there are multiple threads participating in the communication operations. If you attempt to send two messages to a task, where that task only has one receive posted, then only one of those messages will be received. 
 
-\gls{mpi} is a library, and hence it can be implemented in a variety of ways, the most common being MPICH (Argonne National Laboratory) and Open MPI. {\tt mpirun} determines how many copies of a process will start - you don't control how many processes are in the overall communicator at runtime - this is determined before you run. 
+{\tt mpirun} determines how many copies of a process will start - you don't control how many processes are in the overall communicator at runtime - this is determined before you run. 
 
-There are no shared variables - all communication and synchronization requires subroutine calls. Communication is performed as send-and-receive (pairwise) or as collective communication (broadcast, etc.). Collective communication could be performed using a binary tree, for example. It is very difficult to get data races in \gls{mpi}. All statements in the processes execute independently. 
 
-\gls{mpi} is a language-independent \gls{api} that follows the \gls{spmd} paradigm, where the user writes a single program that runs on all distributed nodes, each operating on a different chunk of the data. The executable is launched on each of these nodes. 
 
 \subsection{Environment Management}
 
@@ -928,27 +943,26 @@ This set of routines are used for specifying the \gls{mpi} execution environment
 \begin{itemize}
 \item {\tt MPI\_Abort(comm, errorcode)}: terminates all \gls{mpi} processes associated with the communicator. In most \gls{mpi} implementations, this will actually terminate all processes regardless of the communicator specified.
 \item {\tt MPI\_Comm\_size(comm, \&size)}: returns the total number of \gls{mpi} processes in the specified communicator. If the communicator is {\tt MPI\_COMM\_WORLD}, then this represents the number of \gls{mpi} tasks available to your application.
-\item {\tt MPI\_Comm\_rank(comm, \&rank)}: returns the rank of the calling \gls{mpi} process within the specified communicator. If a process becomes associated with other communicators, it will have a unique rank in each communicator.
+\item {\tt MPI\_Comm\_rank(comm, \&rank)}: returns the rank of the calling \gls{mpi} process within the specified communicator. A process has a unique rank in each communicator.
 \item {\tt MPI\_Finalize()}: terminates the \gls{mpi} execution environment
 \item {\tt MPI\_Get\_processor\_name(\&name, \&resultlength)}: returns the processor name and the length of the name
 \item {\tt MPI\_Get\_version(\&version, \&subversion)}: returns the version and subversion of the \gls{mpi} standard that is implemented by the library
-\item {\tt MPI\_Init}: initializes the \gls{mpi} execution environment. This can only be called once in an \gls{mpi} program. For C programs, you can pass in command line arguments to all processes, though this isn't required ({\tt MPI\_Init(\&argc, \&argv)}).
-\item {\tt MPI\_Initialized(\&flag)}: indicates whether the \gls{mpi} environment has been initialized using {\tt MPI\_Init}. 
-\item {\tt MPI\_Wtick()}: returns the resolution of {\tt MPI\_Wtime}
-\item {\tt MPI\_Wtime()}: returns an elapsed wall clock time on the calling processor
+\item {\tt MPI\_Init(\&argc, \&argv)}: initializes the \gls{mpi} execution environment. This can only be called once in an \gls{mpi} program.
+\item {\tt MPI\_Initialized(\&flag)}: indicates whether the \gls{mpi} environment has been initialized. 
 \end{itemize}
 
 \subsection{Point-to-Point Communication}
 
-The {\tt buffer} is the program address space that references the data that is to be sent or received. In most cases, this is simply the name of the variable that is sent/received. For C programs, this variable is passed by reference. The {\tt count} is the number of data elements of a particular type to be sent. For portability, \gls{mpi} predefines its elementary data types, prefaced by {\tt MPI}. For example, a signed int would be {\tt MPI\_INT}. The {\tt destination} is the process where the message should be delivered, and is written as the rank of the receiving process. For receive routines, you need to specify the {\tt source}, which is the originating process of the message, specified as the rank of the sending process. This could be set to {\tt MPI\_ANY\_SOURCE} to receive a message from any task. The {\tt tag} is an arbitrary, non-negative integer assigned by the programmer to uniquely identify a message. Send and receive operations should match message tags. For a receive operation, {\tt MPI\_ANY\_TAG} can be used to receive any message regardless of its tag. The {\tt comm}, or communicator, indicates the communication context, or set of processes for which the source or destination fields are valid. 
+More of the \gls{mpi} point-to-point routines can be used in either blocking or non-blocking modes. A blocking send routine will only ``return'' after it is safe to modify the application buffer (your send data) for reuse, though it does not guarantee that the data was actually received - it could be in the system buffer of the receiving processor. Non-blocking sends/receives will return almost immediately, and they do not wait for communication events to complete, such as message copying from user memory to system buffer space. Non-blocking communications are primarily used to overlap computation with communication to exploit additional performance gains. You would need to wait or probe to see whether the communication finished before performing statements that depend on sending/receiving the message. Using blocked communication could lead to deadlocks if you have two processors both attempting to send information to each other without one first receiving it, since the blocked communication will not return until the send has been completed.
 
-For a receive operation, the {\tt status} indicates the source and tag of the message, and is a pointer to a predefined structure {\tt MPI\_Status}. The {\tt request} is used by non-blocked send and receive operations. Because non-blocking send/receives can return before the requested system buffer space is obtained, the system issues a unique request number - the user uses this handle later in the wait routine to determine completion of the non-blocking operation. In C, this is a pointer to a predefined structure {\tt MPI\_Request}. 
+The communication routines described in this section take several values as inputs. The {\tt buffer} is the program address space that references the data that is to be sent or received. In most cases, this is simply the name of the variable that is sent/received. For C programs, this variable is passed by reference, and hence is precluded by an ampersand. The {\tt count} is the number of data elements of a particular type to be sent. You must also specify the type of the data that you are sending, and for portability between platforms, \gls{mpi} predefines its own elementary data types, prefaced by {\tt MPI}. For example, a signed int would be {\tt MPI\_INT}. The {\tt destination} is the rank of the process where the message should be delivered. For receive routines, you need to specify the {\tt source}, which is the rank of the originating process of the message. This could be set to {\tt MPI\_ANY\_SOURCE} to receive a message from any task. The {\tt tag} is an arbitrary, non-negative integer assigned by the programmer to uniquely identify a message. Send and receive operations should match message tags, since a single process may be receiving messages from multiple processes, and an order to these receipts can be specified using tags. For a receive operation, {\tt MPI\_ANY\_TAG} can be used to receive any message regardless of its tag. The {\tt comm}, or communicator, indicates the communication context, or set of processes for which the source or destination fields are valid, since a process may be involved with various communicators, and have different ranks in each of these communicators. For a receive operation, the {\tt status} indicates the source and tag of the message, and is a pointer to a predefined structure {\tt MPI\_Status}. The {\tt request} is used by non-blocked send and receive operations. Because non-blocking send/receives can return before the requested system buffer space is obtained, the system issues a unique request number - the user uses this handle later in the wait routine to determine completion of the non-blocking operation. In C, this is a pointer to a predefined structure {\tt MPI\_Request}. 
+
+To make a routine non-blocking, use {\tt MPI\_Isend} as opposed to {\tt MPI\_Send}, for instance - routines with the {\tt I} are non-blocking routines (return immediately), while those without are blocking routines.
 
 \begin{itemize}
 \item {\tt MPI\_Get\_count (\&status, datatype, \&count)}: returns the source, tag, and number of elements of datatype received
-\item {\tt MPI\_Probe(source, tag, comm, \&status)}: performs a blocking test for a message
-\item {\tt MPI\_Iprobe(source, tag, comm, \&flag, \&status)}: performs a non-blocking test for a message
-\item {\tt MPI\_Send(\&buffer, count, type, destination, tag, comm)}: blocking send - the routine returns only after the application buffer in the sending task is free for reuse. Some implementations may use a synchronous send to implement the basic blocking send. 
+\item {\tt MPI\_Probe(source, tag, comm, \&status)}: performs a test for a message
+\item {\tt MPI\_Send(\&buffer, count, type, destination, tag, comm)}: blocking send - the routine returns only after the application buffer in the sending task is free for reuse. Some implementations may use a synchronous send to implement the basic blocking send. The blocked command {\tt MPI\_Send()} could be thought of equivalently as being {\tt MPI\_Isend()} followed by {\tt MPI\_Wait()}. 
 \item {\tt MPI\_Isend(\&buffer, count, type, destination, tag, comm, request)}: non-blocking send. This identifies an area in memory to serve as a send buffer - processing continues immediately without waiting for the message to be coupied out from the application buffer. A handle is returned for assess the message status. The program should not modify the application buffer until subsequent calls to {\tt MPI\_Wait} or {\tt MPI\_Test} indicate that the send has been completed.
 \item {\tt MPI\_Ssend(\&buffer, count, type, destination, tag, comm)}: synchronous blocking send - send a message and block until the application buffer in the sending task is free for reuse \textit{and} the destination process has started to receive the message. 
 \item {\tt MPI\_Issend(\&buf, count, datatype, dest, tag, comm, \&request)}: non-blocking synchronous send
@@ -1017,6 +1031,187 @@ To program in \gls{upc}, you need to include the {\tt upc.h} header file. Any le
 Shared arrays are cyclic by default, and are spread over the threads. Shared arrays allow you to instead just modify the element belonging to your thread, and then at the end performing some aggregate operation - this can avoid the use of very large numbers of locks. Many \gls{upc} programs avoid these arrays in favor of directories. 
 
 Instead of performing send/receives, you do put/get. Although \gls{pgas} seems closer to shared memory, it is more like how the hardware actually looks. For small messages, it is much better to use one-sided communication than send/receive with \gls{mpi}.
+
+Like MPI, you can run across multiple processes, but you can directly edit shared memory like in OpenMP.  The fundamental difference between MPI and \gls{upc} is that \gls{upc} performs one-sided communication. UPC++ is a library, and not a compiled language like UPC, but the performance is comparable. 
+
+
+
+\section{GPUs}
+
+The goals of GPUs are to maximize throughput - not to minimize latency. The goal of minimizing latency can be thought of in terms of going to the DMV - the customer wants to minimize their own latency and get in and out of the DMV as fast as possible, but the goal of the DMV is to maximize throughput and help as many people in a day as possible - this is achieved by having long lines so that there is never a gap or rest period where the DMV is not helping someone. 
+
+A CPU contains three main components - 1) a fetch/decode section that interprets instructions, 2) the \gls{alu} that actually does computation, and 3) the execution context that contains registers. CPUs also contain a large data cache and more complicated control logic, branch prediction, and prefetching hardware. This extra hardware attempts to reduce latency by trying to reduce slow memory operations. However, the idea behind a GPU is to maximize bandwidth, rather than minimize latency, so a GPU does not use these hardware components that would help a single stream run quickly. Instead, GPUs take advantage of this extra space by using more cores. Because image processing is usually highly parallelizable, many threads can share the same instruction stream (run the same instructions on different pieces of data). This allows GPUs to be built cheaply because we know that neighboring threads are probably going to want to run the same program and share the same instruction stream. In addition to the instruction stream, the cost of the fetch/decode complexity is also amortized across many \gls{alu}s. 
+
+Several optimization techniques for programming on GPUs include:
+
+\begin{itemize}
+\item Increase the data independence of the workload. To have an efficient GPU workload, you need to have thousands of independent pieces of work. In addition, the workload has to be \gls{simd}-friendly, where nearby threads run the same program. 
+\item Reduce communication between the CPU and the GPU. GPUs are attached to a CPU through a bi-directional PCIe express bus, which is relatively slow. You need to go over this bus every time you want to load data to the GPU and eventually get it back on the CPU.
+\item Reduce the degree of branching. In CPUs, there is one instruction stream per \gls{alu}, since each branch requires different, conditional instructions for the \gls{alu}s. On a GPU, because an instruction stream is shared among threads, instructions are operated in lockstep series, so not all of the \gls{alu}s may be doing useful work - some will be waiting while other \gls{alu}s execute branches. If every thread takes a different path through the machine, then your performance drops to \(1/w\) of the original full-\gls{simd} performance, where \(w\) is the warp-width. This is referred to as ``branch divergence.''
+\item Reduce global memory operations on the GPU, since the global memory latency is about an order of magnitude higher than for CPUs. Compared to CPU caches, shared memory and the constant and texture caches are small, and so GPUs have to use a different strategy for dealing with memory latency. By utilizing the shared memory of a GPU (shared amongst threads in a block), slow global memory operations can be reduced.
+\item Global memory is most efficient when threads in a warp access an aligned, contiguous region of memory, since the GPU will bring in a block of data (analogous to the cache line size in CPUs being bigger than 1). Coalesce the memory so that this extra fetching is useful (i.e. try to use data in row-major or column-major layout, depending on the code). 
+\end{itemize}
+
+Also, the program should be compute-heavy, since a math operation has a much lower runtime than a memory operation. Algorithms that are arithmetic-bound are excellent applications for GPUs. However, most programs are bound by memory, but you'll still have an advantage on GPUs because they have high main memory bandwidth. GPUs are not independent processors - they cannot do things on their own, and they have to be connected to a CPU, since GPUs cannot talk to a network, run an operating system, etc. Large machines may have a GPU attached to every CPU. 
+
+
+
+
+
+
+The ``warp width'' is the number of simultaneous programs that can run in a GPU (8 \gls{alu}s = warp width of 8). The \gls{alu}s are completely synchronized, in that there is a barrier synchronization after every single operation. 
+
+\subsection{Comparison with CPUs}
+ A CPU consists of a few cores optimized for sequential serial processing, while a GPU has a massively parallel architecture consisting of thousands of smaller, and more efficient cores that are better at handling tasks simultaneously. GPU advances are outpacing CPU advances in terms of flops/second, especially for single precision arithmetic. GPUs typically have hundreds to thousands of cores each, and several times the memory bandwidth of a CPU. The major limiting factor of a GPU is memory, which is about 10x smaller than that of a CPU. GPUs also tend to be slightly more power efficient than CPUs, which is useful when you want to accelerate computations of an existing cluster, but can't physically provide more power to that cluster.
+
+
+
+
+
+
+ 
+
+
+
+
+
+Latency lags bandwidth - bandwidth is improving much faster than the latency, and this trend matches nicely with the goals of GPUs, since GPUs are intended to maximize throughput (bandwidth). A GPU is a heterogeneous multi-processor chip. In most computing devices, the GPU has the largest die size. GPUs are highly tuned for graphics. A large fraction of the die area is devoted to shader cores, which are used to ``shade'' pixels to the appropriate color. The work distributor distributes work to all of these components. The majority of GPU applications for high performance computing focus on utilizing the shader cores. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{figures/gpu.pdf}
+\caption{Basic architecture of a GPU. }
+\end{figure}
+
+
+
+
+
+When a computer chip vendor says ``core,'' what they really mean is an \gls{alu}, since then their number of cores seems to be as high as possible, though GPUs have more than one \gls{alu} per core. When you program with CUDA, you don't need to know anything about the \gls{simd} width of the machine - the user writes a scalar program and the hardware and driver map that scalar program to multiple \gls{simd} lanes. However, if you're writing code for Xeon Phis, then you need to write explicitly-vectorized code. The Intel \gls{spmd} program compiler allows you to write scalar code, and then it maps it to \gls{simd} instructions for you. 
+
+
+
+Stalls occur when a core cannot run the next instruction because of a dependency on a previous operation. This occurs with memory operations that cannot be prefetched or predicted or stored in a data cache using the fancy logic that was removed to create the simpler GPU. But, the key idea of a GPU is that there are \textit{many} independent threads. You need lots of threads for the program to be fit to run on a GPU. Because there are many threads, if we encounter a stall, we can switch to another thread to continue computing. We're not trying to minimize the latency - we're just trying to cover the latency and do useful work while slow memory operations occur in the background. By having more than one context per \gls{alu}, so when we hit a stall, we simply switch to a different thread context to run until it stalls. So long as you have enough work and storage, this should allow you to maximize throughput by keeping the hardware busy the entire time. Progress is measured in threads completed per second. You need many small contexts and the ability to switch between pieces of work quickly. All of the state information is stored in registers to allow you to perform that thread switch quickly. Consequently, GPU register files are huge - on the order of megabytes. The more contexts you have, the more latency you can hide. You should minimize the number of registers per context so that you can maximize the number of contexts. GPUs are not typically used with huge programs, but rather with inner loops of kernels. 
+
+Interleaving between contexts can be managed by hardware or software, but this has traditionally been done with the hardware. Xeon Phi allows you more software control. GPUs use many slimmed-down core that run in parallel, where those cores are packed full of \gls{alu}s by sharing instruction stream across the group. The CUDA/OpenCL model expresses programs as scalar programs and has implicit sharing that is managed by the hardware. Stalls are hidden by interleaving execution of many groups. 
+
+A distinction is made between data-parallel and task (thread)-parallel. Multiple tasks run concurrently, but can perform totally different operations. Data parallelism occurs when the actual same instruction is being performed multiple times concurrently, while thread parallelism occurs when threads are performing different tasks at the same time. Task parallelism and data parallelism are at opposite ends of the spectrum. 
+
+Fine-grained parallelism is found in applications with low ratios of computation to communication, while coarse-grained parallelism exploits the opposite. Coarse-grained parallelism is usually preferred because communication incurs latency costs. Coarse-grained parallelism scales better than fine-grained parallelism. CUDA is not strictly a data-parallel programming model. 
+
+A multiprocessor can execute multiple blocks, but those blocks must be independent. The \gls{sm} creates small parcels of blocks called warps, and most GPUs have a warp that is 32 threads large. Individual threads inside a warp start together at the same program address, but are otherwise free to branch and execute independently. When a multiprocessor is given one or more thread blocks to execute, it splits them up into warps that get scheduled by the \gls{sm}. Threads are divided into warps using their global index. Warps from the same block can execute independently unless they read synchronization statements. But, warps from different blocks are always entirely independent because block-levels are independent in GPUs. A GPU will allocate its resources to as many threads as possible, and if those resources are not allocated, that thread will not run - this enables zero-overhead switching between warps at any point in the execution.  
+
+The \gls{sm} can grab any warp that is available to be executed. You don't want to specify too many threads per block because you will run out of register room, and will have to go to local memory. Switching to other warps is essential to mask latency. Full efficiency is realized when all 32 threads agree on their execution branch.
+
+\subsection{Structure of a GPU Program}
+A GPU is really a coprocessor, and is under the direction of the CPU. For GPU programs, the CPU will assemble the input data, and transfer that data to the GPU main memory. When the CPU calls the GPU program, the GPU runs using GPU main memory. When the GPU finished, the CPU copies results back into CPU memory. The most expensive operation here is sending the information between the CPU and GPU over the PCIe express bus. If you want to send something from a GPU out to another processor, it first had to be copied to its connecting CPU, and then that CPU would send it out. Nvidia's GPUDirect starts to eliminate some of these extraneous CPU involvements in GPU communications, but in general you want to avoid communication between the GPU and CPU. 
+
+A \textit{kernel} is the part of the main program that is actually run on a GPU, and for the most part, only one kernel is run at a time on a GPU. If you want to run another kernel, you need to wait for the previous one to complete before continuing to the next. Each kernel is executed by many threads (tens of thousands), where each thread performs the same operations independently.
+
+Our programming model should use one thread per data element because GPU threads are cheap to create, switch between, and destroy. The second big idea is that we write only one program, taking advantage of \gls{spmd} by writing a scalar program. This program is then run on all threads in parallel. \gls{simt} is the hardware terminology that represents \gls{simd} where there is some divergence in branches that can be handled by the software.
+
+The program that you run on a GPU is called a kernel. You can only launch one kernel on a GPU at any one time, which means that the hardware will only run one kernel at a time. Each kernel is associated with a large number of threads, so when you launch a kernel, you're actually launching many threads. One \gls{simt} kernel is executed at a time, and many threads execute each kernel. The host calls kernels, and those kernels run on the device. A kernel is launched on a grid of blocks, where the programmer gets to select the dimensions of the grid and thread block. A grid is a grid of blocks, and a block is a block of threads, so you refactor this complexity. A thread block is a batch of threads that can cooperate with each other using shared memory and synchronization. Two threads from two different blocks cannot cooperate, since the blocks are independent. Communication within blocks is very fast, while communication between blocks is more difficult. Grids run on the entire machine, and blocks are mapped to cores. Threads are mapped to scalar processors (\gls{alu}s), where this mapping is performed by the hardware. These blocks are dynamically allocated to blocks as the core finished computations. This keeps the blocks busy. These blocks have a maximum size so that it can be guaranteed to fit in the memory of a single core. You cannot really cooperate between blocks because you can't control the order in which the blocks execute. 
+
+CUDA is the Nvidia interface for programming GPUs, and this really pioneered the development of a special language for programming on GPUs. OpenCL is an industry consortium, and so devices are more likely to run using OpenCL. OpenCL only works with C, but CUDA works with C and C++. The hardware allocates blocks to cores. Block-block interactions allow scalability but hinder programmer control. CUDA code has both CPU and GPU code - the CPU part runs through clang, while the GPU stuff runs through Nvidia stuff. With OpenCL, you have to write separate programs for CPU and GPU. OpenCL is more difficult to program with and has less functionality. 
+
+Accelerating programming using GPUs was pioneered by Nvidia in 2007.
+
+Each GPU is comprised of one or more \gls{sm}s. Each \gls{sm} has a collection of compute resources that include cores, registers, and specialized memory resources such as caches and shared memory. The \gls{dram} on the device is shared by all of the cores. Blocks from the grid are distributed across \gls{sm}s - you have no control over how these blocks are allocated; the scheduler chooses this. A block will execute on one and only one \gls{sm} (blocks are not partitioned among multiple \gls{sm}s), however, a \gls{sm} can execute multiple blocks. Any possible distribution of blocks should be valid. Blocks can explicitly coordinate, but cannot synchronize. You can't force a block to wait until another block finishes. 
+
+
+There is no reliable mechanism to communicate between blocks, but you can communicate between threads on the same block, which implies synchronization issues with shared memory (and device memory). {\tt void \_\_syncthreads()} is used to synchronize all of the threads in a block by providing a barrier. A barrier is allowed in conditional code only if the condition is uniform across the thread block, since otherwise some threads would never encounter that barrier. 
+
+ GPUs minimize the impact of stalls by interleaving execution of many treads on a single core. So, when one stalls, you can switch right away to another thread and keep executing. With a data-parallel algorithm, you can always execute threads from different blocks independently. In addition, you can execute threads within a block independently unless you need to synchronize those threads when they are writing to shared memory locations.
+
+Large problems can be distributed across multiple GPUs. Use {\tt cudaSetDevice()} to interact with multiple GPUs. 
+
+Problems must be partitioned in such a way that it can be mapped to blocks, where those blocks must be independent because there is no reliable communication between blocks due to the random order in which those blocks might execute. However, within a block, CUDA permits task-parallelism using if() and for() statements. For instance, you could put a switch() statement in your kernel, and then switch on the thread index, causing each block to do something completely different (though this is terrible for performance).
+
+Make sure that you run GPU programs through a terminal so that your computer isn't using the GPU to run any graphics, such as an IDE that might also be using the GPU. A processor stalls when a processor cannot execute the next instruction due to a dependency on a previous instruction
+
+\subsection{CUDA}
+
+There are several \gls{api}s that can be used to program in parallel, with CUDA being the easiest. CUDA is the parallel computing architecture developed by NVIDIA. The \textit{host} is the CPU, which runs the main program. The \textit{device} is the GPU. CUDA threads are much more lightweight than CPU threads, and they have little context switching and creation overhead such that switching is essentially instantaneous. CUDA threads must execute the same kernel. 
+
+CUDA is designed to run thousands of threads, which are grouped together into thread blocks. The maximum number of threads per block is a hardware limit, and if you try to launch a kernel with more threads than the maximum, the kernel won't launch. Blocks are then grouped into a grid. The dimensionality of the grid can be selected (1-D, 2-D, or 3-D), as can the dimensionality of the blocks (1-D, 2-D, or 3-D). 
+
+In between code running on the GPU, serial code is run on the host. The host is responsible for launching the kernel, memory management (including GPU memory), managing data exchange to/from the device, and handling errors. 
+
+There are maximum dimensions for the grid and blocks. You don't have access to host memory in general. This function must return void, so any outputs you would like have to be used with pointers. You also cannot have static variables, and you have no access to host functions. 
+
+Kernels have some read-only built-in variables - these values are read-only once you're inside the kernel, and if you want to change these variables, you would have to launch another kernel with different parameters. The global index of a thread is computed as {\tt int index = blockIdx.x * blockDim.x + threadIdx.x} for a 1-D representation. 
+
+\begin{itemize}
+\item {\tt gridDim}: dimensions of the grid; this is uniform for all threads
+\item {\tt blockIdx}: index of block within grid
+\item {\tt blockDim}: dimensions of the block; this is uniform for all blocks
+\item {\tt threadIdx}: unique index of the thread within the thread block
+\end{itemize}
+
+CUDA defines special data types such as vector variants, where you can for example use {\tt float4}, which defines a four-component float type whose members can be accessed as {\tt var.x, var.y, var.z, var.w}. CUDA also allows several members to query properties of the GPU, such as its make and model and memory size. To write a kernel that performs addition of a vector, you don't need to put a for-loop in your kernel that will run on the GPU, because each thread will run that kernel one time, where the data that the thread is running is distributed such that the entire operation is performed in entirety by all of the threads, and not by each thread acting alone. Each thread has a unique index, and you use this index to pick out the values in the array that you want that particular thread to work on. Often, the length of the array, or number of operations that you need to do, is shorter than the number of threads you allocate (since you'll want to allocate the maximum number of threads per block, and this will rarely happen to be a multiple of the number of operations you need to do). So, you want to be sure that when you index into your array, that you're not accessing any members out of bounds, in which case you might silently overwrite memory locations on the GPU. There is no penalty for including an {\tt if(index < n)} statement so long as all of the threads branch the same way - you'll only pay a penalty for the last block, where some threads aren't going to branch the same way as others.
+
+The grid size is computed as {\tt gridSize.x = int((array\_length * blockSize.x - 1) / blockSize.x)}. Then, the {\tt blockSize.x} is the number of threads you want to run on each block. 
+
+\subsubsection{Defining Device Functions}
+
+Functions from the standard math library can be called from CUDA kernels, and you can write your own device functions using the {\tt \_\_device\_\_} prefix operator. Device functions can't be called by the host, but can by other kernels. CUDA kernels are denoted by the {\tt \_\_global\_\_} function qualifier. This kernel will be called from the host, but is actually executed on the GPU. 
+
+CUDA kernels are launched by the host using a modified C function call {\tt myKernel<<<dim3 dGrid, dim3 dBlock>>>(...)}. Here, {\tt dim3} indicates that for 3-D problem decompositions, {\tt dGrid} and {\tt dBlock} are 3\(\times\)1 arrays (?)
+
+\subsubsection{Memory Management}
+
+The host and device have separate memory spaces - allocating memory on the GPU with malloc puts that information on the GPU, so if you try to dereference that on the host, you will get a segmentation fault. Just looking at the address held by a pointer won't tell if it is on the CPU or GPU memory. In the kernel, you can only use pointers that have been created using {\tt cudaMalloc}. The GPU contains memory both on-chip and off-chip. The on-chip memory includes:
+
+\begin{itemize}
+\item Registers: Registers are the fastest memory on the GPU, and they are automatically handled with the compiler. The registers are only accessible by the thread and have the lifetime of the thread.
+\item Caches:
+\item Shared memory: Shared memory is second fastest to registers, but can be as fast as the registers depending on the access pattern. It is accessible by the thread of the block from which it was created and all other threads on the same block and has a lifetime of the block. It must be explicitly declared and managed. Shared memory has an order of magnitude higher bandwidth than global memory, but much lower memory - only about 16-48 kB per \gls{sm}. Shared memory allows threads to share information and avoid redundant computation and redundant memory accesses. The {\tt \_\_shared\_\_} qualifier is used to declare variables in shared memory. Read in variables from global memory to shared memory - a good way to keep this organized is to store it as indexed by the thread index, since thread indices are unique for each block (and each block runs on one \gls{sm}). You can dynamically allocate shared memory using the {\tt extern} keyword. You then need to pass a third argument to the triple carats, so you can only dynamically allocate memory one time, upon calling a kernel. If you can write to shared memory, instead of constantly writing back and forth to global memory, you can save a lot of computation - try and only write the final result back out to global memory before it is sent over to the CPU. 
+
+\begin{lstlisting}[language=C]
+extern __shared__ float Data[];
+int aSize = 24;
+float * a = Data;
+float * b = &a[aSize];
+\end{lstlisting}
+\end{itemize}
+
+On the device, there are three types of off-chip memory:
+
+\begin{itemize}
+\item Local memory: If you don't have enough registers to hold the data, it ``spills'' into the off-chip local memory. This memory is compiler-controlled, and is only accessible by the thread and has a lifetime of the thread.
+\item Global memory: This is the largest memory on the device, and is about 150 times slower than the registers or shared memory. It is accessible from either the host (using {\tt cudaMemcpy}) or device, and has a lifetime of the application. Every time you {\tt cudaMalloc}, it is allocated in global memory. This memory is still much faster than memory access on CPUs. 
+\item Constant/texture memory: This is a special region of device memory that is relatively small at 64 kB, and is located on-chip. You define a variable as constant by prefacing the declaration with {\tt \_\_constant\_\_}, which then causes that data to become cached on the \gls{sm}. The constant-ness is set from the host, and in that regard it is constant with respect to the device, but not to the host. 
+\end{itemize}
+
+\begin{itemize}
+\item {\tt cudaMalloc(address of pointer, size\_t nbytes)}: allocate memory on the GPU
+\item {\tt cudaMemset(void* pointer, int value, size\_t count)}: initialize the values in an array
+\item {\tt cudaFree(void* pointer)}: free the memory pointer
+\item {\tt cudaMemcpy(void * dest, void* source, size\_t nbytes, enum cudaMemcpyKind direction)}: transfers data between the host and device across the PCIe bus. The direction is one of {\tt cudaMemcpyHostToDevice, cudaMemcpyDevideToHost, cudaMemcpyDeviceToDevice}. This is a blocking call, and returns once the copy is complete. This will also wait for all outstanding CUDA calls to complete before starting the transfer. Basically, the first line of this routine calls {\tt cudaDeviceSynchronize}. 
+\end{itemize}
+
+\subsubsection{Synchronization}
+
+Kernel launches are asynchronous, and when they launch, execution is returned immediately to the CPU. The kernel starts executing once all outstanding CUDA calls are complete. 
+
+\begin{itemize}
+\item {\tt cudaThreadSynchronize()}: block until the device has completed all preceding requests
+\item {\tt cudaDeviceSynchronize()}: block until all outstanding CUDA calls are complete
+\end{itemize}
+
+\subsection{Error Management}
+
+Most CUDA functions return an error code {\tt cudaError\_t} - the host manages these errors. In addition, you can obtain an error string describing the error if you pass in the error code to {\tt cudaGetErrorString}. Kernel launches have no return value, so if you try to launch a kernel calling more than the maximum number of threads, that kernel will never run, but also won't inform you of this. So, call {\tt cudaError\_t cudaGetLastError()} to return the error code fort he last CUDA runtime function (including kernel launches). Because kernels are asynchronous, you need to call {\tt cudaDeviceSynchronize} first, then {\tt cudaGetLastError}. 
+
+. 
+
+
+
+
+
+
+
+
 
 \end{flushleft}
 \end{document}
