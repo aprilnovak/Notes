@@ -110,6 +110,7 @@
 \newacronym{fri}{FRI}{Fuel Reliability Index}
 \newacronym{fw}{FW}{Feed Water}
 \newacronym{hepa}{HEPA}{High Efficiency Particulate Air}
+\newacronym{hpu}{HPU}{Hydrogen Pick-Up}
 \newacronym{ica}{ICA}{Item Control Area}
 \newacronym{icf}{ICF}{Increased Core Flow}
 \newacronym{lhgr}{LHGR}{Linear Heat Generation Rate}
@@ -148,6 +149,24 @@
 \begin{document}
 \tableofcontents
 \clearpage
+
+\section{Channel Boxes}
+
+Channels are about 2.5 mm thick Zircaloy walls attached to the upper tie plate of BWR assemblies with a fastener on one corner. This fastener is used to determine the correct bundle orientation during fuel movements. The channels may be thicker in the corners and other high-stress regions, in which case they are called interactive channels. Channels were initially included in the BWR design to ensure that high void content could not easily move around the core in transients and result in dryout. Channels direct flow through bundles while allowing flow past the nuclear instrumentation tubes and control blades. In addition, channels act as heat sinks during LOCA scenarios, since they themselves have no heat generation term. There is only about a 1 C temperature gradient across channel walls. 
+
+Channels are made of either Zr-2, Zr-4, or NSF (a niobium, tin, and iron alloy being developed by GE). Channels were initially made of Zr-4, which is the material traditionally used in PWR cladding that contains less nickel than Zr-2. Then, Areva, GE, and Westinghouse all switched to Zr-2 due to its better corrosion resistance than Zr-4 in BWR conditions. Zr-2 was also the material traditionally used in BWR cladding. However, Zr-4 has a higher \gls{hpu}, which increases the risk of forming zirconium hydrides and increased shadow corrosion. As fuel cycles became longer and core power densities were increased, bundles needed to be controlled early in life, increasing both the likelihood and consequence (more shadow corrosion-induced bowing) of shadow corrosion. So, because Zr-4 has a lower \gls{hpu} rate than Zr-2, channels are now made of Zr-4, even though it has worse corrosion properties than Zr-2. Some BWR cores still have both Zr-2 and Zr-4 channels. 
+
+\subsection{Degradation Mechanisms}
+
+There is only about 2-3 mm clearance between channels and control blades, so the mechanical integrity of the channels is important to the reactivity control of the reactor. If the channels become too bowed, control rods might not be able to reliably enter the core. About half of the US BWRs have reported bow-induced interference with control blades. The rate of deformation of the channel boxes is primarily affected by operational decisions that increase burnup and introduce flux gradients (control rod presence and bundle-to-bundle power differences). To mitigate channel deformation, around 50-100 assemblies are re-channeled each outage. There are three primary degradation mechanisms for channels:
+
+\begin{enumerate}
+\item Bow: Large fast flux gradients are commonly found on core peripheries due to the much lower number of fast neutrons that re-enter the core (those that re-enter are likely thermal since there is not very much scattering material outside the core). This fast flux gradient leads to differences in energy deposition due to fast neutron interactions. The channel side facing the higher flux region receives more energy from neutrons, causing more atoms to be knocked from the lattice, leading the channel to bow outwards in the direction facing the high-flux region, with the maximum bow occurring at the axial mid-plane. Rotating the assembly or channel or translating an assembly counter-core during refueling could alleviate this issue. The effect of gradients in fast flux is bowing in the axial direction.
+\item Bulge: Channel walls become rounded out in the transverse direction due to differences in water pressure in and outside the channel. This deformation mechanism is unavoidable, and some will always occur, which can be detrimental when combined with other failure mechanisms. The pressure difference between the inner and outer walls of the channel is greatest at the bottom of the assembly.
+\item Shadow corrosion: When Zircaloy is in close proximity to the stainless steel in control blades, the rate of \(\textrm{ZrH}_{1.6}\) growth becomes accelerated due to increased \gls{hpu} rates - stainless steel causes Zircaloy to pick up more hydrogen. The corrosion rate is proportional to the distance between the blade and channel. Because the density of \(\textrm{ZrH}_{1.6}\) is smaller than that of Zircaloy, channel bowing occurs due to differential wall growth. While shadow corrosion will be more likely to occur early in life since more assemblies tend to be controlled by control rods and there is no protective zirconium oxide layer to prevent accelerated \gls{hpu}, the bowing will not occur until high burnup is reached. Performing a quarterly sequence exchange helps manage shadow corrosion, because then no single bundle is controlled for very long periods of time.
+\end{enumerate}
+
+Beside interfering with control motion, deformed channel boxes can produce slower scram times. Channel box deformation that leads to interference with control rods can be tracked using \gls{cdt}, where the insertion time should increase if there is any additional friction with the channel box. If deformed channels are detected, then for conservatism that control rod is fully inserted for the remainder of the cycle. Strangely enough, channel distortion can sometimes be reversed by inserting a control rod for some period of time (though this could lead to more shadow corrosion). Aside from preventing control rod entry, deformation can cause contact with the \gls{lprm} tubes or in general a loss of water gap symmetry around the detectors. For neutrons to be detected by the \gls{lprm}s, they must be thermalized, so if the moderator symmetry around an \gls{lprm} changes, then the reading will be skewed, since neutrons from one bundle will not produce as high a signal as they should. Finally, deformed channels produce different flow paths, leading to different thermal limit margins. Increased bypass flow results in less assembly flow, which can cause a \gls{mcpr} violation. In addition, corner pins might see higher flowrates, leading to higher peaking factors that may exceed limits. 
 
 \section{BWR Stability}
 
@@ -437,36 +456,7 @@ BWR 4, Mark 2
 
 
 BWRs are safer than PWRs due to their much lower power density and lower required emergency core cooling flowrates ? this results in a core damage frequency about an order of magnitude smaller than that in PWRs. The boiling process in BWRs tends to concentrate more impurities onto the upper assembly area. However, PWRs have slightly better fuel utilization. 
-Channels
-
-Channels are about 2.5 mm thick Zircaloy walls attached to the upper tie plate of BWR assemblies with a fastener on one corner. This fastener is used to determine the correct bundle orientation. The channels may be thicker in the corners (interactive channels) and other high-stress regions. Channels were initially included in the BWR design to ensure that high void content could not easily move around the core in transients. Channels direct flow through bundles while allowing flow past the NIs and control blades. In addition, channels act as heat sinks during LOCA scenarios, since they themselves have no heat generation term. There is only about a 1 C temperature gradient across channel walls. 
-
-Channels are made of either Zr-2, Zr-4, or NSF. Channels were initially made of Zr-4, but then Areva, GE, and Westinghouse all switched to Zr-2 due to its better corrosion resistance. However, as fuel cycles became longer and core power densities were increased, bundles needed to be controlled early in life, increasing the likelihood of shadow corrosion. Also, due to the longer fuel cycles, shadow corrosion-induced bowing became even further amplified. So, because Zr-4 has a lower hydrogen pick-up (HPU) rate than Zr-2, channels are now made of Zr-4, even though it has worse corrosion properties than Zr-2. Both Zr-2 and Zr-4 channels can be found in april?s core.  
-
-Zr-2
-?	Material traditionally used in BWR cladding
-?	Better overall corrosion resistance than Zr-4
-?	Higher HPU rate, leading to more zirconium hydrides, and increased shadow corrosion rates.
-Zr-4
-?	Material traditionally used in PWR cladding
-?	Contains less nickel than Zr-2
-NSF
-?	Niobium, tin, and iron alloy being developed by GE
-
-There is only about 2-3 mm clearance between channels and control blades, so the mechanical form of the channels is important to the reactivity control of the reactor. The rate of deformation is primarily affected by operational decisions that increase burnup and introduce flux gradients (control rod presence and bundle-to-bundle power differences). To mitigate channel deformation, around 50-100 assemblies are rechanneled each outage. There are three primary degradation mechanisms for channels:
-
-1)	Bow: A fast flux gradient, which is commonly found on core peripheries, causes the channel to bow in the axial direction. This gradient leads to differences in energy deposition due to fast neutron interactions. The channel side facing the higher flux region receives more energy from neutrons, causing more atoms to be knocked from the lattice, leading the channel to bow outwards in the direction facing the high-flux region, with the maximum bow occurring at the axial mid-plane. Bowed channels change the coolant flow path, and could lead to higher bypass flow or allowing more flow past a corner rod, which would improve moderation and lead to higher corner peaking factors, potentially to the point that dryout occurs. Rotating the assembly or channel or translating an assembly counter-core during refueling could alleviate this issue. About half of the US BWRs have reported bow-induced interference with control blades. 
-
-2)	Bulge: Channel walls become rounded out in the transverse direction due to differences in water pressure in and outside of the channel. This deformation mechanism is unavoidable, and some will always occur, which can be detrimental when combined with other failure mechanisms. The P between the inner and outer walls of the channel is greatest at the bottom of the assembly. 
-
-3)	Shadow Corrosion: When Zircaloy is in close proximity to the stainless steel in control blades, the rate of ZrH1.6 growth becomes accelerated due to increased HPU rates. The corrosion rate is proportional to the distance between the blade and channel. Because the density of ZrH1.6 is smaller than that of Zircaloy, channel bowing occurs due to differential wall growth as a consequence of shadow corrosion. While shadow corrosion will occur early in life, the bowing will not occur until high burnup is reached. Shadow corrosion is ?activated? by inserting a control blade early in the operating life of a channel (first six months in the core). The channel is less susceptible to picking up hydrogen once a protective zirconium oxide layer, which has lower hydrogen pick up rates, has built up on the exterior surface. Performing a quarterly sequence exchange helps manage shadow corrosion, because then no single bundle is controlled for very long periods of time. 
-
-Deformed channels can:
-1)	Interfere with control rod motion and yield increased settle times, slower scram times, and potentially cause an ATWS
-2)	Contact LPRM tubes, affecting readings due to the loss of water gap symmetry around the detectors. For neutrons to be detected by the LPRMs, they must be thermalized, so if the moderator symmetry around an LPRM changes, then the reading will be skewed, since neutrons from one bundle will not produce as high a signal as they should. 
-3)	Produce different flow paths, leading to different thermal limit margins. Increased bypass flow results in less assembly flow, which can cause a MCPR violation. In addition, corner pins might see higher flowrates, leading to higher peaking factors that may exceed limits. 
-
-If deformed channels are detected during Channel Distortion Testing (CDT), then the control rod must be fully inserted for the remainder of the cycle, which can have a negative economic impact. Sometimes, channel distortion can be reversed by inserting a control rod for some period of time. 
+
 Chemistry Programs [BWR]
 
 The chemistry program protects:
