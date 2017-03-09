@@ -77,10 +77,12 @@
 \usepackage[acronym]{glossaries}
 \makeglossaries
 
+\newacronym{ads}{ADS}{Automatic Depressurization System}
 \newacronym{aoo}{AOO}{Anticipated Operational Occurrence}
 \newacronym{aplhgr}{APLHGR}{Average Planar Linear Heat Generation Rate}
 \newacronym{aprm}{APRM}{Average Power Range Monitor}
 \newacronym{ari}{ARI}{Alternate Rod Insertion}
+\newacronym{atws}{ATWS}{Anticipated Transient Without Scram}
 \newacronym{bop}{BOP}{Balance of Plant}
 \newacronym{bwr}{BWR}{Boiling Water Reactor}
 \newacronym{cdt}{CDT}{Channel Distortion Testing}
@@ -93,11 +95,15 @@
 \newacronym{crb}{CRB}{Control Rod Blade}
 \newacronym{crsp}{CRSP}{Control Rod Sequence Package}
 \newacronym{cs}{CS}{Core Spray}
+\newacronym{cst}{CST}{Condensate Storage Tank}
 \newacronym{cscs}{CSCS}{Core Standby Cooling System}
+\newacronym{cw}{CW}{Circulating Water}
 \newacronym{dba}{DBA}{Design Basis Accident}
+\newacronym{dg}{DG}{Diesel Generator}
 \newacronym{dlo}{DLO}{Dual Loop Operation}
 \newacronym{eal}{EAL}{Emergency Action Level}
 \newacronym{ec}{EC}{Engineering Change}
+\newacronym{eccs}{ECCS}{Emergency Core Cooling Systems}
 \newacronym{efph}{EFPH}{Effective Full Power Hours}
 \newacronym{ellla}{ELLLA}{Extended Load Line Limit Analysis}
 \newacronym{eoc}{EOC}{End of Cycle}
@@ -107,10 +113,13 @@
 \newacronym{fcv}{FCV}{Flow Control Valve}
 \newacronym{ferc}{FERC}{Federal Electric Regulatory Commission}
 \newacronym{ffmt}{FFMT}{Failed Fuel Monitoring Team}
+\newacronym{fme}{FME}{Foreign Material Exclusion}
 \newacronym{fri}{FRI}{Fuel Reliability Index}
 \newacronym{fw}{FW}{Feed Water}
 \newacronym{hepa}{HEPA}{High Efficiency Particulate Air}
+\newacronym{hpcs}{HPCS}{High Pressure Core Spray}
 \newacronym{hpu}{HPU}{Hydrogen Pick-Up}
+\newacronym{iascc}{IASCC}{Irradiation-Assisted Stress Corrosion Cracking}
 \newacronym{ica}{ICA}{Item Control Area}
 \newacronym{icf}{ICF}{Increased Core Flow}
 \newacronym{lhgr}{LHGR}{Linear Heat Generation Rate}
@@ -118,16 +127,23 @@
 \newacronym{inpo}{INPO}{Institute of Nuclear Power Operations}
 \newacronym{lfpc}{LFPC}{Loss of Full Power Capability}
 \newacronym{loca}{LOCA}{Loss of Coolant Accident}
+\newacronym{lpci}{LPCI}{Low Pressure Coolant Injection}
+\newacronym{lpcs}{LPCS}{Low Pressure Core Spray}
 \newacronym{lpf}{LPF}{Local Peaking Factor}
 \newacronym{maprat}{MAPRAT}{Maximum Average Planar Linear Heat Generation Rate Ratio}
 \newacronym{mcpr}{MCPR}{Minimum Critical Power Ratio}
+\newacronym{mdrfp}{MDRFP}{Motor-Driven Reactor Feed Pump}
 \newacronym{mellla}{MELLLA}{Maximum Extended Load Line Limit Analysis}
 \newacronym{mflcpr}{MFLCPR}{Maximum Fraction of Limiting Critical Power Ratio}
 \newacronym{mflpd}{MFLPD}{Maximum Fraction of Limiting Power Density}
+\newacronym{msiv}{MSIV}{Main Steam Isolation Valve}
 \newacronym{msl}{MSL}{Main Steam Line}
+\newacronym{msr}{MSR}{Moisture Separator and Reheater}
+\newacronym{mur}{MUR}{Measurement Uncertainty Recapture}
 \newacronym{nei}{NEI}{Nuclear Energy Institute}
 \newacronym{ni}{NI}{Nuclear Instrumentation}
 \newacronym{npsh}{NPSH}{Net Positive Suction Head}
+\newacronym{nrc}{NRC}{Nuclear Regulatory Commission}
 \newacronym{oca}{OCA}{Owner Controlled Area}
 \newacronym{ol}{OL}{Operating Limit}
 \newacronym{olr}{OLR}{On-Line Risk}
@@ -136,19 +152,149 @@
 \newacronym{plr}{PLR}{Part Length Rod}
 \newacronym{ppe}{PPE}{Personal Protective Equipment}
 \newacronym{rbm}{RBM}{Rod Block Monitor}
+\newacronym{rcic}{RCIC}{Reactor Core Isolation Cooling}
 \newacronym{rcms}{RCMS}{Rod Control Management System}
+\newacronym{rhr}{RHR}{Residual Heat Removal}
 \newacronym{rps}{RPS}{Reactor Protection System}
+\newacronym{rpv}{RPV}{Reactor Pressure Vessel}
 \newacronym{rr}{RR}{Reactor Recirculation}
 \newacronym{rwe}{RWE}{Rod Withdrawal Error}
 \newacronym{scwe}{SCWE}{Safety Conscious Work Environment}
+\newacronym{sfp}{SFP}{Spent Fuel Pool}
+\newacronym{sjae}{SJAE}{Steam Jet Air Ejector}
 \newacronym{slo}{SLO}{Single Loop Operation}
+\newacronym{snm}{SNM}{Special Nuclear Material}
+\newacronym{srv}{SRV}{Safety Relief Valve}
+\newacronym{tbv}{TBV}{Turbine Bypass Valve}
+\newacronym{tdrfp}{TDRFP}{Turbine-Driven Reactor Feed Pump}
 \newacronym{tls}{TLS}{Thermal Limit Set}
+\newacronym{tmi}{TMI}{Three Mile Island}
 \newacronym{wano}{WANO}{World Association of Nuclear Operators}
 
 
 \begin{document}
 \tableofcontents
 \clearpage
+
+\section{BWR Main Turbine}
+
+The turbine extracts mechanical energy from steam at a full rated speed of 1800 rpm. This speed is kept constant so that the generator always produces electricity with a 60 Hz frequency. Steam enters the high pressure turbine, then passes through one of two \gls{msr}s, and then passes through cross-around pipes to enter one of the low-pressure turbines. The low-pressure turbines are much larger than the high pressure turbines to allow greater expansion area for the steam that had already expanded through the high pressure turbine. Exhaust steam from the low-pressure turbines is sent though hoods into the main condenser, while steam is extracted at various locations for heating purposes. april?s rated thermal power is 3546 MWth, while Clinton?s is 3473 MWth.
+
+Main Turbine
+The main turbine is a 14-stage steam turbine, with seven stages in the high pressure turbine and the remaining seven stages shared in the low pressure turbines. Steam enters at the center of the high pressure turbine shaft and expands in both directions to minimize axial thrust forces. The stationary blades (diaphragms) direct steam to the rotating blades (buckets), which are connected to the shaft. Each set of diaphragms and buckets constitutes a stage. The flow then passes through one of two MSRs, and then into one of three low pressure turbines. The low pressure turbines are lined in parallel, but are all on the same shaft. 
+
+About 90% of the plant?s electricity comes from the high pressure turbine. The turbine 1st stage pressure indication is taken from a pressure sensor located between the 1st stage bucket and the 2nd stage diaphragm. This pressure, of about 675 psig at full power, scales linearly with reactor power. Steam exits the high pressure turbine at 185 psig. 
+
+MSR: Moisture Separator and Reheater
+The MSRs dry and superheat the high pressure turbine exhaust before re-entry into the low pressure turbines to increase efficiency and the lifetime of the low pressure turbines. The steam is forced to make rapid directional changes, separating out any liquid droplets. Liquid droplets are sent to heater drains. Then, the steam is heated further by steam extracted from other turbine stages, further drying the steam before it is sent to the low pressure turbines. This reheated steam exits the MSRs at about 520 F and 185 psig. The principal reason to reheat between turbines is to reduce moisture damage to turbine blades. A secondary benefit is the increased average temperature of heat addition, which improves efficiency. 
+
+Heater Drains
+The energy extracted in the form of condensed water from the MSRs is sent to the heater drains, where this energy is used for FW heating (?). If the heater drain functionality is lost, then moisture will build up in the MSRs, which will cause water to build up in the turbines, which will damage the blades. 
+
+Turbine Trip
+A turbine trip causes the TSVs to close and the TBVs to open, which dump steam to the condenser. However, if the TBVs fail to open, there will be a large pressure transient. 
+
+
+
+\section{Spent Fuel Pool}
+
+Each \gls{sfp} has capacity for about 4000 assemblies. When fully flooded with water, the \gls{sfp} must have keff < 0.95. To achieve this, Boroflex (rubber + boron) inserts snap into place within each rack cell. However, being rubber, these components degrade quickly, hence the importance of coupon tree surveillances. Alternatively, racks made of aluminum and boron serve the same purpose, but with reduced irradiation-related degradation mechanisms. Coupon trees (heights of assemblies) are included in the pool to determine the severity of accumulated \gls{iascc}. Hot bundles freshly removed from a core following an outage are purposefully placed surrounding a coupon tree for conservatism. Otherwise, hot bundles cannot be put adjacent to each other in the pool.
+
+The pool temperature is maintained between 68 and 125 F. A bundle is considered ``cold'' after five years in the pool, after which it can be discharged to a dry cask. During refueling, the \gls{sfp} is allowed to connect directly to the reactor and steam separator/dryer pit. New fuel is first placed in the \gls{sfp} so that it can be kept entirely under water as it is loaded into the reactor.  Before new fuel is loaded into the \gls{sfp}, it is stored in the new fuel vault, which is usually located beneath the floor next to the \gls{sfp}. The fastest Westinghouse has made a fuel bundle was over a weekend. 
+
+PWRs undergo a full-core offload during refueling, while the large numbers of BWR fuel assemblies requires shuffling to reach the next cycle configuration. The refueling \gls{dba} is the dropping of a fuel assembly on top of another, causing it to release its fission products. 
+
+A 1-year inventory visual inspection of the \gls{sfp} is required by the \gls{nrc}, and a 6-year video camera inspection is simply a best practice in the industry. Any material containing greater than 1 gram of U-235 or plutonium is considered \gls{snm}, and must be reported. All quantities less than 1 gram must still be tracked, but don't need to be reported. Badly failed fuel can be put in failed fuel canisters, which are essentially large rectangular boxes that surround a fuel assembly. This practice was largely abandoned after fuel became even further damaged by the motion.
+
+
+
+
+
+\section{Hydrogen Gas Production}
+
+Hydrogen gas is produced in several different mechanisms in reactors, the largest source being from zirconium oxidation that occurs when in contact with water. While this reaction is only significant above 2200 F, the reaction rates are nonzero, but much smaller, at lower temperatures.
+
+\begin{equation}
+\textrm{Zr }+2\textrm{H}_2\textrm{O}\rightarrow \textrm{ZrO}_2+2\textrm{H}_2 +\textrm{ heat}
+\end{equation}
+
+Zirconium oxidation was the main source of hydrogen gas in \gls{tmi}. The fuel cladding and structural materials in a BWR are both composed of Zircaloy-2, while channels are composed of Zircaloy-4; all of these materials would need to be replaced to eliminate the major risk of hydrogen generation. The actual reaction above takes place in several stages, the first being the decomposition of water into hydrogen and oxygen. This decomposition of water is an endothermic reaction, and requires a heat source (or radiation interaction via radiolysis) to occur. Because heat is needed to initiate the reaction, but heat is released in the reaction, given a high enough energy level in the core, the reaction can become self-sustaining.
+
+The zirconium-steam reaction results in zirconium oxidation (which embrittles the cladding), hydrogen gas, and extra heat generation (which places stress on the \gls{eccs} systems). The production of zirconium oxide on the cladding surface following zirconium oxidation to some extent helps mitigate hydrogen production, since it shields the fresh zirconium from hydrogen. Hydrogen gas in the core can blanket the fuel and in that way also shield from additional hydrogen generation, but neither of these mechanisms is sufficient to alleviate any concerns of cladding embrittlement, especially in accident scenarios when cold \gls{eccs} water injection leads to thermal shocks, can cause rapid fuel failures. The hydrogen produced accumulates in the drywell and/or wetwell. Hydrogen within the primary coolant system can cause corrosive conditions elsewhere in the loop by increasing the pH.  
+
+Aside from zirconium oxidation, hydrogen gas is also produced by:
+
+\begin{itemize}
+\item Steel-steam reactions: Given high-enough temperatures, usually in excess of 2200 F, oxidation of steel components can lead to hydrogen production. 280 BTUs are produced per pound of steel reacted. Because the steel is not directly in contact with the heat source (the fuel), it would be difficult for substantial amounts of hydrogen to be produced by steel components. However, if the steel reaches its melting point of about 2500-2750 F, then steel oxidation could lead to more hydrogen generation than zirconium. 
+\item Containment materials: Zinc, a common material in paints and galvanized materials, can oxidize and release hydrogen through a zinc-steam reaction. This source is less likely to contribute significant quantities than the zirconium-steam or steel-steam reactions because most of the zinc is located outside the reactor where temperatures are much lower. Another reaction that could lead to hydrogen gas is the oxidation of aluminum. 
+\item Corium-concrete interactions:
+\end{itemize}
+
+
+
+Corium, or the molten fuel, cladding, control blades, and structural materials that are produced during a core melt accident, will melt through the \gls{rpv} and fall onto the concrete undervessel floor. The heat from the corium will lead to thermal decomposition of the concrete into gaseous products. These gases pass upwards due to buoyancy forces through the melt, where they undergo chemical interactions to produce hydrogen gas. Because concrete contains a lot of water, this water is released due to the corium heat, which then interacts with the corium to form hydrogen and CO. UO2, Cr2O3, and Mo all interact with water to form hydrogen. 
+
+UO2 + H2O  UO3 + H2
+Cr2O3 + 3H2O  2CrO3 + 3H2
+Mo + 3H2O  MoO3 +3H2
+
+Radiolytic Decomposition of Water
+2H2O + radiation  2H2 + O2
+
+Other products of radiolysis include OH-, H+, HO2, and H2O2. In PWRs, equilibrium is reached between the radiolysis of water molecules and its recombination, since the products will react with each other to re-form regular water molecules. However, in BWRs, the offgas system continually removes radiolysis products, so no such equilibrium is reached. For every 104 eV of radiation energy, about 22 H2O molecules can be decomposed. This radiolysis is due to the gamma rays that directly deposit their energy in the coolant. Decay energies are the driving force for radiolysis, so radiolysis rates are typically proportional to reactor power level. Radiolysis is the only significant production pathway for oxygen inside the containment. This method is relatively slow at producing hydrogen when compared to the Zircaloy-steam reaction. Radiolytic production is only sufficient to initiate flammable conditions after 30 days.
+
+
+
+
+\section{BWR Emergency Core Cooling Systems}
+
+The \gls{eccs} are designed to cool the core in case of an emergency and guarantee that hydrogen generation will not exceed 1\% of the hypothetical amount if all the cladding were to react in the Zr oxidation reaction, which produces explosive hydrogen gas and heat that causes additional cooling concerns. The \gls{eccs} systems will automatically start on low reactor water level or high drywell pressure. The \gls{eccs} systems are powered by the \gls{dg}s. All systems take suction from the suppression pool or the preferred \gls{cst} and inject into the reactor. Water lost from the reactor in LOCA conditions will drain through downcomers in the floor of the drywell into the suppression pool, creating a closed loop for cooling. Jet pump integrity guarantees that the core can be reflooded to 2/3 height, and the remaining 1/3 of the fuel is cooled by the \gls{eccs} systems. The worst postulated \gls{loca} in a BWR would be created by a break in the \gls{rr} line because this is the lowest inlet penetration to the reactor.  
+
+The \gls{rhr} system removes heat from the suppression pool by passing it through a heat exchanger cooled by service water (?). The \gls{eccs} consists of both high- and low-pressure systems, since pumps will have different injection requirements based on the reactor pressure. The low-pressure injection systems continue indefinitely until manually stopped by operators, but the high-pressure systems will cycle on and off based on reactor level. All \gls{eccs} components are located near the suppression pool to provide sufficient head and are protected with flood doors. The low pressure systems are able to provide a much higher flowrate than the high pressure systems because it is presumed that if the reactor pressure is low, then the break is large. Generally, however, the break will be small (initially), and the high pressure systems will initiate. If they cannot bring the reactor pressure to an acceptable level, then depressurization systems will vent reactor steam directly to the suppression pool. This lower pressure should then allow the higher-flowrate low pressure systems to inject to keep reactor pressure low. 
+
+\subsection{High Pressure Core Spray}
+The \gls{hpcs} system is used to maintain reactor water level and reduce pressure slightly for small breaks (less than 0.7 square feet in size) to allow the low-pressure systems to inject. The \gls{hpcs} system consists of a single motor-driven pump that can spray water into the core at any pressure, and will even operate at pressures too low for \gls{lpcs} and \gls{lpci}. This pump is located below the suppression pool elevation to provide sufficient injection head from the suppression pool or the \gls{cst}. The \gls{hpcs} system injects water through 128 spargers located on a circular ring around the core periphery. The lower the reactor pressure, the higher the flowrate, and for the lowest possible reactor pressure, \gls{hpcs} injects 7175 gpm. One \gls{dg} is devoted to powering \gls{hpcs}. 
+
+\subsection{Automatic Depressurization System}
+The \gls{ads} consists of 7 of the 13 \gls{srv}s, and is used to depressurize the reactor when the coolant demand exceeds what can be supplied by \gls{hpcs}, but the pressure is still too high for the low pressure systems to function. The \gls{ads} will initiate only if both \gls{hpcs} and \gls{rcic} fail (which is indicated by low reactor water level or high drywell pressure alarms) and there is indication of sufficient injection head from at least one of the low-pressure systems. Upon initiation of \gls{ads}, the 7 \gls{srv}s will open and discharge steam from the \gls{msl}s directly to the suppression pool until the pressure is low enough for the low pressure systems to inject. In an \gls{atws} event, \gls{ads} initiation is inhibited, since this would lead to injection of cold unborated water into the core from safety systems, which would exacerbate reactivity control. 
+
+\subsection{Low Pressure Core Spray}
+The \gls{lpcs} system consists of a single motor-drive pump that floods the reactor from a circular sparger around the periphery of the core - this system is essentially identical to the \gls{hpcs} system except that it cannot begin to inject until 400 psig but it can provide much larger volumes of water. 
+
+\subsection{Low Pressure Coolant Injection}
+\gls{lpci} is an emergency mode of the \gls{rhr} system, by which \gls{rhr} pumps are used to flood the reactor from water taken from the suppression pool. \gls{lpci} can inject through either the \gls{rr} lines, which could be useful if the break is at an elevation above the \gls{rr} lines, or directly to the core. \gls{lpci} functions independently of \gls{lpcs}. 
+
+
+
+
+\section{BWR Condensate System}
+
+Reactor water enters the condenser and condenses on the outside of tubes through which lake water pass. The system that brings in this lake water and eventually discharges it back to the ambient is the \gls{cw} system. After the water leaves the condenser, it passes through several condensate booster pumps to increase pressure. Then, the water passes through the \gls{fw} heaters, which increase the condenser outlet temperature of 120 F to 423 F in preparation for re-entry into the reactor. Then, \gls{fw} pumps take the condensate pump outlet of 600 psi up to 1005 psi reactor pressure. 
+
+The condenser is held at vacuum pressure. A loss of condenser vacuum pressure could be caused by \gls{sjae} failure or a loss of cooling water, in which case pressure in the condenser would increase due to less heat being removed from the primary water. To prevent inability of the circulating water to remove reactor heat, the cooling lake inlet temperature cannot exceed 102 F, or else you need to begin shutting down (this has actually occurred at some plants). For minor condenser vacuum decreases, the only consequence is a decrease in plant efficiency due to the smaller pressure drop over the low-pressure turbines. A loss of condenser vacuum will initiate a turbine trip and close the \gls{msiv}s and \gls{tbv}s to prevent all possible paths of coolant to the condenser. 
+
+The circulating water inlet is about 80 F during the summer, with an outlet of about 105 F, meaning that the circulating water increases by about 25 F after cooling the reactor water. 
+
+\section{BWR Feedwater System}
+
+The \gls{fw} system consists of two \gls{tdrfp}s and one \gls{mdrfp}. These pumps increase the \gls{fw} pressure before being sent to the reactor through two \gls{fw} inlets. All of these pumps are equipped with strainers to prevent \gls{fme} concerns, and if high differential pressure readings are noticed, an alarm will sound.
+
+Each \gls{fw} inlet discharges water into the reactor at 15 Mlb/hr and 423 F (at full power) through three spargers, or perforated stainless steel headers that evenly distribute water without impinging it on the reactor vessel wall. This \gls{fw} injects just above the fuel line. \gls{fw} flowrate used to be nearly exclusively measured with Venturi meters, which required additional uncertainty margin, since \gls{fw} flowrate has the greatest impact on the heat balance calculation due to its large magnitude relative to the other flowrates through the core. Now, most plants have installed LEFMs, flow meters based on ultrasound. This allowed for a narrowing in the uncertainty window due to the more precise instruments, and so many plants that have installed LEFMs have undergone a \gls{mur} uprate. 
+
+\subsection{Motor-Driven Reactor Feed Pumps}
+The \gls{mdrfp} is used to supply \gls{fw} flow when the steam flow is insufficient to power the \gls{tdrfp}s, and hence the \gls{mdrfp} is used in startup and shutdown conditions, up to 32\% rated \gls{fw} flow. This pump has only two speeds, so flow control valves are used to obtain more fine-grained control of flowrate.
+
+\subsection{Turbine-Driven Reactor Feed Pumps}
+The \gls{tdrfp}s supply variable \gls{fw} flows by using extracted main steam to power a turbine that spins a pump. The normal operating speed at full power is about 4500 rpm for each turbine. Each can supply up to 68\% of the rated \gls{fw} flow. The pump speed is controlled by the speed of the steam turbine attached to each pump impeller. These pumps can be powered using the steam because they are not technically safety-related. 
+
+Level control sensors are present in the reactor. A low reactor water level will manipulate a valve controlling the \gls{tdrfp}s so that a higher \gls{fw} flow results. During startup, this process is governed by single-element control, meaning that the feedback lags the actual plant conditions, which can lead to oscillations in the \gls{fw} flow and wide swings in indicated reactor power (a high \gls{fw} flow correlates strongly with high power due to its strong impact on the heat balance calculation). Cycling of these control valves for extended periods of time can damage the valves, which is why reactor power is not typically held at around 15\% power for very long. At higher powers, three-element control is used, meaning that the \gls{fw} flowrate response is more accurate and predictive, which makes the flow control valve position more steady. 
+
+\subsection{Feedwater Heaters}
+The \gls{fw} is heated to help improve the thermal efficiency of the power plant. Saturated water is extracted from the \gls{msr}s to preheat the reactor water from 120 F at the condenser exit to 423 F at the inlet to the annulus region. For the same reactor power, by using \gls{fw} heating, an additional 1000 MWth can be extracted, so for a 3000 MWth plant, this represents an improvement of several tens of percent in efficiency.  The \gls{fw} heaters are only turned on after the turbine has been synced. A loss of \gls{fw} heating introduces positive reactivity due to an increase in inlet subcooling. In addition, there will initially be a decrease in water level due to a density decrease at the now lower \gls{fw} temperatures.
+
+ 
+
+
 
 \section{Channel Boxes}
 
@@ -477,17 +623,7 @@ Zinc is injected to reduce dose rates within the drywell due to RR system piping
 
 This dose-reduction effect of zinc addition was discovered at several BWRs that naturally had much lower dose rates than similar plants due to their inclusion of brass condensers, which release zinc into the coolant. Hope Creek was the first BWR to intentionally add zinc to the coolant, and now most BWRs maintain zinc in 5-15 ppb in the coolant to reduce the amount of Co-60 in the iron oxide corrosion layers in the RR piping.  
 
-Condensate System [BWR]
-
-Reactor water enters the condenser and condenses on the outside of tubes through which lake water (Circulating Water (CW) System) passes. There is one condenser for each turbine (?). The water then leaves the condenser, passes through several condensate booster pumps, and then through FW heaters. Then, FW pumps take the condensate pump outlet 600 psi up to 1005 psi reactor pressure. 
-
-FW Heaters
-The heated water (saturated conditions) removed from the heater drain corresponding to the MSRs is used to preheat the reactor water from 120 F at the condenser exit to 423 F for inlet into the reactor annulus region. For the same reactor power, by using FW heating, an additional 1000 MWth can be extracted. The FW heaters are only turned on after the turbine has been synced. 
-
-Loss of Condenser Vacuum
-A loss of condenser vacuum pressure could be caused by SJAE failure or a loss of cooling water, in which case pressure in the condenser would increase due to less heat being removed from the primary water. For minor condenser vacuum decreases, there is a decrease in plant efficiency due to the smaller pressure drop over the low-pressure turbines. 
-
-A loss of condenser vacuum will initiate a turbine trip and close the MSIVs and TBVs to prevent all possible paths of coolant to the condenser. The cooling lake inlet temperature cannot exceed 102 F, or else you need to begin shutting down, a process which has occurred at april before. The circulating water inlet is about 80 F during the summer, with an outlet of about 105 F, meaning that the circulating water increases by about 25 F after cooling the reactor water. If the lake should fail, there is still enough water to cool the reactor for 30 days. 
+ 
 
 Containment
 
@@ -562,46 +698,10 @@ Exelon has been changing their portfolio so that the dividends paid out to consu
 
 Low Carbon Portfolio Standard
 Exelon attempted to pass this measure, which would require all utilities to provide 70% of their electricity production as renewable through the purchase of credits, which would benefit the company and other renewables. Clean coal is included as a green energy source in this legislation. 
-Emergency Core Cooling Systems (ECCS) [BWR]
-
-The BWR ECCS systems comprise 1) HPCS, 2) LPCS, 3) LPCI, and 4) ADS. These systems are designed to cool the core in case of an emergency and guarantee that hydrogen generation will not exceed 1% of the hypothetical amount if all the cladding were to react in the Zr oxidation reaction:
-
-Zr + 2H2O  ZrO2 + 2H2 (explosive) + heat (additional cooling concern)
-
-Zr oxidation is only significant above 2200 F, but still occurs at lower rates below this temperature. The ECCS systems will automatically start on low reactor water level or high drywell pressure. 
-
-The ECCS systems are powered by the emergency diesel generators. All systems take suction from the suppression pool and inject into the reactor. Water lost from the reactor in LOCA conditions will drain through downcomers into the suppression pool, creating a closed loop for cooling. Jet pump integrity guarantees that the core can be reflooded to 2/3 height, and the remaining 1/3 of the fuel is cooled by the ECCS systems, as the water level equalizes in the annulus region to that in the core region, and exits through the break in the RR line (worst postulated break). RHR will then cool water in the suppression pool by passing it through a heat exchanger cooled by service water (?). The low-pressure injection systems continue automatically until manually stopped by operators, but the high-pressure systems will cycle on and off based on reactor level. All ECCS components are located near the suppression pool to provide sufficient head, and hence are protected with flood doors. 
-
-HPCS (High Pressure Core Spray)
-HPCS is used to maintain reactor water level and reduce pressure slightly for small breaks (< 0.7 ft2) to allow the low-pressure systems to inject. HPCS consists of a single motor-driven pump that can spray water into the core at any pressure, and will even operate at pressures too low for LPCS and LPCI. This pump is located below the suppression pool elevation to provide sufficient injection head from the suppression pool  or the CST (Condensate Storage Tank), the preferred water source. Water is injected from spargers located on a circular ring around the core periphery (128 spray nozzles). The HPCS flowrate is higher the lower the reactor pressure (the greater the break), and at zero reactor pressure, can inject a maximum of 7175 gpm. One DG is devoted to powering HPCS. 
-
-ADS (Automatic Depressurization System)
-The ADS consists of 7 of the 13 SRVs, and is used to depressurize the reactor when the coolant demand exceeds what can be supplied by HPCS, but the pressure is still too high to LPCS and LPCI to function. The ADS will initiate only if both HPCS and RCIC fail (which is indicated by low reactor water level or high drywell pressure alarms) and there is indication of sufficient injection head from at least one of the low-pressure systems. Upon initiation of ADS, the 7 SRVs will open and discharge steam from the MSLs directly to the suppression pool until the pressure is low enough for LPCS and LPCI to inject.  In an ATWS event, ADS initiation is inhibited, since this would lead to injection of cold unborated water into the core from safety systems, which would exacerbate reactivity control. 
-
-LPCS (Low Pressure Core Spray)
-LPCS consists of a single motor-drive pump that floods the reactor from a circular sparger around the periphery of the core inside the core shroud using water from the suppression pool. LPCS can begin to inject around 400 psig, and operates independently of LPCI. Both LPCS and LPCI provide much larger volumes of water to the core than the high pressure injection systems, since large breaks required large amounts of makeup water. 
-
-LPCI (Low Pressure Coolant Injection)
-LPCI is an emergency mode of the RHR system, by which RHR pumps are used to flood the reactor from water taken from the suppression pool. LPCI can inject through either the RR lines or directly to the core.
+
 Emergency Core Cooling Systems (ECCS) [PWR]
 
-Similar to a BWR, the ECCS systems take suction from the containment sump, which is located at the bottom of containment. This structure collects water in case of a large leak. 
-Feedwater System (FW) [BWR]
-
-The FW system consists of two turbine-driven reactor feed pumps (TDRFPs) and one motor-driven reactor feed pump (MDRFP) that increase FW pressure before being sent to the reactor through two FW inlets. Each FW inlet discharges water into the reactor at about 423 F (at full power) through three spargers, or perforated stainless steel headers that evenly distribute water without impinging it on the reactor vessel wall. This FW injects just above the fuel line. The total FW flow between the two inlets is 15 Mlb/hr. The FW flowrate is the most important input to the heat balance due to its very high flowrate.
-
-FW flowrates used to be nearly exclusively measured with Venturi meters, which required additional uncertainty margin, since FW flowrate has the greatest impact on the heat balance calculation. Now, most plants have installed LEFMs, flow meters based on ultrasound. This allowed for a narrowing in the uncertainty window due to the more precise instruments, and so many plants that have installed LEFMs have undergone a Measurement Uncertainty Recapture (MUR) Uprate. 
-
-MDRFP
-The MDRFP is used to supply FW flow when the steam flow is insufficient to power the TDRFPs, and hence the MDRFP is used in startup and shutdown conditions. This pump has only two speeds, to flow control valves are used to control flowrate. The MDRFP can provide up to 32% rated FW flow (10,300 gpm). The MDRFP and both TDRFPs are equipped with strainers to prevent FME concerns, and if high differential pressure readings are noticed, an alarm will sound. The FW pumps (MDRFPs) are steam-driven by the main turbine because they are not considered safety related.
-
-TDRFPs
-The TDRFPs supply variable FW flows by using extracted main steam to power a turbine, which spins a pump. The normal operating speed at full power is about 4500 rpm for each turbine. Each can supply up to 68% of the rated FW flow. The pump speed is controlled by the speed of the steam turbine attached to each pump impeller. 
-
-Level control sensors in the reactor control valves before the TDRFPs. A low reactor water level will manipulate this valve so that a higher FW flow results. During startup, this process is governed by single-element control, meaning that the feedback lags the actual plant conditions, which can lead to oscillations in the FW flow and wide swings in indicated reactor power (a high FW flow simply indicates high power due to its strong impact on the heat balance calculation). Cycling of these control valves for extended periods of time can damage the valves, which is why reactor pressure is not typically held at around 15% power for very long. At higher powers, three-element control is used, meaning that the FW flowrate response is more accurate and predictive, which makes the flow control valve position more steady. 
-
-Loss of FW Heating
-A loss of FW heating introduces positive reactivity due to an increase in inlet subcooling. In addition, there will initially be a decrease in water level due to ?shrink? at the now lower FW temperatures. 
+Similar to a BWR, the ECCS systems take suction from the containment sump, which is located at the bottom of containment. This structure collects water in case of a large leak.  
 
 
 Fire Protection Systems
@@ -807,41 +907,7 @@ In other materials, flammability limits change due to chemical interactions and 
 Drywells are inerted with nitrogen to limit the oxygen concentration so that hydrogen combustion is limited. The drywell and containment can also be purged to release hydrogen before it reaches explosive levels. 
 
 
-Zirconium-Steam Reaction
-
-
-Zirconium oxidation was the main source of hydrogen gas in TMI. The fuel cladding and structural materials in a BWR are both composed of Zircaloy-2, while channels are composed of Zircaloy-4; all of these materials would need to be replaced to eliminate the major risk of hydrogen generation. The actual reaction above takes place in several stages, the first being the decomposition of water into hydrogen and oxygen. This decomposition is an endothermic reaction, and requires a heat source (or radiation interaction) to occur. 
-
-Temperature (F)
-Time to produce 100 kg hydrogen (s)
-980
-6.5e7 (2 years)
-1700
-1.5e4 (4 hours)
-2420
-216
-3140
-17
-
-The zirconium-steam reaction results in zirconium oxidation (which embrittles the cladding), hydrogen gas, and extra heat generation (which places stress on the ECCS systems). ZrO2 to some extent helps mitigate hydrogen production, since it shields the fresh Zr from hydrogen, but the embrittlement of the cladding, especially in accident scenarios when cold ECCS water injection leads to thermal shocks, can cause rapid fuel failures. The hydrogen produced will then accumulate in the drywell, wetwell, or both. Hydrogen within the primary coolant system can cause corrosive conditions elsewhere in the loop (increase pH). Hydrogen in the core can also blanket the fuel and itself protect against additional hydrogen production. Because heat is needed to initiate the reaction, but heat is released in the reaction, given a high enough energy level in the core, the reaction can become self-sustaining. 
-
-Steel-Steam Reaction
-Given high-enough temperatures, usually in excess of 2200 F, oxidation of steel components can also lead to hydrogen production. 280 BTUs are produced per pound of steel reacted. Steel oxidation is not the primary cause of hydrogen generation in accident conditions, since the steel isn?t directly in contact with the heat source, it would be difficult for these components to reach 2200 F or higher. However, if the steel reaches its melting point of about 2500-2750 F, then steel oxidation could lead to more hydrogen generation than zirconium. 
-
-Containment Materials
-Zinc, a common material in paints and galvanized materials, can oxidize and release hydrogen through a zinc-steam reaction. This source is less likely to contribute significant quantities than the zirconium-steam or steel-steam reactions because most of the zinc is located outside the RPV. Aluminum oxidizes to produce Al2O3 and H2 in corrosion reactions, and hence could also lead to hydrogen production. 
-
-Corium-Concrete Interactions
-Corium, or the molten fuel, cladding, control blades, and structural materials, is produced during a core melt accident. This corium will melt through the RPV and fall onto the concrete undervessel floor, where it will interact with the concrete to produce significant amounts of hydrogen gas. The heat from the corium will lead to thermal decomposition of the concrete into gaseous products. These gases pass upwards due to buoyancy forces through the melt, where they undergo chemical interactions to produce hydrogen gas. Because concrete contains a lot of water, this water is released due to the corium heat, which then interacts with the corium to form hydrogen and CO. UO2, Cr2O3, and Mo all interact with water to form hydrogen. 
-
-UO2 + H2O  UO3 + H2
-Cr2O3 + 3H2O  2CrO3 + 3H2
-Mo + 3H2O  MoO3 +3H2
-
-Radiolytic Decomposition of Water
-2H2O + radiation  2H2 + O2
-
-Other products of radiolysis include OH-, H+, HO2, and H2O2. In PWRs, equilibrium is reached between the radiolysis of water molecules and its recombination, since the products will react with each other to re-form regular water molecules. However, in BWRs, the offgas system continually removes radiolysis products, so no such equilibrium is reached. For every 104 eV of radiation energy, about 22 H2O molecules can be decomposed. This radiolysis is due to the gamma rays that directly deposit their energy in the coolant. Decay energies are the driving force for radiolysis, so radiolysis rates are typically proportional to reactor power level. Radiolysis is the only significant production pathway for oxygen inside the containment. This method is relatively slow at producing hydrogen when compared to the Zircaloy-steam reaction. Radiolytic production is only sufficient to initiate flammable conditions after 30 days. 
+ 
 
 
 
@@ -959,23 +1025,7 @@ The EHC system provides the high-pressure fluids necessary to control valves goi
 
 Reactor Head Vent
 A vent on the top of the reactor vessel continuously vents non-condensable gases that pool at the top of the reactor to the A MSL. 
-Main Turbine
 
-The turbine extracts mechanical energy from steam at a full rated speed of 1800 rpm. This speed is kept constant so that the generator always produces electricity with a 60 Hz frequency. Steam enters the high pressure turbine, then passes through one of two Moisture Separator-Reheaters (MSRs), and then passes through cross-around pipes to enter one of the low-pressure turbines. The low-pressure turbines are much larger than the high pressure turbines to allow greater expansion area for the steam that had already expanded through the high pressure turbine. Exhaust steam from the low-pressure turbines is sent though hoods into the main condenser, while steam is extracted at various locations for heating purposes. april?s rated thermal power is 3546 MWth, while Clinton?s is 3473 MWth.
-
-Main Turbine
-The main turbine is a 14-stage steam turbine, with seven stages in the high pressure turbine and the remaining seven stages shared in the low pressure turbines. Steam enters at the center of the high pressure turbine shaft and expands in both directions to minimize axial thrust forces. The stationary blades (diaphragms) direct steam to the rotating blades (buckets), which are connected to the shaft. Each set of diaphragms and buckets constitutes a stage. The flow then passes through one of two MSRs, and then into one of three low pressure turbines. The low pressure turbines are lined in parallel, but are all on the same shaft. 
-
-About 90% of the plant?s electricity comes from the high pressure turbine. The turbine 1st stage pressure indication is taken from a pressure sensor located between the 1st stage bucket and the 2nd stage diaphragm. This pressure, of about 675 psig at full power, scales linearly with reactor power. Steam exits the high pressure turbine at 185 psig. 
-
-MSR: Moisture Separator and Reheater
-The MSRs dry and superheat the high pressure turbine exhaust before re-entry into the low pressure turbines to increase efficiency and the lifetime of the low pressure turbines. The steam is forced to make rapid directional changes, separating out any liquid droplets. Liquid droplets are sent to heater drains. Then, the steam is heated further by steam extracted from other turbine stages, further drying the steam before it is sent to the low pressure turbines. This reheated steam exits the MSRs at about 520 F and 185 psig. The principal reason to reheat between turbines is to reduce moisture damage to turbine blades. A secondary benefit is the increased average temperature of heat addition, which improves efficiency. 
-
-Heater Drains
-The energy extracted in the form of condensed water from the MSRs is sent to the heater drains, where this energy is used for FW heating (?). If the heater drain functionality is lost, then moisture will build up in the MSRs, which will cause water to build up in the turbines, which will damage the blades. 
-
-Turbine Trip
-A turbine trip causes the TSVs to close and the TBVs to open, which dump steam to the condenser. However, if the TBVs fail to open, there will be a large pressure transient. 
 
 Nuclear Fuel [BWR]
 
@@ -1230,25 +1280,7 @@ The SRMs are proportional counter fission chamber detectors made of titanium wit
 
 In refueling, there must be a continuous face-adjacent path between bundles and an SRM to avoid local criticality without detection by an SRM. Sources, which look something like fuel assemblies, can be placed in the core temporarily during refueling if there are insufficient counts. For a fresh core or a for a reactor that has been shut down for a long time, sources are inserted in order to obtain statistically significant neutron counts in the SRMs, not to obtain the neutron source needed to reach criticality. If you were to reach criticality without your knowledge, and then withdraw past prompt criticality, the core would suffer serious damage. An alternative to using a startup source would be to wait a long enough time between rod withdrawals for subcritical multiplication to lead to a detectable neutron level. 
 
-Spent Fuel Pool (SFP)
-
-Each SFP contains about 4000 assemblies. When fully flooded with water, the SFP must have keff < 0.95.  The pool temperature is maintained with 68 and 125 F. A bundle is considered ?cold? after five years in the SFP. The enrichment of spent fuel is above that of natural uranium. 
-
-A 1-year inventory visual inspection of the SFP is required by the NRC, and a 6-year video camera inspection is simply a best practice in the industry. Any material containing greater than 1 gram of U-235 or plutonium is considered SNM (special nuclear material), and must be reported. All quantities less than 1 gram must still be tracked, but don?t need to be reported. 
-
-During refueling, the SFP is allowed to connect directly to the reactor and steam separator/dryer pit. New fuel is located in the SFP. PWRs undergo a full-core offload during refueling. The refueling DBA is the dropping of a fuel assembly on top of another, causing it to release its fission products. 
-
-Coupons
-Coupon trees (heights of assemblies) are included to determine the severity of accumulated IASCC. Hot bundles freshly removed from a core following an outage are purposefully placed surrounding a coupon tree for conservatism. Otherwise, hot bundles cannot be put adjacent to each other in the pool. 
-
-Failed Fuel Canisters
-Badly failed fuel can be put in failed fuel canisters, which are essentially large rectangular boxes that surround a fuel assembly. april has a few of these canisters, but after damaging failed fuel even further after placing it in a canister, the practice was abandoned. 
-
-Neutron Poisons
-Boroflex (rubber + boron) inserts snap into place within each rack cell. However, being rubber, these components degrade quickly, hence the importance of the coupon tree surveillances. One of april?s pools uses Boroflex, while the other uses racks made of aluminum + boron, which has reduced irradiation-related degradation mechanisms. 
-
-NFV: New Fuel Vault
-Before loading into the SFP immediately before an outage, fuel is stored in the new fuel vault, which for april is located next to the SFP. april has four assemblies in the NFV because they are testing out new GNF fuel (lead test assemblies), and in case something goes wrong with those four assemblies, there are backups for quick replacement. The fastest Westinghouse has made a fuel bundle was over a weekend. 
+
 Standby Liquid Control (SBLC)
 
 SBLC (sometimes pronounced ?slick?) injects a sodium pentaborate (NaB5) mixture towards the bottom of the core inlet plenum area to cease fission in the event that the control rods fail to stop the chain reaction. Suction is taken from a storage tank containing heated NaB5. The mixture is kept heated to 75-85 to ensure that the poison remains dissolved in the liquid water. If the storage tank drops below 60, sodium pentaborate will precipitate from solution, forming a crystalline substance that is difficult to get back into solution should the temperature be again increased. Additional chemicals would need to be added to the tank to ensure dissolution. Borax and boric acid are mixed together at  in a separate tank, and an air stirring system is used to mix the solution. After being thoroughly mixed, the sodium pentaborate is added to the storage tank. The heated tank is often surrounded by short walls to prevent corrosion of other components in the event that there is a leak in the tank. This system is used for emergencies only, and has only ever been implemented on accident. 
