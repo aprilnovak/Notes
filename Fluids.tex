@@ -204,6 +204,30 @@ Then, taking the mean of this equation, and recognizing that differentiation and
 
 The averaged Navier-Stokes equations are identical to the Navier-Stokes equations, except that they describe averaged velocities and pressure, and include the Reynolds stress term \(\partial\la V_i'V_j'\ra/\partial x_i\). These evolution equations are not the end of the study of turbulence however, because closure relationships are needed to describe the Reynolds stresses in terms of other solution variables or known quantities. 
 
+These equations can also be derived in cylindrical coordinates for incompressible flow. The continuity equation becomes:
+
+\beqa
+\frac{1}{r}\frac{\partial(rV_r)}{\partial r}+\frac{1}{r}\frac{\partial V_{\theta}}{\partial\theta}+\frac{\partial V_z}{\partial z}=&0\\
+\frac{1}{r}\frac{\partial(r\la\la V_r\ra+V_r'\ra)}{\partial r}+\frac{1}{r}\frac{\partial \la\la V_{\theta}\ra+V_{\theta}'\ra}{\partial\theta}+\frac{\partial \la\la V_z\ra+V_z'\ra}{\partial z}=&0\\
+\frac{1}{r}\frac{\partial(r\la V_r\ra)}{\partial r}+\frac{1}{r}\frac{\partial \la V_{\theta}\ra}{\partial\theta}+\frac{\partial \la V_z\ra}{\partial z}=&0\\
+\eeqa
+
+where again, it is true that both \(\nabla\cdot\la \vv{V}\ra=0\) and \(\nabla\cdot\vv{V}'=0\). The three momentum equations are:
+
+\beqa
+\frac{\partial V_z}{\partial t}+V_z\frac{\partial V_z}{\partial z}+V_r\frac{\partial V_z}{\partial r}+\frac{V_{\theta}}{r}\frac{\partial V_z}{\partial\theta}=\frac{-1}{\rho}\frac{\partial P}{\partial z}+\nu\nabla^2\la V_z\ra\\
+\frac{\partial \la V_z\ra}{\partial t}+\la (\la V_z\ra + V_z')\frac{\partial (\la V_z\ra + V_z')}{\partial z}\ra+\la \la (V_r\ra+V_r')\frac{\partial (\la V_z\ra + V_z')}{\partial r}\ra+\la\frac{\la V_{\theta}\ra+V_{\theta}'}{r}\frac{\partial (\la V_z\ra + V_z')}{\partial\theta}\ra=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}\nu\nabla^2\la V_z\ra\\
+\frac{\partial \la V_z\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_z\ra}{\partial z}+\la V_z'\frac{\partial V_z'}{\partial z}\ra+\la V_r\ra\frac{\partial \la V_z\ra}{\partial r}+\la V_r'\frac{\partial V_z'}{\partial r}\ra+\frac{1}{r}\left(\la V_{\theta}\ra\frac{\partial\la V_z\ra}{\partial\theta}+\la V_{\theta}'\frac{\partial V_z'}{\partial \theta}\ra\right)=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}+\nu\nabla^2\la V_z\ra\\
+\eeqa
+
+For statistically axisymmetric flows, \(\la V_{\theta}\ra=\la V_r'V_{\theta}\ra=\la V_z'V_{\theta}'\ra=0\), and hence the above equations simplify to:
+
+\beqa
+\frac{\partial \la V_z\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_z\ra}{\partial z}+\la V_r\ra\frac{\partial \la V_z\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}-\frac{\partial \la V_z'V_z'\ra}{\partial z}-\frac{1}{r}\frac{\partial \la V_r'V_z'\ra}{\partial r}+\nu\nabla^2\la V_z\ra
+\eeqa
+
+
+
 
 
 \subsubsection{Mean Scalar Equation}
@@ -313,6 +337,8 @@ k\equiv\frac{1}{2}\la V_iV_i\ra
 
 
 
+
+
 \subsubsubsection{Symmetries of the Reynolds Stress Tensor}
 Often, the flow geometry can be used to conclude that certain components of the Reynolds stress are zero. When a flow is independent of the \(x_3\) coordinate, such as for axisymmetric flows that are independent of \(\theta\), statistics are therefore also independent of that coordinate. Hence, the derivative of the PDF of velocity \(f\) with respect to that coordinate will be zero:
 
@@ -360,11 +386,104 @@ Eq. \eqref{eq:CorrinKistler}, which has assumed incompressibility in the last te
 
 
 
-\subsection{Free Shear Flows}
+\section{Free Shear Flows}
 % part (iii) on page 94
 
+Free shear flows are flows in which there are no shear stresses that would normally be imposed by solid walls. Jets, wakes behind solid bodies, and mixing layers between two fluids are common examples of free shear flows. 
+
+\subsection{The Round Jet}
+Consider a round jet of initial diameter \(d\) with an initially uniform velocity \(U_J\). This flow will be statistically stationary provided the jet velocity does not change with time. By assuming independence of the \(\theta\) coordinate, this flow is then also axisymmetric. Because \(\frac{\partial f}{\partial\theta}=0\), \(\la u'w'\ra=\la v'w'\ra=\la W\ra=0\), where the velocity has components \(U, V, W\). The flow is entirely determined, assuming negligibly small impact of the particular nozzle shape, by \(Re=U_Jd/\nu\). 
+
+The main velocity occurs in the axial direction, and the centerline velocity \(U_0\) decreases going down the jet. However, because the jet spreads, at any particular \(r/r_{1/2}\), the velocity will be maximum at some intermediate \(x/d\). The jet half-width, or \(r_{1/2}\), is the radius at which the mean axial velocity is half of the centerline velocity. The mean radial velocity is about an order of magnitude smaller than the mean axial velocity. All of the remaining analysis assumes we are in the developed region, which begins around \(x/d=30\). As the jet decays and spreads, the mean velocity profile will change, but \(\la U\ra/U_0(x)\) plotted as a function of \(r/r_{1/2}\) collapses onto a single curve, showing that the velocity profile in a round jet is self-similar. Away from the development region, it is experimentally found that the centerline velocity, normalized by the jet velocity, decreases as \(1/x\). 
+
+\beq
+\label{eq:Uo}
+\frac{U_0(x)}{U_J}=\frac{B}{(x-x_0)/d}
+\eeq
+
+It is also experimentally found that the jet spreads linearly, i.e. the jet half-width increases as \(x\), where \(S\) is the spreading rate. This linear spreading makes sense from the point of view of the conical regions that are typically drawn for jets (as opposed to some type of quadratic spreading). 
+
+\beq
+r_{1/2}(x)=S(x-x_0)
+\eeq
+
+Experimentally, people have found that the slope \(B\) and spreading rate \(S\) are independent of \(Re\), which is surprising given that the only dimensionless quantity that should govern the flow is the Reynolds number. Jets of all Reynolds numbers will decay and spread at roughly the same rate, but the Reynolds number will still certainly have an impact on the file-scale structure of the flow. Because the velocity decays at a rate independent of \(Re\), then because \(\la U\ra/U_0(x)\) is self-similar, the mean velocity profile is independent of \(Re\). For very low Reynolds number flows, this self-similarity breaks down. 
+
+A similarity solution can be developed for the round jet by selecting a similarity variable for the cross-stream coordinate as:
+
+\beq
+\xi=\frac{r}{r_{1/2}}
+\eeq
+
+which can equivalently be expressed in terms of the axial coordinate \(x\) by multiplying by the formula above for \(r_{1/2}(x)\):
+
+\beq
+\xi=\frac{r}{S(x-x_0)}
+\eeq
+
+which inspires the definition of an alternative similarity variable (since a multiplication of a similarity variable by a constant will give another equivalent similarity variable):
+
+\beq
+\label{eq:eta}
+\eta=\frac{r}{x-x_0}
+\eeq
+
+From experimental data that tells us that \(\la U\ra/U_0(x)\) gives a profile that is independent of \(r/r_{1/2}\), we define a self-similar velocity profile as:
+
+\beq
+\label{eq:ssV}
+f(\eta)=\frac{\la U(x,r)\ra}{U_0(x)}
+\eeq
+
+Because \(\la U\ra\) is self-similar, by the continuity equation, \(\la V\ra\) must also be self-similar, but by a different similarity function \(h(\eta)\) such that \(\la V\ra/U_0(x)=h(\eta)\). To show this, begin from the continuity equation in polar coordinates:
+
+\beq
+\frac{\partial\la U\ra}{\partial x}+\frac{1}{r}\frac{\partial}{\partial r}(r\la V\ra)=0
+\eeq
+
+By the chain rule and from the definition of the self-similar velocity profile in Eq. \eqref{eq:ssV}, \(U_0(x)\) from Eq. \eqref{eq:Uo}, and \(\eta\) from Eq. \eqref{eq:eta}:
+
+\beqa
+\frac{\partial\la U\ra}{\partial x}=&f(\eta)\frac{\partial U_0(x)}{\partial x}+U_0(x)\frac{\partial f(\eta)}{\partial\eta}\frac{\partial\eta}{\partial x}\\
+\frac{\partial\la U\ra}{\partial x}=&f(\eta)\left(\frac{-U_0(x)}{x}\right)+U_0(x)\frac{\partial f(\eta)}{\partial\eta}\left(\frac{-r}{x^2}\right)\\
+\frac{\partial\la U\ra}{\partial x}=&\frac{-U_0(x)}{x}\left\lbrack f(\eta)+\frac{\partial f(\eta)}{\partial\eta}\eta\right\rbrack\\
+\frac{\partial\la U\ra}{\partial x}=&\frac{-U_0(x)}{x}\frac{\partial (f(\eta)\eta)}{\partial\eta}\\
+\eeqa
+
+Substituting this result into the continuity equation, along with the similarity expression for the lateral velocity, gives a condition for the similarity profiles such that \(\la V\ra\) is self-similar. Plotting the similarity profile for the lateral velocity shows that the velocity is zero at \(\xi=0\), which is to be expected from conservation of mass requirements as you approach the centerline. The lateral velocity must decay to zero far from the jet, so the lateral velocity reaches a maximum around \(\xi=0.7\), and becomes negative beyond roughly the half-width of the jet, indicating that fluid at the jet edges becomes entrained in the jet. By defining the self-similarity function \(f(\eta)\), \(h(\eta)\) can be determined, and this will show that the lateral velocity is roughly two orders of magnitude smaller than the axial velocity. 
+
+\beqa
+\frac{-U_0(x)}{x}\frac{\partial (f(\eta)\eta)}{\partial\eta}+\frac{1}{r}\frac{\partial}{\partial r}\left(rh(\eta)U_0(x)\right)=&0\\
+-\eta\frac{\partial (f(\eta)\eta)}{\partial\eta}+r\frac{\partial h(\eta)}{\partial \eta}\frac{\partial\eta}{\partial r}+h(\eta)=&0\\
+\eta\frac{\partial (f(\eta)\eta)}{\partial\eta}=&\frac{\partial (h(\eta)\eta)}{\partial \eta}\\
+\eeqa
+
+Like the centerline velocity, the square root of the \(\la U'U'\ra\) Reynolds stress also decays as \(1/x\). Due to this observation, you might also expect, like the axial and lateral velocities, the Reynolds stresses normalized by the centerline velocity to be self-similar. On the centerline of the jet, the square root of the axial normal Reynolds stress is about 25\% of the mean. The Reynolds stresses exhibit significant anisotropy even in this simple round jet. As expected, the normal Reynolds stress along the axis is the largest component, while the shear components are the smallest. Because the shear components are odd functions of \(r\), the shear component is zero at \(r=0\). By normalizing the shear stresses by the turbulent kinetic energy, we see from experimental data that the shear stresses are roughly one third of the turbulent kinetic energy, though the shear stresses drop to zero at the centerline of the jet. All components of the Reynolds stress decay to zero far from the jet.
+
+The derivative of the axial velocity with respect to \(r\) is always negative because the velocity is largest at the centerline and decays moving to greater \(r\). From the definition of the orientation of shear stress, the shear stress will be positive if \(\partial\la U\ra/\partial r<0\). Hence, for the round jet, the shear stress is always positive, which gives rise to a positive turbulent viscosity. Because the mean velocities and the Reynolds stresses are self-similar, this turbulent viscosity is also self-similar. Because the shear stresses are odd functions of \(r\), as is \(\partial\la U\ra/\partial r\), the turbulent viscosity is an even function of \(r\), and is roughly uniform in the center of the jet, but decreases at the edge of the jet. 
 
 
+
+
+
+\subsection{Boundary Layer Equations}
+For the round jet, because the lateral velocity is about two orders of magnitude smaller than the axial velocity, we can assume that axial gradients are of much smaller magnitude than lateral gradients. The assumption of negligible gradients in certain directions of the flow leads to boundary layer equations, which are simplified versions of the governing equations. 
+
+
+
+
+\section{Self-Similarity}
+Self-similarity is a very important concept in the study of fluids because it is often one of the only ways that  analytic solutions can be determined for certain classes of flows. Consider an arbitrary quantity \(Q\) that depends on two variables, \(x\) and \(y\). We can attempt to scale the quantity and \textit{one} of its dependent variables by parameters that only depend on the \textit{other} dependent variable:
+
+\beq
+\xi=\frac{y}{\delta(x)}
+\eeq
+
+\beq
+\hat{Q}(\xi,x)=\frac{Q(x,y)}{Q_0(x)}
+\eeq
+
+If \(\hat{Q}(\xi,x)\) is independent of \(x\), then \(Q(x,y)\) is self-similar, and its variation with respect to two variables \(x\) and \(y\) can be reduced to variation with respect to a single variable \(\xi\) that is some function of \(x\) and \(y\). In this case, the PDE for \(Q\) in terms of \(x\) and \(y\) is reduced to an ODE in terms of \(Q_0(x), \delta(x), \hat{Q}(\xi)\). Based on the starting equations for applying self-similarity arguments, self-similar behavior may only be observed over some range in \(x\) and \(y\). 
 
 
 
@@ -444,187 +563,6 @@ and is often near unity for simply turbulent flows.
 
 
 
-
-
-
-
-
-
-\clearpage
-\section{Part 3 - CUDA Programming}
-
-The purpose of this assignment is to parallelize the same particle simulation using GPUs and to obtain \(\mathscr{O}(n)\) algorithmic dependence. Each node on Stampede has two Intel Sandy Bridge processors and one Intel Xeon Phi accelerator. In addition, 128 nodes are also equipped with an NVIDIA K20 GPU. GPU programming is fundamentally different from programming in serial because GPUs are designed to maximum throughput, while CPUs are designed to minimize latency. A CPU contains three main components - 1) a fetch/decode section that interprets instructions, 2) the ALU that actually does computation, and 3) the execution context that contains registers. CPUs also contain a large data cache and more complicated control logic, branch prediction, and prefetching hardware. This extra hardware attempts to reduce latency by trying to reduce slow memory operations. However, the idea behind a GPU is to maximize bandwidth, rather than minimize latency, so a GPU does not use these hardware components that would help a single stream run quickly. Instead, GPUs take advantage of this extra space by using more cores. A CPU consists of a few cores optimized for sequential serial processing, while a GPU has a massively parallel architecture consisting of thousands of smaller, and more efficient cores that are better at handling tasks simultaneously.
-
-To have an efficient GPU workload, you need to have thousands of independent pieces of work. In addition, the workload has to be SIMD-friendly, where nearby threads run the same program. Also, the program should be compute-heavy, since a math operation has a much lower runtime than a memory operation. Algorithms that are arithmetic-bound are excellent applications for GPUs. However, most programs are bound by memory, but you'll still have an advantage on GPUs because they have high main memory bandwidth. GPUs are not independent processors - they cannot do things on their own, and they have to be connected to a CPU, since GPUs cannot talk to a network, run an operating system, etc. Large machines may have a GPU attached to every CPU. The characteristics of GPUs lend the following broad classes of techniques for optimization:
-
-\begin{itemize}
-\item Increase the data independence of the workload. To have an efficient GPU workload, you need to have thousands of independent pieces of work. In addition, the workload has to be SIMD-friendly, where nearby threads run the same program. 
-\item Reduce communication between the CPU and the GPU. GPUs are attached to a CPU through a bi-directional PCIe express bus, which is relatively slow. You need to go over this bus every time you want to load data to the GPU and eventually get it back on the CPU.
-\item Reduce the degree of branching. In CPUs, there is one instruction stream per ALU, since each branch requires different, conditional instructions for the ALUs. On a GPU, because an instruction stream is shared among threads, instructions are operated in lockstep series, so not all of the ALUs may be doing useful work - some will be waiting while other ALUs execute branches. If every thread takes a different path through the machine, then your performance drops to \(1/w\) of the original full-SIMD performance, where \(w\) is the warp-width. This is referred to as ``branch divergence.''
-\item Reduce global memory operations on the GPU, since the global memory latency is about an order of magnitude higher than for CPUs. Compared to CPU caches, shared memory and the constant and texture caches are small, and so GPUs have to use a different strategy for dealing with memory latency. By utilizing the shared memory of a GPU (shared amongst threads in a block), slow global memory operations can be reduced.
-\item Global memory is most efficient when threads in a warp access an aligned, contiguous region of memory, since the GPU will bring in a block of data (analogous to the cache line size in CPUs being bigger than 1). Coalesce the memory so that this extra fetching is useful (i.e. try to use data in row-major or column-major layout, depending on the code). 
-\end{itemize}
-
-\subsection{First Parallel CUDA Code}
-
-For our first version of the CUDA code, we define vectors of all of the particle structures on both the host and device using the thrust library - each CUDA threads works directly on these structures. The host particles are initialized with positions and cell numbers, and this information is assigned to the device particles. The cell numbers of the particles are recorded in a vector {\tt cellnos}, where each entry corresponds to a particle. 
-
-\begin{lstlisting}[language=C]
-/* include directives ... */
-
-// A template meant for a "constant" CUDA value
-// I think that basically means the value doesn't change during a kernel run.
-// In our case, we probably only ever change the value to initialize it.
-template <class T>
-class CUDAConst
-{
-    T _v;
-public:
-    // Initialize with value
-    CUDAConst (T value) { set(value); }
-    
-    CUDAConst (void) { }
-
-    // Set value from host
-    void set (T value) { cudaMemcpyToSymbol(&_v, &value, sizeof(T)); }
-
-    // Automatically convert to specialized type *on the device*
-    __device__ operator T () const { return _v; }
-
-    // Explicitly get the value on the device
-    __device__ T d () const { return _v; }
-
-    // Get the value on the host
-    __host__ T h () const {
-        T v;
-        cudaMemcpyFromSymbol(&v, &_v, sizeof(T));
-        return v;
-    }
-};
-
-// define a constant type on the device of length _t - this lives in constant memory on the device
-// using constant memory. Use constant memory for data that will not change over the course of a kernel execution. There are 64kB constant memory on the device. Reading from constant memory can be significantly faster than reading from shared memory or global memory. Constant memory should be used when your input data does not change during execution of a kernel. 
-#define cuda_const(_t) __constant__ __device__ CUDAConst< _t >
-// define the cellsize and number of cells as constant on the device
-static cuda_const(double) cellsize;
-static cuda_const(int) ncells;
-
-// use one block with n threads (one thread per particle)
-#define NUM_BLOCKS 1
-#define NUM_THREADS n
-
-#define xcellsize (1.25*0.01)
-
-/* define macros for CLAMP, XY, GET_X, GET_Y ... */
-
-
-// device function can only be called from CUDA kernels
-// compute the cell for a particle based on its position
-__device__ static inline int get_cell_for_particle (particle_t & p) {
-	/* compute particle cell ... */
-    return XY(x,y);
-}
-
-__device__ void apply_force_gpu(particle_t &particle, particle_t &neighbor) {
-	/* update acceleration of particle based on neighbor ... */
-}
-
-// CUDA kernel to compute forces on a single particle, against all other particles
-__global__ void compute_forces_gpu(particle_t * particles, int n) {
-    int tid = threadIdx.x + blockIdx.x * blockDim.x;
-    
-    if (tid >= n) 
-    		return;
-
-    particles[tid].ax = particles[tid].ay = 0;
-    
-    // apply forces against the particle corresponding to the thread id (particles[tid]) and all of the other particles
-    // we can do this fully independently because all we are changing is the acceleration, and all that is needed to compute the 
-    // new forces is the position
-    for(int j = 0 ; j < n ; j++)
-        apply_force_gpu(particles[tid], particles[j]);
-}
-
-// CUDA kernel to assign new cells and positions for particle
-__global__ void move_gpu (particle_t * particles, int * cellnos, int n, double size) {
-
-    int tid = threadIdx.x + blockIdx.x * blockDim.x;
-    
-    if(tid >= n) 
-    		return;
-
-    particle_t * p = &particles[tid];
-    
-    /* update velocity and position ... */
-	
-	// assign new cell for particle
-    cellnos[tid] = get_cell_for_particle(*p);
-}
-
-// CUDA kernel to assign cells to particles by writing to cellnos
-__global__ void assign_cells (particle_t * particles, int * cellnos, int n) {
-    int tid = threadIdx.x + blockIdx.x * blockDim.x;
-
-    if(tid >= n) return;
-		
-    particle_t & p = particles[tid];
-    cellnos[tid] = get_cell_for_particle(p);
-}
-
-
-int main( int argc, char **argv ) {
-	/* ... */
-
-	// define a vector of particle structures for the host
-    thrust::host_vector<particle_t> particles(n);
-
-	// initialize the size, number of cells, cell size, and particles
-    set_size( n );
-    ncells.set((int)(size / xcellsize));
-    cellsize.set(size / ncells.h());
-    init_particles( n, &particles[0] );
-
-    cudaThreadSynchronize();    
-    double copy_time = read_timer( );
-
-	// define a vector of particle structures for the device, and initialize
-    thrust::device_vector<particle_t> d_particles = particles;
-
-    cudaThreadSynchronize();
-    copy_time = read_timer( ) - copy_time;
-
-    // define a vector of cells of length n that identifies the cell number of each particle
-    thrust::device_vector<int> cellnos(n);
-
-    cudaThreadSynchronize();
-    double simulation_time = read_timer( );
-
-    // Initialize cells with the cell numbers of the device particles
-    assign_cells <<< NUM_BLOCKS, NUM_THREADS >>> (thrust::raw_pointer_cast(&d_particles[0]), thrust::raw_pointer_cast(&cellnos[0]), n);
-
-    for( int step = 0; step < NSTEPS; step++ ) {
-    		// apply forces to the particles in d_particles
-        compute_forces_gpu <<< NUM_BLOCKS, NUM_THREADS >>> (thrust::raw_pointer_cast(&d_particles[0]), n);
-
-		// move particles (update position and velocity) and assign new cell numbers
-        move_gpu <<< NUM_BLOCKS, NUM_THREADS >>> (thrust::raw_pointer_cast(&d_particles[0]), thrust::raw_pointer_cast(&cellnos[0]), n, size);
-
-		// save information - does this work, since we haven't yet copied particle data back to the host?
-        if( fsave && (step%SAVEFREQ) == 0 ) {
-            particles = d_particles;
-            save( fsave, n, &particles[0]);
-    }}
-    
-    // make sure all of the CUDA threads are done before we read the runtime timer
-    cudaThreadSynchronize();
-    simulation_time = read_timer( ) - simulation_time;
-
-	
-    if( fsave ) fclose( fsave );
-
-    return 0;
-}
-\end{lstlisting}
 
 
 
