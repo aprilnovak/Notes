@@ -215,15 +215,23 @@ These equations can also be derived in cylindrical coordinates for incompressibl
 where again, it is true that both \(\nabla\cdot\la \vv{V}\ra=0\) and \(\nabla\cdot\vv{V}'=0\). The three momentum equations are:
 
 \beqa
-\frac{\partial V_z}{\partial t}+V_z\frac{\partial V_z}{\partial z}+V_r\frac{\partial V_z}{\partial r}+\frac{V_{\theta}}{r}\frac{\partial V_z}{\partial\theta}=\frac{-1}{\rho}\frac{\partial P}{\partial z}+\nu\nabla^2\la V_z\ra\\
+\frac{\partial V_z}{\partial t}+V_z\frac{\partial V_z}{\partial z}+V_r\frac{\partial V_z}{\partial r}+\frac{V_{\theta}}{r}\frac{\partial V_z}{\partial\theta}=\frac{-1}{\rho}\frac{\partial P}{\partial z}+\nu\nabla^2 V_z\\
 \frac{\partial \la V_z\ra}{\partial t}+\la (\la V_z\ra + V_z')\frac{\partial (\la V_z\ra + V_z')}{\partial z}\ra+\la \la (V_r\ra+V_r')\frac{\partial (\la V_z\ra + V_z')}{\partial r}\ra+\la\frac{\la V_{\theta}\ra+V_{\theta}'}{r}\frac{\partial (\la V_z\ra + V_z')}{\partial\theta}\ra=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}\nu\nabla^2\la V_z\ra\\
 \frac{\partial \la V_z\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_z\ra}{\partial z}+\la V_z'\frac{\partial V_z'}{\partial z}\ra+\la V_r\ra\frac{\partial \la V_z\ra}{\partial r}+\la V_r'\frac{\partial V_z'}{\partial r}\ra+\frac{1}{r}\left(\la V_{\theta}\ra\frac{\partial\la V_z\ra}{\partial\theta}+\la V_{\theta}'\frac{\partial V_z'}{\partial \theta}\ra\right)=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}+\nu\nabla^2\la V_z\ra\\
+\eeqa
+
+\beqa
+\frac{\partial V_r}{\partial t}+V_z\frac{\partial V_r}{\partial z}+V_r\frac{\partial V_r}{\partial r}+\frac{V_{\theta}}{r}\frac{\partial V_r}{\partial\theta}-\frac{V_{\theta}^2}{r}=\frac{-1}{\rho}\frac{\partial P}{\partial r}+\nu\left(\nabla^2 V_r-\frac{V_r}{r^2}-\frac{2}{r^2}\frac{\partial V_{\theta}}{\partial\theta}\right)\\
+\frac{\partial \la(\la V_r\ra + V_r')\ra}{\partial t}+(\la V_z\ra+V_z')\frac{\partial (\la V_r\ra + V_r')}{\partial z}\ra+\la(\la V_r\ra + V_r')\frac{\partial (\la V_r\ra + V_r')}{\partial r}\ra+\la\frac{\la V_{\theta}\ra+V_{\theta}'}{r}\frac{\partial (\la V_r\ra + V_r')}{\partial\theta}\ra-\frac{\la V_{\theta}\ra^2}{r}=\\
+\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial r}+\nu\left(\nabla^2 \la V_r\ra-\frac{\la V_r\ra}{r^2}-\frac{2}{r^2}\frac{\partial \la V_{\theta}\ra}{\partial\theta}\right)\\
+\frac{\partial \la V_r\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_r\ra}{\partial z}+\la V_z'\frac{\partial V_r'}{\partial z}\ra+\la V_r\ra\frac{\partial\la V_r\ra}{\partial r}\ra+\la V_r'\frac{\partial V_r'}{\partial r}\ra+\frac{1}{r}\left(\la V_{\theta}\ra\frac{\partial \la V_r\ra}{\partial\theta}+\la V_{\theta}'\frac{\partial V_r'}{\partial\theta}\ra\right)-\frac{\la V_{\theta}\ra^2}{r}=\\
+\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial r}+\nu\left(\nabla^2 \la V_r\ra-\frac{\la V_r\ra}{r^2}-\frac{2}{r^2}\frac{\partial \la V_{\theta}\ra}{\partial\theta}\right)\\
 \eeqa
 
 For statistically axisymmetric flows, \(\la V_{\theta}\ra=\la V_r'V_{\theta}\ra=\la V_z'V_{\theta}'\ra=0\), and hence the above equations simplify to:
 
 \beqa
-\frac{\partial \la V_z\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_z\ra}{\partial z}+\la V_r\ra\frac{\partial \la V_z\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}-\frac{\partial \la V_z'V_z'\ra}{\partial z}-\frac{1}{r}\frac{\partial \la V_r'V_z'\ra}{\partial r}+\nu\nabla^2\la V_z\ra
+\frac{\partial \la V_z\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_z\ra}{\partial z}+\la V_r\ra\frac{\partial \la V_z\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}-\frac{\partial \la V_z'V_z'\ra}{\partial z}-\frac{1}{r}\frac{\partial (r\la V_r'V_z'\ra)}{\partial r}+\nu\nabla^2\la V_z\ra
 \eeqa
 
 
@@ -366,7 +374,9 @@ A flow can be both independent of one coordinate, and also symmetric about other
 f(V_1,V_2,V_3; x_1,x_2,x_3,t)=f(V_1,-V_2,V_3;x_1,-x_2,x_3,t)
 \eeq
 
-From this, we can conclude that \(\la V_1V_2\ra\) is an odd function of \(x_2\), while \(\la V_1V_1\ra\) and \(\la V_2V_2\ra\) are even functions of \(x_2\). However, because the flow is not independent of \(x_2\), we cannot conclude anything about these components being zero throughout the entire domain as we could with respect to the \(x_3\) axis.
+From this, we can conclude that \(\la V_1V_2\ra\) is an odd function of \(x_2\), while \(\la V_1V_1\ra\) and \(\la V_2V_2\ra\) are even functions of \(x_2\). However, because the flow is not independent of \(x_2\), we cannot conclude anything about these components being zero throughout the entire domain as we could with respect to the \(x_3\) axis. 
+
+
 
 
 
@@ -470,6 +480,65 @@ The derivative of the axial velocity with respect to \(r\) is always negative be
 For the round jet, because the lateral velocity is about two orders of magnitude smaller than the axial velocity, we can assume that axial gradients are of much smaller magnitude than lateral gradients. The assumption of negligible gradients in certain directions of the flow leads to boundary layer equations, which are simplified versions of the governing equations. 
 
 
+\subsubsection{Statistically 2-D and Stationary}
+We can derive these equations for a stationary, statistically 2-D flow with main flow direction \(x\) and velocity components \(U, V, W\) such that \(\la W\ra=0\). The continuity equation becomes:
+
+\beq
+\frac{\partial\la U\ra}{\partial x}+\frac{\partial\la V\ra}{\partial y}=0
+\eeq
+
+And the two momentum equations become:
+
+\beq
+\frac{\partial}{\partial x}\left(\la U\ra\la U\ra+\underbrace{\la U'U'\ra}_{\textrm{neglect}}\right)+\frac{\partial}{\partial y}\left(\la U\ra\la V\ra+\la U'V'\ra\right)+\frac{1}{\rho}\frac{\partial \la P\ra}{\partial x}-\nu\left(\underbrace{\frac{\partial^2 \la U\ra}{\partial x^2}}_{\textrm{neglect}}+\frac{\partial^2 \la U\ra}{\partial y^2}\right)=0
+\eeq
+
+\beq
+\frac{\partial}{\partial x}\left(\la V\ra\la U\ra+\underbrace{\la V'U'\ra}_{\textrm{neglect}}\right)+\frac{\partial}{\partial y}\left(\la V\ra\la V\ra+\la V'V'\ra\right)+\frac{1}{\rho}\frac{\partial \la P\ra}{\partial y}-\nu\left(\underbrace{\frac{\partial^2 \la V\ra}{\partial x^2}}_{\textrm{neglect}}+\frac{\partial^2 \la V\ra}{\partial y^2}\right)=0
+\eeq
+
+where diffusion along the main flow direction is neglected because it scales as \(\delta^2/c^2\), where \(\delta\) is the thickness of the boundary layer and \(c\) the characteristic length, where the boundary layer approximation relies on the assumption that \(\delta\ll c\). Then, we further assume that the axial derivatives of the Reynolds stresses are negligible relative to the derivatives in the lateral direction. It should be noted that, while this is consistent with the approximations made for the laminar boundary layer equations, for certain flows the Reynolds stresses can be of order 10\% of the other terms in the equation, and hence this approximation is not always valid. If we further neglect advection of momentum in the lateral direction and assume that there is also negligible diffusion in the lateral direction (additional assumptions above the typical boundary layer equation formulation), then the lateral momentum equation dramatically simplifies to:
+
+\beq
+\frac{1}{\rho}\frac{\partial\la P\ra}{\partial y}+\frac{\la V'V'\ra}{\partial y}=0
+\eeq
+
+Assuming the free stream far from the boundary layer has pressure \(P_{\infty}\) and is either quiescent or laminar such that there are zero Reynolds stresses, the above equation can be integrated to give the pressure:
+
+\beq
+\frac{\la P\ra}{\rho}=\frac{\la P_{\infty}\ra}{\rho}-\la V'V'\ra
+\eeq
+
+Differentiating with respect to \(x\):
+
+\beq
+\frac{1}{\rho}\frac{\partial \la P\ra}{\partial x}=\frac{1}{\rho}\frac{\partial \la P_{\infty}\ra}{\partial x}-\underbrace{\frac{\partial \la V'V'\ra}{\partial x}}_{\textrm{neglect}}
+\eeq
+
+where the Reynolds stress in the axial direction is again neglected. Inserting the above into the axial momentum boundary layer equation gives:
+
+\beq
+\frac{\partial}{\partial x}\left(\la U\ra\la U\ra\right)+\frac{\partial}{\partial y}\left(\la U\ra\la V\ra+\la U'V'\ra\right)+\frac{1}{\rho}\frac{\partial \la P_{\infty}\ra}{\partial x}-\nu\frac{\partial^2 \la U\ra}{\partial y^2}=0
+\eeq
+
+When the far-field flow is quiescent or uniform, then \(\partial\la P_{\infty}\ra/\partial x=0\). 
+
+
+
+\subsubsection{Stationary, Statistically Axisymmetric and Stationary}
+For stationary, statistically axisymmetric flows, \(\la W\ra=\la V'W'\ra=\la U'W'\ra=0\), where \(U\) represents flow along the \(z\) coordinate, \(V\) flow along the \(r\) coordinate, and \(W\) flow along the \(\theta\) coordinate, and similar boundary layer equations can be derived beginning from the mean flow equations in cylindrical coordinates. The continuity equation becomes:
+
+\beq
+\frac{1}{r}\frac{\partial r\la V\ra}{\partial r}+\frac{\partial \la U\ra}{\partial z}=0
+\eeq
+
+And the momentum equations become:
+
+\beqa
+\la U\ra\frac{\partial \la U\ra}{\partial z}+\la V\ra\frac{\partial \la U\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}-\frac{\partial \la U'U'\ra}{\partial z}-\frac{1}{r}\frac{\partial (r\la V'U'\ra)}{\partial r}+\nu\nabla^2\la U\ra
+\eeqa
+
+
 
 
 \section{Self-Similarity}
@@ -498,9 +567,11 @@ It is very difficult to develop tractable models for turbulent flows for several
 \item The nonlinear convection term and the pressure gradient term cause great numerical difficulties - when the pressure gradient term is expressed in terms of the Pressure Poisson equation, it is both nonlinear and non-local. 
 \end{itemize}
 
-Most turbulence models consists of sets of partial differential equations, and in some cases also algebraic equations. While turbulence \textit{simulations} solve for time-dependent fields that represent one realization of a turbulent flow, turbulence \textit{models} solve for the mean quantities. DNS and LES are two examples of turbulence simulations. In DNS, you solve for the actual velocity field, and because you need to have a mesh that can resolve all of the timescales and lengthscales, DNS is very computationally expensive. Computational cost scales as \(Re^3\) for 3-D simulations, and hence DNS is restricted to low Reynolds number flows, and hence is of less practical importance than other simulations or models. In LES, you solve for a filtered velocity field that is representative of the larger-scale turbulent motions, with a model for the impact of the smaller-scale motions on the larger-scale motions included in the system of equations (though the smaller scales are not directly modeled). 
+Most turbulence models consists of sets of partial differential equations, and in some cases also algebraic equations. While turbulence \textit{simulations} solve for time-dependent fields that represent one realization of a turbulent flow, turbulence \textit{models} solve for the mean quantities. DNS and LES are two examples of turbulence simulations. In DNS, you solve for the actual velocity field for one realization of the flow, and because you need to have a mesh that can resolve all of the timescales and lengthscales, DNS is very computationally expensive. Computational cost scales as \(Re^3\) for 3-D simulations, and hence DNS is restricted to low Reynolds number flows, and hence is of less practical importance than other simulations or models. In LES, you solve for a filtered velocity field that is representative of the larger-scale turbulent motions, with a model for the impact of the smaller-scale motions on the larger-scale motions included in the system of equations (though the smaller scales are not directly modeled). 
 
 The RANS equations solves the Reynolds equations to determine the mean fields. The Reynolds stresses are either solved for using models such as turbulent viscosity, where that turbulent viscosity is determined from an algebraic relationship as in the mixing-length model or from turbulence quantities such as \(k\) and \(\epsilon\) with their own transport equations. In Reynolds-stress models, transport equations are solved for the Reynolds stresses, eliminating the needed for the turbulent viscosity models. Finally, because the mean velocity and the Reynolds stresses are the first and second moments of the Eulerian PDF of velocity, PDF methods solve a model transport equation for a PDF such as \(f\). 
+
+Models can be distinguished by whether or not they are \textit{complete}. A complete model gives results that depend solely on material properties and initial and boundary conditions, while incomplete models contain closure relationships that depend on the nature of the flow. For example, with the mixing length model, the selection of the mixing length depends on the \textit{type} of flow, assumed to be known by the modeler. For some models, the cost scales with the Reynolds number, but for others, the cost is relatively independent of the Reynolds number. Many models, such as those that are based on velocity spectra or two-point correlations, are only applicable to homogeneous turbulent flows, and hence they are not discussed in this document. 
 
 
 
@@ -562,7 +633,27 @@ and is often near unity for simply turbulent flows.
 
 
 
+\subsection{The Mixing Length Model}
+The mixing length model can be applied to statistically two-dimensional boundary-layer flows. Solve the boundary layer equations for \(\la U\ra\) and \(\la V\ra\), and determine the Reynolds shear stress and the turbulent viscosity from the model equations:
 
+\beq
+\la U'V'\ra=-\nu_T\frac{\partial\la U\ra}{\partial y}
+\eeq
+
+\beq
+\nu_T=l_m(x,y)^2\biggr\rvert\frac{\partial\la U\ra}{\partial y}\biggr\rvert
+\eeq
+
+This model requires the mixing length \(l_m\) to be defined, and hence this is not a complete model, since the appropriate specification of the mixing length is flow-dependent. The cost of this simulation is relatively independent of the Reynolds number. 
+
+
+
+
+\subsection{Direct Numerical Simulation}
+DNS involves solving the Navier-Stokes equations (\textit{not} the Reynolds equations), resolving all of the scales of motion. Each simulation produces a single realization of the flow. Because the cost of DNS scales are \(Re^3\), this approach is infeasible for large \(Re\), which unfortunately is the most relevant application area. 
+
+\subsubsection{Homogeneous Turbulence}
+For homogeneous turbulence, pseudo-spectral methods are preferred for numerical simulation because of their superior accuracy. 
 
 
 
