@@ -111,31 +111,38 @@ This document contains my course notes for fluids, though a large portion of the
 
 \section{The Physics of Turbulence}
 
-In the study of turbulence, many mathematical models separate the turbulent field into the sum of the mean field and a fluctuation, where a mean is denoted with angled brackets \(\la(.)\ra\) and the fluctuation with a prime. For instance, the velocity is decomposed into:
+In the study of turbulence, many mathematical models separate the turbulent field into the sum of the mean field and a fluctuation, where a mean of \((.)\) is denoted with angled brackets \(\la(.)\ra\) and the fluctuation with a prime. For instance, the velocity is decomposed into:
 
 \beq
 \vv{V}(\vv{x},t)=\la\vv{V}(x,t)\rangle+\vv{V}(x,t)'
 \eeq
 
-This decomposition is sometimes referred to as a ``Reynolds decomposition.'' Likewise, density and energy can also be decomposed. 
+This decomposition is sometimes referred to as a ``Reynolds decomposition.'' Likewise, all other turbulent quantities of interest can be decomposed into a mean and a fluctuation. 
 
 \begin{tcolorbox}[breakable]
-Some important statistical results are needed before carrying out the derivation of the averaged Navier Stokes equations. The results presented here will be often in the derivation of turbulence models. A mean is defined as:
+Some important statistical results are needed before carrying out the derivation of the averaged Navier Stokes equations. The results presented here will be used often in the derivation of turbulence models. A mean is defined as:
 
 \beq
 \la U\ra\equiv\int_{0}^{\infty}Vf(V)dV
 \eeq
 
-The mean of the mean is simply equal to the mean, since the integral of \(f(V)\) from 0 to \(\infty\) is by definition unity. The mean of the fluctuation is zero:
+where \(f(V)\) is the PDF of \(V\). The mean of the mean is simply equal to the mean, since the integral of \(f(V)\) from 0 to \(\infty\) is by definition unity. 
+
+\beqa
+\la\la U\ra\ra=&\int_{0}^{\infty}\la U\ra f(V)dV\\
+=&\la U\ra\\
+\eeqa
+
+The mean of the fluctuation is zero by the consequence of the fact that the mean of the mean is the mean:
 
 \beqa
 \la U'\ra\equiv&\int_{0}^{\infty}(V-\la V\ra)f(V)dV\\
 \equiv& \int_{0}^{\infty}Vf(V)dV - \int_{0}^{\infty}\la V\ra f(V)dV\\
-\equiv&\la U\ra - \la U\ra\\
+\equiv&\ \la U\ra - \la U\ra\\
 \equiv&\ 0\\
 \eeqa
 
-The mean of the product of a fluctuation and a mean is:
+The mean of the product of a fluctuation and a mean is zero, again due to the consequence that the mean of a mean is the mean:
 
 \beqa
 \la U'\la\rho\ra\ra\equiv&\int_{0}^{\infty}(V-\la V\ra)\la p\ra f(V)dV\\
@@ -151,20 +158,22 @@ The mean of the product of a fluctuation and a mean is:
 
 \subsection{The Mean Flow Equations}
 
-The mean flow equations are derived by substituting these decompositions into the Navier-Stokes equations and then taking the mean of the entire equation. The continuity equation becomes:
+The mean flow equations are derived by substituting these decompositions into the Navier-Stokes equations and then taking the mean of the entire equation, where simplification often uses the fact that taking the mean and differentiation, with respect to both time and space, commute. 
+
+
+\subsubsection{The Continuity Equation}
+The continuity equation for compressible flow becomes:
 
 \beqa
 \frac{\partial \left(\la\rho\ra+\rho'\right)}{\partial t}+\nabla\cdot \left((\la\rho\ra+\rho')(\la\vv{V}\ra+\vv{V}')\right)=&0\\
 \frac{\partial\la\rho\ra}{\partial t}+\frac{\partial\rho'}{\partial t}+\nabla\cdot \left(\la\rho\ra\la\vv{V}\ra+\la\rho\ra\vv{V}'+\la\vv{V}\ra\rho'+\rho'\vv{V}'\right)=&0\\
-\eeqa
-
-Taking the mean of the equation, and recognizing that taking the mean and differentiation with respect to both time and space commute:
-
-\beqa
-\frac{\partial\la\la\rho\ra\ra}{\partial t}+\cancel{\frac{\partial\la\rho'\ra}{\partial t}}+\nabla\cdot\left(\la\la\rho\ra\la\vv{V}\ra\ra+\la\la\rho\ra\vv{V}'\ra+\la\la\vv{V}\ra\rho'\ra+\la\rho'\vv{V}'\ra\right)=&0\\
-\frac{\partial\la\rho\ra}{\partial t}+\nabla\cdot\left(\la\rho\ra\la\vv{V}\ra+\cancel{\la\la\rho\ra\vv{V}'\ra}+\cancel{\la\la\vv{V}\ra\rho'\ra}+\la\rho'\vv{V}'\ra\right)=&0\\
+\frac{\partial\la\la\rho\ra\ra}{\partial t}+\cancel{\frac{\partial\la\rho'\ra}{\partial t}}+\nabla\cdot\left(\la\la\rho\ra\la\vv{V}\ra\ra+\cancel{\la\la\rho\ra\vv{V}'\ra}+\cancel{\la\la\vv{V}\ra\rho'\ra}+\la\rho'\vv{V}'\ra\right)=&0\\
 \frac{\partial\la\rho\ra}{\partial t}+\nabla\cdot\left(\la\rho\ra\la\vv{V}\ra+\la\rho'\vv{V}'\ra\right)=&0\\
 \eeqa
+
+The detailed derivation of canceling terms is not shown for the remaining equations because they would take too long to type, but use the above example if confused. 
+
+\subsubsubsection{Incompressible Flow}
 
 For incompressible flow, the continuity equation simplifies to:
 
@@ -173,7 +182,7 @@ For incompressible flow, the continuity equation simplifies to:
 \nabla\cdot\vv{V}=0
 \eeq
 
-Taking the average of this equation:
+Taking the average of this equation shows that the mean velocity field is divergence-free:
 
 \beq
 \label{eq:2}
@@ -187,22 +196,161 @@ Alternatively, plugging in the Reynolds decomposition to Eq. \eqref{eq:1} gives:
 \nabla\cdot\la\vv{V}\ra+\nabla\cdot\vv{V}'=0
 \eeq
 
-Subtracting Eq. \eqref{eq:2} from Eq. \eqref{eq:3} shows that, for incompressible flow, both the mean of the velocity and the fluctuation in velocity are divergence-free. The derivation for the momentum equation is more complicated. For simplicity, the incompressible momentum equation will be the basis of investigation of turbulence. Due to the incompressibility assumption, the gravitational body force can be bundled into a reduced pressure \(P'=P+\rho gz\). Inserting the same Reynolds-decomposed quantities gives:
+Subtracting Eq. \eqref{eq:2} from Eq. \eqref{eq:3} shows that, for incompressible flow, both the mean of the velocity and the fluctuation in velocity are divergence-free. 
+
+
+\subsubsection{The Momentum Equation}
+The derivation for the momentum equation is more complicated, and is the fundamental reason why most studies of turbulent flow assume incompressibility.
 
 \beqa
-\frac{\partial \vv{V}}{\partial t}+\frac{\partial}{\partial x_j}(V_iV_j)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\frac{\partial^2 V_i}{\partial x_j\partial x_j}=&0\\
-\frac{\partial (\la V_i\ra+V_i')}{\partial t}+\frac{\partial}{\partial x_j}\left((\la V_j\ra+V_j')(\la V_i\ra+V_i')\right)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\frac{\partial^2 (\la V_i\ra+V_i')}{\partial x_j\partial x_j}=&0\\
-\frac{\partial \la V_i\ra}{\partial t}+\frac{\partial V_i'}{\partial t}+\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_j\ra+\la V_i\ra V_j'+\la V_j\ra V_i'+V_i'V_j'\right)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\left(\frac{\partial^2 \la V_i\ra}{\partial x_j\partial x_j}+\frac{\partial^2 V_i'}{\partial x_j\partial x_j}\right)=&0\\
+\frac{\partial(\rho V_i)}{\partial t}+\frac{\partial(\rho V_iV_j)}{\partial x_j}= \rho g_i+\frac{\partial}{\partial x_j}\left\lbrack-P\delta_{ij}+\mu\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)-\frac{2\mu}{3}\frac{\partial V_k}{\partial x_k}\delta_{ij}\right\rbrack\\
+\frac{\partial((\la\rho\ra+\rho') (\la V_i\ra+V_i'))}{\partial t}+\frac{\partial((\la\rho\ra+\rho') (\la V_i\ra+V_i')(\la V_j\ra+V_j'))}{\partial x_j}-(\la\rho\ra+\rho') g_i= \quad\quad\\
+\frac{\partial}{\partial x_j}\left\lbrack-(\la P\ra+P')\delta_{ij}+(\la\mu\ra+\mu')\left(\frac{\partial (\la V_i\ra+V_i')}{\partial x_j}+\frac{\partial (\la V_j\ra+V_j')}{\partial x_i}\right)-\frac{2(\la\mu\ra+\mu')}{3}\frac{\partial (\la V_k\ra+V_k')}{\partial x_k}\delta_{ij}\right\rbrack\\
+\frac{\partial}{\partial t}\left(\la \rho\ra\la V_i\ra+\rho'\la V_i\ra+V_i'\la\rho\ra+\rho' V_i'\right)+\frac{\partial}{\partial x_j}\left(\la\rho\ra(\la V_i\ra\la V_j\ra+\la V_i\ra V_j'+\la V_j\ra V_i'+V_i'V_j')\right)+\\
+\frac{\partial}{\partial x_j}\left(\rho'(\la V_i\ra\la V_j\ra+\la V_i\ra V_j'+\la V_j\ra V_i'+V_i'V_j')\right)-(\la\rho\ra +\rho')g_i= \quad\quad\\
+\frac{\partial}{\partial x_j}\left\lbrack-(\la P\ra+P')\delta_{ij}+\mu'\frac{\partial (\la V_i\ra+V_i')}{\partial x_j}+\mu'\frac{\partial (\la V_j\ra+V_j')}{\partial x_i}+\la\mu\ra\frac{\partial (\la V_i\ra+V_i')}{\partial x_j}+\la\mu\ra\frac{\partial (\la V_j\ra+V_j')}{\partial x_i}\right\rbrack-\\
+\frac{2}{3}\frac{\partial}{\partial x_j}\left\lbrack\mu'\frac{\partial (\la V_k\ra+V_k')}{\partial x_k}\delta_{ij}+\la\mu\ra\frac{\partial (\la V_k\ra+V_k')}{\partial x_k}\delta_{ij}\right\rbrack\\
+\frac{\partial}{\partial t}\left(\la \rho\ra\la V_i\ra+\la\rho' V_i'\ra\right)+\frac{\partial}{\partial x_j}\left(\la\rho\ra\la V_i\ra\la V_j\ra+\la\rho'V_i'V_j'\ra\right)-\la\rho\ra g_i= \quad\quad\\
+\frac{\partial}{\partial x_j}\left\lbrack-\la P\ra\delta_{ij}+\la\mu'\frac{\partial V_i'}{\partial x_j}\ra+\la\mu'\frac{\partial V_j'}{\partial x_i}\ra+\la\mu\ra\frac{\partial \la V_i\ra}{\partial x_j}+\la\mu\ra\frac{\partial \la V_j\ra}{\partial x_i}\right\rbrack-\frac{2}{3}\frac{\partial}{\partial x_j}\left\lbrack\la\mu'\frac{\partial V_k'}{\partial x_k}\delta_{ij}\ra+\la\mu\ra\frac{\partial \la V_k\ra}{\partial x_k}\delta_{ij}\right\rbrack
 \eeqa
 
-Then, taking the mean of this equation, and recognizing that differentiation and taking the mean commute, where the decomposed pressure has also now been added and the density does not need to be decomposed because it has been assumed constant, the momentum equation becomes:
+The momentum equation can also be written in terms of \(e_{ij}\) and its fluctuating component \(e_{ij}'\):
+
+\beqa
+\frac{\partial}{\partial t}\left(\la \rho\ra\la V_i\ra+\la\rho' V_i'\ra\right)+\frac{\partial}{\partial x_j}\left(\la\rho\ra\la V_i\ra\la V_j\ra+\la\rho'V_i'V_j'\ra\right)-\la\rho\ra g_i= \quad\quad\\
+\frac{\partial}{\partial x_j}\left\lbrack-\la P\ra\delta_{ij}+2\la\mu'e_{ij}'\ra+2\la\mu\ra\la e_{ij}\ra\right\rbrack-\frac{2}{3}\frac{\partial}{\partial x_j}\left\lbrack\la\mu'\frac{\partial V_k'}{\partial x_k}\ra+\la\mu\ra\frac{\partial \la V_k\ra}{\partial x_k}\right\rbrack\delta_{ij}
+\eeqa
+
+Note that only the mean gravitational body force and the mean pressure have an impact on the mean flow.  Note that the Reynolds stresses for compressible flow have the form \(\la\rho V_i'V_j'\ra\), though because many texts focus their study exclusively on incompressible flow, it is common for the Reynolds stresses to be defined as \(\la V_i'V_j'\ra\), though this does not have the same units as stress. With the incompressible momentum equation, the only difference from the laminar Navier Stokes equation is the presence of the Reynolds stresses and the use of purely mean quantities. In the compressible Reynolds equations, in addition to the Reynolds stresses, there are \(2\la\mu'e_{ij}'\ra\) terms and \(\la\mu'\partial V_k'/\partial x_k\ra\) terms that represent momentum fluxes due to viscous and compressive forces in the turbulent field.
+
+
+\subsubsubsection{Incompressible Flow}
+
+For simplicity, the incompressible momentum equation will be the basis of most of the investigation of turbulence. Due to the incompressibility assumption, the gravitational body force can be bundled into a reduced pressure \(P'=P+\rho gz\), where for simplicity the prime is dropped, with the reduced pressure interpretation implied. Inserting the same Reynolds-decomposed quantities gives:
 
 \beqa
 \label{eq:AveNS}
+\frac{\partial \vv{V}}{\partial t}+\frac{\partial}{\partial x_j}(V_iV_j)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\frac{\partial^2 V_i}{\partial x_j\partial x_j}=&0\\
+\frac{\partial (\la V_i\ra+V_i')}{\partial t}+\frac{\partial}{\partial x_j}\left((\la V_j\ra+V_j')(\la V_i\ra+V_i')\right)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\frac{\partial^2 (\la V_i\ra+V_i')}{\partial x_j\partial x_j}=&0\\
+\frac{\partial \la V_i\ra}{\partial t}+\frac{\partial V_i'}{\partial t}+\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_j\ra+\la V_i\ra V_j'+\la V_j\ra V_i'+V_i'V_j'\right)+\frac{1}{\rho}\frac{\partial P}{\partial x_i}-\nu\left(\frac{\partial^2 \la V_i\ra}{\partial x_j\partial x_j}+\frac{\partial^2 V_i'}{\partial x_j\partial x_j}\right)=&0\\
 \frac{\partial \la V_i\ra}{\partial t}+\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_j\ra+\la V_i'V_j'\ra\right)+\frac{1}{\rho}\frac{\partial \la P\ra}{\partial x_i}-\nu\frac{\partial^2 \la V_i\ra}{\partial x_j\partial x_j}=&0\\
 \eeqa
 
 The averaged Navier-Stokes equations are identical to the Navier-Stokes equations, except that they describe averaged velocities and pressure, and include the Reynolds stress term \(\partial\la V_i'V_j'\ra/\partial x_i\). These evolution equations are not the end of the study of turbulence however, because closure relationships are needed to describe the Reynolds stresses in terms of other solution variables or known quantities. 
+
+
+
+
+\subsubsection{The Energy Equation}
+
+The mechanical energy equation is obtained by taking the scalar product of the momentum equation with velocity, which upon manipulation eventually gives an equation for the mechanical (often called kinetic) energy \(E\) per unit mass.
+
+\beqa
+\frac{\partial(\rho E)}{\partial t}+\frac{\partial}{\partial x_i}\left(\rho EV_i\right)=\rho g_iV_i+V_i\frac{\partial}{\partial x_j}\left(-P\delta_{ij}+\mu\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)-\frac{2\mu}{3}\frac{\partial V_k}{\partial x_k}\delta_{ij}\right)\\
+\frac{\partial((\la\rho\ra+\rho') (\la E\ra+E'))}{\partial t}+\frac{\partial}{\partial x_i}\left((\la\rho\ra+\rho') (\la E\ra+E')(\la V_i\ra+V_i')\right)-(\la\rho\ra+\rho') g_i(\la V_i\ra+V_i')=\quad\quad\\
+(\la V_i\ra+V_i')\frac{\partial}{\partial x_j}\left(-(\la P\ra+P')\delta_{ij}+(\la\mu\ra+\mu')\left(\la e_{ij}\ra+\la e_{ij}'\ra\right)-\frac{2(\la\mu\ra+\mu')}{3}\frac{\partial (\la V_k\ra+V_k')}{\partial x_k}\delta_{ij}\right)\\
+\frac{\partial(\la\rho\ra\la E\ra+\la\rho'E'\ra)}{\partial t}+\frac{\partial}{\partial x_i}\left(\la\rho\ra\la E\ra\la V_i\ra+\la\rho'E'V_i'\ra\right)-\la\rho\ra\la V_i\ra g_i+\la\rho'V_i'\ra g_i+\left(\la V_i\ra\frac{\partial \la P\ra}{\partial x_j}+\la V_i'\frac{\partial P'}{\partial x_j}\ra\right)\delta_{ij}=\quad\quad\\
+\la V_i\ra\frac{\partial(2\la\mu\ra\la e_{ij}\ra)}{\partial x_j}+\la V_i'\frac{\partial(2\mu'e_{ij}')}{\partial x_j}\ra-\frac{2}{3}\delta_{ij}\left\lbrack\la V_i\ra\frac{\partial}{\partial x_j}\left(\la\mu\ra\frac{\partial\la V_k\ra}{\partial x_k}\right)-\la V_i'\frac{\partial}{\partial x_j}\left(\mu'\frac{\partial V_k'}{\partial x_k}\ra\right)\right\rbrack\\
+\eeqa
+
+Note that, while the fluctuating pressure and density have no impact on the gravitational or pressure forces, because the covariance with the fluctuating velocity is non-zero, these two components have an impact on the mean energy equation. 
+
+
+\subsubsubsection{Incompressible Flow}
+
+For incompressible flow, the energy equation simplifies to:
+
+\beqa
+\frac{\partial E}{\partial t}+V_i\frac{\partial E}{\partial x_i}=&-\frac{V_i}{\rho}\frac{\partial}{\partial x_j}(P\delta_{ij})+2\nu V_i\frac{\partial e_{ij}}{\partial x_j}\\
+\frac{\partial E}{\partial t}+V_i\frac{\partial E}{\partial x_i}=&-\frac{\partial}{\partial x_j}\left(\frac{PV_i}{\rho}\right)+2\nu\left(V_i\frac{\partial e_{ij}}{\partial x_j}+\frac{\partial V_i}{\partial x_j}e_{ij}\right)-2\nu\frac{\partial V_i}{\partial x_j}e_{ij}\\
+\frac{\partial E}{\partial t}+V_i\frac{\partial E}{\partial x_i}=&-\frac{\partial}{\partial x_j}\left(\frac{PV_i}{\rho}\right)+2\nu\frac{\partial (V_ie_{ij})}{\partial x_j}-2\nu(e_{ij}+\xi_{ij})e_{ij}\\
+\frac{\partial E}{\partial t}+V_i\frac{\partial E}{\partial x_i}+\frac{\partial}{\partial x_j}\left(\frac{PV_i}{\rho}-2\nu V_je_{ij}\right)=&-2\nu e_{ij}e_{ij}\\
+\frac{\partial \la E\ra}{\partial t}+\la V_i\ra\frac{\partial \la E\ra}{\partial x_i}+\frac{\partial \la E'V_i'\ra}{\partial x_i}+\frac{\partial}{\partial x_j}\la\frac{PV_i}{\rho}-2\nu V_je_{ij}\ra=&-2\nu \left(\la e_{ij}\ra\la e_{ij}\ra+\la e_{ij}'e_{ij}'\ra\right)\\
+\eeqa
+
+where the product of the symmetric tensor \(e_{ij}\) with the antisymmetric tensor \(\xi_{ij}\) is zero. The first term on the right-hand side above represents dissipation due to the mean flow, while the second represents dissipation due to the fluctuating flow. In general, dissipation due to the main flow is of order \(Re^{-1}\), and hence becomes negligible relative to turbulent dissipation at high Reynolds number. 
+
+
+By taking the scalar product of the incompressible Reynolds momentum equation with \(\la V_i\ra\), the mean flow kinetic energy \(\bar{E}\equiv\frac{1}{2}\la V_i\ra\la V_i\ra\) evolves according to:
+
+\beqa
+\frac{\partial\bar{E}}{\partial t}+\la V_j\ra\frac{\partial\bar{E}}{\partial x_j}+\la V_i\ra\frac{\partial}{\partial x_j}\la V_i'V_j'\ra+\frac{\partial}{\partial x_j}\left(\frac{\la P\ra\la V_j\ra}{\rho}\right)-\nu\la V_i\ra\frac{\partial^2\la V_i\ra}{\partial x_j^2}=&0\\
+\frac{\partial\bar{E}}{\partial t}+\la V_j\ra\frac{\partial\bar{E}}{\partial x_j}+\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_i'V_j'\ra\right)+\frac{\partial}{\partial x_j}\left(\frac{\la P\ra\la V_j\ra}{\rho}\right)-2\nu\la V_i\ra\frac{\partial}{\partial x_j}\la e_{ij}\ra=&\la V_i'V_j'\ra\frac{\partial \la V_i\ra}{\partial x_j}\\
+\frac{\partial\bar{E}}{\partial t}+\la V_j\ra\frac{\partial\bar{E}}{\partial x_j}+\frac{\partial}{\partial x_j}\left(\la V_i\ra\la V_i'V_j'\ra+\frac{\la P\ra\la V_j\ra}{\rho}-2\nu\la V_i\ra\la e_{ij}\ra\right)=&\underbrace{\la V_i'V_j'\ra\frac{\partial \la V_i\ra}{\partial x_j}}_{\textrm{production loss}}-\underbrace{2\nu\la e_{ij}\ra\la e_{ij}\ra}_{\textrm{mean dissipation}}\\
+\eeqa
+
+Likewise, by subtracting the Reynolds equations from the Navier-Stokes equations, an evolution equation for the turbulent kinetic energy can be derived. This equation can also be rewritten to explicitly show that the turbulent kinetic energy diffuses using the definitions for the dissipation and pseudo-dissipation in Eq. \eqref{eq:pseudo}.
+
+\beqa
+\frac{\partial k}{\partial t}+\la V_j\ra\frac{\partial k}{\partial x_j}+\frac{\partial}{\partial x_i}\left(\frac{1}{2}\la V_i'V_j'V_j'\ra+\frac{\la V_i'P'\ra}{\rho}-2\nu\la V_j'e_{ij}'\ra\right)=&\underbrace{-\la V_i'V_j'\ra\frac{\partial\la V_i\ra}{\partial x_j}}_{\textrm{production gain}}-\underbrace{2\nu\la e_{ij}'e_{ij}'\ra}_{\textrm{turbulent dissipation}}\\
+\frac{\partial k}{\partial t}+\la V_j\ra\frac{\partial k}{\partial x_j}+\frac{\partial}{\partial x_i}\left(\frac{1}{2}\la V_i'V_j'V_j'\ra+\frac{\la V_i'P'\ra}{\rho}\right)=&-\la V_i'V_j'\ra\frac{\partial\la V_i\ra}{\partial x_j}-2\nu\la e_{ij}'e_{ij}'\ra+\nu\nabla^2 k-\tilde{\varepsilon}
+\eeqa
+
+As can be seen, the same term that is a loss from the mean flow kinetic energy is a source to the turbulent flow kinetic energy - kinetic energy is removed from the mean flow, and becomes a source to the turbulent flow. This production term is analogous to the deformation work \(\sigma_{ij}\partial V_i/\partial x_j\) that appears in the total energy equation. By analogy with products of symmetric and antisymmetric tensors, only the symmetric part of the velocity gradient tensor affects the production, and the production term \(\mathscr{P}\) could likewise be written as \(\la V_i'V_j'\ra\la e_{ij}\ra\). And, only the anisotropic component of the Reynolds stress tensor contributes to the production. If we assume the turbulent viscosity approximation, then it can be shown that this production term is exactly equal to the dissipation by the mean flow, but with the turbulent viscosity replacing the molecular viscosity. So, within the interpretation of the turbulent viscosity model, kinetic energy is removed from the main flow proportional to the turbulent viscosity, whereupon it becomes a source to the turbulent kinetic energy. 
+
+\beqa
+\mathscr{P}=&-\la V_i'V_j'\ra\frac{\partial \la V_i\ra}{\partial x_j}\\
+=& -\la V_i'V_j'\ra\la e_{ij}\ra\\
+=& -a_{ij}\la e_{ij}\ra\\
+=& \ 2\nu_T\la e_{ij}\ra\la e_{ij}\ra\\
+\eeqa
+
+The dissipation of turbulent kinetic energy, \(\varepsilon\), which is always non-negative, is defined to be:
+
+\beq
+\varepsilon=2\nu\la e_{ij}'e_{ij}'\ra
+\eeq
+
+The fluctuating velocity gradients, working against the fluctuating deviatoric stress transform kinetic energy into internal energy (since energy is conserved, and the dissipation represents a loss from the kinetic energy equation). The resulting temperature increase due to turbulent kinetic energy transformation to internal energy is usually very small. An important characteristic can be learned about the dissipation by investigating the self-similar behavior of the round jet. We saw that the velocity and Reynolds stresses were self-similar, so we would therefore also expect the production term to be self-similar:
+
+\beq
+\hat{\mathscr{P}}=\frac{\mathscr{P}}{U_0^2}\frac{r_{1/2}}{U_0}
+\eeq
+
+From the turbulent kinetic energy equation, we would therefore expect the dissipation term to scale as \(\hat{\varepsilon}=\varepsilon r_{1/2}/U_0^3\). For two experiments with identical geometries and initial jet velocities using fluids of different viscosities, by self-similarity, the centerline velocity and half-widths at any particular \(x\) location will be the same. Consequently, by the self-similarity of the dissipation, the dissipation will also be the same. But, from the definition above, we see that the dissipation is proportional to the molecular viscosity. Because the viscosity is different between the two fluids, this implies that the lower-viscosity fluid must have higher \(\la e_{ij}'e_{ij}'\ra\) due to the finer scale structure of the flow, which leads to steeper gradients. The characteristic scales of the smallest turbulent motions are known as the Kolmogorov scales. These characteristic scales can be obtained by determining the combinations of scales \(\eta\) for length, \(\tau\) for time, and \(u\) for velocity in terms of viscosity and the turbulent kinetic energy:
+
+\beqa
+\eta=&\left(\frac{\nu^3}{\varepsilon}\right)^{1/4}\\
+\tau=&\left(\frac{\nu}{\varepsilon}\right)^{1/2}\\
+u=&\ (\nu\varepsilon)^{1/4}\\
+\eeqa
+
+It takes time \(\tau\) to dissipate an amount of energy \(k\) with constant dissipation rate \(\varepsilon\), but it also takes time \(\tau_P\) to produce energy \(k\) at constant rate \(\mathscr{P}\). For most flows, the production and dissipation are roughly equal, which causes turbulence to be long-lived. For the round jet, scale both sides such that the fundamental scales agree with the scaling for \(r\) and \(U\), and introduce the scaling for \(\varepsilon\) and the local Reynolds number \(Re_0=U_0r_{1/2}/\nu\):
+
+\beqa
+\frac{\eta}{r_{1/2}}=&\left(\frac{\nu^3r_{1/2}}{\hat{\varepsilon}U_0^3}\right)^{1/4}\frac{1}{r_{1/2}}=&Re_0^{-3/4}\hat{\varepsilon}^{-1/4}\\
+\frac{\tau U_0}{r_{1/2}}=&\left(\frac{\nu r_{1/2}}{\hat{\varepsilon}U_0^3}\right)^{1/2}\frac{U_0}{r_{1/2}}=&Re_0^{-1/2}\hat{\varepsilon}^{-1/2}\\
+\frac{u}{U_0}=&\ (\frac{\nu\hat{\varepsilon}U_0^3}{r_{1/2}})^{1/4}\frac{1}{U_0}=&Re_0^{-1/4}\hat{\varepsilon}^{1/4}\\
+\eeqa
+
+These Kolmogorov scales show that, recalling that the dissipation is independent of the Reynolds number, that the smallest lengthscales, timescales, and velocity scales decrease as the Reynolds number increases. This is the fundamental reason why the modeling of high Reynolds number, turbulent flows is so difficult - the mesh must be very fine. The Reynolds number based on the Kolmogorov scales is unity, which indicates that the motions on these scales is strongly impacted by viscosity. There would be no dissipation of turbulent kinetic energy in inviscid flows, and hence this signifies an unphysical turbulent flow. The turbulent dissipation is often the dominant term in the turbulent kinetic energy equation. Some texts will use a different definition of the turbulent kinetic energy dissipation, the pseudo-dissipation:
+
+\beq
+\label{eq:pseudo}
+\tilde{\varepsilon}=\nu\la\frac{\partial V_i'}{\partial x_j}\frac{\partial V_i'}{\partial x_j}\ra
+\eeq
+
+Because \(e_{ij}\) is symmetric and \(\xi_{ij}\) antisymmetric:
+
+\beqa
+\la e_{ij}'e_{ij}'\ra=&\la e_{ij}'\left(e_{ij}'+\xi_{ij}'\right)\ra\\
+=&\frac{1}{2}\la\left(\frac{\partial V_i'}{\partial x_j}\frac{\partial V_i'}{\partial x_j}+\frac{\partial V_i'}{\partial x_j}\frac{\partial V_j'}{\partial x_i}\right)\ra\\
+\eeqa
+
+which gives a relationship between the dissipation and pseudo-dissipation:
+
+\beq
+\varepsilon=\tilde{\varepsilon}+\nu\frac{\partial^2\la V_i'V_j'\ra}{\partial x_i\partial x_j}
+\eeq
+
+This second term on the right hand side is often only several percent of the total dissipation, so there is little problem with using the pseudo dissipation in place of the dissipation, and in some situations gives a simpler governing equation. 
+
+
+
+
+
+
+\subsubsection{Cylindrical Coordinates}
 
 These equations can also be derived in cylindrical coordinates for incompressible flow. The continuity equation becomes:
 
@@ -221,17 +369,22 @@ where again, it is true that both \(\nabla\cdot\la \vv{V}\ra=0\) and \(\nabla\cd
 \eeqa
 
 \beqa
-\frac{\partial V_r}{\partial t}+V_z\frac{\partial V_r}{\partial z}+V_r\frac{\partial V_r}{\partial r}+\frac{V_{\theta}}{r}\frac{\partial V_r}{\partial\theta}-\frac{V_{\theta}^2}{r}=\frac{-1}{\rho}\frac{\partial P}{\partial r}+\nu\left(\nabla^2 V_r-\frac{V_r}{r^2}-\frac{2}{r^2}\frac{\partial V_{\theta}}{\partial\theta}\right)\\
-\frac{\partial \la(\la V_r\ra + V_r')\ra}{\partial t}+(\la V_z\ra+V_z')\frac{\partial (\la V_r\ra + V_r')}{\partial z}\ra+\la(\la V_r\ra + V_r')\frac{\partial (\la V_r\ra + V_r')}{\partial r}\ra+\la\frac{\la V_{\theta}\ra+V_{\theta}'}{r}\frac{\partial (\la V_r\ra + V_r')}{\partial\theta}\ra-\frac{\la V_{\theta}\ra^2}{r}=\\
-\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial r}+\nu\left(\nabla^2 \la V_r\ra-\frac{\la V_r\ra}{r^2}-\frac{2}{r^2}\frac{\partial \la V_{\theta}\ra}{\partial\theta}\right)\\
-\frac{\partial \la V_r\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_r\ra}{\partial z}+\la V_z'\frac{\partial V_r'}{\partial z}\ra+\la V_r\ra\frac{\partial\la V_r\ra}{\partial r}\ra+\la V_r'\frac{\partial V_r'}{\partial r}\ra+\frac{1}{r}\left(\la V_{\theta}\ra\frac{\partial \la V_r\ra}{\partial\theta}+\la V_{\theta}'\frac{\partial V_r'}{\partial\theta}\ra\right)-\frac{\la V_{\theta}\ra^2}{r}=\\
-\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial r}+\nu\left(\nabla^2 \la V_r\ra-\frac{\la V_r\ra}{r^2}-\frac{2}{r^2}\frac{\partial \la V_{\theta}\ra}{\partial\theta}\right)\\
+\frac{\partial V_r}{\partial t}+V_z\frac{\partial V_r}{\partial z}+V_r\frac{\partial V_r}{\partial r}+\frac{V_{\theta}}{r}\frac{\partial V_r}{\partial\theta}=\frac{-1}{\rho}\frac{\partial P}{\partial r}+\nu\left(\nabla^2 V_r-\frac{V_r}{r^2}-\frac{2}{r^2}\frac{\partial V_{\theta}}{\partial\theta}\right)+\frac{V_{\theta}^2}{r}\\
+\frac{\partial \la(\la V_r\ra + V_r')\ra}{\partial t}+(\la V_z\ra+V_z')\frac{\partial (\la V_r\ra + V_r')}{\partial z}\ra+\la(\la V_r\ra + V_r')\frac{\partial (\la V_r\ra + V_r')}{\partial r}\ra+\la\frac{\la V_{\theta}\ra+V_{\theta}'}{r}\frac{\partial (\la V_r\ra + V_r')}{\partial\theta}\ra=\\
+\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial r}+\nu\left(\nabla^2 \la V_r\ra-\frac{\la V_r\ra}{r^2}-\frac{2}{r^2}\frac{\partial \la V_{\theta}\ra}{\partial\theta}\right)+\frac{\la V_{\theta}\ra\la V_{\theta}\ra+\la V_{\theta}'V_{\theta}'\ra}{r}\\
+\frac{\partial \la V_r\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_r\ra}{\partial z}+\la V_z'\frac{\partial V_r'}{\partial z}\ra+\la V_r\ra\frac{\partial\la V_r\ra}{\partial r}+\la V_r'\frac{\partial V_r'}{\partial r}\ra+\frac{1}{r}\left(\la V_{\theta}\ra\frac{\partial \la V_r\ra}{\partial\theta}+\la V_{\theta}'\frac{\partial V_r'}{\partial\theta}\ra\right)=\\
+\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial r}+\nu\left(\nabla^2 \la V_r\ra-\frac{\la V_r\ra}{r^2}-\frac{2}{r^2}\frac{\partial \la V_{\theta}\ra}{\partial\theta}\right)+\frac{\la V_{\theta}\ra\la V_{\theta}\ra+\la V_{\theta}'V_{\theta}'\ra}{r}\\
 \eeqa
 
 For statistically axisymmetric flows, \(\la V_{\theta}\ra=\la V_r'V_{\theta}\ra=\la V_z'V_{\theta}'\ra=0\), and hence the above equations simplify to:
 
 \beqa
 \frac{\partial \la V_z\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_z\ra}{\partial z}+\la V_r\ra\frac{\partial \la V_z\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}-\frac{\partial \la V_z'V_z'\ra}{\partial z}-\frac{1}{r}\frac{\partial (r\la V_r'V_z'\ra)}{\partial r}+\nu\nabla^2\la V_z\ra
+\eeqa
+
+\beqa
+\frac{\partial \la V_r\ra}{\partial t}+\la V_z\ra\frac{\partial \la V_r\ra}{\partial z}+\la V_r\ra\frac{\partial\la V_r\ra}{\partial r}=\\
+\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial r}+\nu\left(\nabla^2 \la V_r\ra-\frac{\la V_r\ra}{r^2}\right)+\frac{\la V_{\theta}'V_{\theta}'\ra}{r}-\frac{\partial \la V_z'V_r'\ra}{\partial z}-\frac{1}{r}\frac{\partial(r\la V_r'V_r'\ra}{\partial r}\\
 \eeqa
 
 
@@ -335,6 +488,11 @@ where \(k\) is the turbulent kinetic energy defined in Eq. \eqref{eq:turbenergy}
 
 This is very similar to the Navier-Stokes equations, where only the anisotropic component \(2\mu e_{ij}+\nabla\cdot\vv{V}\delta_{ij}\) contributes to the stress, and the isotropic component is bundled into the pressure term (because it is defined to be the pressure itself). 
 
+
+
+
+\subsubsection{Turbulent Kinetic Energy}
+
 The turbulent kinetic energy \(k\) is defined as the kinetic energy per unit mass associated with the fluctuating velocity field, and is equal to half the trace of the Reynolds stress tensor:
 
 \beq
@@ -342,6 +500,24 @@ The turbulent kinetic energy \(k\) is defined as the kinetic energy per unit mas
 k\equiv\frac{1}{2}\la V_iV_i\ra
 \eeq
 
+The total kinetic energy \(E\) of the flow is:
+
+\beqa
+E=&\frac{1}{2}\vv{V}\cdot\vv{V}\\
+=& \frac{1}{2}\left(\la\vv{V}\ra\cdot\la\vv{V}\ra+2\vv{V}'\la\vv{V}\ra+V'V'\right)
+\eeqa
+
+The mean of the total kinetic energy is simply the sum of the kinetic energy of the mean flow and the turbulent kinetic energy. 
+
+\beq
+\la E\ra=\frac{1}{2}\la\vv{V}\ra\cdot\la\vv{V}\ra+k
+\eeq
+
+The turbulent kinetic energy contributes to the \textit{isotropic} portion of the Reynolds stress tensor, but from experimental evidence, the anisotropic portion of the Reynolds stress tensor scales with the turbulent kinetic energy. From the Cauchy-Schwartz inequality, the magnitude of a shear stress component is always less than half the trace of the Reynolds stress tensor. 
+
+\beq
+|\la V_i'V_j'\ra|\ \leq k
+\eeq
 
 
 
@@ -392,6 +568,8 @@ An essential feature of turbulent flows is that they are rotational. If the vort
 \eeqa
 
 Eq. \eqref{eq:CorrinKistler}, which has assumed incompressibility in the last term, shows that for irrotational flows, the gradient of the Reynolds stress, which is the form that appears in the momentum equation, has the same effect as the isotropic stress, and hence could be absorbed into a modified pressure term. So, for irrotational flows, the Reynolds stresses have no impact on the mean velocity field. Hence, irrotational flow essentially shows no characteristics of turbulence because the Reynolds stress has no impact on the mean velocity.
+
+
 
 
 
@@ -472,6 +650,39 @@ Like the centerline velocity, the square root of the \(\la U'U'\ra\) Reynolds st
 
 The derivative of the axial velocity with respect to \(r\) is always negative because the velocity is largest at the centerline and decays moving to greater \(r\). From the definition of the orientation of shear stress, the shear stress will be positive if \(\partial\la U\ra/\partial r<0\). Hence, for the round jet, the shear stress is always positive, which gives rise to a positive turbulent viscosity. Because the mean velocities and the Reynolds stresses are self-similar, this turbulent viscosity is also self-similar. Because the shear stresses are odd functions of \(r\), as is \(\partial\la U\ra/\partial r\), the turbulent viscosity is an even function of \(r\), and is roughly uniform in the center of the jet, but decreases at the edge of the jet. 
 
+By neglecting the viscous effects in the \(r\)-direction turbulent boundary layer equation, Eq. \eqref{eq:BLEx}, such that it is only valid far from the boundary layer, you can show that the mean momentum flow rate is conserved, and is independent of \(x\). Because the momentum flowrate involves a term proportional to \(r_{1/2}U_0(x)\), this product cannot be a function of \(x\), which further explains why a jet spreads and decays linearly. Linear spreading and decay is a consequence of self-similarity. To solve these boundary layer equations, we have three unknowns - \(\la U\ra, \la V\ra\), and \(\la U'V'\ra\), but if we can pick a value for the turbulent viscosity, then we can use the turbulent viscosity model in Eq. \eqref{eq:turbvisc} to provide a closure relationship. By neglecting axial derivatives, the turbulent viscosity model for incompressible flow gives:
+
+\beq
+\la U'V'\ra=-\nu_T\frac{\partial\la U\ra}{\partial r}
+\eeq
+
+such that the \(z\)-direction momentum equation becomes:
+
+\beq
+\la U\ra\frac{\partial \la U\ra}{\partial z}+\la V\ra\frac{\partial \la U\ra}{\partial r}=\frac{(\nu+\nu_T)}{r}\frac{\partial}{\partial r}\left(r\frac{\partial\la U\ra}{\partial r}\right)
+\eeq
+
+For high Reynolds number flows, the molecular viscosity is often neglected, such that only the turbulent viscosity is used. If we assume the turbulent viscosity to be uniform, and neglect molecular viscosity, then the above equation is identical to the laminar boundary layer equation, but with averaged velocities replacing instantaneous velocities. Schlichting was the first to obtain the similarity solution for the uniform turbulent viscosity round jet, which gives good comparison with experimental results except at the edges of the jet where the turbulent viscosity decays to zero. The mean velocity profile in a turbulent round jet will be the same profile as that in a laminar jet with Reynolds number \(Re_T=U_0(x)r_{1/2}(x)/\nu_T\approx35\).  
+
+
+
+\subsection{The Plane Jet}
+From self-similarity, \(y_{1/2}\) increases linearly, but the centerline velocity now decays as \(1/\sqrt{x}\). 
+
+\subsection{The Mixing Layer}
+Mixing layers can also be shown to be self-similar when the velocity profiles are scaled relative to the absolute and relative velocities of the two regions. The mixing layer spreads linearly, though the flow will spread preferentially into the low-speed stream. 
+
+\subsection{The Plane Wake}
+
+The wake behind a cylinder cannot be exactly self-similar because the ratio of the difference in velocities to the absolute velocity evolves in time, but in the asymptotic region far behind the wake, the flow becomes self-similar in the asymptote. The wake spreads as \(\sqrt{x}\), while the difference between the free-stream velocity and the velocity scales as \(1/\sqrt{x}\). 
+
+\subsection{The Axisymmetric Wake} 
+The wake behind a sphere, like that behind a cylinder, cannot be self-similar except in the limit of the velocity difference relative to the free-stream velocity tending to zero (i.e. far behind the body). 
+
+\subsection{Homogeneous Turbulence}
+In all of the above free shear flows, production of turbulent kinetic energy exceeds dissipation, but because the flow is statistically stationary, the turbulent kinetic energy cannot increase in time. This causes turbulent kinetic energy to be transported away from the centerline of the flows. This directional transport is by definition inhomogeneous. Homogeneous turbulence, on the other hand, has statistically homogeneous fluctuating velocities and pressures. After a development region, homogeneous turbulent shear flows become self-similar. 
+
+
 
 
 
@@ -525,18 +736,53 @@ When the far-field flow is quiescent or uniform, then \(\partial\la P_{\infty}\r
 
 
 
-\subsubsection{Stationary, Statistically Axisymmetric and Stationary}
+\subsubsection{Statistically Axisymmetric and Stationary}
 For stationary, statistically axisymmetric flows, \(\la W\ra=\la V'W'\ra=\la U'W'\ra=0\), where \(U\) represents flow along the \(z\) coordinate, \(V\) flow along the \(r\) coordinate, and \(W\) flow along the \(\theta\) coordinate, and similar boundary layer equations can be derived beginning from the mean flow equations in cylindrical coordinates. The continuity equation becomes:
 
 \beq
-\frac{1}{r}\frac{\partial r\la V\ra}{\partial r}+\frac{\partial \la U\ra}{\partial z}=0
+\frac{1}{r}\frac{\partial (r\la V\ra)}{\partial r}+\frac{\partial \la U\ra}{\partial z}=0
 \eeq
 
 And the momentum equations become:
 
 \beqa
-\la U\ra\frac{\partial \la U\ra}{\partial z}+\la V\ra\frac{\partial \la U\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}-\frac{\partial \la U'U'\ra}{\partial z}-\frac{1}{r}\frac{\partial (r\la V'U'\ra)}{\partial r}+\nu\nabla^2\la U\ra
+\la U\ra\frac{\partial \la U\ra}{\partial z}+\la V\ra\frac{\partial \la U\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial z}-\underbrace{\frac{\partial \la U'U'\ra}{\partial z}}_{\textrm{neglect}}-\frac{1}{r}\frac{\partial (r\la V'U'\ra)}{\partial r}+\nu\left(\underbrace{\frac{\partial^2\la U\ra}{\partial z^2}}_{\textrm{neglect}}+\frac{1}{r}\frac{\partial}{\partial r}\left(r\frac{\partial\la U\ra}{\partial r}\right)\right)
 \eeqa
+
+\beqa
+\la U\ra\frac{\partial \la V\ra}{\partial z}+\la V\ra\frac{\partial\la V\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P\ra}{\partial r}+\nu\left(\underbrace{\frac{\partial^2\la V\ra}{\partial z^2}}_{\textrm{neglect}}+\frac{1}{r}\frac{\partial}{\partial r}\left(r\frac{\partial\la V\ra}{\partial r}\right)-\frac{\la V\ra}{r^2}\right)+\frac{\la W'W'\ra}{r}-\underbrace{\frac{\partial \la U'V'\ra}{\partial z}}_{\textrm{neglect}}-\frac{1}{r}\frac{\partial(r\la V'V'\ra}{\partial r}\\
+\eeqa
+
+where again we neglect diffusion along the axial direction for both the mean and fluctuating flow. If we further neglect all advection and diffusion in the lateral direction, the lateral momentum equation simplifies and can be integrated in \(r\) to give the mean pressure distribution:
+
+\beqa
+\frac{1}{\rho}\frac{\partial \la P\ra}{\partial r}=\frac{\la W'W'\ra}{r}-\frac{\partial(\la V'V'\ra}{\partial r}-\frac{\la V'V'\ra}{r}\\
+\frac{\la P_{\infty}\ra}{\rho}=\frac{\la P\ra}{\rho}+\la V'V'\ra+\int_{r}^{\infty}\frac{\la W'W'\ra - \la V'V'\ra}{r'}dr'\\
+\eeqa
+
+By taking the derivative of the above with respect to \(z\), and then again assuming that derivatives are negligible along the axial direction relative to those in the lateral direction, then a relationship for the axial pressure gradient can be determined:
+
+\beq
+\frac{1}{\rho}\frac{\partial\la P_{\infty}\ra}{\partial x}=\frac{1}{\rho}\frac{\partial\la P\ra}{\partial x}
+\eeq
+
+Substituting this into the \(x\)-direction momentum equation gives:
+
+\beq
+\la U\ra\frac{\partial \la U\ra}{\partial z}+\la V\ra\frac{\partial \la U\ra}{\partial r}=\frac{-1}{\rho}\frac{\partial \la P_{\infty}\ra}{\partial z}-\frac{1}{r}\frac{\partial (r\la V'U'\ra)}{\partial r}+\frac{\nu}{r}\frac{\partial}{\partial r}\left(r\frac{\partial\la U\ra}{\partial r}\right)
+\eeq
+
+And for a quiescent free stream, the gradient of the far-stream pressure is zero, giving the \(x\)-direction turbulent boundary layer equation:
+
+\beq
+\label{eq:BLEx}
+\la U\ra\frac{\partial \la U\ra}{\partial z}+\la V\ra\frac{\partial \la U\ra}{\partial r}=-\frac{1}{r}\frac{\partial (r\la V'U'\ra)}{\partial r}+\frac{\nu}{r}\frac{\partial}{\partial r}\left(r\frac{\partial\la U\ra}{\partial r}\right)
+\eeq
+
+
+
+
+
 
 
 
@@ -597,22 +843,24 @@ This model assumes that \(\la \vv{V}'\phi'\ra\) is aligned with \(\la\nabla\la\p
 
 
 \subsection{Turbulent Viscosity Methods}
-Turbulent viscosity methods are similar to gradient-diffusion methods in that both result in \(\nu\) simply being increased by a constant, except that gradient-diffusion method assume that constant represents proportionality to the mean gradient via Fourier's law, while turbulent viscosity methods assume that constant represents equivalence between the deviatoric Reynolds stress and the mean rate of strain. The turbulent viscosity method is based on the relationship for the deviatoric stress tensor in the Navier-Stokes equation, which from the constitutive relationship for \(\sigma_{ij}\), is assumed proportional to \(e_{ij}\):
+Turbulent viscosity methods, also called eddy viscosity methods, are similar to gradient-diffusion methods in that both result in \(\nu\) simply being increased by a constant, except that gradient-diffusion method assume that constant represents proportionality to the mean gradient via Fourier's law, while turbulent viscosity methods assume that constant represents equivalence between the deviatoric Reynolds stress and the deviatoric stress tensor in the Navier-Stokes equation. The turbulent viscosity method is based on the relationship for the deviatoric stress tensor in the Navier-Stokes equation, which from the constitutive relationship for \(\sigma_{ij}\), is assumed proportional to \(e_{ij}\):
 
 \beq
 \sigma_{ij}=-P\delta_{ij}+c_{ijkl}e_{ij}
 \eeq
 
-The deviatoric portion of the Reynolds stress \(a_{ij}\) is assumed proportional to the mean rate of strain \(\la e_{ij}\ra\):
+The deviatoric portion of the Reynolds stress \(a_{ij}\) is assumed proportional to the \textit{mean} of the deviatoric portion of the Navier Stokes stress tensor:
+
+\beqa
+a_{ij}=&-2\nu_T\la\left(e_{ij}-\frac{1}{3}\nabla\cdot\vv{V}\delta_{ij}\right)\ra\\
+\rho\la V_i'V_j'\ra-\frac{2}{3}\rho k\delta_{ij}=&-2\mu_T\la\left(e_{ij}-\frac{1}{3}\nabla\cdot\vv{V}\delta_{ij}\right)\ra\\
+\eeqa
+
+where \(\mu_T/\rho\) is the turbulent viscosity. Then, inserting this into the Reynolds momentum equation:
 
 \beq
-a_{ij}=2\nu_T\left(\frac{\partial \la V_i\ra}{\partial x_j}+\frac{\partial \la V_j\ra}{\partial x_i}\right)
-\eeq
-
-where \(\nu_T\) is the turbulent viscosity. Then, inserting this into the Reynolds momentum equation:
-
-\beq
-\rho\frac{\partial \la V_i\ra}{\partial t}+\rho\frac{\partial(\la V_i\ra\la V_j\ra)}{\partial x_j}=\frac{\partial}{\partial x_j}\left\lbrack(\mu+\mu_T)\left(\frac{\partial\la V_i\ra}{\partial x_j}+\frac{\partial\la V_j\ra}{\partial x_i}\right)-\left(\la P\ra+\frac{2}{3}k\right)\delta_{ij}\right\rbrack
+\label{eq:turbvisc}
+\rho\frac{\partial \la V_i\ra}{\partial t}+\rho\frac{\partial(\la V_i\ra\la V_j\ra)}{\partial x_j}=\frac{\partial}{\partial x_j}\left\lbrack(\mu+\mu_T)\left(\frac{\partial\la V_i\ra}{\partial x_j}+\frac{\partial\la V_j\ra}{\partial x_i}\right)-\left(\la P\ra+\frac{2}{3}\rho k\right)\delta_{ij}\right\rbrack
 \eeq
 
 This model assumes that \(a_{ij}\) is aligned with \(\la e_{ij}\ra\), which is not the case even in simple turbulent flows. At high \(Re\), both \(\nu_T\) and \(\Gamma_T\) scale with the flow velocity and length scale, independent of the actual molecular properties of the flow:
@@ -657,6 +905,31 @@ For homogeneous turbulence, pseudo-spectral methods are preferred for numerical 
 
 
 
+
+
+
+
+
+
+
+
+Do you have a joint appointment with NE division?
+
+Nek5000 in 3/4 of the research areas in M\&C
+
+fission bank parallelization in OpenMC - seems similar to my last parallel computing HW assignment
+uses Fortran 2008
+
+collaboration with other codes - OpenMC working to be able to use a deforming mesh?
+
+Center for Exascale simulation of advanced reactors
+
+OpenMP - hybrid programming with MPI + OpenMP?
+			  - is it optimized for GPUs as well?
+
+- wanted to get an idea of possible project ideas - flexibility to choose class project for CS, thinking about GPUs
+
+high throughput computing
 
 
 \end{flushleft}
