@@ -90,11 +90,9 @@
 \setcounter{tocdepth}{4}
 
 
-\title{C++}
-\author{April Novak}
 \begin{document}
 
-\maketitle
+
 \section{Introduction}
 
 The purpose of this document is to serve as a quick-reference for me of the things that I think are the most important about the C++ language. Don't try to learn C++ from this document - go do an online tutorial.
@@ -968,5 +966,96 @@ statically-typed & --- & Variable type-checking is performed at compile time\\
 standard library & std & Standard library associated with C++\\
 Standard Template Library & STL & Commonly-used C++ library\\
 \end{tabular}
+
+\clearpage
+
+\section{Introduction}
+
+The purpose of this document is to serve as a collection of my notes on C. C was initially developed by Dennis Ritchie to develop the UNIX operating system at Bell Labs, so the UNIX operating system and basically all UNIX application programs have been written in C. C is a successor of the B language. C was initially used for system development work, like writing the programs that construct an operating system. C runs nearly as fast as code written in assembly language. C programs typically have file extension {\tt .c}. 
+
+\section{C Compilers}
+Compilers are required to convert human-readable code into machine language that can be read directly by the CPU. 
+
+\section{Data Types}
+
+\subsection{Basic Types}
+Basic data types include integers, floats, doubles, etc. The special qualifier {\tt void} indicates that there is no type. Voids are used to represent cases where a function does not return anything (it has void return type), a function has no input arguments (it has void input type), and void pointers ({\tt void * ptr}) that can hold the address of an object, but not its type. The return type of many of the C memory allocation functions is a pointer to void, since the ability to allocate memory does not really depend on the type of data you're going to be putting there, just on the number of bytes you need. You would then cast this pointer to void to the appropriate type. 
+
+When using variables for text, use {\tt char}, since it is implementation-dependent whether or not {\tt char} is interpreted as signed or unsigned. However, if you would like to use text for numbers, then select appropriately between the unsigned and signed versions. Except for {\tt char}, the other integer types are by default signed, and hence you don't need to use the {\tt signed} qualifier. The possible range in representable values is simply \(2^n\), where \(n\) is the number of bits, where signed variables span across zero into both negative and positive values, whereas unsigned variables span from 0 to the maximum representable value. The reason that there are {\tt short} and {\tt long} integer types is related to the desire to have a type that is one order of magnitude smaller than {\tt int} (short) or one magnitude larger (long). However, the C standard only bounds the sizes of these types, so a {\tt short} must be the same size or smaller than {\tt int}, while {\tt long} must be the same size or larger than {\tt int}. 
+
+Note also that the bit size (32-bit vs. 64-bit) of the operating system has an impact on the potential range of representable values. A 64-bit machine has 8 bits per byte, while a 32-bit machine has 4 bits per byte. 
+
+\begin{lstlisting}[language=C]
+int my_size = sizeof(char); // use sizeof() method to return size in bytes
+\end{lstlisting}
+
+\begin{table}[h]
+\caption{Integer types in C and their storage sizes.}
+\centering
+\begin{tabular}{l l l}
+\hline\hline
+Data Type & Storage Size (Bytes) \\ [0.5ex]
+\hline
+{\tt char} & 1 \\
+{\tt int} & 2 or 4 \\
+{\tt short} & 2 \\
+{\tt long} & 8 \\
+\hline
+\end{tabular}
+\end{table}
+
+Floating point variables are used to represent numbers with decimals. Floats can represent roughly six decimal places, double 15 decimal places, and long double 19 decimal places. Floats are typically referred to as being single precision, while doubles are double-precision. 
+
+\begin{table}[h]
+\caption{Floating point types in C and their storage sizes.}
+\centering
+\begin{tabular}{l l l}
+\hline\hline
+Data Type & Storage Size (Bytes) \\ [0.5ex]
+\hline
+{\tt float} & 4 \\
+{\tt double} & 8  \\
+{\tt long double} & 10 \\
+\hline
+\end{tabular}
+\end{table}
+
+There are three steps to using a variable - declaration, definition, and initialization. Declaring a variable is used simply to define the types associated with a variable or function. It does not allocate any memory for the variables. Defining a variable occurs when you perform a step similar to declaration, but it is more local, and you actually allocate memory for that variable. Finally, initialization actually assigns a value. While you can declare a variable as many times as you want, because you are only specifying the associated types, you can only define a variable one time, because otherwise you would have multiple locations in memory that are reference by the same name. Declaring a function simply states the associated types, while defining a function specifies the body of the function. 
+
+When you define a variable but do not initialize it, static variables are implicitly initialized as {\tt NULL} such that all bytes have the value 0. Otherwise, the value of a variable is undefined unless it is initialized. You must declare all variables before using them so that the compiler can perform linking within the program. For instance, if you are using multiple files together, a variable can be declared as {\tt extern} so that it is known to all files in the compilation. You must declare functions before calling them unless the function definition appears before the call, but to have more flexible programs, the function declaration is usually placed into header files. 
+
+\subsection{Constants}
+Constants, often called literals, cannot be modified during execution. Any of the basic data types can also be constants. Constants are treated like normal variables, except that their values cannot be modified after their definition. 
+
+Integer constants can be defined in base 8 (0 prefix), base 10, or base 16 (0x prefix) notation as unsigned (U suffix) or long (L suffix). Character constants are enclosed in single quotes. String literals, on the other hand, are enclosed in double quotes. Long strings can be separated onto multiple lines using the backslash character. 
+
+Constants can be defined in two ways. Preprocessor directives move through the file and literally replace every occurrence of the variable by the replacement value. Constants are usually defined in all capitals. 
+
+\begin{lstlisting}[language=C]
+#define A 100 // preprocessor directive that defines A to be 100.
+
+int main() {
+	const int a; // defines a constant integer
+}
+\end{lstlisting}
+
+\subsection{Storage Classes]
+Storage classes define the scope and lifetime of variables and functions. When using them, use them before the type qualifier in variable definitions. The {\tt auto} storage class is default for all local variables (local variables can only be define within functions, i.e. they cannot be declared outside of all functions). The {\tt register} storage class is used to define local variables that should be stored in a register instead of RAM. These variables cannot be used with the address-of operator, since they do not have a memory address since they are held in a register. Because this variable has to fit in the register, it must be smaller than the register size. However, it is the final decision of the hardware to determine where a variable is actually stored. 
+
+The {\tt static} storage class keeps a local variable in existence for the duration of the program instead of destroying it each time it comes into and out of scope. These variables will retain their values between function calls, and so they could be used to count how many times a function is called (i.e. increment a static variable within the function call). Global variables are declared outside the scope of all functions - declaring a variable as static here will make it static for the entire file, whereas a variable declared as static within a function is static within that function and all sub scopes. 
+
+Finally, the {\tt extern} storage class gives a reference of a global variable that is visible to all program files, not just the present file as is the highest scoping level with {\tt static}. The {\tt extern} keyword is by default used with all C functions since functions by default have that level of scope. Using the {\tt extern} keyword basically does not allocate any memory for the variable yet - it must still be initialized somewhere within the program. There are two different philosophies for accessing functions from another file - importing header files does not use the {\tt extern} keyword, while using the keyword defers the connection to the linker. For variables, the use of the {\tt extern} variable becomes more important, because if you define a variable without this keyword in a header file and then import that header file into multiple source files, each of those source files will have a different idea of what that variable means. On the other hand, if you declare the variable in the header file as {\tt extern}, then all files that import that header fill will have the same reference of the variable. 
+
+\begin{lstlisting}[language=C]
+auto int var;
+register int var;
+static int var;
+\end{lstlisting}
+
+\subsection{Enumerated Types}
+Enumerated types are basic types that can only be used to assign discrete integer values throughout the program. 
+
+\subsection{Derived Types}
+Derived types include pointers, arrays, structures, unions, and function types. 
 
 \end{document}
