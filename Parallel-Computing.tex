@@ -101,19 +101,24 @@
 \newacronym{api}{API}{Application Programming Interface}
 \newacronym{avx}{AVX}{Advanced Vector Extensions}
 \newacronym{blas}{BLAS}{Basic Linear Algebra Subroutines}
+\newacronym{cisc}{CISC}{Complex Instruction Set Computer}
 \newacronym{clump}{CLUMP}{Cluster of Symmetric Multiprocessor}
 \newacronym{cpu}{CPU}{Central Processing Unit}
 \newacronym{csr}{CSR}{Compressed Sparse Row}
 \newacronym{cu}{CU}{Control Unit}
+\newacronym{dlp}{DLP}{Data-Level Parallelism}
 \newacronym{dram}{DRAM}{Dynamic Random Access Memory}
 \newacronym{fma}{FMA}{Fused Multiply-Add}
 \newacronym{ftmpi}{FTMPI}{Fault Tolerant MPI}
 \newacronym{ge}{GE}{Gaussian Elimination}
 \newacronym{gpu}{GPU}{Graphics Processing Unit}
 \newacronym{ht}{HT}{Hyper Threading}
-\newacronym{ilp}{ILP}{Instruction Level Programming}
 \newacronym{icv}{ICV}{Internal Control Variable}
+\newacronym{ilp}{ILP}{Instruction Level Parallelism}
+\newacronym{isa}{ISA}{Instruction Set Architecture}
 \newacronym{lifo}{LIFO}{Last In, First Out}
+\newacronym{mic}{MIC}{Many Integrated Core}
+\newacronym{mimd}{MIMD}{Multiple Instruction, Multiple Data}
 \newacronym{mpi}{MPI}{Message Passing Interface}
 \newacronym{mpp}{MPP}{Massively Parallel Machine}
 \newacronym{mr}{MR}{Map Reduce}
@@ -127,15 +132,19 @@
 \newacronym{pvm}{PVM}{Parallel Virtual Machine}
 \newacronym{pram}{PRAM}{Parallel Random Access Memory}
 \newacronym{rdd}{RDD}{Resilient Distributed Dataset}
+\newacronym{rdma}{RDMA}{Remote Direct Memory Access}
+\newacronym{risc}{RISC}{Reduced Instruction Set Computer}
 \newacronym{simd}{SIMD}{Single Instruction, Multiple Data}
 \newacronym{simt}{SIMT}{Single Instruction, Multiple Thread}
 \newacronym{sm}{SM}{Streaming Multiprocessor}
 \newacronym{smp}{SMP}{Symmetric Multiprocessor}
+\newacronym{smt}{SMT}{Simultaneous Multithreading}
 \newacronym{spmd}{SPMD}{Single Program, Multiple Data}
 \newacronym{spmv}{SpMV}{Sparse Matrix-Vector Multiply}
 \newacronym{sram}{SRAM}{Second Random Access Memory}
 \newacronym{sse}{SSE}{Streaming SIMD Extensions}
 \newacronym{tlb}{TLB}{Translation Look-Aside Buffer}
+\newacronym{tlp}{TLP}{Thread-Level Parallelism}
 \newacronym{uma}{UMA}{Uniform Memory Access}
 \newacronym{upc}{UPC}{Unified Parallel C}
 
@@ -152,11 +161,6 @@
 \begin{flushleft}\justify
 
 This document contains my course notes for CS 267, as well as my notes on general topics such as computer architecture.
-
-
-
-
-
 
 A flop is a floating point operation, which is usually in double precision unless otherwise noted. While the fastest computer has a clock rate of 55 Pflop/s, most laptops are in the Gflop/s range. 
 
@@ -186,6 +190,49 @@ Avoiding communication is very important because the gap between flops/second, b
 
 If you can store multiple copies of the matrix, then you can reduce the total number of messages sent. Remote access bandwidth tends to be higher than the local access bandwidth because it is so much more expensive to build those long cables and that access time dominates runtime, so effort is spent on reducing that limitation as much as possible.
 
+\section{Computer Architecture}
+Computer architecture has dramatically advanced, and \$500 today will purchase a computer with more disk storage, main memory, and higher performance than the best computer of 1985. However, this dramatic improvement has slowed recently due to three main issues:
+
+\begin{enumerate}
+\item Inability to dispose of higher heat loads
+\item Little \gls{ilp} left to exploit
+\item Slow reductions in memory latency
+\end{enumerate}
+
+So, uniprocessors (i.e. single-processor cores) cannot be the path forward to faster machines. In 2004, Intel abandoned their projects involving pursuing faster uniprocessors in favor of multiprocessors. A {\it multiprocessor} is a computer chip with more than one core. This represented a major shift from \gls{ilp} to \gls{tlp} and \gls{dlp}. \gls{ilp} does not require much thought from the programmer because it is implicit in the workings of the compiler, but \gls{tlp} and \gls{dlp} are explicitly parallel, which requires all high-performance programmers to be parallel programmers.
+
+Early computers were mainframe computers, housed in a large room and controlled by several operators. These evolved into minicomputers targeted at scientific applications in laboratories. Many people participated in time-sharing these computers. The desktop computer rose in the 1980s, followed by servers in the 1990s to provide larger-scale services such as file storage. 
+Now, many devices contain embedded computers, where a device such as a phone contains a computer than is not immediately obvious to the user. Embedded computers are the fastest-growing sector. Clusters, or systems of connected desktop computers, are largely overtaking supercomputers.
+
+For desktop computers, the most important features are the performance to price ratio, while reliability and ability to scale to larger demands is most important for servers. 
+
+Computers are essentially constructed using a clock running at a constant rate, where each ``tick'' of the clock is referred to as a cycle. The time of each cycle is often quoted as a frequency in GHz. The processor performance is then dependent on this frequency, the number of cycles to issue one instruction, and the number of instructions (dependent on the particular \gls{isa}). 
+
+\subsection{Instruction Set Architecture}
+\gls{isa} is the programmer-visible instruction set, and serves as the boundary between the software and the hardware. The \gls{isa} defines the instructions that a machine can execute, and allows the separate development of hardware and software. The \gls{isa} includes the native data types, instructions, registers, addressing modes, exception handling, and I/O. A \gls{cisc} has many specialized instructions, but because relatively few are used, many computers are \gls{risc}s. Machine language is built from discrete instructions. Some common instructions include:
+
+\begin{itemize}
+\item Setting a register to a fixed, constant value
+\item Copying data from a memory location to a register (often called a ``move,'' though it is actually a copy)
+\item Arithmetic and logic operations
+\item Increment and decrement, bypassing a load step
+\item Branching to another location in the program
+\item Call another block of code, while saving the location of the next instruction
+\end{itemize}
+
+An \gls{isa} may also contain complex instructions, which would normally take many instructions to perform using the fundamental instructions listed above. These complex instructions can include \gls{simd} instructions. An instruction contains an opcode that specifies the operation to perform, following by one or more addresses referring to the memory locations that are to be used in the operation. Most common processors have instruction sizes between 8 and 64 bits. In \gls{risc} computers, the instruction size is usually equal to the word size. Constant-sized instruction sizes are easier to optimize, since you never need to check to see if the instruction cannot fit on a cache line. However, programs written for \gls{cisc} computers will generally be shorter, since only several instructions will require the longer formats. 
+
+At the lowest level, a programmer could write instructions in machine code (what is executed by the CPU), then at a higher level in assembly language, and then in an even higher level with a programming language assisted by a compiler. Nearly all \gls{isa}s today are general-purpose register architectures, where the operands are either registers or memory locations. While the 80x86 \gls{isa} can access memory as part of the instructions (increment/decrement operations), the MIPS \gls{isa} can only perform load and store instructions (with manipualtions in between). The 80x86 \gls{isa} is a \gls{cisc} architecture, while MIPS is a representative \gls{risc} implementation. Most recent \gls{isa}s are load-and-store format. 
+
+Computer architecture is primarily related to the development of the \gls{isa}, while the implementation of a computer then depends on the organization, or the high-level aspects such as the memory system and memory interconnect. Two computers can utilize the same \gls{isa} but have very different computer organization. Finally, the hardware refers to the specifics of the computer, such as its clock rate. 
+
+\subsection{Changes in Computer Performance}
+
+An \gls{isa} should be designed for longevity, because despite the rapid changes in computer technology, it is a lot of work to develop a new \gls{isa} and incurs portability issues. Transistor density increases by about 35\% per year, while the die size increases more slowly around 10-20\% per year, giving an overall 50\% increase in number of transistors on a computer chip in one year. \gls{dram} capacity increases by about 40\% per year. Magnetic disk storage also increases at about 30\% per year, and is still about two orders of magnitude less expensive than \gls{dram} storage. In addition, bandwidth improves much faster than latency. Bandwidth has been pushed the most in microprocessors and networks, since performance is valued highest for these technologies (while storage capacity is more important for disks). Bandwidth increases at about the square of the latency rate.
+
+The feature size is the minimum size of a transistor or wire, when measured in either the \(x\) or \(y\) direction. Because a computer chip is essentially a 2-D structure, the density of transistors increases quadratically with a reduction in the feature size.
+
+
 \section{Common Terminology}
 
 \subsection{The Stack and Heap}
@@ -193,6 +240,27 @@ If you can store multiple copies of the matrix, then you can reduce the total nu
 The stack is a region of memory that stores temporary variables created by each function in a program. The stack is a \gls{lifo} data structure that is managed by the CPU. Every time a function declares a new variable, it is pushed onto the stack. Then, when that function exits, all of the variables pushed onto the stack by that function are freed. Because stack variables are lost when a function exits, those variables are inherently local. Using the stack to store variables allows you to not have to worry about allocating memory by hand, and hence reading/writing to stack variables is very fast. There is a limit on the size of variables that can be stored on the stack. The {\tt static} keyword can be used to keep a variable on the stack around longer than it would have been otherwise (it won't be freed upon exit of the function). A {\tt static} variable is known globally only within a single file, while an {\tt extern} variable is global to all files.
 
 Variables allocated to the heap, on the other hand, do not have such memory limitations (the limitations are those of the entire computer). The heap is a memory region that is not managed automatically for you - to allocate memory on the heap, use {\tt malloc}. You must deallocate memory once you don't need it anymore, and if you fail to do so, you have created a memory leak, which can be detected with a tool such as {\tt valgrind}. Reading and writing to the heap is slower than reading from the stack because you need to use pointers to access memory on the heap. Variables created on the heap are accessible by any function, and are basically global in scope. Both the stack and the heap are conceptual terms - there is no physical region of memory that is the ``stack'' or the ``heap.''
+
+\subsection{Instruction-Level Parallelism}
+Pipelining is the process of overlapping instruction execution, which depends on each instruction not being dependent on its immediate predecessor. This overlap among instructions is called \gls{ilp} because the instructions can be evaluated in parallel. 
+
+\subsection{Multithreading}
+Processors were originally developed to run only a single thread at a time. However, a single \gls{cpu} is capable of multi-threading, whereby a single core can execute multiple threads concurrently. This is different from multiprocessing, where multiple cores act together - multi-threading is the utilization of shared resources such as the \gls{cpu}, cache, and \gls{tlb} of a {\it single} core. The thread scheduler that keeps track of the currently running threads and the stalled threads can be implemented either completely in software, in hardware, or in both. Cache misses will often cause a thread switch, but it can also occur due to thread-dependent communication.
+
+As opposed to multithreading, chip-level multiprocessing uses multiple processors to execute threads independently. Multithreading most often refers to multiple threads running on a single processor.
+
+\subsubsection{Coarse-Grained Multithreading}
+There are several types of multithreading, the simplest being coarse-grained multithreading (also called block or cooperative multithreading). If one thread encounters a long-latency stall such as a cache miss in all levels of cache (and has to go to main memory), then execution can be switched to the other thread to avoid being idle for hundreds of cycles. Only when the data has been retrieved for the other thread would the previous thread be placed back on the list to run. Switching from one thread to another means that the hardware switches from one set of registers to another. To switch efficiently between threads, each thread should have its own register. With the appropriate hardware, thread switching can be performed in one cycle. 
+
+\subsubsection{Fine-Grained Multithreading}
+As opposed to coarse-grained multithreading, fine-grained multithreading executes one instruction for a thread, and then immediately switches to another thread. 
+
+\subsubsection{Simultaneous Multithreading}
+\gls{smt} is the most advanced form of multithreading. Here, a superscalar processor issues multiple instructions from multiple threads every \gls{cpu} cycle (whereas in normal processors they can issue multiple instructions from a single thread each cycle). Superscalar processors are \gls{cpu}s that implement instruction-level parallelism within a single processor (execute multiple instructions at the same time). Thread-level parallelism, on the other hand, executes one instruction from multiple threads at the same time. A superscalar processor can execute more than one instruction during a clock cycle by simultaneously dispatching different instructions to different execution units. 
+
+So, in effect, \gls{smt} means that the software has the capability to run multiple threads at the same time, instead of having to explicitly switch between threads. Other types of multithreading are referred to as ``temporal multithreading'' because only one thread can execute at a time. Most commonly, two concurrent threads can be used, but some processors support up to eight concurrent threads. \gls{smt} can decrease performance if any of the shared resources become bottlenecks in the application. 
+
+\gls{ht} is Intel's proprietary \gls{smt} implementation on x86 processors. For each processor core that is physically on the chip, the operating system address two virtual (logical) cores and shares the workload between them when possible. \gls{ht} is intended to increase the number of independent instructions in the pipeline. With \gls{ht}, one physical core appears as two processors to the operating system, allowing concurrent scheduling of two processors per core. The logical processors in a hyper-threaded core share execution resources such as the execution engine, caches, and system bus interface. \gls{ht} essentially duplicates certain sections of the processor, but not duplicating the main execution resources. When execution resources would not be used by the current task in a processor without \gls{ht}, and especially if the processor is stalled, those execution resources can be used to execute another schedule task. Hyperthreading does not require any hardware changes or the addition of more processors. Hyperthreading allows multiple threads to run on different execution units within a single processor. \gls{ht} extends multi-threading using an architecture state where one physical processor appears as two or more logical processors to the operating system and applications. The chip is therefore a logical dual processor. Logical processors share most resources on the physical processor, including caches, execution units, branch predictors, control logic, and buses. OpenMP directives can be used to schedule \gls{ht}. 
 
 \subsection{Benchmarks}
 
@@ -222,6 +290,8 @@ There are several key challenges that face the ability of parallel computing to 
 \textrm{Speedup}=\frac{\textrm{Time(1)}}{\textrm{Time(P)}}\leq\frac{1}{s/1+(1-s)/P}\leq\frac{1}{s}
 \end{equation}
 
+So, before optimizing some part of a program, first compute its usage to see if the maximum speedup is worth the effort! Amdahl's law might suggest that there is no point in developing manycore architectures, because the maximum theoretical speedup is dictated by the fraction of the program that is serial. However, Gustafson argued that what is actually most important is the ability to run larger problems than were previously possible.
+
 Second, the degree of parallelism must be sufficiently granular to amortize the cost of parallel programming. Moving data costs significantly more than arithmetic, so the chunks of parallel actions must be sufficiently large. However, the parallel chunks should not be too large that there is not enough parallel work. Parallel programming incurs overhead due to:
 
 \begin{itemize}
@@ -240,6 +310,23 @@ The compiler will try to generate optimal code based on your hardware, but in pr
 Processors name bytes and words in its address space. These represents integers, floats, arrays, etc. Operations include read/write on this information, arithmetic, and logical operations. Each of the arithmetic and logical operations has \textit{roughly} the same cost, but the read and write operations are much more expensive. The compiler translates the human-typed code into assembly language that is understood by the computer (the code that is run on the processor), which adds in the read/write commands that are not explicitly written in human-typed code. For instance, to use a variable in a program, I simply type the name of that variable - I don't write the instructions to go find it in memory and then read it. Likewise, I use equal signs to write values. You could write assembly language to influence the registers, but this is typically done by the compiler. The compiler performs register allocation, which is the process by which information read from memory is written to a physical data structure called a register. All information to be used by the processor must first be loaded into a register. Registers are physical quantities that have very small, very fast memory to hold variables that are actually being used by the processor; they are located adjacent to the processor, on the computer chip. Then, arithmetic and logical operations are performed on the registers, where output results are written to registers (?) before being moved to other locations in memory if needed. By tailoring your program, you can encourage the compiler to act in a certain way with the memory system.
 
 Processors also have caches, which are small amounts of fast memory that are physically located close to the processor on the computer chip, or off the chip. The caches are controlled by hardware, not by software (?). The hardware moves information into the caches, which can dramatically impact read operations. The cache is used to store values of recently used or nearby data that will not fit into the registers. When you actually need data, you move it from memory to cache, and then from cache to register. 
+
+There are several ways to obtain faster code without the use of OpenMP, MPI, CUDA, or other parallel programming \gls{api}s. These methods include:
+
+\begin{enumerate}
+\item Increase the clock speed
+\item Increase the size of the cache (reduce cache misses)
+\item Reduce the size of the computer chip
+\item Add more processors to a chip
+\item Increase register width
+\item Multithreading
+\end{enumerate}
+
+\section{Multicore Processors}
+Multicore processors contain two, four, six, or eight independent processor cores in the same chip that are connected with an on-chip bus. Multicore processors execute threads concurrently, and will typically use less power than coupling together multiple single-core processors. However, the number of cores on a single chip cannot be increased without bound, since sharing the intersection through which data flows will become a significant bottleneck. 
+
+\section{Manycore Processors}
+A manycore processor is essentially a multicore processor with so many cores that the traditional multicore techniques are no longer efficient. Xeon Phi are a line of manycore processors developed by Intel targeted at supercomputing. Initially, the Xeon Phi existed in the form of a PCIe-based add-on card (very similar to a \gls{gpu} in that it served purely as an accelerator), but a second generation, named Knights Landing, can be used as a standalone \gls{cpu}. 
 
 \section{Computer Architecture}
 
@@ -333,7 +420,7 @@ The diagonal line of the plot is determined by the peak \gls{dram} bandwidth. La
 
 The parallelism within a single processor is hidden from software. The hardware will automatically try to take advantage of parallelism within a single processor using pipelining and \gls{simd}. Depending on how you write your code, the compiler may or may not optimize correctly using these single-processor parallelism techniques. Compilers have optimization flags that tell the compiler to optimize in certain ways. 
 
-Autotuning is the process by which you simply test every code configuration to figure out which one works best for your application - this was first used in CS 267. ATLAS, a matrix-matrix multiply tuner, is used in Matlab. For some algorithms, autotuning can be performed off-line, instead of at runtime. For example, for matrix multiplication, all that matters is the size of the matrix - the actual entries of the matrix don't have an impact, since a multiplication is always the same cost regardless of the numeric values themselves. Autotuning performs about as well as hand-optimized code.
+Autotuning is the process by which you simply test every code configuration to figure out which one works best for your application - this was first used in CS 267. ATLAS, a matrix-matrix multiply tuner, is used in Matlab. For some algorithms, autotuning can be performed off-line, instead of at runtime. For example, for matrix multiplication, all that matters is the size of the matrix - the actual entries of the matrix don't have an impact, since a multiplication is always the same cost regardless of the numeric values themselves. Autotuning performs about as well as hand-optimized code. Perform tuning off-line a \textit{single} time, and then so long as the code does not change, this does not need to be repeated. This becomes difficult for sparse linear algebra because the structure of the matrix can have a large impact on the optimal tuning, while dense linear algebra does not care about the particular value of each entry, as long as it is not zero.
 
 \subsubsection{Pipelining}
 
@@ -341,7 +428,11 @@ If you have enough stages in an operation, then you can do many things at once. 
 
 \subsubsection{Single Instruction, Multiple Data}
 
-\gls{simd} is the process by which a single instruction is used to perform an operation on multiple registers at the same time. Using bigger registers, you can load multiple values into these registers and perform a single instruction to act on the multiple values in the register. The compiler will try to find \gls{simd} instructions and use them as much as possible. Because a register contains 16 bytes, \gls{simd} behaves differently if you're using different data types - because doubles are 8 bytes, while floats are 4 bytes, you can only achieve 2x parallelism with doubles, but 4x parallelism with floats. The challenge with \gls{simd} is that the data must be in contiguous memory locations when loaded - this requires a good degree of spatial locality. The instructions also have to move data around from one part of the register to another. With GPUs, you can be performing single instructions with thousands of data pieces at the same time, a principle that is similar to \gls{simd} instructions. 
+\gls{simd} is the process by which a single instruction is used to perform an operation on multiple pieces of data at the same time. When instructed with the appropriate vectorization flags, the compiler will try to find \gls{simd} parallelism and use them as much as possible. Because a register only consists of a limited number of bytes, the degree of parallelism achievable is dependent on the data type of the variable that is being operated on. If a register contains 16 bytes, then because doubles are 8 bytes, while floats are 4 bytes, you can only achieve 2x parallelism with doubles, but 4x parallelism with floats. With GPUs, you can be performing single instructions with thousands of data pieces at the same time, a principle that is similar to \gls{simd} instructions. 
+
+\gls{simd} instructions were first used in the vector supercomputers of the early 1970s. These computers were referred to as ``vector'' computers because they used a single instruction to operate on a vector of data. Vector architectures, however, are different from \gls{simd} machines, because vector machines processed vectors one word at a time through pipelined processors, while \gls{simd} machines process all elements of the vector simultaneously. Newer \gls{simd} machines are considered ``short-vector'' architectures, since old vector supercomputers had vector lengths between 64 and 64,000 words. Modern computers are almost exclusively \gls{mimd} machines, where each processor can execute short-vector \gls{simd} instructions. \gls{mimd} machines have processors that can operate independently of each other. 
+
+Disadvantages of \gls{simd} programming include larger register files, which increases power consumption and the chip area. In addition, vectorization often requires active programmer effort, since automatic vectorization by compilers is still an active research area. Some \gls{simd} intrinsics are also architecture-dependent. 
 
 \subsubsection{Fused Multiply-Add}
 
@@ -680,23 +771,15 @@ A sparse matrix and a graph are different representations of the same concept - 
  
 \section{OpenMP}
 
-Multiprocessor machines initially improved performance through clock rate increases, but this has slowed down, so now performance is enhanced by increasing the number of processors per chip.
+Multiprocessor machines initially improved performance through clock rate increases, but this has slowed down, so now performance is enhanced by increasing the number of processors per chip, which requires methods for programming shared memory machines (as opposed to message passing used to parallelize across nodes that do not share memory directly). \gls{openmp} in an \gls{api} for programming shared memory systems in C/C++ and Fortran. In the early 1990s, vendors of shared memory machines provided their own, compiler-directive-based Fortran programming extensions that users would use in their source code to tell the compiler how to parallelize. The \gls{openmp} standard specification began in 1997 to allow the multitude of relatively similar \gls{smp} parallelization languages to be condensed into a single language. \gls{openmp} continues to be developed - in 2015, version 4.5 was released.
 
-In the early 1990s, vendors of shared memory machines provided their own, directive-based Fortran programming extensions that the users would use in their code to be used by the compiler to determine where to parallelize. The \gls{openmp} standard specification began in 1997 to allow the multitude of relatively similar \gls{smp} parallelization languages to be condensed into a single language. \gls{openmp} continues to be developed - in 2015, version 4.5 was released.
+ \gls{openmp} is an implementation of multithreading, where a master thread forks a specified number of slave threads and the system divides a task among them. The threads then run simultaneously and independently of each other (provided no reads and writes are performed to shared memory). The runtime environment allocates threads to the different processors. \gls{openmp} functions are included in the {\tt omp.h} header file in C/C++, and compilers require you to pass a flag like {\tt -qopenmp} to indicate that the compiler should not ignore the compiler directives. Hence, compiling OpenMP code without this compiler directive will produce entirely serial code (that is different from the compiler parallelizing for a team of a single thread). \gls{openmp} consists of compiler directives (pragmas), runtime library routines, and environment variables, and often an action can be performed using any three of these methods. In C/C++, all of the library routines are truly routines (they don't return a value - \textit{functions} are usually defined as returning something). However, in Fortran, the routines are either subroutines or functions, and will require different treatments depending on their form. \gls{openmp} is a feature of the compiler, and hence it is not downloaded as other software might be (it comes with the compiler). With \gls{openmp} compilation, the {\tt \_OPENMP} macro becomes defined.
 
-\gls{openmp} in an \gls{api} for programming shared memory processing in C, C++, and Fortran. \gls{openmp} is used for parallelism within a (multi-core) node, while \gls{mpi} is used for parallelism between nodes. \gls{openmp} is therefore intended for shared memory programming. \gls{openmp} is an implementation of multithreading, where a master thread (a series of instructions executed consecutively) forks a specified number of slave threads and the system divides a task among them. The threads then run simultaneously. The runtime environment allocates threads to the different processors. Each thread executes the parallelize section of code independently of all other threads. \gls{openmp} functions are included in the {\tt omp.h} header file in C/C++ - compiling with the {\tt -fopenmp} option will allow you to use the pragmas. \gls{openmp} consists of compiler directives (pragmas), runtime library routines, and environment variables. In C/C++, all of the library routine are truly routines (they don't return a value - \textit{functions} are usually defined as returning something). 
+\gls{openmp} is not required to check for data dependencies, data conflicts, race conditions, deadlocks, or code sequences that would make serial and parallel execution results differ. The programmer is also responsible for synchronizing input and output. \gls{openmp} is useful from the point of view of incrementally parallelizing an application, which differs from message-passing libraries which usually require an all-or-nothing approach. In addition, OpenMP provides the potential of reducing memory requirements since the threads share memory.\gls{openmp} can program both \gls{uma} and \gls{numa} shared memory machines, though you should be aware of the system format to determine if you should bind threads to particular processors so that they consistently access memory that is nearby.
 
-\gls{openmp} is a feature of the compiler, and hence it is not downloaded as other software might be. \gls{openmp} uses pragmas to perform actions - the most important pragmas are described below. To compile with gcc, you need to pass in the {\tt -fopenmp} option to {\tt g++}. With \gls{openmp} compilation, the {\tt \_OPENMP} macro becomes defined.
+A thread of execution is the smallest unit of processing that can be scheduled by the operating system. Usually, the number of threads matches the number of processors, and this is the implementation default in most cases. \gls{openmp} is an explicit programming model, which offers the programmer complete control over the degree of parallelism. \gls{openmp} uses the fork-join model of parallel execution - the master thread will fork into the number of requested threads for a parallel region - after the parallel region has ended, the threads collapse back into a single master thread, which may be again divided into multiple threads in later parallel regions. The threads in a parallel region are referred to as a \textit{team}. \gls{openmp} supports nested parallelism, where parallel regions can be created inside of other parallel regions. The \gls{api} also allows the runtime environment to dynamically allocate threads for the parallel regions, which can help to more efficiently use resources. \gls{openmp} says nothing about parallel I/O, however, which is important if multiple threads try to read or write from the same location in memory.
 
-\gls{openmp} is not required to check for data dependencies, data conflicts, race conditions, deadlocks, or code sequences that would make serial and parallel execution results differ. The programmer is also responsible for synchronizing input and output. \gls{openmp} is useful from the point of view of incrementally parallelizing an application, which differs from message-passing libraries which usually require an all-or-nothing approach. 
-
-\gls{openmp} can program both \gls{uma} and \gls{numa} shared memory machines. 
-
-\gls{openmp} programs achieve parallelism exclusively through the use of threads. A thread of execution is the smallest unit of processing that can be schedule by the operating system. Usually, the number of threads matches the number of processors. \gls{openmp} is an explicit (not automatic) programming model, which offers the programmer complete control over the degree of parallelism. \gls{openmp} uses the fork-join model of parallel execution - the master thread will fork into the number of requested threads for a parallel region - after the parallel region has ended, the threads collapse back into a single master thread, which may be again divided into multiple threads in later parallel regions. The parallel threads in a parallel region are referred to as a \textit{team}. \gls{openmp} supports nested parallelism, where parallel regions can be created inside of other parallel regions. The \gls{api} also allows the runtime environment to dynamically allocate threads for the parallel regions, which can help to more efficiently use resources. \gls{openmp} says nothing about parallel I/O, however, which is important if multiple threads try to read or write from the same location in memory.
-
-Threads are not required to maintain exact consistency with the shared memory - the programmer must ensure that threads that are trying to access a shared variable, which might have changed on some other processor since the last access, are attempting to access a variable only after it has been flushed by all threads.
-
-Local thread variables are stored on the stack, while shared variables are generally on the heap.
+Threads are not required to maintain exact consistency with the shared memory - the programmer must ensure that threads that are trying to access a shared variable, which might have changed on some other processor since the last access, are attempting to access a variable only after it has been flushed by all threads. Local thread variables are stored on the stack, while shared variables are generally on the heap.
 
 \subsection{Compiler Directives}
 
@@ -704,41 +787,20 @@ All compiler directives for C/C++ begin with {\tt \#pragma omp}, following by th
 
 \subsubsection{Thread Creation}
 
-The pragma {\tt \#pragma omp parallel} is used to fork threads to carry out the work in the construct in parallel. The original thread, also known as the master thread, has an ID of 0. The following code will execute the {\tt printf} statement on every available processor, which is four for my computer. The output may not exactly print ``Hello world.'' four times consecutively due to the possibility of race conditions. The (integer) thread number can be determined using {\tt omp\_get\_thread\_num()}.
-
-\begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
-#include <stdio.h> // For: printf
-
-int main(void) {
-	#pragma omp parallel
-	printf("Hello world.");
-}
-\end{lstlisting}
-
-When a thread reaches a {\tt \#pragma omp parallel} directive, it creates a team of threads and becomes the master of the team. The master is itself a member of that team and has thread number 0 within that team. Beginning from the start of this parallel region, the code is duplicated and all threads execute that code. All parallel regions have an implied barrier at the end - only the master thread continues execution past the barrier. If any thread terminates within a parallel region (fails for some reason0, then all threads in the team will terminate, giving undefined behavior. Threads are numbered beginning at 0. At the entry and exit of a parallel region, an implicit flush is performed.
+When a thread reaches a {\tt \#pragma omp parallel} directive, it creates a team of threads and becomes the master of the team (with ID 0). The master is itself a member of that team and has thread number 0 within that team. Beginning from the start of this parallel region, the code is duplicated and all threads execute that code. All parallel regions have an implied barrier at the end - only the master thread continues execution past the barrier. If any thread terminates within a parallel region (fails for some reason0, then all threads in the team will terminate, giving undefined behavior. Threads are numbered beginning at 0. At the entry and exit of a parallel region, an implicit flush is performed.
 
 A parallel region must be a structured block that does not span multiple routines or source files. You cannot branch into or out of a parallel region. 
 
 \subsubsection{Work-sharing}
 
-Work-sharing constructs are used to specify how work is to be divided amongst the processors - a work-sharing construct divides the execution of the enclosed code region among the threads that encounter it. Work-sharing does not launch new threads - they only divide up the work. There is no implied barrier at the entry to a work-sharing construct, but there is a barrier at the end. Work-sharing constructs must be enclosed within a parallel region for them to be executed in parallel - otherwise, only the master thread executes them. Work-sharing constructs must be encountered by all members of a team or none at all, and successive work-sharing constructs must be encountered in the same order by all members. 
-
-If all the iterations of a loop can be performed independently of one another, then {\tt omp for} or {\tt omp do} automatically split up the loop to the number of available processors. The following code will print the numbers 0 to 11 in a random order, since the printing is split up amongst the processors. The variable {\tt i} is copied to each processor, and is local to each processor.
-
-\begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
-int main(void) {
-	#pragma omp parallel for
-	for (int i = 0; i < 12; ++i)
-		printf("%i", i);
-}
-\end{lstlisting}
+Work-sharing constructs are used to specify how work is to be divided amongst the threads that arrive at the work-sharing construct. Work-sharing does {\it not} launch new threads - they only divide up the work. There is no implied barrier at the entry to a work-sharing construct, but there is a barrier at the end, which is accompanied by an implicit flush (unless you specify the {\tt nowait} clause). Work-sharing constructs must be enclosed within a parallel region for them to be executed in parallel - otherwise, only the master thread executes them (because work-sharing does not create any threads). Work-sharing constructs must be encountered by all members of a team or none at all, and successive work-sharing constructs must be encountered in the same order by all members. 
 
 \begin{itemize}
-\item {\tt for, do}: split up (independent) for-loop iterations among the threads. This represents a form of data parallelism, and assumes that a parallel region has already been defined, or else this executes in serial. The {\tt do} loop cannot be a do-while loop or a loop without loop control. An implicit flush is performed upon exit. \gls{spmd} is a programming technique that splits up a task amongst multiple processors and has them each perform a section of the task by passing the sections in as arguments to the task - the for construct is very similar to this. If already within a parallel section, and you don't want all of the threads in the team to execute the for loop, then do not include {\tt parallel} in the directive.
-\item {\tt sections}: assign consecutive, but independent, code blocks to different threads - each section is executed by one thread. This can be used to implement functional parallelism. Independent {\tt section} directives are nested within a {\tt sections} directive, and each section is executed once by a thread in the team. It is possible for a thread to execute more than one section if it is fast enough. There is an implied barrier at the end of the {\tt sections} directive, which results in an implicit flush upon exit.
-\item {\tt single}: specify a code block that is executed by only one thread - a barrier is implied at the end, meaning that all threads will pause until the block has been executed and that an implicit flush is performed. This is useful for sections of code that are not thread safe, such as data I/O. 
+\item {\tt for, do}: split up loop iterations among the threads that encounter this clause. The loop cannot be a do-while loop or a loop without loop control. \gls{spmd} is a programming technique that splits up a task amongst multiple processors and has them each perform a section of the task by passing the sections in as arguments to the task - this construct is similar.
+\item {\tt sections}: assign consecutive, but independent, code blocks to different threads - each section is executed by one thread (though it is possible for a thread to execute multiple sections provided it is fast enough). This can be used to implement non-iterative-loop parallelism. Within an over-arching {\tt sections} directive, individual {\tt section} directives separate the block into the sections to be executed independently.
+\item {\tt single}: specify a code block that is executed by only one thread. This is useful for sections of code that are not thread safe, such as data I/O. For instance, printing to standard output is not thread-safe, and only one thread can perform it at a time, so if you only need results printed from one thread, use {\tt single}. This is similar to the {\tt critical} statement, since all the threads will meet the barrier at the end, except that all threads execute the statement when using {\tt critical}, whereas only a single thread will execute with this work-sharing construct.
 \item {\tt master}: the code block is only executed by the master thread, with no barrier implied at the end. Hence, all other threads skip this section of the code.
-\item {\tt collapse}: how many loops in a nested loop can be collapsed into one large iteration space and divided according to the {\tt schedule} clause. This should not be used if the loops depend on each other. In a ``square loop,'' where the loop iterations are independent, without using the collapse clause, the outer loop will be divided among four processors, and each processor will perform 100 of the inner loop iterations. However, if you have more than four processors, then the other processors are wasted - using {\tt collapse(2)} would divide the 400 iterations evenly among however many processors you have.
+\item {\tt collapse(<number>)}: how many loops in a nested loop can be collapsed into one large iteration space and divided according to the {\tt schedule} clause. This should not be used if the loops depend on each other. In a ``square loop,'' where the loop iterations are independent, without using the collapse clause, the outer loop will be divided among four processors, and each processor will perform 100 of the inner loop iterations. However, if you have more than four processors, then the other processors are wasted - using {\tt collapse(2)} would divide the 400 iterations evenly among however many processors you have.
 
 \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
 for (int i = 0; i < 4; ++i) { 
@@ -750,56 +812,60 @@ for (int i = 0; i < 4; ++i) {
 \item {\tt task}: defines a task which may be executed by the thread encountering it, or be deferred for later execution by another thread in the team
 \end{itemize}
 
-Work-sharing constructs have implicit barrier synchronization at the end. For convenience, \gls{openmp} allows two combined directives, {\tt parallel do/for} and {\tt parallel sections}. If there is not enough work to justify starting up a parallel work-sharing region, \gls{openmp} may not do so.
+For convenience, \gls{openmp} allows two combined directives, {\tt parallel do/for} and {\tt parallel sections}. If there is not enough work to justify starting up a parallel work-sharing region, \gls{openmp} may not do so. OpenMP also provides three convenient combined directives that allow you to avoid having to surround the clause by {\tt omp parallel} and {\tt omp end parallel} - the {\tt omp parallel} {\tt do/for, sections}, and {\tt workshare}. By default, all variables in the work-sharing region are shared except loop iteration counters.
 
-\subsubsection{Clauses}
+\subsubsection{Data Sharing/Data Scope Attributes}
 
-Because \gls{openmp} is a shared memory programming model, most variables in the code are visible to all threads by default. But sometimes, private variables can be used to avoid race conditions, and you may want to be able to specify how the variables on a processor can be seen by the other processors. Clauses can be appended to the \gls{openmp} directive to specify special behavior. By default, all variables in the work-sharing region are shared except loop iteration counters.
-
-\subsubsubsection{Data Sharing/Data Scope Attributes}
-
-Global variables include file scope variables and static variables. Private variables include loop index variables and stack variables in subroutines called from parallel regions.
+Global variables include file scope variables and static variables (C/C++) and common blocks, save variables, and module variables (Fortran). Private variables include loop index variables, stack variables in subroutines called from parallel regions, and automatic variables within a statement block. Because OpenMP is intended for shared memory programming, most variables are shared by default. 
 
 \begin{itemize}
-\item {\tt shared}: the data within a parallel region is shared, which means that the data is visible and accessible by all threads simultaneously - this is the default data attribute clause, and only loop iteration counters are not shared. A shared variable exists in only one memory location, and all threads can read/write to that address. Race conditions can result if more than one processor try to read/write at the same time, since the processors are actually pointing to the same location in memory.
-\item {\tt private}: the data within the parallel region is private to each thread, meaning that each thread has a local copy of all variables, which are used as temporary variables and are typically stored on the stack.  You could alternatively pass in a list of variables to specifically be considered private. When a variable is declared private, a new object of the same type is declared once for each thread in the team. All references to the original object are replaced with references to the new object. Variables declared private should be assumed to be uninitialized for each thread. As contrasted with {\tt threadprivate} variables, private variables are defined at the start of a parallel region or a work-sharing construct. A private variable is not maintained for use outside of the parallel region. Loop iteration counters are by default private variables, and don't need to be specified with this clause.
-\item {\tt threadprivate}: the data is global data, but is private in each parallel region during runtime. This type of variable differs from private variables because it is able to persist between different parallel regions of a code (retains its value upon exiting the parallel region). 
-\item {\tt default}: allows the programmer to specify whether the default data scoping is to be used as opposed to {\tt none}, which would then require the programmer to manually scope every variable in the parallel region. Specific variables can be exempted. 
-\item {\tt firstprivate}: the data is private to each thread, but initialized using the value of the variable of the same name from the master thread. This combines the behavior of the private clause with automatic initialization of the variables in the list. 
-\item {\tt lastprivate}: the data is private to each thread. If the current iteration is the last iteration in the parallelized loop, then the value is copied to a global variable of the same name outside the parallel region.
-\item {\tt copyin}: assigns the same value to {\tt threadprivate} variables for all threads in the team. The master thread is used as the copy source. 
-\item {\tt copyprivate}: broadcast values acquired by a single thread directly to all instances of the private variables in the other threads. This is associated with the {\tt single} directive. 
-\item {\tt reduction}: perform a reduction on the variables that appear in its list. A private copy for each list variable is created for each thread. At the end of the reduction, the reduction variable is applied to all private copies of the shared variable, and the final result is written to the global shared variable. For instance, {\tt reduction(+:result)} will perform a sum of each thread's variable {\tt result}. Reductions can only be performed for scalar variables, and not for arrays or data structures. The reduction is used only for operations such as {\tt x = x <op> <expr>, x = <expr> <op> x} (no subtraction), or any of the combined operations such as {\tt x += 4}. This defines {\tt result} as a special reduction variable - it is neither private nor shared. Local copies are reduced into a single value and combined with the original global value.
+\item {\tt shared}: the data within a parallel region is shared, which means that the data is visible and accessible by all threads simultaneously. A shared variable exists in only one memory location, and all threads can read/write to that address, so you must be careful to avoid race conditions.
+\item {\tt private}: the data within the parallel region is private to each thread, meaning that each thread has a local copy of all variables, which are used as temporary variables and are typically stored on the stack. When a variable is declared private, a new object of the same type is declared once for each thread in the team. All references to the original object are replaced with references to the new object. A private variable is not maintained for use outside of the parallel region. Loop iteration counters are by default private variables. Variables declared private should be assumed to be uninitialized for each thread, unless you use one of the following initialization clauses.
+	\begin{itemize}
+		\item {\tt firstprivate}: the data is {\tt private}, but initialized using the value of the variable of the same name from the master thread.
+		 \item {\tt lastprivate}: the data is {\tt private}, but the private value is copied back out to the variable of the same name on the master thread after the parallel region exist (the last sequential value is copied out, so only one thread will perform this copy).
+	\end{itemize}
+\item {\tt threadprivate}: the data is global data, but is private in each parallel region during runtime (and hence any local changes to the data is not seen by any other thread). This type of variable differs from private variables because it is able to persist between different parallel regions of a code (retains its value upon exiting the parallel region). Data in {\tt threadprivate} objects it guaranteed to persist only if dynamic mechanisms are turned off and the number of threads in different parallel regions where the variable might appear is constant. Upon first entry to a parallel region, {\tt threadprivate} variables should be assumed undefined, unless you use one of the following initialization clauses.
+	\begin{itemize}
+		\item {\tt copyin}: assigns the same value to {\tt threadprivate} variables for all threads in the team. The master thread is used as the copy source. 
+	\end{itemize}
 \end{itemize}
 
-\subsubsubsection{Synchronization}
-
-Synchronization is used to update the shared memory accessed by all processors. 
+Several other clauses help to define variable scoping.
 
 \begin{itemize}
-\item {\tt critical}: the enclosed code block is only executed by one thread at a time, which eliminates race conditions with shared data. You can optionally define a name following this clause so that multiple different critical regions can exist. The names act as global identifiers, and different critical regions with the same name are treated as the same region. All critical sections that are unnamed are treated as the same section. An implicit flush is performed upon entry and exit.
-\item {\tt ordered}: a structured block is executed in the order in which iterations would be executed had the block been entirely sequential. Threads will need to wait before executing their chunk of the iterations if previous iterations have not yet been completed. An {\tt ordered} directive can only appear within a {\tt for} or {\tt do} parallel region. Only one thread is allowed in an ordered section at any one time. An implicit flush is performed upon entry and exit.
-\item {\tt barrier}: each thread waits until all threads have reached this point. A barrier contains implicit flushes on all threads, so any changes to variables within the parallel region will be ``noticed'' by the other threads upon the barrier. All threads will then resume executing in parallel the code that follows the barrier.
+\item {\tt default}: allows the programmer to specify the default scoping level for all variables in the present parallel region. This default may be one of {\tt private, firstprivate, shared, } or {\tt none}. If using {\tt none}, then the programmer must manually scope every variable in the parallel region.
+\item {\tt reduction}: perform a reduction on the variables that appear in its list using static scheduling. A private copy for each list variable (which must be declared as shared) is created for each thread. This defines {\tt result} as a special reduction variable - it is neither private nor shared. At the end of the reduction, the reduction is applied to all private copies of the shared variable, and the final result is written to the global shared variable. Reductions can only be performed for scalar variables, and not for arrays or data structures. The reduction is used only for operations such as {\tt x = x <op> <expr>, x = <expr> <op> x} (no subtraction), or any of the combined operations such as {\tt x += 4}. 
+\end{itemize}
+
+\subsubsection{Synchronization}
+Synchronization is used to update the shared memory accessed by all threads. 
+
+\begin{itemize}
+\item {\tt critical}: the enclosed code block is only executed by one thread at a time. You can optionally define a name following this clause so that multiple different critical regions can exist. Different critical regions with the same name are treated as the same region. An implicit flush is performed upon entry and exit.
+\item {\tt ordered}: a structured block is executed in the order in which iterations would be executed had the block been entirely serial. Threads will need to wait before executing their chunk of the iterations if previous iterations have not yet been completed. An {\tt ordered} directive can only appear within a {\tt for/dp} parallel region. An implicit flush is performed upon entry and exit.
+\item {\tt barrier}: each thread waits until all threads have reached this point. A barrier contains implicit flushes on all threads, so any changes to variables within the parallel region will be ``noticed'' by the other threads upon the barrier.
 \item {\tt nowait}: threads completing assigned work can proceed without all other threads in a team waiting to finish. If there are multiple independent loops within a parallel region, then you can use this clause to avoid the implied barrier at the end of loop constructs.
 \item {\tt atomic}: specifies that a memory location must be updated atomically, rather than letting multiple threads attempt to write to it. This basically creates a mini critical region, since it only applies to a single statement that immediately follows the clause.
-\item {\tt flush}: identifies a synchronization point where the implementation must provide a consistent view of memory. Thread-visible variables are written back to memory. This basically says that a variable cannot be kept in the local register as opposed to in main memory. This is required even for cache coherent systems, which are systems that will automatically update all processors when one processor performs a read/write on data so that all processors are always up-to-date on the shared data. You can optionally provide a list of variables to flush so that you don't flush all variables. For pointers in this list, the pointer itself is flushed, and not the object it points to. A shared variable must be flushed by both the thread attempting to read the variable and all threads writing it before a thread can read a shared variable. You could circumvent this by declaring every shared variable as {\tt volatile}, which performs a flush before every read and write, but this disables many compiler optimizations.
+\item {\tt flush}: identifies a synchronization point where the implementation must provide a consistent view of memory. Thread-visible variables are written back to memory. This basically says that a variable cannot be kept in the local register as opposed to in main memory. This is required even for cache coherent systems, which are systems that will automatically update all processors when one processor performs a read/write on data so that all processors are always up-to-date on the shared data. You can optionally provide a list of variables to flush so that you don't flush all variables. A shared variable must be flushed by both the thread attempting to read the variable and all threads writing it before a thread can read a shared variable. You could circumvent this by declaring every shared variable as {\tt volatile}, which performs a flush before every read and write, but this disables many compiler optimizations.
 \end{itemize}
 
 \subsubsubsection{Scheduling}
+Scheduling is used to describe how iterations of a loop are divided amongst threads in the team that encounter the loop. 
 
 \begin{itemize}
-\item {\tt schedule(<type>, <chunk>)}: this assigns iterations in the work sharing construct to the threads. The default schedule is implementation-dependent. The {\tt <type>} can be:
+\item {\tt schedule(<type>, <chunk>)}: this assigns iterations in the work sharing construct to the threads. The default schedule is implementation-dependent, and the default chunk size is usually 1. The {\tt <type>} can be:
 	\begin{itemize}
-		\item {\tt static}: all threads are allocated iterations before they execute the loop iterations. The iterations are by default divided evenly amongst the threads. However, specifying {\tt <chunk>} will allocate that many iterations (contiguously) for each thread.
-		\item {\tt dynamic}: only some of the iterations are initially allocated, so that when a thread finishes its own allocation, it returns to get additional allocations from the iterations that are left. This can help alleviate cases when some iterations require substantially more work than others. {\tt <chunk>} now specifies the number of iterations that are allocated at a time. The default chunk size in this case is 1.
-		\item {\tt guided}: this allocation is very similar to the dynamic allocation, except that a large chunk of contiguous iterations are allocated to each thread initially, and the chunk size decreases exponentially with each successive allocation to the minimum size specified by {\tt <chunk>}. The block size is proportional to the number of iterations divided by the number of threads, and then later to the number of remaining iterations to the number of threads. 
+		\item {\tt static}: all threads are allocated {\tt chunk}-size block iterations until all of the iterations have been accounted for. Omitting the chunk size divides the iterations as evenly as possible. Most of the cost of static scheduling occurs at compile time.
+		\item {\tt dynamic}: only some of the iterations are initially allocated, so that when a thread finishes its own allocation, it returns to get additional allocations from the iterations that are left. This can help alleviate cases when some iterations require substantially more work than others. {\tt <chunk>} now specifies the number of iterations that are allocated at a time. Most of the cost of dynamic scheduling occurs at runtime because works must be taken from a queue.
+		\item {\tt guided}: this allocation is very similar to the dynamic allocation, except that a large chunk of contiguous iterations are allocated to each thread initially, and the chunk size decreases exponentially with each successive allocation to the minimum size specified by {\tt <chunk>}. The block size is proportional to the total number of iterations divided by the number of threads, and then later to the number of remaining iterations to the number of threads. Similar to dynamic scheduling, guided scheduling has most of the work occur at run time.
 		\item {\tt runtime}: the scheduling decision is deferred until runtime, and is determined by {\tt OMP\_SCHEDULE}
-		\item {\tt auto}: determine by the compiler and/or runtime system
+		\item {\tt auto}: determined by the compiler and/or runtime system
 	\end{itemize}
 \item {\tt num\_threads}: specify the number of threads to allocate for this parallel work (can be lower than the total number of threads). This has higher precedence than using the {\tt omp\_num\_threads} library routine. If this is not specified, then the default used is usually the number of CPUs on the node, though it could be dynamic. The number of threads cannot be redefined within a parallel section using the {\tt omp\_set\_num\_threads()} routine (but it can be defined outside the parallel region). 
 \end{itemize}
 
-\subsubsubsection{If-control}
+\subsubsection{If-control}
 
 \begin{itemize}
 \item {\tt if}: threads will parallelize the task only if a condition is met - otherwise, the block will execute serially by the master thread. Only a single if-clause can be given. 
@@ -807,36 +873,52 @@ Synchronization is used to update the shared memory accessed by all processors.
 
 \subsection{Environment Variables}
 
-\gls{openmp} acts as though there are \gls{icv}s that control the behavior of the program - these variables are set using either the \gls{openmp} library routines in {\tt omp.h} (higher precedence) or typical shell commands such as {\tt export OMP\_NUM\_THREADS=8}. Then, each parallel region has its own copy of these variables. Using the environment variables as opposed to the library routines is useful for other users using a code, since they wouldn't have to go modify the source code for it to work optimally on another machine.
+\gls{openmp} acts as though there are \gls{icv}s that control the behavior of the program - these variables are set using either the \gls{openmp} library routines in {\tt omp.h} (higher precedence) or typical shell commands such as {\tt export OMP\_NUM\_THREADS=8}. Then, each parallel region has its own copy of these variables. Using the environment variables as opposed to the library routines is useful for other users using a code, since they wouldn't have to go modify the source code for it to work optimally on another machine. The library routines discussed in the next section almost all have equivalent environment variables that can be set, so for brevity the environment variables are not discussed here, since they are simply a second method of setting the parameters that could be set using the library routines.
 
 \subsection{Library Routines}
 
+Basically all library routines have two versions - one that {\tt set}s a number, and one that {\tt get}s that number (returns it from an inquiry). To determine quantities related to the numbers of threads and processors:
+
 \begin{itemize}
-\item {\tt omp\_set\_max\_active\_levels}: sets the maximum number of nested active parallel regions - there is one copy of this for the entire program
-\item {\tt omp\_set\_num\_threads}: set number of threads for parallel regions
-\item {\tt omp\_set\_nested}: this sets the level of nesting that is allowed for a given parallel task
-\item {\tt omp\_set\_dynamic}: passing in 0 will disable the dynamic adjustment of the number of threads. Passing in a nonzero value will allow \gls{openmp} to choose any number of threads up to the maximum available, even if {\tt num\_threads} is specified.
-\item {\tt omp\_get\_dynamic}: determines if dynamic threads are enabled
-\item {\tt omp\_get\_nested}: determines if nested parallel regions are enabled. If not enabled, then you can still program nested parallel regions, but the entry of a nested parallel region will create a new team that consists of a single processor.
-\item {\tt omp\_get\_num\_threads}: returns the number of threads that are currently in the team executing the parallel region from which it is called
+\item {\tt omp\_set\_num\_threads}: set number of threads for a parallel region
+\item {\tt omp\_get\_num\_threads}: returns the number of threads that are currently in the team
 \item {\tt omp\_get\_thread\_num}: returns the thread number of the thread
+\item {\tt omp\_get\_max\_threads}: returns the maximum value that could be returned by {\tt omp\_get\_num\_threads}
 \item {\tt omp\_get\_thread\_limit}: returns the maximum number of threads available to a program
 \item {\tt omp\_get\_num\_procs}: returns number of processors that are available to the program
-\item {\tt omp\_in\_parallel}: determines if the section of code is executing in parallel
 \item {\tt omp\_get\_ancestor\_thread\_num}: returns the thread number of the ancestor thread
-\item {\tt omp\_get\_team\_size}: returns the size of the thread team
+\item {\tt omp\_get\_team\_size}: returns team size for current nested level
+\end{itemize}
+
+To determine the status of parallel regions and alter system parameters:
+
+\begin{itemize}
+\item {\tt omp\_in\_parallel}: determines if the section of code is executing in parallel
+\item {\tt omp\_set\_dynamic}: passing in 0 will disable the dynamic adjustment of the number of threads. Passing in a nonzero value will allow \gls{openmp} to choose any number of threads up to the maximum available, even if {\tt num\_threads} is specified.
+\item {\tt omp\_get\_dynamic}: determines if dynamic threads are enabled
+\item {\tt omp\_set\_nested}: set the level of nesting that is allowed for a given parallel task
+\item {\tt omp\_get\_nested}: determines if nested parallel regions are enabled. If not enabled, then you can still program nested parallel regions, but the entry of a nested parallel region will create a new team that consists of a single process.
+\item {\tt omp\_set\_schedule}: set the loop scheduling policy if you've deferred this decision to runtime using the {\tt runtime} clause
+\item {\tt omp\_get\_schedule}: returns scheduling policy
+\item {\tt omp\_set\_max\_active\_levels}: sets the maximum number of nested active parallel regions
+\item {\tt omp\_get\_max\_active\_levels}: returns the maximum number of nested active parallel regions
 \item {\tt omp\_get\_active\_level}: returns the number of nested, active parallel regions 
+\end{itemize}
+
+To create and destroy locks:
+
+\begin{itemize}
 \item {\tt omp\_init\_lock}: initializes a lock associated with the lock variable
 \item {\tt omp\_destroy\_lock}: disassociates the given lock variable from any locks
 \item {\tt omp\_set\_lock}: acquires ownership of a lock
 \item {\tt omp\_unset\_lock}: releases a lock. Locks, as opposed to critical regions, should be used when you have different types of data structures.
 \end{itemize}
 
-\subsection{Stack Size and Thread Binding}
+\subsection{Other Considerations}
 
 The \gls{openmp} standard does not specify how much stack space a thread should have, so implementations will differ in the default thread stack size. Threads that exceed their stack allocation may or may not segmentation fault - an application might continue to run while its data is being corrupted. Statically linked codes may be subject to further stack restrictions. You can set the thread stack size prior to execution using the {\tt OMP\_STACKSIZE} environment variable. 
 
-In some cases, a program will perform better if its threads are bound to processors. Binding a thread to a processor means that a thread will be scheduled  by the operating system to always run on the same processor - contrarily, threads would be executed on any processor.  Thread binding is also referred to as ``thread/processor affinity.'' Binding threads to processors can result in much improved cache utilization by reducing memory accesses that would have to be repeated if a thread were bounced around among processors. The environment variable {\tt OMP\_PROC\_BIND} can be set to true to turn processor binding ``on.'' 
+In some cases, a program will perform better if its threads are bound to processors, which means that a thread will be scheduled by the operating system to always run on the same processor - contrarily, threads would be executed on any processor, and would bounce around.  Binding threads to processors can result in much improved cache utilization by reducing memory accesses that would have to be repeated if a thread were bounced around among processors. The environment variable {\tt OMP\_PROC\_BIND} can be set to true to turn processor binding ``on.'' 
 
 \subsection{Debugging and Performance Analysis}
 
@@ -911,30 +993,23 @@ A better model is the latency and bandwidth model. The time to send a message is
 
 \section{MPI}
 
-\gls{mpi} was the first (and currently only) standardized, vendor-independent message passing library that can be used with C and Fortran.. Originally, there were many message passing libraries, and the best competitor to \gls{mpi} was \gls{pvm}, developed at ORNL. \gls{mpi} was developed in the 1990s as a language-independent \gls{api} that follows the \gls{spmd} paradigm, where the user writes a single program that runs on all distributed nodes, each operating on a different chunk of the data. \gls{mpi} by itself it is not a library, but rather a specification of what such a library should be. Hence, it can be implemented in a variety of ways, the most common being MPICH (Argonne National Laboratory) and Open MPI. The {\tt mpi.h} header file must be included for all programs that make \gls{mpi} library calls ({\tt \#include <mpi.h>}).
+\gls{mpi} was the first (and currently only) standardized, vendor-independent message passing interface {\it specification} that can be used with C and Fortran that was developed in the 1990s as a language-independent \gls{api}. By itself, \gls{mpi} is not a library, but rather a description of what a library should look like. Hence, it can be implemented in a variety of ways, the most common being MPICH (Argonne National Laboratory) and Open MPI (though there are also some vendor-specific implementations). The most recent standard revision is \gls{mpi}-3x, which provides support for Fortran 2003 and 2008 features.
 
-Originally, \gls{mpi} was intended for distributed memory architectures, which were becoming increasingly popular in the 1980s-1990s. Then, as architecture trends changed, shared memory \gls{smp}s were combined over networks, creating hybrid distributed memory/shared memory systems. Both types of underlying memory architectures are handled seamlessly. \gls{mpi} can run on distributed memory, shared memory, and hybrid architectures, though the programming model remains a distributed memory model (regardless of the underlying physical architecture).
+Originally, there were many message passing libraries, and the best competitor to \gls{mpi} was \gls{pvm}, developed at ORNL. \gls{mpi} follows the \gls{spmd} paradigm, where the user writes a single program that runs on all distributed nodes, each operating on a different chunk of the data. The {\tt mpi.h} header file must be included for all programs that make \gls{mpi} library calls ({\tt \#include <mpi.h>} for C and {\tt include 'mpif.h'} for Fortran (or {\tt use mpi\_f08} for Fortran 2008)).
 
-Message passing involves moving data from the address space of one process to that of another process through cooperative operations on each process. There are no shared variables, and all communication and synchronization require subroutine calls. Communication is performed as send-and-receive (pairwise) or as collective communication. 
+Originally, \gls{mpi} was intended for distributed memory architectures, which were becoming increasingly popular in the 1980s-1990s. Strictly speaking, a distributed memory system consists of single-core processors connected through a network. However, hardware trends changed, and shared memory processors became connected in hybrid distributed/shared memory systems. The \gls{mpi} libraries can handle both types of underlying memory architecture, without any changes needed to source code. So, \gls{mpi} can be used to parallelize both distributed and shared memory systems, though the programming model is intended for distributed memory systems where it would not be easier to implement shared memory programming paradigms due to \gls{numa} issues. 
 
+Message passing involves moving data from the address space of one process to that of another process through cooperative operations on each process. All communication is explicit, and thus easy to realize when an algorithm becomes communication-bound. There are no shared variables, and all communication and synchronization require subroutine calls. Communication is performed as send-and-receive (pairwise) or as collective communication. It is very difficult to get data races in \gls{mpi}.
 
-
-
-It is very difficult to get data races in \gls{mpi}.
-
-
-
- \gls{mpi} calls return values - {\tt MPI\_SUCCESS} if the \gls{mpi} command was successful, for instance. \gls{mpi} uses objects called communicators and groups to define which collection of processes can communicate with each other, and most \gls{mpi} routines require you to specify a communicator as an argument. {\tt MPI\_COMM\_WORLD} is the predefined communicator that includes all of your \gls{mpi} processes. Within each communicator, every process has a unique integer identifier assigned by the system when the process initializes. This rank is referred to as the ``task ID,'' and numbering begins at 0. The task ID is used by the programmer to specify the source and destination of messages, and these are often used conditionally. Most \gls{mpi} routines return an error code parameter, but the default behavior of an \gls{mpi} call is to abort if there is an error, so you actually would probably not be able to capture a return code unless successful ({\tt MPI\_SUCCESS}). 
+ \gls{mpi} calls return values - {\tt MPI\_SUCCESS} if the \gls{mpi} command was successful, for instance. \gls{mpi} uses objects called communicators and groups to define which collection of processes can communicate with each other, and most \gls{mpi} routines require you to specify a communicator as an argument. {\tt MPI\_COMM\_WORLD} is the predefined communicator that includes all of your \gls{mpi} processes. Within each communicator, every process has a unique integer identifier assigned by the system when the process initializes. This rank is referred to as the ``task ID,'' and numbering begins at 0. The task ID is used by the programmer to specify the source and destination of messages. Most \gls{mpi} routines return an error code parameter, but the default behavior of an \gls{mpi} call is to abort if there is an error, so you actually would probably not be able to capture a return code unless successful ({\tt MPI\_SUCCESS}). 
 
 There are many combined send/receive routines, and any send routine can be paired with any type of receive routine. Because each send operation is not perfectly synchronized with its matching receive operation, the \gls{mpi} implementation has to deal with storing data when two tasks are out of sync. The \gls{mpi} implementation decides what happens to data in these situations. Usually, there is a system buffer area that is reserved to hold data in transit. This is referred to as ``message buffering.'' The system buffer space is managed entirely by the \gls{mpi} library, and can be exhausted fairly easily. This buffer region can exist on the sending and/or receiving sides. Alternative to the system buffer, where these messages are stored before they are ready to be sent/received is the application buffer, which contains the user-managed address space that contains your program variables. If data is stored in a system buffer upon receipt, that represents an asynchronous receive, whereas synchronous sends involve ``handshaking'' to conform the receive task sees the send.
-
-
 
 \gls{mpi} guarantees that messages will not overtake each other. For instance, if a processor sends out two messages, they will be received in chronological send order by the receiving processor. However, order rules do not apply if there are multiple threads participating in the communication operations. If you attempt to send two messages to a task, where that task only has one receive posted, then only one of those messages will be received. 
 
 {\tt mpirun} determines how many copies of a process will start - you don't control how many processes are in the overall communicator at runtime - this is determined before you run. 
 
-
+The MPI implementation does not define what occurs before MPI is initialized - most implementations will copy the code across \(N\) processors (so that a print statement {\it before} MPI is initialized would print \(N\) times instead of a single time), and only begin to coordinate among each other once MPI is initialized. So, before the MPI initialization, you should have very little serial code. 
 
 \subsection{Environment Management}
 
@@ -947,13 +1022,18 @@ This set of routines are used for specifying the \gls{mpi} execution environment
 \item {\tt MPI\_Finalize()}: terminates the \gls{mpi} execution environment
 \item {\tt MPI\_Get\_processor\_name(\&name, \&resultlength)}: returns the processor name and the length of the name
 \item {\tt MPI\_Get\_version(\&version, \&subversion)}: returns the version and subversion of the \gls{mpi} standard that is implemented by the library
-\item {\tt MPI\_Init(\&argc, \&argv)}: initializes the \gls{mpi} execution environment. This can only be called once in an \gls{mpi} program.
-\item {\tt MPI\_Initialized(\&flag)}: indicates whether the \gls{mpi} environment has been initialized. 
+\item {\tt MPI\_Initialized(\&flag)}: indicates whether the \gls{mpi} environment has been initialized. Recall that an MPI process can only call {\tt MPI\_Init} once.
+\item {\tt MPI\_Init(\&argc, \&argv)}: initializes the \gls{mpi} execution environment. This can only be called once in an MPI program. In C, you can sometimes pass in command line arguments directly to this initialization routine, though this is implementation-dependent.
+\item {\tt MPI\_Wtime()}: returns an elapsed wall clock time on the calling processor
 \end{itemize}
 
 \subsection{Point-to-Point Communication}
 
-More of the \gls{mpi} point-to-point routines can be used in either blocking or non-blocking modes. A blocking send routine will only ``return'' after it is safe to modify the application buffer (your send data) for reuse, though it does not guarantee that the data was actually received - it could be in the system buffer of the receiving processor. Non-blocking sends/receives will return almost immediately, and they do not wait for communication events to complete, such as message copying from user memory to system buffer space. Non-blocking communications are primarily used to overlap computation with communication to exploit additional performance gains. You would need to wait or probe to see whether the communication finished before performing statements that depend on sending/receiving the message. Using blocked communication could lead to deadlocks if you have two processors both attempting to send information to each other without one first receiving it, since the blocked communication will not return until the send has been completed.
+Most of the \gls{mpi} point-to-point routines can be used in either blocking or non-blocking modes. A blocking send routine will only ``return'' after it is safe to modify the application buffer (your send data) for reuse, though it does not guarantee that the data was actually received - it could be in the system buffer of the receiving processor. Blocking sends therefore represent the fact that the originating processor has sent the information, but the receiving processor may not have received it. The sent data could be stored in a system buffer on the receiving processor until that processor has posted the corresponding receive statement for the message. The control of the system buffer that is reserved to hold data in transit is implementation-dependent, as it is not specified by the standard. It can be easy to exhaust this system buffer. While we often think of the system buffer as existing on the receiving processor, it can exist on both the sending and receiving processors. Hence, blocking sends guarantee that the data has left the system buffer on the {\it sending} processor. The system buffer improves performance because it allows the send and receive operations to occur asynchronously. Blocking sends can be either synchronous or asynchronous. A blocking receive only returns after the data has actually arrived. Using blocked communication could lead to deadlocks if you have two processors both attempting to send information to each other without one first receiving it, since the blocked communication will not return until the send has been completed.
+
+Non-blocking sends/receives will return almost immediately, and they do not wait for communication events to complete, such as message copying from user memory to system buffer space. Non-blocking communications are primarily used to overlap computation with communication to exploit additional performance gains. You would need to wait or probe to see whether the communication finished before performing statements that depend on sending/receiving the message. You should never modify the variables that you posted a non-blocking send for before the receiving processor posts the receive statement, since it is not guaranteed that those changes would be received by the receiving processor. 
+
+MPI guarantees that messages will not overtake each other, i.e. messages are received in the order in which they are sent. 
 
 The communication routines described in this section take several values as inputs. The {\tt buffer} is the program address space that references the data that is to be sent or received. In most cases, this is simply the name of the variable that is sent/received. For C programs, this variable is passed by reference, and hence is precluded by an ampersand. The {\tt count} is the number of data elements of a particular type to be sent. You must also specify the type of the data that you are sending, and for portability between platforms, \gls{mpi} predefines its own elementary data types, prefaced by {\tt MPI}. For example, a signed int would be {\tt MPI\_INT}. The {\tt destination} is the rank of the process where the message should be delivered. For receive routines, you need to specify the {\tt source}, which is the rank of the originating process of the message. This could be set to {\tt MPI\_ANY\_SOURCE} to receive a message from any task. The {\tt tag} is an arbitrary, non-negative integer assigned by the programmer to uniquely identify a message. Send and receive operations should match message tags, since a single process may be receiving messages from multiple processes, and an order to these receipts can be specified using tags. For a receive operation, {\tt MPI\_ANY\_TAG} can be used to receive any message regardless of its tag. The {\tt comm}, or communicator, indicates the communication context, or set of processes for which the source or destination fields are valid, since a process may be involved with various communicators, and have different ranks in each of these communicators. For a receive operation, the {\tt status} indicates the source and tag of the message, and is a pointer to a predefined structure {\tt MPI\_Status}. The {\tt request} is used by non-blocked send and receive operations. Because non-blocking send/receives can return before the requested system buffer space is obtained, the system issues a unique request number - the user uses this handle later in the wait routine to determine completion of the non-blocking operation. In C, this is a pointer to a predefined structure {\tt MPI\_Request}. 
 
@@ -1019,20 +1099,6 @@ Groups/communicators are dynamic, and can be created and destroyed during progra
 \subsection{Virtual Topologies}
 
 A virtual topology is a mapping or ordering of \gls{mpi} processes into a geometric shape - the two main topologies supported by \gls{mpi} are Cartesian grid and Graph. These topologies are entirely virtual, and there might not be any relationship to the physical structure of the machine or the process topology. Virtual topologies are constructed using \gls{mpi} groups and communicators, and must be programmed by the programmer. For example, a Cartesian topology would be best for applications that require four-way communication for grid-based data. You can also optimize process mapping based upon the physical characteristics of your machine so that you naturally avoid penalizing long-distance communications. 
-
-\section{Partitioned Global Address Space Languages (UPC, UPC++)}
-
-Programming in \gls{mpi} becomes very difficult when you don't know where a message to be received is coming from, since you'd have to use wildcards. \gls{pgas} systems work by allowing threads to directly read or write remote data, providing the conveniences of shared memory. The term \gls{pgas}, as opposed to shared memory, is used when the hardware does not actually reflect a shared memory system. The data is partitioned in that it is designated as local or global, helping you to achieve better locality. You can write or read data on another processor's memory without asking that processor to post a send or receive using message passing. Local pointers can only point to the memory on the node of the current processor. Global pointers can point to something on a node \textit{and} on a different node. Writes to values that are pointed to by global pointers is done under-the-hood using message passing as a data transfer through the network, but not as a send/receive (\gls{mpi}). \gls{pgas} languages can run large problems very well.
-
-To program in \gls{upc}, you need to include the {\tt upc.h} header file. Any legal C program is also a legal \gls{upc} program. If you compile and run your code as \gls{upc} code with \(p\) threads, it will run \(p\) copies of the program. Just like \gls{mpi}, \gls{upc} is a \gls{spmd} programming model (code is ``copied'' to different processors and they each run the entire code serially). Normal C variables and objects are allocated in the private memory space for each thread. {\tt shared} variables are allocated only once, with thread 0 (and are stored in only one location (on processor 0)). Shared variables cannot have a dynamic lifetime, i.e. they cannot be defined in a function unless they are defined as {\tt static} - if thread 0 exits the function, then variables declared as shared will disappear, even though the other threads might still be trying to access them. 
-
-\gls{pgas} languages suffer from race conditions and many other characteristics of shared memory programming. \gls{upc} has two basic forms of barriers - {\tt upc\_barrier} blocks until all other threads arrive, or split-phase barriers. With split-phase barriers, {\tt upc\_notify} specifies that this thread is ready for the barrier, and computation can be performed unrelated to the barrier. {\tt upc\_wait} then denotes that the thread should wait for others to be ready. This allows you to overlap computation with waiting, and achieve better load balancing if some processors finish much sooner than others. \gls{upc} also has locks for protecting shared data. The {\tt bupc\_collectivev.h} library includes collectives that prevent you needing to use shared variables.
-
-Shared arrays are cyclic by default, and are spread over the threads. Shared arrays allow you to instead just modify the element belonging to your thread, and then at the end performing some aggregate operation - this can avoid the use of very large numbers of locks. Many \gls{upc} programs avoid these arrays in favor of directories. 
-
-Instead of performing send/receives, you do put/get. Although \gls{pgas} seems closer to shared memory, it is more like how the hardware actually looks. For small messages, it is much better to use one-sided communication than send/receive with \gls{mpi}.
-
-Like MPI, you can run across multiple processes, but you can directly edit shared memory like in OpenMP.  The fundamental difference between MPI and \gls{upc} is that \gls{upc} performs one-sided communication. UPC++ is a library, and not a compiled language like UPC, but the performance is comparable. 
 
 
 
@@ -1203,15 +1269,133 @@ Kernel launches are asynchronous, and when they launch, execution is returned im
 
 Most CUDA functions return an error code {\tt cudaError\_t} - the host manages these errors. In addition, you can obtain an error string describing the error if you pass in the error code to {\tt cudaGetErrorString}. Kernel launches have no return value, so if you try to launch a kernel calling more than the maximum number of threads, that kernel will never run, but also won't inform you of this. So, call {\tt cudaError\_t cudaGetLastError()} to return the error code fort he last CUDA runtime function (including kernel launches). Because kernels are asynchronous, you need to call {\tt cudaDeviceSynchronize} first, then {\tt cudaGetLastError}. 
 
-. 
+ 
+ 
+ 
+\section{UPC}
 
 
 
+Programming in \gls{mpi} becomes very difficult when you don't know where a message to be received is coming from, since you'd have to use wildcards. \gls{pgas} systems work by allowing threads to directly read or write remote data, providing the conveniences of shared memory. The term \gls{pgas}, as opposed to shared memory, is used when the hardware does not actually reflect a shared memory system. The data is partitioned in that it is designated as local or global, helping you to achieve better locality. You can write or read data on another processor's memory without asking that processor to post a send or receive using message passing. Local pointers can only point to the memory on the node of the current processor. Global pointers can point to something on a node \textit{and} on a different node. Writes to values that are pointed to by global pointers is done under-the-hood using message passing as a data transfer through the network, but not as a send/receive (\gls{mpi}). \gls{pgas} languages can run large problems very well.
+
+To program in \gls{upc}, you need to include the {\tt upc.h} header file. Any legal C program is also a legal \gls{upc} program. If you compile and run your code as \gls{upc} code with \(p\) threads, it will run \(p\) copies of the program. Just like \gls{mpi}, \gls{upc} is a \gls{spmd} programming model (code is ``copied'' to different processors and they each run the entire code serially). Normal C variables and objects are allocated in the private memory space for each thread. {\tt shared} variables are allocated only once, with thread 0 (and are stored in only one location (on processor 0)). Shared variables cannot have a dynamic lifetime, i.e. they cannot be defined in a function unless they are defined as {\tt static} - if thread 0 exits the function, then variables declared as shared will disappear, even though the other threads might still be trying to access them. 
+
+\gls{pgas} languages suffer from race conditions and many other characteristics of shared memory programming. \gls{upc} has two basic forms of barriers - {\tt upc\_barrier} blocks until all other threads arrive, or split-phase barriers. With split-phase barriers, {\tt upc\_notify} specifies that this thread is ready for the barrier, and computation can be performed unrelated to the barrier. {\tt upc\_wait} then denotes that the thread should wait for others to be ready. This allows you to overlap computation with waiting, and achieve better load balancing if some processors finish much sooner than others. \gls{upc} also has locks for protecting shared data. The {\tt bupc\_collectivev.h} library includes collectives that prevent you needing to use shared variables.
+
+Shared arrays are cyclic by default, and are spread over the threads. Shared arrays allow you to instead just modify the element belonging to your thread, and then at the end performing some aggregate operation - this can avoid the use of very large numbers of locks. Many \gls{upc} programs avoid these arrays in favor of directories. 
+
+Instead of performing send/receives, you do put/get. Although \gls{pgas} seems closer to shared memory, it is more like how the hardware actually looks. For small messages, it is much better to use one-sided communication than send/receive with \gls{mpi}.
+
+Like MPI, you can run across multiple processes, but you can directly edit shared memory like in OpenMP.  The fundamental difference between MPI and \gls{upc} is that \gls{upc} performs one-sided communication. UPC++ is a library, and not a compiled language like UPC, but the performance is comparable. 
 
 
 
+Shared memory programming is very convenient because you can simply annotate loops to get some easy parallelization, and the structure is much closer to serial code. On the downside, this does not scale to large numbers of processes, you might encounter race conditions, and you have no control over where the data lives in the address space. This means that you will have \gls{numa}, since memory further away will cost much more to access varying on the particular thread ID. You really cannot scale shared memory programming beyond a single node. With message passing, you have the advantage of scalability because communication is explicit in the code (so you become more aware of where the costs go) and you have locality control. However, you need to rethink data structures. 
+
+\gls{pgas} programming is useful when you want to figure out what in your model is related to other things - message passing is very efficient if you know ahead-of-time how you can decompose your domain. \gls{pgas} languages are well-suited for random access data patterns, where you don't know ahead of time the structure of your problem so that you put in send and receive statements. \gls{pgas} languages use one-sided communication. Threads can directly read and write remote data, which helps hide the distinction between shared and distributed memory, since the memory is used as if it were shared, but it may be located far away. This is very different from message passing, because you don't need to get the other processor that owns the data to do the reading/writing for you. The languages are \textit{partitioned} because data can be designated as local or global, so not necessarily all memory is shared like with shared memory programming. Other examples of \gls{pgas} languages include Titanium, Co-Array Fortran, Chapel, Phalanx, and PyGAS (\gls{pgas} for Python).  
+
+Like in MPI, a number of processes {\tt THREADS} exist in a world, and operate independently in a \gls{spmd} model. {\tt MYTHREAD} specifies the thread index, and {\tt upc\_barrier} can be used to perform global synchronization. Because synchronization is very expensive on large jobs due to the high numbers of threads or processes, UPC has a nice characteristic that a thread can indicate if it is ready to enter the barrier, but then continue unrelated work until all processes are ready for the barrier. Programs can use the number of threads as a compile-time constant, but dynamic compiling allows varying numbers of threads to be used. 
+
+Any legal C program is also a legal UPC program. To use UPC, simply include the {\tt <upc.h>} header file. Each thread gets its own copy of variables defined in the program, and each thread has access to all of the input arguments. Normal C variables are allocated in the private memory space for each thread. Shared variables are only allocated once, with thread 0. A shared variable is declared with the {\tt shared} prefix. Shared variables cannot have a dynamic lifetime, i.e. they cannot be declared inside a function because you cannot guarantee that all threads will be inside that function at the same time. To enforce parallelism, you need to explicitly modify the loop iterations that belong to the current thread, otherwise all threads will perform all loop iterations. You need to be careful about race conditions, because when a variable is to be modified, first it is read into a register, modified in the register, and then sent back to the shared memory location. So, if another thread performs a read or write while a thread currently has a different version of the variable in its register, then the operations on that variable will not be atomic. With UPC, a good way to get around having to put locks around every modification to shared data is to instead represent that scalar data as an array of length {\tt THREADS}. Shared scalars always live in thread 0, but shared arrays are spread over the threads in a cyclic manner. In C, because data is stored in row-major layout, each thread owns a column. When defining an array size that depends on the number of threads, as opposed to using malloc, you need to specify the number of threads at compile time. 
+
+\begin{lstlisting}[language=C]
+shared int x[THREADS]; // one element per thread
+shared int y[3][THREADS]; // three elements per thread
+\end{lstlisting}
+
+While the default is to use cyclic arrays, UPC does have capabilities for blocked layouts. This is very important if the data is very localized and you are performing nearest-neighbor computations, since otherwise all of the neighbors would be ownde by different threads. You can also use an indefinite layout, where the shared array is all held on one thread. 
+
+\begin{lstlisting}[language=C]
+// * indicates the maximum block size to approximately evenly-distribute the elements
+shared int [*] y[100*THREADS];
+
+// block by a constant blocking factor b
+shared int [b] y[100*THREADS];
+
+// all on one thread
+shared int [0] y[100*THREADS];
+\end{lstlisting}
+
+When you declare a pointer, unless indicate that it is a shared pointer, by default it will be a private pointer to shared space. Pointers to shared memory usually require more storage and are more expensive to dereference because first you have to test for cases where the data it is pointing to is actually local. It is common to cast a pointer to shared space to a local pointer to get faster dereferencing. Pointers to shared objects have three fields - the virtual address, the thread number, and the phase (where the pointer is relative to the beginning of the block) so that when you increment the pointer it knows whether or not to simply move one location over for the current thread, or jump to the region owned by the next thread. This is fundamentally why pointers to shared memory are slower than pointers to local memory. 
+
+\begin{lstlisting}[language=C]
+shared int *ptr; // private pointer to shared space
+shared int *shared ptr; // shared pointer to shared space
+\end{lstlisting}
+
+You can dynamically allocate shared memory using special UPC functions. The calling thread will allocate a contiguous memory space in the shared space with affinity to itself. Using regular C functions to allocate memory will allocate them in private space. The UPC allocation functions can only be executed by one thread, but without conditional statements around it, all threads will execute the allocation. 
+
+\begin{lstlisting}[language=C]
+// called by each thread, so each will have affinity to an array of doubles
+// using the local pointer to shared pointer ptr
+shared [] double [n] ptr = upc_alloc(n * sizeof(double));
+
+// deallocate memory when finished
+upc_free(ptr);
+\end{lstlisting}
+
+You can allocate memory globally, where the calling thread allocates a contiguous memory space in the shared space. This memory can be allocated either globally in a non-collective manner or in a collective manner, where all threads will get the same pointer. Many UPC programs avoid the UPC-style arrays in favor of directories of objects. 
+
+\begin{lstlisting}[language=C]
+// allocates an array over the system - non collective
+shared void *upc_global_alloc(size_t nblocks, size_t, nbytes);
+
+// collective version of upc_global_alloc
+shared void *upc_all_alloc(size_t nblocks, size_t nbytes);
+\end{lstlisting}
+
+UPC has two types of accesses - strict, where access always appear in order, and relaxed - each thread sees its own reads and writes happening in the correct order, but they may appear to be out of order to other threads because the compiler or network may reorder them. With relaxed ordering, for example, if you perform a write to a shared variable, followed by a write to a private variable, because writing to shared variables takes longer than writing to private variables, the write to the private variable will likely occur before the writes to the shared variables.
+
+UPC can be compiled with several different compilers, such as the Berkeley UPC compiler. UPC programs rely on one-sided communication. A two-sided message needs to be matched with a receive statement in order to identify the memory address to put the data. With each message, you have a message ID and the data payload, and a receiving statement of the same message ID. Good MPI programs will have posted the receive statements long before the sends so that the matching is fast. The information regarding where the data is to be put is only known by the receiving process. With one-sided messages, the message consists of the final address for that data and the data payload, so you cut out the middle process of the message containing an ID that is matched by a receiving ID, where that receiving process knows the final address to put the data. One-sided messages can be very fast because they don't involve interrupting the CPU on the other side to make it store the data - the network interface stores the data for you in the final resting place. The overhead of sending a message in UPC is lower than that in MPI because it is directly using lower-level \gls{rdma} functions. \gls{rdma} is a direct memory access of the memory of another computer without involving that other computer. One disadvantage of being able to push out to the network very rapidly is that you can saturate the network. You can afford to send smaller messages with UPC than with MPI because the overhead is much lower. When you can develop an algorithm to send smaller messages, UPC can consistently outperform MPI. 
 
 
+\subsection{Synchronization}
+
+UPC has two basic forms of barriers - {\tt upc\_barrier;}, which blocks until all other threads arrive, and split-phase barriers - {\tt upc\_notify;}, which indicates that this thread is ready for the barrier, and can proceed to do computation unrelated to the barrier. Once reaching a point at which any further computation requires all threads having reached the barrier, post a {\tt upc\_wait;}. 
+
+Locks are represented as an opaque type in UPC, which means that the actual implementation of what a lock does depends on the library. Locks must be allocated before use, and they can be allocated in such a way that they are known to all threads, or only known to some threads via broadcasting.
+
+\begin{lstlisting}[language=C]
+upc_lock_t *my_lock = upc_all_lock_alloc(void); // allocates one lock, known to all threads
+upc_lock_t *my_lock = upc_global_lock_alloc(void); // allocates on lock, known to some threads
+\end{lstlisting}
+
+To use a lock, you call a function that locks or unlocks:
+
+\begin{lstlisting}[language=C]
+void upc_lock(my_lock);
+void upc_unlock(my_lock);
+void upc_lock_free(my_lock); // deallocate when finished
+\end{lstlisting}
+
+
+\subsection{Collectives}
+
+You can use collective operations with the {\tt <bpuc\_collectivev.h>} header file to reduce the number of shared variables - you can instruct a single thread to collect results and perform reduction operations on them instead of having all of the threads update a corresponding value in a shared array, or putting a lock around an update to a shared scalar. Barriers are implied at the ends of collectives. Using collectives makes your code much more scalable because reductions are usually performed in binary trees. UPC basically has definitions for all of the same collective communications that are present in MPI. 
+
+\begin{itemize}
+\item {\tt bupc\_allv\_reduce(int, my\_variable, collecting\_thread, UPC\_ADD)}: 
+\end{itemize}
+
+
+\subsection{Looping}
+
+Because shared arrays are stored cyclically, it is advantageous to use UPC looping constructs that would eliminate the need to test whether or not a thread owns the current element of an array (since it will not own it {\tt (THREADS-1)/THREADS} percent of the time) - without special looping constructs in UPC, each loop would read as {\tt for (int i = MYTHREAD; i < N; i += THREADS)}. To use this, the loop iterations must be independent. The {\tt affinity} is either an integer or a pointer, and indicates which iterations to run on each thread. Every thread executes every iteration, but the first thing performed for each iteration is a check on whether or not that thread owns that particular iteration. 
+
+\begin{lstlisting}[language=C]
+// affinity is an integer to see if i%THREADS is MYTHREAD
+upc_forall(int i = 0; i < N; i++; i)
+	// do stuff
+
+// affinity can also be a pointer to see if upc_threadof(&sum[i]) is MYTHREAD
+upc_forall(int i = 0; i < N; i++; &sum[i])
+\end{lstlisting}
+
+
+
+\section{Intel Many Integrated Core Architecture}
+
+The Intel Xeon Phi is a coprocessor that falls within the \gls{mic} architecture family. The \gls{mic} architecture combines many Intel processor cores onto a single chip, and standard C, C++, and Fortran source code will run on the Intel Xeon Phi. \gls{mic} chips are designed for a high degree of parallel processing, and contain a large number of simpler, independent processor cores (10 to 1000). Many core processors are different from multi-core processors (my laptop) in that they are optimized from the outset for a higher degree of explicit parallelism and for higher throughput at the expense of latency and lower serial performance (similar to the \gls{gpu}). Multi-core processors are usually designed to run both parallel and serial code efficiently. So, the \gls{mic} architecture sacrifices capabilities towards determining implicit parallelism in a single thread to achieving higher throughput. 
 
 \end{flushleft}
 \end{document}
