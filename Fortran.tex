@@ -45,6 +45,7 @@
 \lstset{
 	basicstyle=\ttfamily\small,
     frame=single,
+    language=fortran,
     breaklines=true,
     postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
 }
@@ -91,6 +92,302 @@
 
 
 \begin{document}
+
+The word size is the number of bits processed by a CPU at one time. A word is typically 32 or 64 bits (4 or 8 bytes). Floating point exceptions are thrown whenever a NaN results or an operation is performed on a Nan. 
+
+\section{Introduction}
+
+This document serves as a compilation of my notes on Fortran 2003 (OpenMC is written in Fortran 2008). Older versions of Fortran had much more rigid requirements for column positions of characters - the column position of a character often had meaning in itself, which related back to Fortran's start on 80-column punch cards. Fortran 90 beyond are all free format, where the column position does not matter. A Fortran compiler should compile all versions of Fortran code since they support fixed format Fortran 77 for backwards compatibility. For the compiler to know whether to compile assuming fixed or free formatting, the user must specify whether the source file has free or fixed formatting. This is usually specified by the suffix on the compiler - {\tt .f90} extensions usually indicate free format, while {\tt .f} indicate fixed format. A common compiler used is the GNU Fortran compiler {\tt gfortran}. Fortran is not case sensitive.
+
+A Fortran program consists of one or more program units, each of which must terminate with the {\tt END} keyword. Aside from the main program, other program units include functions, subroutines, and modules. Program units other than modules may also contain a {\tt STOP} statement, which causes execution to cease (though this should be reserved for abnormal terminations).  
+
+\begin{lstlisting}
+PROGRAM myprogram
+END PROGRAM myprogram
+\end{lstlisting}
+
+Fortran does not have any capabilities for trapping floating point exceptions, unlike other languages. 
+
+\section{Variables}
+Variable names must be shorter than 31 characters. For historical reasons, Fortran can perform implicit typing of variables, where a variable type is assigned based on the first character of the variable. Names beginning with letters in the range of i to n are integers, while all others are real. Compilers will by default assume implicit typing, and because this can cause bugs, you should always turn off implicit typing using the {\tt IMPLICIT NONE} statement in each unit. This statement must precede all variable declarations. 
+
+\begin{lstlisting}
+INTEGER :: i, j = 2
+INTEGER, PARAMETER :: l = 2 ! l is a constant (value cannot be modified)
+REAL ! single-precision floating point
+DOUBLE PRECISION
+COMPLEX ! two REALS
+CHARACTER(LEN=16) :: a
+LOGICAL :: flag = .true, flag2 = .false.
+\end{lstlisting}
+
+Real constants are specified as normal floating point values, but double precision constants require more complex syntax. Double precision constants must be specified in exponent notation, with the character {\tt d} indicate when the exponent begins (i.e. {\tt d} replaces the {\tt e} that would be present in scientific notation). If instead you use {\tt e}, the constant will be interpreted as real and truncated to the size that can be held by a real variable. In most other languages, the default floating point literal is double precision, but in Fortran it is single precision.
+
+Complex numbers are represented as two real numbers enclosed in parentheses, where the first number represents the real part, and the second the imaginary part. Some systems also support {\tt DOUBLE COMPLEX}, which allows each of the numbers to be expressed as double precision. Character constants are enclosed in single quotes. If you want to represent an apostrophe in a character constant, because single quotes are used to enclose the literal, you should represent apostrophes as double quotes. The character type is not restricted to a single byte, however (ASCII), but rather the length can be specified in the declaration using the {\tt LEN} keyword. All character variables are of fixed length that cannot be modified, and remaining spaces are padded with blanks. 
+
+While not strictly required, the recommended form for declaring variables is to use a double colon following the variable type. In Fortran, variable declarations must precede {\tt all} executable statements. This is more restrictive than other programming languages, but can help with quickly determining a variable's type. Variables can be declared as constant using the {\tt PARAMETER} keyword. Variables can also be initialized with intrinsic functions (i.e. in the declaration for the variable, you could assign it the result of a function). 
+
+Instead of using the {\tt DOUBLE PRECISION} keyword, the preferred way to specify the type of a variable is to use the {\tt KIND} representation. The user specifies the number of decimal digits in the mantissa and the number of exponent digits, and the computer will match that to the underlying machine representation of the data types. You can declare a single one of these {\tt SELECTED\_REAL\_KIND} statements and then use that type for all remaining variables using parentheses referencing this construction.
+
+\begin{lstlisting}
+! single precision
+INTEGER, PARAMETER :: rk = SELECTED_REAL_KIND(6, 37)
+
+! double precision
+INTEGER , PARAMETER:: rk = SELECTED_REAL_KIND(15, 307)
+
+REAL (rk) :: i, j, k ! define using the preceding SELECTED_REAL_KIND statement
+\end{lstlisting}
+
+Most compilers perform implicit type casting by default, where the lower-rank type is promoted to the highest-rank type in an expression, though the programmer should always explicitly cast.  
+
+\section{Operations, Statements, and Assignments}
+Fortran supports the same exponentiation syntax as Python ({\tt 2**4}, for example). Raising a variable to a floating point power will be slower than raising to an integer. Strings can be concatenated using the {\tt //} operator.
+
+Binary operations that are available for use in conditional statements include {\tt .not.}, {\tt .and.}, {\tt .or.}, {\tt .eqv.} (logical equivalence), and {\tt .neqv.}. The operators present in conditional tests have two forms - either a textual form similar to that used in bash ({\tt .le} equivalent to {\tt <=}). Non-equivalence is represented as {\tt /=}. 
+
+Statements can be either executable or non-executable. Non-executable statements include scoping instructions and are executed at compile-time, whereas executable statements are only executed at run time. With a few exceptions, all non-executable statements must appear before the first executable statement. Statements are usually terminated with a newline character, but if a statement is too long, it can be continued onto a new line using an ampersand character. These continuations are required once reaching 80 characters, but many compilers accept lines up to 132 characters long. Multiple statements can be put on a single line as long as they are separated by semicolons, which is similar to C (though the line should still be terminated by a newline character, rather than a semicolon). Tabs should also be avoided.
+
+Statements can have labels (one to five digits, where at least one must be nonzero) that uniquely identify the statement. Some statements can also be named, where the name is followed by a colon, and then the statement itself. This is useful for clarifying the purpose of nested iterations.
+
+\section{Intrinsics}
+Intrinsic functions are functions that are supplied by the compiler, such as {\tt mod}. Most of these intrinsics are overloaded, meaning that they can accept a wide variety of types. These intrinsics are used for type casting.
+
+{\tt DATA} statements are used to initialized variables by causing the compiler to load in the initial values into the variables at compile time (so this is a non-executable statement). in most cases, the use of the data statement can be replaced by variable initialization in the variable declaration statements. 
+
+\begin{lstlisting}
+DATA a, b, c/ 1.0, 2.0, 3.0/
+\end{lstlisting}
+
+\section{Arrays}
+The rank is the number of dimensions of an array. A 1-D array is called a vector, while a 2-D array is a matrix (but under the hood they are the same thing). Arrays are declared with the {\tt DIMENSION} keyword following the type to be held in the array. Array indexing begins with 1 by default, but you can change the indexing by passing in a range to the dimension parameter. Fortran is column-major, so the first index indicates the row and the second the column. Array slicing includes both the upper and lower bounds.
+
+\begin{lstlisting}
+INTEGER, DIMENSION(10) :: int_array
+REAL, DIMENSION (5, 5, 3) :: matrix
+
+! begin indexing at 0 instead of 1
+REAL, DIMENSION(0:3) :: e
+
+! begin indexing at -3
+REAL, DIMENSION(-3:15) :: f
+
+! initialize an array
+INTEGER, DIMENSION(5) :: v = (/ 1, 2, 3, 4, 5 /)
+INTEGER, DIMENSION(5) :: w = (/ i, i=1,5 /)
+\end{lstlisting}
+
+Most array operations can be performed element-wise on arrays by default (this is a new feature in Fortran 90). For passing arrays into subroutines, you can take advantage of assumed-shape arrays, where the dummy argument of a subroutine/function assumes the same shape as what you actually pass in. Assumed-shape arrays don't perform any array copying, and the shape is checked at compile time, while the size is optionally checked at runtime. However, assumed shape arrays cannot be used if you want to return an array from a function.
+
+Fortran has three types of dynamic arrays. Automatic arrays are local arrays whose sizes depend upon values associated with the parameters of a function. They are automatically allocated upon entry to the function, and are also automatically deallocated upon exit. Function results can be automatic arrays. 
+
+Alternatively, arrays can be explicitly allocated using a call to {\tt allocate} after an array has been declared {\tt allocatable}. If an array is declared allocatable within a local procedure, it is global to all enclosed scopes. Upon exit of this procedure, it is automatically deallocated unless a {\tt save} has been specified (similar to declaring a variable as {\tt static}).
+
+\section{Input and Output}
+Files are associated with integers, called the unit number. Unit 5 is associated with standard input, unit 6 with standard output, and unit 2 with standard error. Unlike other languages, Fortran always writes a newline character after each print or write statement.  Prior to the 2003 standard, Fortran did not have any way to read arguments from the command line, though many compilers provided extension functions. 
+
+\section{Keyword and Optional Arguments}
+Keyword arguments are very easy to implement in a function - the local variable name is used in the function call by replacing an input parameter by {\tt keyword=value}. 
+
+Procedures can also have optional arguments. These procedure parameters are specified to be {\tt optional} in their declaration within the procedure body. The intrinsic logical function {\tt present(var)} is used to test for the presence of an optional variable, and is used to make program decisions this way.
+
+\section{Internal and External Procedures}
+
+Internal procedures can be defined directly within the program unit, following a {\tt contains} statement (though strictly speaking, the {\tt contains} statement is optional). 
+
+External procedures can be functions and subroutines. The {\tt save} statement ensures that the values of local variables and arrays are preserved after the procedure returns control to the calling unit, so that these values are available if the procedure is executed again. The {\tt return} statement immediately returns control to the calling unit (execution of the {\tt end} statement has the same effect). 
+
+External procedures are contained in a separate file, and they may have an explicit interface declared within the calling unit (which causes the compiler to check that the number and type of the actual arguments agrees with the dummy arguments). An interface is defined as follows. The interface contains the subroutine declarations (name and parameter list), {\tt implicit none}, the type of each dummy argument, and any {\tt use} statements for modules. Interfaces are similar to the function prototypes of other languages. Because interface blocks are non-executable, it must appear before any executable statements. An interface cannot be used for a procedure specified in an {\tt external} statement, and vice versa. If this interface occurs in the part of a program unit which calls the subroutine, then the interface is an explicit interface - it's a good idea to make all interfaces explicit. An interface is only needed for external procedures - the interface to an internal procedure is always visible, since it is already contained within the host. Interfaces to intrinsic procedures are also explicit within the language. Using interfaces allows separate compilation to be performed, since it is basically equivalent to function prototyping. 
+
+\begin{lstlisting}
+interface
+  subroutine quadrature(n_qp)
+    integer, intent(in) :: n_qp
+    
+    ! don't need to include local subroutine declarations such as loop counters
+  end subroutine quadrature
+end interface
+\end{lstlisting}
+
+Explicit interfaces are required if an {\tt external} procedure:
+
+\begin{itemize}
+\item has assumed-shape arrays (the compiler will need to know to pass the length of the array into the external procedure, since this is done for internal procedures with assumed-shape arrays), pointers, or targets (also need to know the types and attributes of pointers and targets)
+\item has {\tt optional} arguments (the compiler has to figure out the correct association when any of the optional arguments are missing)
+\item returns an array or pointer
+\item contains an inherited {\tt len=*} specifier for character functions
+\end{itemize}
+
+A procedure cannot appear both in an {\tt interface} block and in an {\tt external} statement in the same scoping unit.
+
+Fortran also permits these external procedures to be written in languages other than Fortran, but they can still be called in the same way as Fortran procedures. External procedures can call other procedures, but they cannot call themselves either directly or indirectly (recursion is not allowed in Fortran (true with newer versions?)).
+
+External procedures are not contained within a {\tt program} or {\tt module}. Using external procedures comes from Fortran 77, and is not the most elegant way of achieving similar results. External procedures may be compiled separately, may need an explicit {\tt interface} to be supplied to the calling program, can be used as arguments, and should always contain the {\tt implicit none} statement. Subroutines are declared as:
+
+\begin{lstlisting}
+subroutine quadrature(n_qp)
+  ! declare dummy arguments
+  integer :: n_qp
+  
+  ! declare local objects
+  integer :: i
+  
+  ! executablele statements
+  i = 1
+  n_qp = n_qp + i
+end subroutine quadrature
+\end{lstlisting}
+
+Functions are declared very similarly to subroutines, except that the function should have a type specifier that defines the type of the result. The type of the function result can either be given as a prefix to the function name, or alternatively in the declarations area of the code by preceding the function name by a type specifier. The type of an external function must be given in the calling program unit using {\tt integer, external :: quadrature} syntax. 
+
+\begin{lstlisting}
+! returns an integer
+integer function quadrature(n_qp)
+  quadrature = n_qp * 2
+\end{lstlisting}
+
+Pure functions do not modify any global variables, assign values to its input arguments, or perform I/O, and hence would be safe to evaluate at the same time two functions with the same input arguments. 
+
+Subroutines can contain internal procedures, but only if they themselves are not already internal (that is, there is only one level of nesting of {\tt contains} that is permitted with subroutines). Subroutines can use internal, external, or visible (via {\tt use}) procedures. Internal procedures has access to the host's declarations, and hence inherit the {\tt implicit none} statement, whereas external procedures do not. An {\tt implicit none} is needed in {\it every} external procedure. External procedures are declared in an {\tt external} statement. 
+
+Procedure arguments can be of derived type so long as that derived type is defined in a single location. The procedure can be internal to the program unit in which the derived type is defined, {\it or}, the derived type can be defined in a module that is accessible from the procedure. 
+
+\section{Common Blocks}
+Common blocks are lists of variables or arrays that are stored in areas of memory shared between two or more program units. These are useful in special circumstances when procedures have to be coupled closely together, but otherwise should be avoided. 
+
+\section{Fortran Code Structure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/FortranPrograms.png}
+\caption{Basic structure of a large Fortran code.}
+\end{figure}
+
+The main program begins with {\tt program fem} and ends with {\tt end program fem}, and can contain internal procedures following a {\tt contains} statement. A module begins with {\tt module quadrature} and ends with {\tt end module quadrature}. The internal procedures that follow the {\tt contains} statement in a module are not referred to as internal procedures, but rather as module procedures (though the module procedures can then contain themselves internal procedures). Finally, external procedures do not begin or end with any special syntax, and instead are simply of the form of subroutine and function definitions that you would find in the internal procedures section.
+
+Procedures are subroutines or functions. Functions return a single value, and usually don't modify the values of its arguments, whereas subroutines perform more complicated tasks, and return several results through its arguments. Fortran 77 contained only external procedures, but Fortran 90 extended this to contain internal procedures, external procedures (not necessarily written in Fortran), and modules procedures (contained within a module). An interface block is used to define the procedure argument details, and must always be used for external procedures.
+
+There is a limit of one nesting level to internal procedures - internal procedures cannot contain themselves more internal procedures. Variables defined in the program unit are accessible from within internal procedures, unless redefined there. It is good practice to declare all variables used in subprograms in order to avoid the use of global variables on accident.
+
+In order for the compiler to correctly link internal, external, and module procedures, the compiler must know certain information. For intrinsic procedures, internal procedures, and modules, this information is already known to the compiler (it is explicit). However, for external procedures, an interface must be provided to inform the compiler of this information. This interface is essentially a function/subroutine prototype, where the body of the procedure and all local variables are omitted. A single interface block can contain interfaces to more than one procedure. The interface block must be placed in the calling program unit.
+
+
+
+Functions can only return one result, while subroutines can return more than one result in the form of output arguments. Both functions and subroutines are called procedures. The value returned by a function is the name of the function itself. A function can return an array (but it has to be a single array), so to define return types that are more than a single word, you must define the return type within the body of the function. In Fortran, variables are passed into functions and subroutines by reference (under the hood, a pointer to the variable is passed into the function or subroutine). Declaring the subroutines variable with in-intent will prevent any changes to that variable within the subroutine, eliminating unwanted side-effects of passing by reference.
+
+Functions can be used in expressions (since the return value of a function is given by the function name itself), while subroutines cannot. Subroutines cannot return values through its name, but only through its computation results. So, with subroutines, you must declare what you would like to receive or pass out of the subroutine (since it is not explicitly equivalent to the function name as is the case for functions). {\tt intent(in)} indicates that an argument only receives its value from outside of the subroutine, so that in effect it cannot be modified by reference (as would be the default). {\tt intent(out)} are arguments that does not receive anything from outside the subroutine, but is designed to pass something out at the end of the subroutine. Finally, {\tt intent(inout)} indicates that an argument can receive a value from outside, use it for computation, and then hold a result that is passed back out. Subroutines are not associated with a particular type.
+
+Functions should not be used to modify their input arguments, while subroutines are intended to modify their inputs. Functions and subroutines that are defined within a procedure such as a program are called internal procedures.
+
+\section{Modules}
+A module is a package where you can keep functions and subroutines that becomes useful for dividing up code for large projects. Modules exist to make some or all of the entities defined within it accessible to more than one program unit. A subprogram contained within a module is called a module procedure, which may itself contain internal procedures. Modules can be used to:
+
+\begin{enumerate}
+\item package together subroutines, data, and interface blocks
+\item define global data
+\item declare variables that can be made available within routines
+\end{enumerate}
+
+\begin{lstlisting}
+module quadrature
+ 	! declarations
+	private ! by leaving this empty, all of the subroutines and data types are private to the module by default
+	public gauss_1 gauss_2 simpson ! then, export all of the desired stuff
+	! subroutine and function definitions
+end module quadrature
+\end{lstlisting}
+
+Then, to incorporate a module into your program, use {\tt use quadrature}. Variables declared in the declaration section of a module are global to the module, and are also global in the program or routine that uses that module. But, you can declare variables and routines within a module as private if you don't want those to be available to the calling program. Within the calling program, it is good practice to explicitly indicate what you are using from the module you're calling (similar to Python where you explicitly indicate which modules you would like to use). 
+
+\begin{lstlisting}
+program main
+  use quadrature, only: gauss_2
+  implicit none
+end program main
+\end{lstlisting}
+
+When you import a module into a program, everything in that module is now global to the calling program. 
+
+Modules, introduced in Fortran 90, are a method to encapsulate related variables and procedures, control which procedures outside the module can access which data, and enable the creation of objects that can include function and operator overloading. A module is a program unit that cannot stand alone - it must be included into another program for anything in the module to be accessed. Modules must also be compiled before any other program units that use the module are compiled. Finally, the object file created when the module is compiled must be linked with the other program units to construct the executable. It is normal practice to place a module in a separate file (though this isn't strictly required), though it could be included in the program file so long as the compiler sees the module before trying to compiler the program. 
+
+Modules can use other modules, but cannot use itself (either directly or indirectly). A module can contain variables, functions/subroutines, or both. All functions and subroutines must follow a {\tt contains} statement. Any variables declared before the {\tt contains} statement are global in the module. Modules containing only global variables can also take place of the deprecated {\tt common} block of Fortran 77 - variables common to more than one routine can be defined within the module and invoked by all those needing those variables, but this should be used sparingly. 
+
+\begin{lstlisting}
+module quadrature
+  integer :: i ! global in the module
+  
+contains
+  subroutine intialize()
+    ! stuff
+  end subroutine initialize
+  
+end module quadrature
+\end{lstlisting}
+
+Procedures defined in modules have implicit interfaces, so the type, kine, and number of parameters are automatically checked by the compiler, so you don't need to define explicit interfaces for procedures in modules. 
+
+The main purpose of modules is to create a program unit whose interface to external units can be controlled. Variables and subroutines can be private to the module, in which case they cannot be modified by program units that {\tt use} the module, or they can be declared accessible to all units that use the module. The default data permission is {\tt public}, similar to a {\tt struct} in C. Permission can be set right when the variable is declared, or as a separate statement. By simply writing {\tt public} or {\tt private}, without a following list of variable names, then all variables and subroutines in the module obey that classification, unless they are explicitly declared otherwise. Modules that define classes should use {\tt private} as this default.
+
+Module are important for sharing both data and procedures (module procedures) between program units, as well as derived type definitions. All the modules included in a program must have different names. Using the {\tt save} keyword indicates that those program variables will be visible to all other procedures that use that module. Using a module for the sole purpose of defining global variables in this way is the recommended replacement for the {\tt common} block used in Fortran 77. To use variables defined within a module, but under a different name, use the following:
+
+\begin{lstlisting}
+use quadrature newname=>original
+\end{lstlisting}
+
+To only allow access to certain data in the module, add an {\tt only: thisvar} after the module {\tt use} statement.
+
+Unlike external procedures, module procedures must be written in Fortran. Module procedures can be used in any program unit that has included the module. A module procedure can call other module procedures in the same module. The data declared in the module before the {\tt contains} statement is directly accessible by all module procedures in that module. However, local variables defined within the module procedures are not visible across the module.
+
+Encapsulation is the process of packing data and the methods that are used to manipulate that data together. The data and methods are defined in the same module. In object-oriented languages, this packaging of data and methods is called a class. All variables and procedures defined in a module have their access set to public by default, so procedures that use a module have access to all of its data and procedures. Module data can be declared as private or public to control this access. When something is declared private, then it can only be accessed from within the module, and not by any program that uses that module. 
+
+You'll often want to declare things in a module as private to force the using program to use the module routines and allowing flexibility of internal changes without the need to change the source code in many locations.
+
+Modules allow you to form a package for data and procedures that allows them to be used in more than one program. Modules allow you to split a program among multiple files. A module consists of two parts - a section for declaring variables and other non-executable statements, followed by a {\tt contains} section that holds module procedures. The variables declared in the module specification part are global to the module, and also become global in any program or routine where the module is used. 
+
+A huge benefit of modules is that one program can call the module and define a module variable, such as a quadrature rule, which can then be global to all other programs that use the module (must include the {\tt save} statement?). To avoid name conflicts, use the {\tt =>} operator described above. If you only want to be able to access some data/procedures of a module, then use the {\tt only} clause.
+
+Fortran libraries are typically written as modules, since then they have well-defined interfaces and allow easy implementation of object-oriented programming. 
+
+
+\subsection{Compiling Modules}
+When you use modules in a Fortran program, all of the involved modules must also be compiled. Modules can be compiled directly with the main program using {\tt ftn module.f90 main.f90}, or modules can be compiled separately. To compile a module separately, use {\tt ftn -c module.f90} (the {\tt -c} means that you want to compile without generating an executable - this creates an object file). Once you've compiled all of the modules, you can then also compile the main program using the {\tt -c} flag to create an object file. To put all of these object files together into a single executable, {\tt ftn module.o main.o}. Alternatively, you can compile without first creating an object file for the main program using {\tt ftn module.o main.f90}.
+
+\section{Structure of a Fortran Program}
+Fortran programs are modular, and contain one and only one main program. In a program, all non-executable statements, such as variable declarations and {\tt implicit none} statements, must appear before all executable statements. Subprograms can be functions and subroutines. You must specify {\tt implicit none} both in the main program as well as in all procedures. However, if you define a bunch of procedures within a module, then a single {\tt implicit none} statement at the top of the file is sufficient for making all of the contained procedures eliminate assumed typing.
+
+Objects declared within a program unit are global to everything else in that program unit. The reason that you still want to explicitly pass variables into subroutines/functions (that might already know about that variable) is so that you can re-use the same code for multiple different variables. However, if you have written a function that will only ever modify the same global variable, then you do not need to pass it into the function because the dummy variable will always have the same name as what you would like to use that subroutine/function to operate on. 
+
+\section{Pointers}
+Pointers are declared with the {\tt pointer} attribute. The variable to which a pointer points is called the target of the pointer. Targets must be declared with a target attribute. Then, pointers are assigned to point to a certain target using the {\tt =>} operator. If pointers are equated with an equal sign, then the target to which the pointer points is copied into the other pointer. For pointers to be deallocated, they must first be nullified (i.e. they must stop pointing to something), or else you will get a dangling pointer, while will give an error.
+
+\begin{lstlisting}
+integer, pointer :: p => null() ! initialize a null pointer
+integer, pointer, dimension(:, :) :: ptr_array
+integer, target, dimension(:, :)   :: target_array
+
+ptr_array => target_array
+
+ptr1 = ptr2 ! copies the target of ptr2 into the target of ptr1, overwriting the target of ptr1
+\end{lstlisting}
+
+\section{Namelists}
+Fortran has three types of files - ASCII, binary, and namelist files. Reading a namelist file performs a search for a match, so this feature can be used to easily keep a single configuration file for several programs. The types of the variables are defined in the main input file, and a second namelist file contains the particular values to be used between multiple files. Dynamic variables such as dynamically-allocated arrays and pointers cannot be included in a namelist. A namelist file is often used for input, but rarely for output except for checking what is an acceptable namelist input. 
+
+A namelist combines several related variables together (the members of the namelist) with a single read. Using a namelist allows you to separate variable definitions from the source code. A namelist is defined in a separate file using the following syntax, where each variable is assigned a value. The types of those variables are then defined as normal within the main program file that is importing the namelist.
+
+\begin{lstlisting}
+&fem
+  n_el = 100
+  n_qp = 2
+/
+\end{lstlisting}
+
+Within the main program file, the namelist is used by inserting the following non-executable statement, where the variables to be used are listed following the name of the namelist in slashes. If a parameter is not needed, it is simply omitted. The great thing about namelists is that you don't need to recompile your code if you change a value in a namelist. 
+
+\begin{lstlisting}
+namelist /fem/ n_el, n_qp
+\end{lstlisting}
+
 
 
 
