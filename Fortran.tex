@@ -108,6 +108,44 @@ END PROGRAM myprogram
 
 Fortran does not have any capabilities for trapping floating point exceptions, unlike other languages. 
 
+Fortran originally stood for IBM Mathematical FORmula TRANslation System, but has been abbreviated to FORmula TRANslation, and is the oldest high-level programming language, as it was designed by IBM in the 1950s. Fortran became very popular, leading many groups to develop their own dialects and compilers (at one point there were 40 different compilers). Fortran 66 became the first language to be officially standardized (in 1972). Fortran became the most heavily-used programming language for non-commercial applications. FORTRAN 77 was standardized in 1980. Fortran 90 was initially going to be named FORTRAN 88, keeping with the pattern of 66 and 77, but the development took longer than expected. Fortran 90 is a huge improvement beyond Fortran 77, while also keeping Fortran 77 as a strict subset. High Performance Fortran (HPF) is based on Fortran 90.
+
+\subsection{Drawbacks of Fortran 77}
+
+Some of the major drawbacks associated with Fortran 77 given modern programming languages are:
+
+\begin{itemize}
+\item fixed form, where each column has meaning and lines can be no longer than 72 characters. Only uppercase letters are allowed throughout the entire program, variable names can only be six characters long, comments have to be on their own lines, nothing can go in the 6th column except line continuation characters, and the first five columns are reserved for line numbers.
+\item Fortran 77 has no built-in ways to express parallelism, so modern Fortran has introduced parallel array syntax (though I'm not sure if the lack of ability to express parallelism is really all that different from C/C++, which also rely on APIs such as OpenMP and MPI)
+\item Lack of dynamic storage. So, temporary short-lived arrays cannot be created on the fly (likewise, there are no pointers)
+\item Lack of user-defined data types (derived types)
+\item Lack of explicit recursion. In the past, recursion was simulated using a user-defined stack and access routines to manipulate stack entries.
+\item Reliance on unsafe storage and sequence association features - global data was only accessible via a {\tt common} block, which is notoriously easy to abuse because the rules applied to common blocks were fairly lenient, allowing the user too much control. 
+\item Lack of {\tt do...end do} and {\tt do... while} loops meant that there were many {\tt goto} statements to simulate loops
+\item Lack of the {\tt exit} command for gracefully exiting a loop
+\item Lack of internal procedures
+\item Lack of operator and function overloading
+\end{itemize}
+
+Fortran 90 is free-format, and can have up to 132 columns on a line. More than one statement can be included per line. Parallelism can also now be expressed using whole array operations. Many parallel intrinsic functions have been introduced, such as {\tt sum}. Fortran 90 also introduced dynamic (heap) storage and pointers. Temporary arrays can be created on the fly, and pointers allows the creation of linked lists and trees. Fortran 90 also introduces derived types, which are essential for modern programming. Explicit recursion is available, and modules have replaced many features of Fortran 77. Procedure interfaces have been developed, which allows programs and procedures to be separately compiled. 
+
+Array bounds no longer need to be passed as arguments due to the added conveniences of assumed-shape arrays. Modules have been added to serve as library units.
+
+\subsection{Obsolete Features of Fortran 90}
+This section discusses some obsolete features of Fortran 90 that should not be used, as they will become deprecated in future versions of Fortran.
+
+\section{High Performance Fortran}
+HPF is aimed at obtained good parallel performance using Fortran through data parallelism, where the data is spread over a number of processors, where each process operates on a subset of the data. Task-level parallelism, on the other hand, occurs when there are two or more cooperating processes, such as occurs when using MPI. The master-slave approach, on the other hand, uses one process for control of all other processes (slaves), where this master process coordinates the solution methodology and collects results at the end.
+
+HPF was developed with the goal of extending Fortran to support data parallel programming and obtain good performance on MIMD and SIMD machines while allowing support for code tuning on a variety of hardware. HPF are a set of extensions to the Fortran 90 language by targeting the data parallel programming paradigm (basically shared memory programming) via the SPMD model. HPF directives are used to determine which processor gets the data. HPF are simple to write, but will never be as explicit as MPI. A Fortran program can be passed through an HPF compiler and will be parallelized using the system defaults (without {\it any} effort on the part of the programmer), though more efficient parallelizations can be achieved using the HPF function calls. HPF is basically a competitor of OpenMP.
+
+With HPF, you begin by defining a conceptual processor grid that describes how the processors can communicate with each other (though this doesn't have to reflect the underlying physical configuration). HPF compilers will parallelize Fortran array syntax and intrinsics that operate on entire arrays at once. {\tt independent} loops are do-loops where each iteration is independent such that all iterations can be computed in any order. {\tt pure} procedures also help improve parallelism. Finally, extrinsics are procedures written in languages other than Fortran. 
+
+All HPF directives begin with {\tt !HPF\$}, and are ignored by non-HPF compilers. Most of the directives are concerned with data distribution - the {\tt independent} directive and its {\tt new} clause are the only executable directives. 
+
+\section{Coarray Fortran}
+CAF is a parallel programming extension to Fortran that allows you to use a partitioned global address space (it is available on Edison using the cray compiler). CAF has been included in the Fortran 2008 standard. The main goal of CAF is to allow Fortran programmers to parallelize without the need to invoke communication functions or directives such as with MPI and OpenMP. CAF is a type of PGAS language. 
+
 \section{Variables}
 Variable names must be shorter than 31 characters. For historical reasons, Fortran can perform implicit typing of variables, where a variable type is assigned based on the first character of the variable. Names beginning with letters in the range of i to n are integers, while all others are real. Compilers will by default assume implicit typing, and because this can cause bugs, you should always turn off implicit typing using the {\tt IMPLICIT NONE} statement in each unit. This statement must precede all variable declarations. 
 
@@ -183,6 +221,18 @@ Fortran has three types of dynamic arrays. Automatic arrays are local arrays who
 
 Alternatively, arrays can be explicitly allocated using a call to {\tt allocate} after an array has been declared {\tt allocatable}. If an array is declared allocatable within a local procedure, it is global to all enclosed scopes. Upon exit of this procedure, it is automatically deallocated unless a {\tt save} has been specified (similar to declaring a variable as {\tt static}).
 
+Fortran has three types of dummy array argument:
+
+\begin{itemize}
+\item explicit shape - all bounds are given
+\item assumed-size - all bounds are passed except the last (i.e. following the input of some other integer such as {\tt integer, intent(in) :: i}, you could define the array size as {\tt integer, dimension(i) :: array}). For higher-dimensional arrays, you don't need to input anything for the last size, and you can simply use an asterisk. The last entry adopts an assumed value. This was the Fortran 77 way of passing arrays, and has been superseded by assumed-shape arrays, because the more modern approach means that you don't need to pass the length of an array, as well as the array, into a procedure, but just the array itself.
+\item assumed-shape - no bounds are specified, so fill in the blanks using colons. All bounds are inherited from the actual argument. This is the only dummy array style that requires an interface, since the compiler behind the scenes has to know to pass the length of the array. 
+\end{itemize}
+
+A dummy argument cannot be an allocatable array! This means that an array must be allocated before being used as an argument. You cannot index arrays using vectors, i.e. if I have a vector {\tt vec = (/ 1, 17, 2043 /)}, then I cannot access {\tt a(1), a(17), a(2043)} by calling {\tt a(vec)}. The reason for this is related to efficiency - vector subscripting would likely cause you to run around in memory, since the desired locations are likely far away from each other. You cannot pass assumed-size arrays as input arguments to nested internal procedures, since the compiler will not know the correct dimensions to pass under-the-hood.
+
+Fortran also has a fourth type of array, automatic arrays, where the size of the array is determined by the values of dummy arguments to a procedure (but a dummy argument cannot itself be an automatic array). For instance, if an integer is passed into a function, then a local array could be declared as {\tt integer :: a(i)}. Automatic arrays have local scope precisely because their size is determined by the dummy arguments of a function - these arguments change from call to call, so it would not make sense to preserve automatic arrays between calls because their sizes would constantly change. Automatic arrays therefore cannot use the {\tt save} attribute. Automatic arrays can be determined not only from the dummy arguments, but also from components of other dummy arguments using {\tt size()}. If there is insufficient memory to allocate an automatic array, the program will typically crash. 
+
 \section{Input and Output}
 Files are associated with integers, called the unit number. Unit 5 is associated with standard input, unit 6 with standard output, and unit 2 with standard error. Unlike other languages, Fortran always writes a newline character after each print or write statement.  Prior to the 2003 standard, Fortran did not have any way to read arguments from the command line, though many compilers provided extension functions. 
 
@@ -212,10 +262,10 @@ end interface
 Explicit interfaces are required if an {\tt external} procedure:
 
 \begin{itemize}
-\item has assumed-shape arrays (the compiler will need to know to pass the length of the array into the external procedure, since this is done for internal procedures with assumed-shape arrays), pointers, or targets (also need to know the types and attributes of pointers and targets)
+\item has dummy arguments that are assumed-shape arrays, pointers, or targets (for example, the compiler will need to know to pass the length of the array into the external procedure, since this is done for passing in assumed-shape arrays)
 \item has {\tt optional} arguments (the compiler has to figure out the correct association when any of the optional arguments are missing)
 \item returns an array or pointer
-\item contains an inherited {\tt len=*} specifier for character functions
+\item contains an inherited {\tt len=*} specifier for character functions (compiler needs to also pass string length information)
 \end{itemize}
 
 A procedure cannot appear both in an {\tt interface} block and in an {\tt external} statement in the same scoping unit.
@@ -252,6 +302,16 @@ Subroutines can contain internal procedures, but only if they themselves are not
 
 Procedure arguments can be of derived type so long as that derived type is defined in a single location. The procedure can be internal to the program unit in which the derived type is defined, {\it or}, the derived type can be defined in a module that is accessible from the procedure. 
 
+External procedures are associated with older versions of Fortran, namely Fortran 77, and are more clumsy than the capabilities available with Fortran 2003. External procedures may be compiled separately from the main program, require an explicit interface to be supplied to the calling program, can be used as arguments, and should always contain the {\tt explicit none} clause. 
+
+External procedures are not contained within a {\tt program} or {\tt module} statement - they are {\tt external}. This style of programming should be deprecated, since there are more modern ways of achieving the same functionality in modern Fortran. External procedures can be compiled separately, may need an explicit interface to be supplied to the calling program, can be used as arguments, and should always contain the {\tt implicit none} specifier. 
+
+To invoke an external procedure, use the {\tt external} keyword in the argument definition section of the using procedure. External procedures don't have access to any of the hosts's data, and hence must also all include their own {\tt implicit none} statement. The type of an external function must be given in the calling program unit. For instance, OpenMP is implemented as external procedures, so we need to define the type of the external procedure using {\tt integer, external :: omp\_get\_num\_threads}.
+
+Explicit interfaces should be provided for external procedures. An interface allows the compiler to make consistency checks. An interface contains all of the variable declaration statements of a procedure (all the definitions for input arguments, but not including any local external procedure variables). The interface gives the name, type, kind, and rank of all dummy arguments and the procedure (i.e. return value for functions). {\tt use} statements are required if the module uses variables of a derived type that is defined in some other module, but are not required if you're simply using a function from another module in the executable section of the external procedure. An interface cannot be used for a procedure specified in an {\tt external} statement, and vice versa. If an interface is present in the declarations part of a program that calls that procedure, then the interface is {\it explicit}. It's a good idea to make all interfaces explicit. Interfaces are {\it only} needed for external procedures (interfaces to internal procedures, module procedures, and intrinsic procedures are already explicit). The interface only contains the subroutine or function header, the function return type (if not already in the function header), declarations of dummy arguments, and the end subroutine/function statement. Using an interface allows separate compilation and for the compiler to perform consistency checks.
+
+
+
 \section{Common Blocks}
 Common blocks are lists of variables or arrays that are stored in areas of memory shared between two or more program units. These are useful in special circumstances when procedures have to be coupled closely together, but otherwise should be avoided. 
 
@@ -269,15 +329,17 @@ Procedures are subroutines or functions. Functions return a single value, and us
 
 There is a limit of one nesting level to internal procedures - internal procedures cannot contain themselves more internal procedures. Variables defined in the program unit are accessible from within internal procedures, unless redefined there. It is good practice to declare all variables used in subprograms in order to avoid the use of global variables on accident.
 
-In order for the compiler to correctly link internal, external, and module procedures, the compiler must know certain information. For intrinsic procedures, internal procedures, and modules, this information is already known to the compiler (it is explicit). However, for external procedures, an interface must be provided to inform the compiler of this information. This interface is essentially a function/subroutine prototype, where the body of the procedure and all local variables are omitted. A single interface block can contain interfaces to more than one procedure. The interface block must be placed in the calling program unit.
+Internal procedures inherit entities by host association (they can see whatever is in their host), while objects declared in modules are made visible by use association (using the {\tt use} statement). In Fortran 77, different procedures were entirely separate from one another, and could not access each other's variable spaces (and hence everything that needed to be shared had to be passed through argument lists to the procedures or in common blocks) - these procedures that were entirely independent of one another are external procedures. By default, variables that are accessible via host association are global, and any changes made to such variables within an internal procedure are reflected in the main function.
 
-
+In order for the compiler to correctly link internal, external, and module procedures, the compiler must know certain information. For intrinsic procedures, internal procedures, and modules, this information is already known to the compiler (it is explicit). However, for external procedures, an interface must be provided to inform the compiler of this information. This interface is essentially a function/subroutine prototype, where the body of the procedure and all local variables are omitted. A single interface block can contain interfaces to more than one procedure. The interface block must be placed in the calling program unit. Internal procedures can call other procedures at the same scoping level, but cannot call themselves (no recursion, at least in Fortran 90?).
 
 Functions can only return one result, while subroutines can return more than one result in the form of output arguments. Both functions and subroutines are called procedures. The value returned by a function is the name of the function itself. A function can return an array (but it has to be a single array), so to define return types that are more than a single word, you must define the return type within the body of the function. In Fortran, variables are passed into functions and subroutines by reference (under the hood, a pointer to the variable is passed into the function or subroutine). Declaring the subroutines variable with in-intent will prevent any changes to that variable within the subroutine, eliminating unwanted side-effects of passing by reference.
 
+The purpose of using the {\tt intent} statements are to allow the compiler to better optimize the code. {\tt intent(in)} means that a dummy argument will hold a value on procedure entry that will remain unchanged upon exit. {\tt intent(out)} means that a dummy argument is not used during the procedure, but is assigned a value. The {\tt intent(inout)} signifies that a dummy argument holds a value on procedure entry that can be modified and passed back out to the calling program. Using {\tt intent} isn't required, but it allows the compiler to double check for coding errors. 
+
 Functions can be used in expressions (since the return value of a function is given by the function name itself), while subroutines cannot. Subroutines cannot return values through its name, but only through its computation results. So, with subroutines, you must declare what you would like to receive or pass out of the subroutine (since it is not explicitly equivalent to the function name as is the case for functions). {\tt intent(in)} indicates that an argument only receives its value from outside of the subroutine, so that in effect it cannot be modified by reference (as would be the default). {\tt intent(out)} are arguments that does not receive anything from outside the subroutine, but is designed to pass something out at the end of the subroutine. Finally, {\tt intent(inout)} indicates that an argument can receive a value from outside, use it for computation, and then hold a result that is passed back out. Subroutines are not associated with a particular type.
 
-Functions should not be used to modify their input arguments, while subroutines are intended to modify their inputs. Functions and subroutines that are defined within a procedure such as a program are called internal procedures.
+Functions should not be used to modify their input arguments, while subroutines are intended to modify their inputs. Functions and subroutines that are defined within a procedure such as a program are called internal procedures. A function that does not modify any of its inputs or global variables is {\tt pure} (a keyword introduced in Fortran 95), basically meaning that it is side-effect free. All functions should be kept pure if possible.
 
 \section{Modules}
 A module is a package where you can keep functions and subroutines that becomes useful for dividing up code for large projects. Modules exist to make some or all of the entities defined within it accessible to more than one program unit. A subprogram contained within a module is called a module procedure, which may itself contain internal procedures. Modules can be used to:
@@ -328,7 +390,9 @@ Procedures defined in modules have implicit interfaces, so the type, kine, and n
 
 The main purpose of modules is to create a program unit whose interface to external units can be controlled. Variables and subroutines can be private to the module, in which case they cannot be modified by program units that {\tt use} the module, or they can be declared accessible to all units that use the module. The default data permission is {\tt public}, similar to a {\tt struct} in C. Permission can be set right when the variable is declared, or as a separate statement. By simply writing {\tt public} or {\tt private}, without a following list of variable names, then all variables and subroutines in the module obey that classification, unless they are explicitly declared otherwise. Modules that define classes should use {\tt private} as this default.
 
-Module are important for sharing both data and procedures (module procedures) between program units, as well as derived type definitions. All the modules included in a program must have different names. Using the {\tt save} keyword indicates that those program variables will be visible to all other procedures that use that module. Using a module for the sole purpose of defining global variables in this way is the recommended replacement for the {\tt common} block used in Fortran 77. To use variables defined within a module, but under a different name, use the following:
+Module are important for sharing both data and procedures (module procedures) between program units, as well as derived type definitions. All the modules included in a program must have different names. Using the {\tt save} keyword indicates that those program variables will be visible to all other procedures that use that module. Using a module for the sole purpose of defining global variables in this way is the recommended replacement for the {\tt common} block used in Fortran 77. A variable declared with the {\tt save} keyword is only initialized once, and then it retains its values between module usage, unless some procedure changes its value. You can declare all objects local to a procedure as {\tt save} by simply placing {\tt save} on its own line in the initialization section where you declare variable input intent and local variables (this only declares local variables as saved). Variables with the {\tt save} attribute are static objects that are stored on the heap, and hence don't disappear after control returns to a higher scope. In fact, if a variable is not a dummy argument to a procedure or a {\tt parameter}, then you can implicitly declare it as saved by initializing it at the same time as when you declare it ({\tt integer :: i = 0} is the same as {\tt integer, save :: i = 0}). The {\tt save} attribute has no meaning in the main program, since the program is over when the main program exist. Objects appearing in {\tt common} blocks or {\tt data} statements are automatically static.
+
+To use variables defined within a module, but under a different name, use the following:
 
 \begin{lstlisting}
 use quadrature newname=>original
@@ -348,12 +412,30 @@ A huge benefit of modules is that one program can call the module and define a m
 
 Fortran libraries are typically written as modules, since then they have well-defined interfaces and allow easy implementation of object-oriented programming. 
 
+Modules permit:
+
+\begin{itemize}
+\item global object declaration (using a namelist would require you to import that namelist into every file that needs the data). This use of modules is intended to replace the Fortran 77 {\tt common} and {\tt include} statements, which have long been regarded as unsafe features of Fortran 77. In Fortran 77, {\tt common} blocks were the only way to achieve global storage. Variables declared with the {\tt save} attribute are given static storage (on the heap) so that they will retain their values between uses of the module. If a variable does not have the {\tt save} object and that module is not constantly in use by one program, then that value would not be maintained. Modules sit in memory separate from other subroutines and functions that might use the module. Declaring a variable as global does not mean that it is constant - it can still be changed by any procedure that sees the global variable.
+\item procedure declaration; procedures can be encapsulated in a module, which defines an interface within the module so that you don't need to write any interface blocks
+\item ability to control access to module procedures and variables
+\item declare interfaces for external procedures - you can declare interfaces in a module and then use the module whenever an explicit interface is required (but this is really only useful when module procedures cannot be used). It is good practice, and often mandatory, to declare procedure interfaces in any program unit invoking the corresponding procedure. It becomes easier to manage large amounts of interfaces if you put them in a module, since then you only need to define them once (otherwise you would need to duplicate the interfaces in every file that uses the corresponding procedure). Then, a module containing these interfaces is somewhat like a large header file in C. Multiple subroutine/function prototypes can be placed in one {\tt interface} card. However, it's generally not a good idea to place all interfaces in a single module - you should use encapsulation. Interfaces of module procedures don't need to be specified, since they're already present.
+\end{itemize}
+
+Module procedures (since they aren't technically internal procedures) can themselves contain internal procedures, though this is the limit to nested procedures - an internal procedure cannot itself {\tt contains} another internal procedure. Any objects declared with the {\tt save} attribute are global to all procedures that use the module. Modules are new to Fortran 90. Modules can be placed in separate files, or they can be placed above the program - either way, the compiler must ``see'' the module first. The module name does not have to be the same as the file name. Module procedures can call each other because their interfaces can be seen by all procedures at the same level in the module. 
+
+Including a module with the {\tt use} statement makes the public definitions of that module available. You can only rename an object once within a particular scoping unit. Using the {\tt only} clause allows the compiler to only include the object code associated with the specified entities, rather than the code for the entire module, so not only does using the {\tt only} clause lead to more rigorous code, but it can also reduce the size of the executable.
+
+Fortran 90 has two main program units - the {\tt program}, where execution begins and where control should eventually return before the program terminates, and modules. A module is similar to a C++ class, though has more limited object-oriented capabilities than C++. 
+
+Fortran 90 permits recursive procedures, and to enhance compiler optimization of recursive functions, they should be preceded with the {\tt recursive} keyword. Fortran 77 compilers had no way to check that the type and rank of dummy arguments to procedures matched the actual arguments passed in. Objects that are local to procedures (not passed in) are created each time the procedure is invoked, and are also therefore destroyed when the procedure completes. They don't retain their values between calls and don't exist in program memory between calls. 
 
 \subsection{Compiling Modules}
 When you use modules in a Fortran program, all of the involved modules must also be compiled. Modules can be compiled directly with the main program using {\tt ftn module.f90 main.f90}, or modules can be compiled separately. To compile a module separately, use {\tt ftn -c module.f90} (the {\tt -c} means that you want to compile without generating an executable - this creates an object file). Once you've compiled all of the modules, you can then also compile the main program using the {\tt -c} flag to create an object file. To put all of these object files together into a single executable, {\tt ftn module.o main.o}. Alternatively, you can compile without first creating an object file for the main program using {\tt ftn module.o main.f90}.
 
 \section{Structure of a Fortran Program}
 Fortran programs are modular, and contain one and only one main program. In a program, all non-executable statements, such as variable declarations and {\tt implicit none} statements, must appear before all executable statements. Subprograms can be functions and subroutines. You must specify {\tt implicit none} both in the main program as well as in all procedures. However, if you define a bunch of procedures within a module, then a single {\tt implicit none} statement at the top of the file is sufficient for making all of the contained procedures eliminate assumed typing.
+
+The name of the main Fortran program can be any name (it doesn't have to be main). The procedures internal to the main program automatically have access to all of the host's variables and can override them. The main program can also include calls to external procedures.
 
 Objects declared within a program unit are global to everything else in that program unit. The reason that you still want to explicitly pass variables into subroutines/functions (that might already know about that variable) is so that you can re-use the same code for multiple different variables. However, if you have written a function that will only ever modify the same global variable, then you do not need to pass it into the function because the dummy variable will always have the same name as what you would like to use that subroutine/function to operate on. 
 
@@ -388,8 +470,11 @@ Within the main program file, the namelist is used by inserting the following no
 namelist /fem/ n_el, n_qp
 \end{lstlisting}
 
+\section{Object Oriented Programming}
+Modules can be viewed as objects because they encapsulate both data and procedures. Fortran 2003 added the capability to have derived types, which allows you to encapsulate procedures. Fortran 2003 also introduced type extension to its derived types, which is how inheritance is implemented. Using the {\tt extends(previous\_object)} clause, a new type can be defined that contains additional attributes beyond the {\tt previous\_object} class, where this is the parent type. A type without any {\tt extends} keyword is known as a base type (a derived type refers to a {\tt type} declaration, while an extension is used to implement inheritance). When you extend a type, you don't need to type out the family tree to access one of the members of a parent type - after the \% operator, you can simply list the parent attribute, since the extended type has inherited it.
 
+A polymorphic variable is a variable whose type is dynamic at runtime. Hence, a polymorphic variable must be a pointer variable, allocatable variable, or a dummy argument (if you declare the type of a pointer as the parent type, then it can point to an object of any extended type as well). Procedure polymorphism allows procedures to operate on a variety of data types and values, while data polymorphism consists of program variables that can store and operate on a variety of data types. 
 
-
+Procedure polymorphism occurs when a function or subroutine can take a variety of data types as arguments (this is different from overloading!). This can be achieved by declaring one of the dummy arguments as {\tt class(type)}.
 
 \end{document}

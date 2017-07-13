@@ -1024,6 +1024,8 @@ There are three steps to using a variable - declaration, definition, and initial
 
 When you define a variable but do not initialize it, static variables are implicitly initialized as {\tt NULL} such that all bytes have the value 0. Otherwise, the value of a variable is undefined unless it is initialized. You must declare all variables before using them so that the compiler can perform linking within the program. For instance, if you are using multiple files together, a variable can be declared as {\tt extern} so that it is known to all files in the compilation. You must declare functions before calling them unless the function definition appears before the call, but to have more flexible programs, the function declaration is usually placed into header files. 
 
+C assumes that all non-zero and non-null values are true, while zero or null are interpreted as false.
+
 \subsection{Constants}
 Constants, often called literals, cannot be modified during execution. Any of the basic data types can also be constants. Constants are treated like normal variables, except that their values cannot be modified after their definition. 
 
@@ -1039,23 +1041,83 @@ int main() {
 }
 \end{lstlisting}
 
-\subsection{Storage Classes]
+
+\subsection{Storage Classes}
 Storage classes define the scope and lifetime of variables and functions. When using them, use them before the type qualifier in variable definitions. The {\tt auto} storage class is default for all local variables (local variables can only be define within functions, i.e. they cannot be declared outside of all functions). The {\tt register} storage class is used to define local variables that should be stored in a register instead of RAM. These variables cannot be used with the address-of operator, since they do not have a memory address since they are held in a register. Because this variable has to fit in the register, it must be smaller than the register size. However, it is the final decision of the hardware to determine where a variable is actually stored. 
 
 The {\tt static} storage class keeps a local variable in existence for the duration of the program instead of destroying it each time it comes into and out of scope. These variables will retain their values between function calls, and so they could be used to count how many times a function is called (i.e. increment a static variable within the function call). Global variables are declared outside the scope of all functions - declaring a variable as static here will make it static for the entire file, whereas a variable declared as static within a function is static within that function and all sub scopes. 
 
 Finally, the {\tt extern} storage class gives a reference of a global variable that is visible to all program files, not just the present file as is the highest scoping level with {\tt static}. The {\tt extern} keyword is by default used with all C functions since functions by default have that level of scope. Using the {\tt extern} keyword basically does not allocate any memory for the variable yet - it must still be initialized somewhere within the program. There are two different philosophies for accessing functions from another file - importing header files does not use the {\tt extern} keyword, while using the keyword defers the connection to the linker. For variables, the use of the {\tt extern} variable becomes more important, because if you define a variable without this keyword in a header file and then import that header file into multiple source files, each of those source files will have a different idea of what that variable means. On the other hand, if you declare the variable in the header file as {\tt extern}, then all files that import that header fill will have the same reference of the variable. 
 
-\begin{lstlisting}[language=C]
-auto int var;
-register int var;
-static int var;
-\end{lstlisting}
+Variables are local when they are defined within a function or block, global when they are defined outside all functions, and formal when defined within a function parameter list. When a local variable is defined, you must initialize it. On the other hand, global variables are automatically initialized by the system before you initialize them with the value you want them to hold. Global variables will be initialized to a value of 0 (NULL for pointers and '\textbackslash 0' for char). Uninitialized variables will have garbage values according to whatever was in memory at that location previously. 
 
 \subsection{Enumerated Types}
 Enumerated types are basic types that can only be used to assign discrete integer values throughout the program. 
 
 \subsection{Derived Types}
 Derived types include pointers, arrays, structures, unions, and function types. 
+
+\section{Loops}
+
+{\tt break} statements immediately break out of a loop or switch statement. {\tt continue} statements skip the remainder of the body of a loop and immediately retests a condition before the next loop iteration. {\tt goto} statements transfer control to the labeled statements. 
+
+\section{Functions}
+
+A function declaration tells the compiler about the function's input arguments and return type, while the definition provides the actual body of the function. In a function declaration, you don't need to include the names of parameters - you could just put in the placeholder variable types. Function declaration is required when you are using a function across multiple files. The variables that accept the values of the input arguments are known as the formal parameters of the function. Variables can be passed into a function by value, in which case the variable is not modified, or by reference (copy in the address), in which case changes made in the function do impact the variable's stored value. By default, C uses call-by-value to pass arguments into a function, so you won't need to worry about accidentally changing the stored value of a variable. To pass by reference, the function parameters should be pointers to the variable you would like to modify - you can modify those pointers by value, but now you have the ability to touch a variable's value outside the scope of the function. 
+
+\section{Arrays}
+Arrays are contiguous memory locations that hold variables of the same data type. You have the option to specify the length of the array when declaring, but if you don't, then that array will only be exactly the length of the variables you initialize it with. C arrays are row-major. When declaring multi-dimensional C arrays, you could equivalently initialize it as a single long array instead of using the nested curly braces syntax below. 
+
+\begin{lstlisting}[language=C]
+int array [5]; // define length-5 array
+double line[] = {1, 2, 3, 4, 5}; // don't have to specify length
+double line2[10] = {1, 2, 3, 4, 5}; // remaining elements are zero by default
+float two_d[3][2] = {{0, 1}, {2, 3}, {4, 5}}; // initialize higher dimensional arrays
+\end{lstlisting}
+
+You cannot return an entire array from a function, but you can return a pointer to the array by specifying the array's name without an index. An array name is a constant pointer to the first element of the array. 
+
+\begin{lstlisting}[language=C]
+int a[5]; // a is a pointer to a[0]
+int* ptr = a;
+*(ptr + 1) = 35; // assigns a value to the second entry in a
+\end{lstlisting}
+
+\section{Pointers}
+
+While pointers themselves hold memory address (which provided you aren't doing parallel programming stuff where addresses might be longer if they are for shared memory rather than private memory), and hence are all of the same size. But, the reason that you need to declare the type of data to which the pointer points is so that incrementing the pointer jumps the correct number of spaces in memory. Defining a pointer as a null pointer assigns it the value of 0. The memory address 0 is often not actually accessible because it is memory that is owned by the operating system, but instead a memory address of 0, in the context of being owned by a pointer, signifies that the pointer doesn't point to anything. To check if a pointer is a null pointer, you can use the fact that C interprets any zero or null value to be false ({\tt if (ptr)}). 
+
+\begin{lstlisting}[language=C]
+int a;
+int *ptr = &a; // assign a pointer to hold the address of a
+\end{lstlisting}
+
+If two pointers point to elements within the same array, you can perform logical operations on those pointers. You can also define an array of pointers. C also allows you to define pointers to pointers. These nested pointers point to pointers, so you assign them the address of a pointer just as you would assign a single-layer pointer. 
+
+\begin{lstlisting}[language=C]
+int * ptr1;
+int ** ptr2; // pointer to a pointer
+ptr2 = &ptr1;
+
+int c = **ptr2; // dereference with two asterisks
+\end{lstlisting}
+
+\section{Strings}
+Strings are 1-D arrays of characters that are implicitly terminated by the null character. 
+
+\section{Structures}
+While arrays can be used to group variables of the same type together, structures are used to group data of different types together. Members can be accessed using the dot operator. Pointers to structures have a special arrow operator that allows you directly access the members of the structure to which they point without first having to explicitly dereference the pointer. Structures also allow you to pack data together much more closely by specifying the number of bits for each member of the structure. 
+
+\begin{lstlisting}[language=C]
+struct book {
+	int a, b;
+	inf f1:1; // i know this only requires 1 bit
+	int f2:9; // this only requires 9 bits
+} bible;
+
+struct book dictionary; // define additional structure variables later
+struct book *ptr;
+ptr -> a = 3; // same as *ptr.a
+\end{lstlisting}
 
 \end{document}
