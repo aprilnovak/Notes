@@ -54,7 +54,9 @@
 \newcommand{\eeq}{\end{equation}}
 \newcommand{\beqa}{\begin{equation}\begin{aligned}}
 \newcommand{\eeqa}{\end{aligned}\end{equation}}
-\newcommand{\hO}{\hO}
+\newcommand{\hO}{\hat{\Omega}}
+\newcommand{\Om}{\Omega}
+\newcommand{\spa}{(\vv{r}, E, \hO, t)}
 
 \titleclass{\subsubsubsection}{straight}[\subsection]
 
@@ -127,335 +129,304 @@ An inner product is an integral over all of phase space of two quantities. For i
 \subsection{Quantities in the Transport Equation}
 This section defines the variables that appear in the neutron transport equation.
 
-\subsubsection{Unit Direction Vector \(\hO\)}
+\subsubsection{Unit Direction Vector \(\hO  \)}
 
-In the neutron transport equation, the flux is a function of direction (note that the flux is not a vector itself, but only a function of direction). The direction of a neutron is given by the unit vector \(\hO\), which has the same direction as the neutron velocity vector. \(\hO\) is easy to express in Cartesian coordinates. With \(\phi\) as the angle in the \(x-y\) plane from the positive \(x\)-axis and \(\theta\) as the angle between \(\hO\) and the \(z\)-axis, it is clear that \(\hO\) is given as follows, where Fig. \ref{fig:CartesianOmegaHat} shows the interpretation of these angles.
+In the neutron transport equation, the flux is a function of direction (note that the flux is not a vector itself, but only a function of direction). The direction of a neutron is given by the unit vector \(\hO \), which has the same direction as the neutron velocity vector. \(\hO \) is easy to express in Cartesian coordinates. With \(\phi\) as the angle in the \(x-y\) plane from the positive \(x\)-axis and \(\theta\) as the angle between \(\hO \) and the \(z\)-axis, it is clear that \(\hO \) is given as follows. The second form below can be obtained using the \(\sin^2{(\theta)} + \cos^2{(\theta)} = 1\) identity.
 
-\beq
+\beqa
 \label{eq:OmegaCartesian}
-\hO \equiv \frac{\vv{v}}{\mid \vv{v}\mid} = \sin{(\theta)}\cos{(\phi)}\hat{i} + \sin{(\theta)}\sin{(\phi)}\hat{j} + \cos{(\theta)}\hat{k}
-\eeq
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.4\linewidth]{figures/CartesianOmegaHat.png}
-\caption{Definition of \(\theta\) and \(\phi\) in a Cartesian coordinate system. The symbol \(\varphi\) in the figure is used for angular flux in this document, and hence \(\phi\) is used for this angle.}
-\label{fig:CartesianOmegaHat}
-\end{figure}
+\hO  \equiv \frac{\vv{v}}{\mid \vv{v}\mid} =& \sin{(\theta)}\cos{(\phi)}\hat{i} + \sin{(\theta)}\sin{(\phi)}\hat{j} + \cos{(\theta)}\hat{k}\\
+=& \sqrt{1-\mu^2}\textrm{cos}(\phi)\hat{i} + \sqrt{1-\mu^2}\textrm{sin}(\phi)\hat{j} + \mu\hat{k}\\
+\eeqa
 
 Each of these components are often given their own names (caution: the naming convention of \(\xi\) and \(\eta\) differs depending on where you look). 
 
-\begin{equation}
+\beqa
 \label{eq:OmegaComponentsCartesian}
-\begin{aligned}
- \xi \equiv \textrm{sin}(\theta)\textrm{cos}(\phi)\\
- \eta \equiv \textrm{sin}(\theta)\textrm{sin}(\phi)\\
- \mu \equiv \textrm{cos}(\theta)\\
-\end{aligned}
-\end{equation}
+ \xi \equiv &\sin{(\theta)}\cos{(\phi)}\\
+ \eta \equiv &\sin{(\theta)}\sin{(\phi)}\\
+ \mu \equiv &\cos{(\theta)}\\
+\eeqa
 
-Using the \(\textrm{sin}^2(\theta) + \textrm{cos}^2(\theta) = 1\) identity, \(\hat{\Omega}\) in Cartesian coordinates can also be written as
+The axes used in 1-D Cartesian problems are often re-oriented such that \(z\) is the independent variable (as opposed to a 1-D problem in \(x\) or a 1-D problem in \(y\)) so that the direction of neutrons is \(\mu\hat{k}\).
 
-\begin{equation}
-\label{eq:OmegaCartesianMuOnly}
-\hat{\Omega} = \sqrt{1-\mu^2}\textrm{cos}(\phi)\hat{i} + \sqrt{1-\mu^2}\textrm{sin}(\phi)\hat{j} + \mu\hat{k}
-\end{equation}
+In Cartesian coordinates, a neutron moves along constant \(\hO\) until suffering a collision. This is {\it not} the case in curvilinear (cylindrical, spherical, or other) coordinates, however. In curvilinear coordinates, as a neutron streams, the angular coordinates are constantly changing. If this is not intuitive, think of a neutron traveling in a 2-D Cartesian coordinate system along the line \(x = 1\). This neutron moves along constant \(\hO\). However, the same neutron, described in a cylindrical system, is constantly changing its angle relative to the \(x\)-axis. This means that \(\hO\), in the cylindrical coordinate frame, also changes as the neutron moves, even if it hasn't collided with anything!
 
-The axes used in 1-D Cartesian problems are often re-oriented such that \(z\) is the independent variable (as opposed to a 1-D problem in \(x\) or a 1-D problem in \(y\)) so that the direction of neutrons is \(\mu\hat{k}\). This convention is the reason why the arguments of the Legendre polynomials in Eq. \ref{eq:LegendrePolynomialDefinitions} are listed as \(\mu\). 
+In a spherical coordinate system, an integral over the surface of the unit sphere is given as \(dA=r^2\sin{(\theta)}d\theta d\phi\), so an integral over the solid angle is determined by dividing by \(r^2\) since solid angle represents the dimensionless area on the unit sphere.
 
-In Cartesian coordinates, a neutron moves along constant \(\hat{\Omega}\) until suffering a collision. This is not the case in curvilinear coordinates. In curvilinear coordinates, which include cylindrical and spherical coordinates, as a neutron streams, the angular coordinates are constantly changing. If this is not intuitive, think of a neutron traveling in a 2-D Cartesian coordinate system along the line \(x = 1\). This neutron moves along constant \(\hat{\Omega}\). However, the same neutron, described in a cylindrical system, is constantly changing its angle relative to the \(x\)-axis. This means that \(\hat{\Omega}\), in the cylindrical coordinate frame, also changes as the neutron moves, even if it hasn't collided with anything!
-
-In a typical Cartesian domain, an incremental volume element is given by \(dV = dxdydz\). Similarly, an incremental solid angle element is given by 
-
-\begin{equation} % why?
+\beqa
 \label{eq:DifferentialOmega}
-d\hat{\Omega}=\sin{(\theta)}d\theta d\phi=d\mu d\phi
-\end{equation}
+d\hO  =&\sin{(\theta)}d\theta d\phi\\
+=&d\mu d\phi\\
+\eeqa
 
-which represents a dimensionless area on the unit sphere. An integral over \(\hat{\Omega}\) is usually represented shorthand by \(\int_{4\pi}^{ } d\hat{\Omega}\), which represents integration over the entire \(4\pi\) solid angle.
+An integral over \(\hO\) is usually represented shorthand by \(\int_{4\pi}^{ } d\hO\), which represents integration over the entire \(4\pi\) solid angle.
 
-\begin{equation}
+\beqa
 \label{eq:4PiOmegaIntegral}
-\int_{4\pi}^{ } d\hat{\Omega} = \int_{-1}^{1} d\mu \int_{0}^{2\pi} d\phi = \int_{0}^{\pi} \sin{(\theta)}d\theta \int_{0}^{2\pi} d\phi = 4\pi
-\end{equation}
+\int_{4\pi}^{ } d\hO   = &\int_{-1}^{1} d\mu \int_{0}^{2\pi} d\phi \\
+=& \int_{0}^{\pi} \sin{(\theta)}d\theta \int_{0}^{2\pi} d\phi \\
+= &\ 4\pi
+\eeqa
 
-The integral of any two components of the direction vector over \(4\pi\) solid angle gives a condition simliar to an orthogonality statement:
+The integral of any two components of \(\hO\) over \(4\pi\) solid angle gives an orthogonality condition for \(\hO\):
 
-\begin{equation}
+\beq
 \label{eq:4PiOmegaOmega}
-\int_{4\pi}^{ } d\hat{\Omega}\Omega_i\Omega_j = \frac{4\pi}{3}\delta_{ij}
-\end{equation}
+\int_{4\pi}^{ } d\hO\ \Om_i\Om_j = \frac{4\pi}{3}\delta_{ij}
+\eeq
 
-It is frequently assumed that the angular dependence of a collision is rotationally symmetric, which means that scattering cross sections really depend on the \textit{change} in angle between the incident and scattered neutron, rather than the absolute values of each. This assumption is equivalent to assuming that a scattering collision is independent of the angle \(\phi\). In this case, the change in the angle during scattering, where \(\hat{\Omega}\) represents the incident neutron direction and \(\hat{\Omega}'\) represents the scattered neutron direction, can be related to the dot product of the two angles
+It is frequently assumed that the angular dependence of a collision is rotationally symmetric, which means that scattering cross sections really depend on the \textit{change} in angle between the incident and scattered neutron, rather than the absolute value of the incident angle. In this case, the change in the angle during scattering can be related to the dot product of the two angles
 
-\begin{equation}
+\beqa
 \label{eq:OmegaDotOmega}
-\hat{\Omega}\cdot\hat{\Omega}' = |\hat{\Omega}||\hat{\Omega}'| \cos{(\theta)} = \mu
-\end{equation} 
+\hO  \cdot\hO  ' =& |\hO  ||\hO  '| \cos{(\theta)} \\
+=&\ \mu
+\eeqa
 
-where the magnitude of each of the unit direction vectors being 1 has been used. Therefore, the change in angle during scattering is given by \(\mu\) as long as the scattering is rotationally symmetric. This is a second motivation for the use of Legendre polynomials for expansions of the scattering cross section. Expressing cross sections in terms of \(\mu\) implies that we ignore any type of anisotropic grain structure, since on a macroscopic scale, grains are sufficiently randomly oriented. 
+where \(\hO\) represents the incident neutron direction and \(\hO'\) represents the scattered neutron direction. Therefore, the change in angle during scattering is given by \(\mu\), and often cross sections are quoted as a function of this change-in-angle. Functions of a single variable, such as a Legendre series, can be used to expand angular-dependent cross sections provided we assume the cross sections are rotationally symmetric. Rotational symmetry implies that we are ignoring any type of anisotropic grain structure, which is sufficient since on a macroscopic scale, grains are sufficiently randomly oriented. 
 
 \subsubsection{Reaction Rates}
 
-The interaction rate of neutrons is given in terms of an interaction frequency:
+The interaction rate of neutrons in material \(j\) is given in terms of an interaction frequency for reaction \(i\):
 
 \begin{equation}
 \label{eq:ReactionFrequency}
-\textrm{Reaction Rate Frequency} = v\Sigma
+\textrm{Reaction Rate Frequency}_{i, j} = v\Sigma_{i, j}
 \end{equation}
 
-where \(v\) is the neutron velocity. Intuitively, we see that \(v\) must be included in the interaction frequency; if the velocity were zero, then even if there were many neutrons, none would interact. The reaction rate density is simply
+where \(v\) is the neutron velocity and \(\Sigma_{i, j}\) is a macroscopic cross section for reaction \(i\) in material \(j\). Intuitively, \(v\) must be included in the interaction frequency, because if the velocity were zero, then even if there were many neutrons, none would interact because they would never collide with anything. The macroscopic cross section represents the probability per unit distance traveled by the neutron of undergoing reaction \(i\) in material \(j\). The macroscopic cross section can be computed by multiplying the microscopic cross section \(\sigma_{i,j}\) for the reaction \(i\) in material \(j\) by the number density of material \(j\):
 
-\begin{equation}
+\beq
+\Sigma_{i,j}\equiv\sigma_{i,j}N_j
+\eeq
+
+The reaction rate density for a given reaction and nuclide simply multiplies the interaction frequency \(v\Sigma_{i,j}\) with the density of neutrons:
+
+\beq
 \label{eq:ReactionRateDensity}
-\textrm{Reaction Rate Density} = v\Sigma N
-\end{equation}
+\textrm{Reaction Rate Density}_{i,j} = v\Sigma_{i,j}n
+\eeq
 
-where \(N\) is the neutron volumetric density (neutrons/cm\textsuperscript{3}). 
+where \(n\) is the volumetric neutron density (neutrons/cm\textsuperscript{3}). 
 
 \subsubsection{Flux}
 
-The reaction rate density definition in Eq. \ref{eq:ReactionRateDensity} leads to a convenient \textit{definition} for the angular flux:
+The reaction rate density definition in Eq. \ref{eq:ReactionRateDensity} leads to a convenient \textit{definition} for the angular flux - the angular flux is the proportionality between a reaction rate and the macroscopic cross section for that reaction rate.
 
-\begin{equation}
+\beq
 \label{eq:AngularFlux}
-\psi(\vv{r}, E, \hat{\Omega}, t) \equiv v(E)N(\vv{r}, E, \hat{\Omega}, t)
-\end{equation}
+\psi\spa \equiv v(E)n\spa
+\eeq
 
 All angular quantities can be integrated over \(4\pi\) solid angle to give the corresponding ``scalar'' value. The scalar neutron flux is the angular flux with all angular dependence integrated out, also referred to as the zeroth angular moment of the angular flux.
 
-\begin{equation}
+\beq
 \label{eq:ScalarFlux}
-\phi(\vv{r}, E, t) = \int_{4\pi}^{} d\hat{\Omega} \psi(\vv{r}, E, \hat{\Omega}, t)
-\end{equation}
+\phi(\vv{r}, E, t) = \int_{4\pi}^{} d\hO\psi\spa
+\eeq
 
 If the angular flux is isotropic, i.e. independent of angle, then the above integral would simply evaluate to \(\phi(\vv{r}, E, t)=4\pi\psi\). However, the entire crux of neutron transport is that the angular flux usually has strong angular dependence, especially near boundaries or interfaces between regions with very different cross-sections, such as near vacuum boundaries or strong absorbers. 
 
 \subsubsection{Current}
 
-The angular current density has the same magnitude of the angular flux, except that it has direction - it denotes the current of neutrons moving in a certain angular direction:
+The angular current density has the same magnitude as the angular flux, except that it has direction - it denotes the current of neutrons moving in a certain angular direction \(\hO\):
 
-\begin{equation}
+\beq
 \label{eq:AngularCurrent}
-\vv{j}(\vv{r}, E, \hat{\Omega}, t) = \psi(\vv{r}, E, \hat{\Omega}, t)\hat{\Omega}
-\end{equation}
+\vv{j}\spa = \psi\spa\hO  
+\eeq
 
-The current \(\vv{J}\) is the first angular moment of the angular flux, and is given by:
+The current \(\vv{J}\) is the zeroth angular momentum of the angular current, which is equivalent to the first angular moment of the angular flux, and is given by:
 
-\begin{equation}
+\beq
 \label{eq:Current}
-\vv{J}(\vv{r},E,t)=\int_{4\pi}^{}d\hat{\Omega}\vv{j}=\int_{4\pi}^{}d\hat{\Omega}\psi(\vv{r},E,\hat{\Omega},t)\hat{\Omega}
-\end{equation}
+\vv{J}(\vv{r},E,t)=\int_{4\pi}^{}d\hO  \vv{j}=\int_{4\pi}^{}d\hO\psi\spa\hO  
+\eeq
 
-To determine how many neutrons cross a unit area, we must integrate the angular current over that area, dotted with the unit normal vector of that surface to indicate that only neutrons moving perpendicular to the surface actually cross it:
+The fundamental difference between current and flux is that current represents the net rate at which particles stream through a surface (since it is a vector), while flux represents the total rate at which particles stream through a surface, regardless of direction. While Eq. \ref{eq:Current} holds for the angular variables, there is no analogous, exact, relationship between \(J\), the scalar current, and \(\phi\). To determine how many neutrons cross a unit area, we must integrate the angular current over that area, dotted with the unit normal vector of that surface to indicate that only neutrons moving perpendicular to the surface actually cross it:
 
-\begin{equation}
+\beq
 \label{eq:AngularCurrent}
-\textrm{Surface Current} = \int dA \vv{j}(\vv{r}, E, \hat{\Omega}, t)\cdot\hat{n}
-\end{equation}
+\textrm{Surface Current} = \int dA \int_{4\pi}^{}\hO\vv{j}\spa \cdot\hat{n}
+\eeq
 
-Eq. \ref{eq:AngularCurrent} would then also be integrated over angle and energy to give the total number of neutrons crossing the surface. The fundamental difference between current and flux is that current represents the net rate at which particles stream through a surface (since it is a vector), while flux represents the total rate at which particles stream through a surface, regardless of direction. While Eq. \ref{eq:AngularCurrent} holds for the angular variables, there is no analogous, exact, relationship between \(J\), the scalar current, and \(\phi\). 
+Eq. \ref{eq:AngularCurrent} would then also be integrated over angle and energy to give the total number of neutrons crossing the surface. The surface current above represents the neutrons moving across the surface in direction \(\hat{n}\). In order to separately compute the neutrons moving across the surface in both directions (instead of summing them implicitly), partial surface currents can be computed as
 
-Partial currents can be calculated by again dotting the angular current with the surface normal, but this time we can represent outgoing and ingoing current by integration over \(\pm 2\pi\), respectively.
-
-\begin{equation}
+\beq
 \label{eq:PartialCurrent}
-J_\pm (\vv{r}, E, t) = \int_{2\pi\pm}^{} d\hat{\Omega} \vv{j}(\vv{r}, E, \hat{\Omega}, t)\cdot\hat{n}
-\end{equation}
+J_\pm (\vv{r}, E, t) = \int dA\int_{2\pi\pm}^{} d\hO   \vv{j}\spa \cdot\hat{n}
+\eeq
 
 The net current through a surface is then the sum of the two partial currents (note that \(J_+\) is positive (pointing in the positive direction) while \(J_-\) is negative (pointing in the negative direction), so that we have to actually take the difference between the two to find the net current):
 
-\begin{equation}
+\beq
 \label{eq:TotalCurrent}
 J (\vv{r}, E, t) = J_+ - J_-
-\end{equation}
+\eeq
 
-\subsection{Pressure Tensor}
+\subsubsection{Pressure Tensor}
 
-While current and scalar flux are the first and zeroth moments of the angular flux, we can also define a second moment of the angular flux as the pressure tensor:
+While the current and scalar flux are the first and zeroth moments of the angular flux, respectively, we can also define a second moment of the angular flux as the pressure tensor:
 
-\begin{equation}
+\beq
 \label{eq:PressureTensor}
-\bar{\bar{P}}(\vv{r},E,t)=\int_{4\pi}^{}d\hat{\Omega}\hat{\Omega}\hat{\Omega}\psi(\vv{r},\hat{\Omega},E,t)
-\end{equation}
+\bar{\bar{P}}(\vv{r},E,t)=\int_{4\pi}^{}d\hO  \hO  \hO  \psi\spa 
+\eeq
 
-\subsection{Legendre Polynomials}
+\subsection{Expansion Functions}
+This section describes several important sets of functions that are often used to approximate the functional behavior of quantities in the transport equation.
 
-Legendre polynomials \(P_l\) are solutions to:
+\subsubsection{Legendre Polynomials}
 
-\begin{equation}
+Legendre polynomials \(P_l\) are solutions to the following equation, which arises from  separation of variables of the Laplace equation in spherical coordinates.
+
+\beq
 \label{eq:LegendrePolynomialDiffEq}
 \frac{d}{d\mu} \left((1-\mu^2) \frac{dP_l}{d\mu}\right) + l(l+1)P_l = 0
-\end{equation}
+\eeq
 
-These functions arise from separation of variables of the Laplace equation in spherical coordinates. These functions are commonly used in neutron transport as expansions for the scattering cross section and flux in deterministic methods. These functions are of the form:
+Legendre polynomials are of the form:
 
-\begin{equation}
+\beq
 \label{eq:LegendrePolynomialDefinitions}
 P_l (\mu) = \frac{1}{2^l l!} \frac{d^l}{d\mu^l} \left(\mu^2 -1\right)^l
-\end{equation}
+\eeq
 
-where \(l\) takes on values of \(0, 1, 2, ..., L\). In neutron transport applications, \(L\) is the order of scattering anisotropy, with \(l=0\) representing isotropic scattering, and \(l = 1\) sometimes being referred to ``linearly anisotropic''. The first several Legendre polynomials are, according to Eq. \ref{eq:LegendrePolynomialDefinitions}
+where \(l\) takes on values of \(0, 1, 2, ..., L\). Because the Legendre polynomials are an orthogonal set of functions, for \(L=\infty\), the approximation is exact, but for real applications, the order of scattering anisotropy, \(L\), is truncated and higher modes neglected. For neutron and photon transport, usually only the first few terms are necessary to obtain sufficient accuracy, though this is not the case for electron scattering, since electrons tend to have much greater anisotropy in scattering than neutrons.
 
-\begin{equation}
+\beqa
 \label{eqn:LegendrePolynomials_P0P1P2}
-\begin{aligned}
- P_0 (\mu) = 1\\
- P_1 (\mu) = \mu\\
- P_2 (\mu) = \frac{1}{2} (3\mu^2 -1)
-\end{aligned}
-\end{equation}
+ P_0 (\mu) =& 1\\
+ P_1 (\mu) =& \mu\\
+ P_2 (\mu) =& \frac{1}{2} (3\mu^2 -1)
+\eeqa
 
-An important property of Legendre polynomials is that they are orthogonal on [-1,1], which means that they can be used as a basis over this range. Normally, we would need to do some type of coordinate transformation to ensure that the variable we are expanding in Legendre polynomials only covers the range [-1,1], but fortunately, \(\mu = \cos{(\theta)}\) only covers the range [-1,1]. It is for this reason that we can easily use Legendre polynomials to expand angular-dependent quantities. 
+When \(L=0\), the angular dependence of a cross section is entirely neglected, which therefore represents isotropic scattering (no angular dependence at all). \(L=1\) is often referred to being ``linearly anisotropic,'' since the functional form of the series expansion is \(C_0+C_1\mu\).
 
-Like other basis functions, Legendre polynomials have an orthogonality property over the range on which they are orthogonal ([-1,1]). This orthogonality property is:
+An important property of Legendre polynomials is that they are orthogonal on [-1,1], which means that they can be used as a basis over this range. The orthogonality property of Legendre polynomials is given as:
 
-\begin{equation}
+\beq
 \label{eqn:LegendrePolynomialsOrthogonality}
 \int_{-1}^{1} d\mu P_l (\mu) P_k (\mu) = \frac{2\delta_{lk}}{2l+1}
-\end{equation}
+\eeq
 
-Orthogonality is a very important property, since it allows us to convert infinite sums to single terms due to the Kronecker delta \(\delta_{lk}\) (recall from differential equations classes). Legendre polynomials also satisfy recursion relations that express \(\mu P_l(\mu)\) in terms of only other Legendre polynomials, which is needed in certain derivations in order to then apply orthogonality, which cannot be applied is there is a pesky \(\mu\) remaining in the integral. One of these recursion relations is:
+Orthogonality is a very important property, since it allows us to convert infinite sums to single terms due to the Kronecker delta \(\delta_{lk}\). Legendre polynomials also satisfy recursion relations that express \(\mu P_l(\mu)\) in terms of only other Legendre polynomials, which is needed in certain derivations in order to then apply orthogonality, which cannot be applied is there is a pesky \(\mu\) remaining in the integral. One of these recursion relations is:
 
-\begin{equation}
+\beq
 \label{eqn:LegendrePolynomialRecursion1}
 \mu P_l(\mu) = \frac{1}{2l+1} \left\lbrack(l+1)P_{l+1}(\mu) + l P_{l-1}(\mu)\right\rbrack
-\end{equation}
+\eeq
 
-Often in nuclear engineering applications, cross sections and/or neutron flux are ``expanded'' in Legendre polynomials. This means that the angular dependence, previously unknown to us, is now described in terms of Legendre polynomials. This expansion is performed frequently with cross sections so that we do not have to keep cross-section data as a function of angle. Instead, we can store the scattering moments, which are only functions of space and energy, and simply ``look up'' the angle-dependent scattering cross section by evaluating a finite number of Legendre polynomials. To expand a cross section in Legendre polynomials, we write it as an infinite sum of scattering moments \(\Sigma_{s,l}\) with the Legendre polynomials. Because Legendre polynomials are a basis on [-1,1], as long as the series is infinite, no approximation has been made. In practice, however, we would truncate this expression at some finite number of terms. The sum is usually truncated so that its level of approximation matches that being applied to the angular flux. The more anisotropic the scattering cross section, the more incorrect this early truncation becomes. Each extra term that is maintained represents a higher-anisotropy scattering term.
+In neutron transport applications, Legendre polynomials are most often used to expand the angular dependence of scattering cross sections. Instead of storing the cross sections as a function of angle, we can then instead just store the scattering moments. To expand a cross section in Legendre polynomials, we write it as an infinite sum of scattering moments \(\Sigma_{s,l}\) (basically just the coefficients on the expansion) with the Legendre polynomials. Because Legendre polynomials are a basis on [-1,1], as long as the series is infinite, no approximation has been made. In practice, however, we would truncate this expression at some finite number of terms. The sum is usually truncated so that its level of approximation matches that being applied to the angular flux. 
 
-\begin{equation}
+\beqa
 \label{eq:ScatteringLegendre}
-\Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega}) = \Sigma_s(\vv{r}, E'\rightarrow E, \mu) = \sum_{l=0}^{\infty} \frac{2l+1}{4\pi} \Sigma_{s,l}(\vv{r}, E'\rightarrow E)P_l(\mu)
-\end{equation}
-
-% incomplete
-Whether or not the \(4\pi\) term always appears in these formulations is not consistent across all texts - its inclusion depends on whether or not (?). Alternatively, Eq. \eqref{eq:ScatteringLegendre} can be phrased as:
-
-\begin{equation}
-\label{eq:ScatteringLegendre2}
-\Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega}) = \Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}\cdot\hat{\Omega}') = \sum_{l=0}^{\infty} \frac{2l+1}{4\pi} \Sigma_{s,l}(\vv{r}, E'\rightarrow E)P_l(\hat{\Omega}\cdot\hat{\Omega}')
-\end{equation}
+\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  ) =& \Sigma_s(\vv{r}, E'\rightarrow E, \mu) \\
+=& \sum_{l=0}^{\infty}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)P_l(\mu)\\
+\eeqa
 
 The scattering moments appearing in Eq. \ref{eq:ScatteringLegendre} can be derived by using the orthogonality condition, Eq. \ref{eqn:LegendrePolynomialsOrthogonality}. Multiplying both sides of Eq. \ref{eq:ScatteringLegendre} by \(P_k(\mu)\) and integrating over \(\mu\), and then applying the results of Eq. \ref{eqn:LegendrePolynomialsOrthogonality} gives
 
-\begin{equation}
+\beq
 \label{eq:ScatteringMomentsLegendre}
-\Sigma_{s,l}(\vv{r}, E'\rightarrow E) = 2\pi\int_{-1}^{1} d\mu \Sigma_s(\vv{r}, E'\rightarrow E, \mu) P_l(\mu)
-\end{equation}
+\Sigma_{s,l}(\vv{r}, E'\rightarrow E) = \frac{2l+1}{2}\int_{-1}^{1} d\mu \Sigma_s(\vv{r}, E'\rightarrow E, \mu) P_l(\mu)
+\eeq
 
-Again, whether or not the factor of \(2\pi\) appears is dependent on whether or not Eq. \ref{eq:ScatteringLegendre} contains the \(4\pi\) term. Expanding the scattering cross section in Legendre polynomials is known as the \(P_L\) approximation. For neutron and photon transport, we only need the first few terms to obtain sufficient accuracy, though this is not the case for electron scattering, since electrons tend to have much greater anisotropy in scattering than neutrons.
+Expanding the scattering cross section in Legendre polynomials is known as the \(P_L\) approximation. 
 
-\subsection{Associated Legendre Polynomials}
+\subsubsection{Associated Legendre Polynomials}
 
 The Associated Legendre polynomials are more generalized Legendre functions that are the solutions to
 
-\begin{equation}
+\beq
 \label{eq:AssociatedLegendrePolynomialDiffEq}
 \frac{d}{d\mu} \left((1-\mu^2) \frac{dP_{lm}}{d\mu}\right) + \left(l(l+1) -\frac{m^2}{1-\mu^2}\right)P_{lm} = 0
-\end{equation}
+\eeq
 
-which you will notice is very similar to \ref{eq:LegendrePolynomialDiffEq}, except that now we have an extra parameter, \(0 \leq m \leq l\). Associated Legendre polynomials are central to the definition of the spherical harmonics functions. In general, \(l\) and \(m\) can be real, complex, and non-integer, but the Associated Legendre polynomials reduce to the Legendre polynomials when \(m=0\) and \(l\) is an integer. The Associated Legendre polynomials have the form:
+which is very similar to Eq. \ref{eq:LegendrePolynomialDiffEq}, except that now we have an extra parameter, \(0 \leq m \leq l\). Associated Legendre polynomials are central to the definition of the spherical harmonics functions. In general, \(l\) and \(m\) can be real, complex, and non-integer, but the Associated Legendre polynomials reduce to the Legendre polynomials when \(m=0\) and \(l\) is an integer. The Associated Legendre polynomials have the form:
 
-\begin{equation}
+\beq
 \label{eq:AssociatedLegendre}
 P_{lm}(\mu)=\frac{(-1)^m}{2^ll!}(1-\mu^2)^{m/2}\frac{d^{l+m}}{d\mu^{l+m}}(\mu^2-1)^l
-\end{equation}
+\eeq
 
 The Associated Legendre polynomials are related to each other for \(\pm m\) by:
 
-\begin{equation}
+\beq
 \label{eq:relatingALP}
 P_{l,-m}=(-1)^m\frac{(l-m)!}{(l+m)!}P_{lm}
-\end{equation}
+\eeq
 
+and satisfy the following orthogonality relation:
 
-
-
-\subsubsection{Orthogonality}
-
-The Associated Legendre polynomials satisfy the following orthogonality relation:
-
-\begin{equation}
+\beq
 \label{eq:AssociatedLegendreOthogonality}
 \int_{-1}^{1}P_{lm}(\mu)P_{l'm'}(\mu)d\mu=\frac{2}{2l+1}\frac{(l+m)!}{(l-m)!}\delta_{ll'}
-\end{equation}
+\eeq
 
+\subsubsection{Spherical Harmonics}
 
+The spherical harmonics functions are eigenfunctions of the monoenergetic Boltzmann scattering operator. The spherical harmonics are defined in terms of the Associated Legendre polynomials given in Eq. \eqref{eq:AssociatedLegendre}. For \(m=0\), or azimuthal symmetry, the spherical harmonics reduce to the Legendre polynomials.
 
-
-
-\subsection{Spherical Harmonics}
-
-The spherical harmonics functions are eigenfunctions of the monoenergetic Boltzmann scattering operator, and hence serve as a natural basis for expanding the scattering cross section in the transport equation. In order to derive several of the methods used for solving the neutron transport equation, theorems and proofs related to the spherical harmonics are needed. These proofs are collected here to serve as a reference.
-
-The spherical harmonics are defined in terms of the Associated Legendre polynomials given in Eq. \eqref{eq:AssociatedLegendre}. For \(m=0\), or the condition of azimuthal symmetry, the spherical harmonics reduce to the Legendre polynomials. Note that some sources place the \((-1)^m\) factor in the definition of the Associated Legendre polynomials. 
-
-\begin{equation}
+\beq
 \label{eq:SphericaltoAssociated}
-Y_{lm}(\theta,\phi)=(-1)^m\sqrt{\frac{(2l+1)}{4\pi}\frac{(l-m)!}{(l+m)!}}P_{lm}(\cos{(\theta)})\exp{(im\phi)}
-\end{equation}
+Y_{lm}(\theta,\phi)=(-1)^m\sqrt{\frac{(2l+1)}{4\pi}\frac{(l-m)!}{(l+m)!}}P_{lm}(\cos{(\theta)})e^{im\phi}
+\eeq
 
 Or, in shorthand notation that will be used in later derivations:
 
-\begin{equation}
+\beq
 \label{eq:SphericaltoAssociatedShort}
-Y_{lm}(\theta,\phi)=C_{lm}P_{lm}(\cos{(\theta)})\exp{(im\phi)}
-\end{equation}
+Y_{lm}(\theta,\phi)=(-1)^m\sqrt{\frac{(2l+1)}{4\pi}\frac{(l-m)!}{(l+m)!}}P_{lm}(\cos{(\theta)})\exp{(im\phi)}
+\eeq
 
-where
+The spherical harmonics form a basis over \(0\leq\phi\leq2\pi, 0\leq\theta\leq\pi\). Hence, the orthogonality property of spherical harmonics is given as:
 
-\begin{equation}
-\label{eq:Clm}
-C_{lm}=(-1)^m\sqrt{\frac{(2l+1)}{4\pi}\frac{(l-m)!}{(l+m)!}}
-\end{equation}
+\beq
+\label{eq:SHOrthogonality}
+\int_{4\pi}^{} d\hO   Y_{lm}(\hO  ) Y_{l'm'}^{*}(\hO  ) = \delta_{ll'}\delta_{mm'}
+\eeq
 
-
-
-\subsubsection{Addition Theorem}
 The addition theorem of spherical harmonics relates the Legendre polynomials to the spherical harmonic and its complex conjugate. 
 
-\begin{equation}
+\beq
 \label{eq:SHAdditionTheorem}
-P_l(\hat{\Omega}'\cdot\hat{\Omega}) = \frac{4\pi}{2l+1} \sum_{m=-l}^{l} Y_{lm}^{*} (\hat{\Omega}') Y_{lm}(\hat{\Omega})
-\end{equation}
+P_l(\hO  '\cdot\hO  ) = \frac{4\pi}{2l+1} \sum_{m=-l}^{l} Y_{lm}^{*} (\hO  ') Y_{lm}(\hO  )
+\eeq
 
 Eq. \eqref{eq:SHAdditionTheorem} can be split up even further into positive, zero, and negative components of \(m\):
 
-\begin{equation}
+\beq
 \label{eq:SphericalHarmonics2}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}(\hat{\Omega})Y_{l0}(\hat{\Omega}')+\sum_{m=1}^{l}\left(Y_{lm}(\hat{\Omega})Y_{lm}^*(\hat{\Omega}')+Y_{l,-m}(\hat{\Omega})Y_{l,-m}^*(\hat{\Omega}')\right)\right\rbrack
-\end{equation}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}(\hO  )Y_{l0}(\hO  ')+\sum_{m=1}^{l}\left(Y_{lm}(\hO  )Y_{lm}^*(\hO  ')+Y_{l,-m}(\hO  )Y_{l,-m}^*(\hO  ')\right)\right\rbrack
+\eeq
 
-Note that the \(m=0\) term has no complex conjugate symbol on either term because, for \(m=0\), the complex portion of \(Y_{lm}\) is zero based on \(\sin{(0}=0\) in Eq. \eqref{eq:RealImaginary}. 
-
-
+Note that the \(m=0\) term has no complex conjugate symbol on either term because, for \(m=0\), the complex portion of \(Y_{lm}\) is zero based on \(\sin{(0)}=0\) in Eq. \eqref{eq:RealImaginary}. 
 
 \begin{tcolorbox}[breakable]
 For 1-D geometries, the addition theorem in Eq. \eqref{eq:SphericalHarmonics2} can be simplified, since \(m\neq0\) represents azimuthal dependencies. In 1-D, there are no azimuthal dependencies, which reduces Eq. \eqref{eq:SphericalHarmonics2} to:
 
-\begin{equation}
+\beq
 \label{eq:SphericalHarmonics3}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}(\hat{\Omega})Y_{l0}(\hat{\Omega}')+\sum_{m=1}^{l}\left(\cancel{Y_{lm}(\hat{\Omega})Y_{lm}^*(\hat{\Omega})}+\cancel{Y_{l,-m}(\hat{\Omega})Y_{l,-m}^*(\hat{\Omega}')}\right)\right\rbrack
-\end{equation}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}(\hO  )Y_{l0}(\hO  ')+\sum_{m=1}^{l}\left(\cancel{Y_{lm}(\hO  )Y_{lm}^*(\hO  )}+\cancel{Y_{l,-m}(\hO  )Y_{l,-m}^*(\hO  ')}\right)\right\rbrack
+\eeq
 
 From Eq. \eqref{eq:SphericaltoAssociated}, \(Y_{l0}\) can be expressed in terms of the Associated Legendre polynomials:
 
-\begin{equation}
+\beq
 \label{eq:SphericalHarmonics4}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=\frac{4\pi}{2l+1}\left\lbrack \sqrt{\frac{2l+1}{4\pi}}P_{l0}(\mu)\sqrt{\frac{2l+1}{4\pi}}P_{l0}(\mu')\right\rbrack\\
-\end{equation}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \sqrt{\frac{2l+1}{4\pi}}P_{l0}(\mu)\sqrt{\frac{2l+1}{4\pi}}P_{l0}(\mu')\right\rbrack\\
+\eeq
 
 Then, from Eq. \eqref{eq:AssociatedLegendre}, it can be seen that the Associated Legendre polynomials reduce to the Legendre polynomials for \(m=0\). This gives the simplified form of the addition theorem which applies for 1-D geometries:
 
-\begin{equation}
+\beq
 \label{eq:AddSpherical1D}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=P_{l}(\mu)P_{l}(\mu')
-\end{equation}
+P_l(\hO  '\cdot\hO  )=P_{l}(\mu)P_{l}(\mu')
+\eeq
 
 \end{tcolorbox}
-
-
 
 Eq. \eqref{eq:SphericaltoAssociated} will let us decompose the \(Y_{l0}\) terms appearing in Eq. \eqref{eq:SphericalHarmonics2}:
 
@@ -465,42 +436,28 @@ Y_{l0}=\sqrt{\frac{(2l+1)}{4\pi}}P_{l0}= Y_{l0}^e
 
 where Eq. \eqref{eq:SphericalHarmonicsEvenOdd} has been used to show that \(Y_{l0}=Y_{l0}^e\).
 
-
-
-\subsubsection{Orthogonality}
-The spherical harmonics form a basis over \(0\leq\phi\leq2\pi, 0\leq\theta\leq\pi\). Hence, the orthogonality property of spherical harmonics is given as:
-
-\begin{equation}
-\label{eq:SHOrthogonality}
-\int_{4\pi}^{} d\hat{\Omega} Y_{lm}(\hat{\Omega}) Y_{l'm'}^{*}(\hat{\Omega}) = \delta_{ll'}\delta_{mm'}
-\end{equation}
-
-
-
-\subsubsection{Expansions of Other Variables}
-
 In general, any arbitrary function \(f\) can be expanded in spherical harmonics:
 
-\begin{equation}
+\beq
 \label{eq:SphericalHarmonicsGeneralExpansion}
-f(\hat{\Omega})=\sum_{l=0}^{N}\sum_{m=-l}^{l}Y_{lm}(\hat{\Omega})f_{lm}
-\end{equation}
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=-l}^{l}Y_{lm}(\hO  )f_{lm}
+\eeq
 
-where \(f_{lm}\) are the moments of \(f\). These moments are computed as:
+where the moments, \(f_{lm}\), are computed as:
 
-\begin{equation}
+\beq
 \label{eq:SHGeneralMoments}
-f_{lm}=\int_{4\pi}^{}f(\hat{\Omega})Y_{lm}^{*}(\hat{\Omega})d\hat{\Omega}
-\end{equation}
+f_{lm}=\int_{4\pi}^{}f(\hO  )Y_{lm}^{*}(\hO  )d\hO  
+\eeq
 
 \begin{tcolorbox}[breakable]
-To show Eq. \eqref{eq:SHGeneralMoments}, multiply Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion} by \(Y_{lm}^{*}\) and integrate over \(\hat{\Omega}\):
+To show Eq. \eqref{eq:SHGeneralMoments}, multiply Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion} by \(Y_{lm}^{*}\) and integrate over \(\hO  \):
 
 \begin{equation}
-\int_{4\pi}^{}f(\hat{\Omega})Y_{lm}^{*}(\hat{\Omega})d\hat{\Omega}=\int_{4\pi}^{}\sum_{l=0}^{N}\sum_{m=-l}^{l}f_{lm}Y_{lm}(\hat{\Omega})Y_{lm}^{*}(\hat{\Omega})d\hat{\Omega}\rightarrow f_{lm}
+\int_{4\pi}^{}f(\hO  )Y_{lm}^{*}(\hO  )d\hO  =\int_{4\pi}^{}\sum_{l=0}^{N}\sum_{m=-l}^{l}f_{lm}Y_{lm}(\hO  )Y_{lm}^{*}(\hO  )d\hO  \rightarrow f_{lm}
 \end{equation}
 
-where the orthogonality property from Eq. \eqref{eq:SHOrthogonality} is used to convert the RHS.
+where the orthogonality property from Eq. \eqref{eq:SHOrthogonality} is used to obtain Eq. \eqref{eq:SHGeneralMoments}.
 \end{tcolorbox}
 
 The expansion in Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion} contains both real and imaginary components, and for real functions such as the scattering source, the imaginary component must be removed. 
@@ -517,7 +474,7 @@ From the definition in Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion}, the ex
 
 \begin{equation}
 \label{eq:BeginningExpansion1}
-f(\hat{\Omega})=\sum_{l=0}^{N}\sum_{m=0}^{l}\left\lbrack C_{lm}P_{lm}(\hat{\Omega})f_{lm}\exp{(im\phi)}+C_{l,-m}P_{l,-m}(\hat{\Omega})f_{l,-m}\exp{(-im\phi)}\right\rbrack
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=0}^{l}\left\lbrack C_{lm}P_{lm}(\hO  )f_{lm}\exp{(im\phi)}+C_{l,-m}P_{l,-m}(\hO  )f_{l,-m}\exp{(-im\phi)}\right\rbrack
 \end{equation}
 
 Because \(\exp{(im\phi)}=\cos{(m\phi)}+i\sin{(m\phi)}\), the above equation can be further expanded by recognizing that \(Y_{lm}\) can be equivalently expressed as:
@@ -525,7 +482,7 @@ Because \(\exp{(im\phi)}=\cos{(m\phi)}+i\sin{(m\phi)}\), the above equation can 
 \begin{equation}
 \label{eq:RealImaginary}
 \begin{aligned}
-Y_{lm}(\hat{\Omega})=C_{lm}P_{lm}(\hat{\Omega})\left(\cos{(m\phi)}+i\sin{(m\phi)}\right)=\hat{Y}_{lm}^e+i\hat{Y}_{lm}^o\\
+Y_{lm}(\hO  )=C_{lm}P_{lm}(\hO  )\left(\cos{(m\phi)}+i\sin{(m\phi)}\right)=\hat{Y}_{lm}^e+i\hat{Y}_{lm}^o\\
 \hat{Y}_{lm}^e=C_{lm}P_{lm}\cos{(m\phi)}\\
 \hat{Y}_{lm}^o=C_{lm}P_{lm}\sin{(m\phi)}\\
 \end{aligned}
@@ -534,7 +491,7 @@ Y_{lm}(\hat{\Omega})=C_{lm}P_{lm}(\hat{\Omega})\left(\cos{(m\phi)}+i\sin{(m\phi)
 Inserting Eq. \eqref{eq:RealImaginary} into Eq. \eqref{eq:BeginningExpansion1}:
 
 \begin{equation}
-f(\hat{\Omega})=\sum_{l=0}^{N}\sum_{m=0}^{l}\left\lbrack C_{lm}P_{lm}(\hat{\Omega})f_{lm}\left(\cos{(m\phi)}+i\sin{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hat{\Omega})f_{l,-m}\left(\cos{(m\phi)}-i\sin{(m\phi)}\right)\right\rbrack
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=0}^{l}\left\lbrack C_{lm}P_{lm}(\hO  )f_{lm}\left(\cos{(m\phi)}+i\sin{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hO  )f_{l,-m}\left(\cos{(m\phi)}-i\sin{(m\phi)}\right)\right\rbrack
 \end{equation}
 
 where the fact that cosine is an even function and sine an odd function has been used in the second term. Then, inserting Eq. \eqref{eq:GeneralComplexNumber} and grouping the terms by real and imaginary components:
@@ -542,9 +499,9 @@ where the fact that cosine is an even function and sine an odd function has been
 \begin{equation}
 \label{eq:FullExpansionSH}
 \begin{aligned}
-f(\hat{\Omega})=\sum_{l=0}^{N}\sum_{m=0}^{l}\left[ \text{Real}+i\left(\text{Imag}\right)\right]\\
-\text{Real} = C_{lm}P_{lm}(\hat{\Omega})\left(\alpha_{lm}\cos{(m\phi)}-\beta_{lm}\sin{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hat{\Omega})\left(\alpha_{l,-m}\cos{(m\phi)}+\beta_{l,-m}\sin{(m\phi)}\right)\\
-\text{Imag} = C_{lm}P_{lm}(\hat{\Omega})\left(\alpha_{lm}\sin{(m\phi)}+\beta_{lm}\cos{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hat{\Omega})\left(\beta_{l,-m}\cos{(m\phi)}-\alpha_{l,-m}\sin{(m\phi)}\right)\\\
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=0}^{l}\left[ \text{Real}+i\left(\text{Imag}\right)\right]\\
+\text{Real} = C_{lm}P_{lm}(\hO  )\left(\alpha_{lm}\cos{(m\phi)}-\beta_{lm}\sin{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hO  )\left(\alpha_{l,-m}\cos{(m\phi)}+\beta_{l,-m}\sin{(m\phi)}\right)\\
+\text{Imag} = C_{lm}P_{lm}(\hO  )\left(\alpha_{lm}\sin{(m\phi)}+\beta_{lm}\cos{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hO  )\left(\beta_{l,-m}\cos{(m\phi)}-\alpha_{l,-m}\sin{(m\phi)}\right)\\\
 \end{aligned}
 \end{equation}
 
@@ -552,8 +509,8 @@ For physically-meaningful quantities such as the scattering source, the expansio
 
 \begin{equation}
 \begin{aligned}
-C_{lm}P_{lm}(\hat{\Omega})\alpha_{lm}-C_{l,-m}P_{l,-m}(\hat{\Omega})\alpha_{l,-m}=0\\
-C_{lm}P_{lm}(\hat{\Omega})\beta_{lm}+C_{l,-m}P_{l,-m}(\hat{\Omega})\beta_{l,-m}=0\\
+C_{lm}P_{lm}(\hO  )\alpha_{lm}-C_{l,-m}P_{l,-m}(\hO  )\alpha_{l,-m}=0\\
+C_{lm}P_{lm}(\hO  )\beta_{lm}+C_{l,-m}P_{l,-m}(\hO  )\beta_{l,-m}=0\\
 \end{aligned}
 \end{equation}
 
@@ -561,14 +518,14 @@ Using these conditions to eliminate terms with \(-m\) in Eq. \eqref{eq:FullExpan
 
 \begin{equation}
 \label{eq:FullExpansionSH2}
-f(\hat{\Omega})=\sum_{l=0}^{N}\sum_{m=0}^{l}C_{lm}P_{lm}(\hat{\Omega})\left(2\alpha_{lm}\cos{(m\phi)}-2\beta_{lm}\sin{(m\phi)}\right)
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=0}^{l}C_{lm}P_{lm}(\hO  )\left(2\alpha_{lm}\cos{(m\phi)}-2\beta_{lm}\sin{(m\phi)}\right)
 \end{equation}
 
 The new basis for the real expansion of \(f\) consists of the two ``hatted'' functions in Eq. \eqref{eq:RealImaginary}. These hatted functions represent a basis, and hence must be orthogonal over the unit sphere. This requirement holds for both the even and odd functions separately. Multiplying \(\hat{Y}_{lm}^e\) by itself and integrating over the unit sphere, and then applying the orthogonality condition in Eq. \eqref{eq:SHOrthogonality}:
 
 \begin{equation}
 \label{eq:EvenRequriedOrthogonality}
-\int_{4\pi}^{}\hat{Y}_{lm}^e\hat{Y}_{l'm'}^ed\hat{\Omega}=C_{lm}^2\int_{0}^{2\pi}\cos{(m\phi)}\cos{(m'\phi)}d\phi\int_{-1}^{1}P_{lm}P_{lm'}d\mu
+\int_{4\pi}^{}\hat{Y}_{lm}^e\hat{Y}_{l'm'}^ed\hO  =C_{lm}^2\int_{0}^{2\pi}\cos{(m\phi)}\cos{(m'\phi)}d\phi\int_{-1}^{1}P_{lm}P_{lm'}d\mu
 \end{equation}
 
 The orthogonality property of cosines functions is:
@@ -581,7 +538,7 @@ Using this cosine orthogonality property and the Legendre polynomial orthogonali
 
 \begin{equation}
 \label{eq:EvenRequriedOrthogonality2}
-\int_{4\pi}^{}\hat{Y}_{lm}^e\hat{Y}_{l'm'}^ed\hat{\Omega}=\frac{1}{2}(1+\delta_{m0})\delta_{mm'}\delta_{ll'}
+\int_{4\pi}^{}\hat{Y}_{lm}^e\hat{Y}_{l'm'}^ed\hO  =\frac{1}{2}(1+\delta_{m0})\delta_{mm'}\delta_{ll'}
 \end{equation}
 
 where the definition for \(C_{lm}\) from Eq. \eqref{eq:Clm} has been inserted. In order for the \(\hat{Y}_{lm}^e\) to be orthogonal, the above resulting constant, multiplied by some unknown constant \(\mathscr{C}^2\), must give 1. 
@@ -607,7 +564,7 @@ Multiplying \(\hat{Y}_{lm}^o\) by itself and then integrating over \(4\pi\) give
 
 \begin{equation}
 \label{eq:OddRequriedOrthogonality2}
-\int_{4\pi}^{}\hat{Y}_{lm}^o\hat{Y}_{l'm'}^od\hat{\Omega}=\frac{1}{2}\delta_{ll'}(1-\delta_{m0})\delta_{mm'}
+\int_{4\pi}^{}\hat{Y}_{lm}^o\hat{Y}_{l'm'}^od\hO  =\frac{1}{2}\delta_{ll'}(1-\delta_{m0})\delta_{mm'}
 \end{equation}
 
 where the definition for \(C_{lm}\) from Eq. \eqref{eq:Clm}, the Associated Legendre polynomial orthogonality property from Eq. \eqref{eqn:AssociatedLegendreOrthogonality}, and the sine orthogonality property from Eq. \eqref{eq:SineOrthogonality} have been used. In order for the odd basis functions to be orthogonal, the resulting above constant, multiplied by some constant \(\mathscr{C}\), must equal 1. Hence, a second condition similar to that obtained for the even functions is obtained:
@@ -683,8 +640,8 @@ In order to remove the imaginary components in Eq. \eqref{eq:SphericalHarmonics2
 \begin{equation}
 \begin{aligned}
 \label{eq:FullExpansion}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=\frac{4\pi}{2l+1}\left\lbrack \left(\hat{Y}_{l0}^e(\hat{\Omega})+i\cancel{\hat{Y}_{l0}^o(\hat{\Omega})}\right)\left(\hat{Y}_{l0}^e(\hat{\Omega}')+i\cancel{\hat{Y}_{l0}^o(\hat{\Omega}')}\right)\right\rbrack+\\
-\frac{4\pi}{2l+1}\left\lbrack\sum_{m=1}^{l}\left(\left(\hat{Y}_{lm}^e(\hat{\Omega})+i\hat{Y}_{lm}^o(\hat{\Omega})\right)\left(\hat{Y}_{lm}^{e*}(\hat{\Omega}')+i\hat{Y}_{lm}^{o*}(\hat{\Omega}')\right)+\left(\hat{Y}_{l,-m}^e(\hat{\Omega})+i\hat{Y}_{l,-m}^o(\hat{\Omega})\right)\left(\hat{Y}_{l,-m}^{e*}(\hat{\Omega}')+i\hat{Y}_{l,-m}^{o*}(\hat{\Omega}')\right)\right)\right\rbrack\\
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \left(\hat{Y}_{l0}^e(\hO  )+i\cancel{\hat{Y}_{l0}^o(\hO  )}\right)\left(\hat{Y}_{l0}^e(\hO  ')+i\cancel{\hat{Y}_{l0}^o(\hO  ')}\right)\right\rbrack+\\
+\frac{4\pi}{2l+1}\left\lbrack\sum_{m=1}^{l}\left(\left(\hat{Y}_{lm}^e(\hO  )+i\hat{Y}_{lm}^o(\hO  )\right)\left(\hat{Y}_{lm}^{e*}(\hO  ')+i\hat{Y}_{lm}^{o*}(\hO  ')\right)+\left(\hat{Y}_{l,-m}^e(\hO  )+i\hat{Y}_{l,-m}^o(\hO  )\right)\left(\hat{Y}_{l,-m}^{e*}(\hO  ')+i\hat{Y}_{l,-m}^{o*}(\hO  ')\right)\right)\right\rbrack\\
 \end{aligned}
 \end{equation}
 
@@ -693,7 +650,7 @@ where from the definition in Eq. \eqref{eq:RealImaginary}, we know that the \(Y_
 \begin{equation}
 \begin{aligned}
 \label{eq:FullExpansion2}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hat{\Omega})\hat{Y}_{l0}^e(\hat{\Omega}')+\sum_{m=1}^{l}\left(\hat{Y}_{lm}^e(\hat{\Omega})\hat{Y}_{lm}^{e*}(\hat{\Omega}')-\hat{Y}_{lm}^o(\hat{\Omega})\hat{Y}_{lm}^{o*}(\hat{\Omega}')+\hat{Y}_{l,-m}^e(\hat{\Omega})\hat{Y}_{l,-m}^{e*}(\hat{\Omega}')-\hat{Y}_{l,-m}^o(\hat{\Omega})\hat{Y}_{l,-m}^{o*}(\hat{\Omega}')\right)\right\rbrack\\
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hO  )\hat{Y}_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(\hat{Y}_{lm}^e(\hO  )\hat{Y}_{lm}^{e*}(\hO  ')-\hat{Y}_{lm}^o(\hO  )\hat{Y}_{lm}^{o*}(\hO  ')+\hat{Y}_{l,-m}^e(\hO  )\hat{Y}_{l,-m}^{e*}(\hO  ')-\hat{Y}_{l,-m}^o(\hO  )\hat{Y}_{l,-m}^{o*}(\hO  ')\right)\right\rbrack\\
 \end{aligned}
 \end{equation}
 
@@ -702,7 +659,7 @@ Because the odd component is defined as in Eq. \eqref{eq:RealImaginary}, the com
 \begin{equation}
 \begin{aligned}
 \label{eq:FullExpansion3}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hat{\Omega})\hat{Y}_{l0}^e(\hat{\Omega}')+\sum_{m=1}^{l}\left(2\hat{Y}_{lm}^e(\hat{\Omega})\hat{Y}_{lm}^{e}(\hat{\Omega}')+2\hat{Y}_{lm}^o(\hat{\Omega})\hat{Y}_{lm}^{o}(\hat{\Omega}')\right)\right\rbrack\\
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hO  )\hat{Y}_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(2\hat{Y}_{lm}^e(\hO  )\hat{Y}_{lm}^{e}(\hO  ')+2\hat{Y}_{lm}^o(\hO  )\hat{Y}_{lm}^{o}(\hO  ')\right)\right\rbrack\\
 \end{aligned}
 \end{equation}
 
@@ -711,7 +668,7 @@ From the definitions in Eq. \eqref{eq:HattoNoHat} and Eq. \eqref{eq:HattoNoHat},
 \begin{equation}
 \begin{aligned}
 \label{eq:FullExpansion4}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hat{\Omega})\hat{Y}_{l0}^e(\hat{\Omega}')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega})Y_{lm}^{e}(\hat{\Omega}')+Y_{lm}^o(\hat{\Omega})Y_{lm}^{o}(\hat{\Omega}')\right)\right\rbrack\\
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hO  )\hat{Y}_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )Y_{lm}^{e}(\hO  ')+Y_{lm}^o(\hO  )Y_{lm}^{o}(\hO  ')\right)\right\rbrack\\
 \end{aligned}
 \end{equation}
 
@@ -720,7 +677,7 @@ Finally, using Eq. \eqref{eq:HattoNoHat} and Eq. \eqref{eq:RealExpansionSH}, \(\
 \begin{equation}
 \begin{aligned}
 \label{eq:FullExpansion5}
-P_l(\hat{\Omega}'\cdot\hat{\Omega})=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}^e(\hat{\Omega})Y_{l0}^e(\hat{\Omega}')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega})Y_{lm}^{e}(\hat{\Omega}')+Y_{lm}^o(\hat{\Omega})Y_{lm}^{o}(\hat{\Omega}')\right)\right\rbrack\\
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}^e(\hO  )Y_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )Y_{lm}^{e}(\hO  ')+Y_{lm}^o(\hO  )Y_{lm}^{o}(\hO  ')\right)\right\rbrack\\
 \end{aligned}
 \end{equation}
 
@@ -732,67 +689,67 @@ The scattering cross section is often expanded in Legendre polynomials as in Eq.
 
 \begin{equation}
 \label{eq:ScatteringLegendreandSH}
-\Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega}) = \Sigma_s(\vv{r}, E'\rightarrow E, \mu) = \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}^{*} (\hat{\Omega}') Y_{lm}(\hat{\Omega})
+\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  ) = \Sigma_s(\vv{r}, E'\rightarrow E, \mu) = \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}^{*} (\hO  ') Y_{lm}(\hO  )
 \end{equation}
 
 Further, because the scattering cross section usually appears within an integral with the angular flux, such as in Eq. \ref{eq:ConservationInscatteringSource}, after we perform the spherical harmonics expansion, we can define another quantity, the flux moments:
 
 \begin{equation}
 \label{eq:FluxMomentSH}
-\phi_l^m(\vv{r}, E, t) = \int_{4\pi}^{} d\hat{\Omega}'\psi(\vv{r}, E', \hat{\Omega}', t)Y_l^{m*}(\hat{\Omega}')
+\phi_l^m(\vv{r}, E, t) = \int_{4\pi}^{} d\hO  '\psi(\vv{r}, E', \hO  ', t)Y_l^{m*}(\hO  ')
 \end{equation}
 
 \section{Derivation of the Transport Equation in Various Geometries}
 
-The transport equation can be derived from conservation principles in an arbitrary control volume \(V\). We will derive the equation in terms of neutron density \(N\) since we are really conserving the number of neutrons, and not the flux itself. The neutron density is in general a function of \(\vv{r}, E, \hat{\Omega}, \) and \(t\), and hence the neutron transport equation is, in general, a 7-dimensional equation (3 spatial variables, 2 angular variables, 1 energy variable, and 1 time variable). It is this rich phase space that makes solving the neutron transport equation so difficult. 
+The transport equation can be derived from conservation principles in an arbitrary control volume \(V\). We will derive the equation in terms of neutron density \(N\) since we are really conserving the number of neutrons, and not the flux itself. The neutron density is in general a function of \(\vv{r}, E, \hO  , \) and \(t\), and hence the neutron transport equation is, in general, a 7-dimensional equation (3 spatial variables, 2 angular variables, 1 energy variable, and 1 time variable). It is this rich phase space that makes solving the neutron transport equation so difficult. 
 
 Assuming neutrons are conserved, the time rate of change of neutrons in the control volume equals the net change of neutrons in the control volume. 
 
 \begin{equation}
 \label{eq:Conservation1}
-\frac{\partial}{\partial t} \left\lbrack\int dV N(\vv{r}, E, \hat{\Omega},t)\right\rbrack dEd\hat{\Omega} = \textrm{gain} - \textrm{loss}
+\frac{\partial}{\partial t} \left\lbrack\int dV N(\vv{r}, E, \hO  ,t)\right\rbrack dEd\hO   = \textrm{gain} - \textrm{loss}
 \end{equation}
 
-Because \(N\) is a density per cm\textsuperscript{3}, the amount of neutrons in the \textit{space} of the control volume is only dictated by an integral over \(dV\), which is why we can simply multiply the entire expression by \(dEd\hat{\Omega}\). This is performed similarly for the other terms in the transport equation that are derived below. Assuming the shape of the control volume does not change in time, then the time derivative can be brought inside the integral.
+Because \(N\) is a density per cm\textsuperscript{3}, the amount of neutrons in the \textit{space} of the control volume is only dictated by an integral over \(dV\), which is why we can simply multiply the entire expression by \(dEd\hO  \). This is performed similarly for the other terms in the transport equation that are derived below. Assuming the shape of the control volume does not change in time, then the time derivative can be brought inside the integral.
 
 \begin{equation}
 \label{eq:Conservation2}
-\left\lbrack\int dV \frac{\partial N(\vv{r}, E, \hat{\Omega},t) }{\partial t}\right\rbrack dEd\hat{\Omega} = \textrm{gain} - \textrm{loss}
+\left\lbrack\int dV \frac{\partial N(\vv{r}, E, \hO  ,t) }{\partial t}\right\rbrack dEd\hO   = \textrm{gain} - \textrm{loss}
 \end{equation}
 
 The sources of neutrons in the control volume can come from external sources whose magnitude are independent of the neutron density itself, inscattering from other energy groups, prompt fission neutrons, and delayed neutrons. The external source gain is
 
 \begin{equation}
 \label{eq:ConservationExternalSource}
-\textrm{external source} = \left\lbrack\int dV S(\vv{r}, E, \hat{\Omega},t)\right\rbrack dEd\hat{\Omega}
+\textrm{external source} = \left\lbrack\int dV S(\vv{r}, E, \hO  ,t)\right\rbrack dEd\hO  
 \end{equation}
 
-The inscattering source gain is an integral over all possible neutron energies \(E'\) and angles \(\hat{\Omega}'\), since theoretically any other neutron could scatter into another neutron energy group. A reaction frequency is given, in units of time, as in Eq. \ref{eq:ReactionFrequency}. The rate at which interactions, such as inscattering, occur is directly controlled by this frequency, and hence the reaction frequency will appear in all terms related to reactions in the transport equation.
+The inscattering source gain is an integral over all possible neutron energies \(E'\) and angles \(\hO  '\), since theoretically any other neutron could scatter into another neutron energy group. A reaction frequency is given, in units of time, as in Eq. \ref{eq:ReactionFrequency}. The rate at which interactions, such as inscattering, occur is directly controlled by this frequency, and hence the reaction frequency will appear in all terms related to reactions in the transport equation.
 
 \begin{equation}
 \label{eq:ConservationInscatteringSource}
-\textrm{inscattering source} = \left\lbrack\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hat{\Omega}'\int dV v(E')\Sigma_s(\vv{r},E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega}) N(\vv{r}, E', \hat{\Omega}',t)\right\rbrack dEd\hat{\Omega}
+\textrm{inscattering source} = \left\lbrack\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int dV v(E')\Sigma_s(\vv{r},E'\rightarrow E, \hO  '\rightarrow\hO  ) N(\vv{r}, E', \hO  ',t)\right\rbrack dEd\hO  
 \end{equation}
 
 The fission source is also an integral over all possible neutron energies and angles, since fission can theoretically be caused by a neutron of any energy. Because neutrons from fission are born (very nearly) isotropically, we can avoid writing another integral over angle and simply divide the prompt fission yield spectrum \(\chi_p(E)\) by \(4\pi\). The fraction of neutrons born delayed is given as \(\beta\), which we must be accounted for separately because we are using the prompt fission neutron spectrum.
 
 \begin{equation}
 \label{eq:ConservationFissionPrompt}
-\textrm{(prompt) fission source} = \left\lbrack\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hat{\Omega}'\int dV (1-\beta(E'))\nu(E')v(E')\Sigma_f(\vv{r},E')N(\vv{r}, E, \hat{\Omega},t)\right\rbrack dEd\hat{\Omega}
+\textrm{(prompt) fission source} = \left\lbrack\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int dV (1-\beta(E'))\nu(E')v(E')\Sigma_f(\vv{r},E')N(\vv{r}, E, \hO  ,t)\right\rbrack dEd\hO  
 \end{equation}
 
 The delayed neutron source is the sum of the delayed neutrons from \(J\) delayed neutron precursor groups, where each group has a decay constant \(\lambda\) from a precursor with concentration \(C\) with a neutron energy spectrum \(\chi_d\). \(J\) is customarily taken to be 6.
 
 \begin{equation}
 \label{eq:ConservationFissionDelayed}
-\textrm{(delayed) fission source} = \left\lbrack\int dV \sum_{j=1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r}, t)\right\rbrack dEd\hat{\Omega}
+\textrm{(delayed) fission source} = \left\lbrack\int dV \sum_{j=1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r}, t)\right\rbrack dEd\hO  
 \end{equation}
 
 The losses from the control volume include absorption and streaming (leakage). Instead of including simply an absorption term as a loss, however, we need to balance the inscattering term in Eq. \ref{eq:ConservationInscatteringSource}. This equation has no indication of whether or not the neutron scattering caused it to leave an energy group - in fact, it still contains within-group scattering, which should not be counted as a gain. For this reason, we will subtract as a loss the sum of absorption and outscattering from the present energy group to all other energy groups, \textit{including inscattering}, as this will balance the double counting of within-group scatterings. 
 
 \begin{equation}
 \label{eq:ConservationTotal}
-\textrm{absorption and outscattering loss}=\left\lbrack\int dV v(E)\Sigma_t(\vv{r}, E) N(\vv{r}, E, \hat{\Omega},t)\right\rbrack dEd\hat{\Omega}
+\textrm{absorption and outscattering loss}=\left\lbrack\int dV v(E)\Sigma_t(\vv{r}, E) N(\vv{r}, E, \hO  ,t)\right\rbrack dEd\hO  
 \end{equation}
 
 where \(\Sigma_t=\Sigma_a+\Sigma_s\) is the total cross section, and \(\Sigma_s\) indicates the total scattering probability from an energy group \(E\) to any other energy group, including its own group. 
@@ -801,26 +758,26 @@ Finally, neutron streaming from the control volume is only a function of the neu
 
 \begin{equation}
 \label{eq:ConservationStreaming1}
-\textrm{streaming loss} = \left\lbrack\int dA \vv{j}(\vv{r}, E, \hat{\Omega},t)\cdot \hat{n}\right\rbrack dEd\hat{\Omega}=\left\lbrack\int dA v(E)N(\vv{r}, E, \hat{\Omega},t)\hat{\Omega}\cdot \hat{n}\right\rbrack dEd\hat{\Omega}
+\textrm{streaming loss} = \left\lbrack\int dA \vv{j}(\vv{r}, E, \hO  ,t)\cdot \hat{n}\right\rbrack dEd\hO  =\left\lbrack\int dA v(E)N(\vv{r}, E, \hO  ,t)\hO  \cdot \hat{n}\right\rbrack dEd\hO  
 \end{equation}
 
 where the angular flux definition in Eq. \eqref{eq:AngularFlux} has been used. Apply the divergence theorem so that this integral becomes a volume integral instead of an area integral:
 
 \begin{equation}
 \label{eq:ConservationStreaming2}
-\textrm{streaming loss} =\left\lbrack\int dV \hat{\Omega}\cdot\nabla\left(v(E)N(\vv{r}, E, \hat{\Omega},t)\right)\right\rbrack dEd\hat{\Omega}
+\textrm{streaming loss} =\left\lbrack\int dV \hO  \cdot\nabla\left(v(E)N(\vv{r}, E, \hO  ,t)\right)\right\rbrack dEd\hO  
 \end{equation}
 
-Combining all of these terms together yields the transport equation. \(dEd\hat{\Omega}\) cancels in every term. Because all the integrals are over \(dV\), the only way for the entire expression to always be true is if the integrand of the term to go to zero, since the selection of the specific control volume was arbitrary. This leads to the integro-differential transport equation, which is named as such because it contains both integrals and derivatives. Note also that neutron density \(N\) has been replaced with angular flux according to the definition in Eq. \eqref{eq:AngularFlux}. This is also known as the linear Boltzmann transport equation, because we have neglected any nonlinearities due to neutron-neutron interactions. 
+Combining all of these terms together yields the transport equation. \(dEd\hO  \) cancels in every term. Because all the integrals are over \(dV\), the only way for the entire expression to always be true is if the integrand of the term to go to zero, since the selection of the specific control volume was arbitrary. This leads to the integro-differential transport equation, which is named as such because it contains both integrals and derivatives. Note also that neutron density \(N\) has been replaced with angular flux according to the definition in Eq. \eqref{eq:AngularFlux}. This is also known as the linear Boltzmann transport equation, because we have neglected any nonlinearities due to neutron-neutron interactions. 
 
 \begin{equation}
 \label{eq:TE}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hat{\Omega},t)}{\partial t} +
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega},t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega},t) = \\
-S(\vv{r}, E, \hat{\Omega},t) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}',t) + \\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hat{\Omega}'(1-\beta(E'))\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hat{\Omega}',t) + 
+\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
+S(\vv{r}, E, \hO  ,t) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + \\
+ \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '(1-\beta(E'))\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t) + 
  \sum_{j = 1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r}, t))
 \end{aligned}
 \end{equation}
@@ -832,9 +789,9 @@ Eq. \eqref{eq:TE} is commonly written in one of two forms, since the form in Eq.
 \begin{equation}
 \label{eq:TE_fixedsource}
 \begin{aligned}
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega},t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega},t) = \\
-S(\vv{r}, E, \hat{\Omega},t) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}',t)\\
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
+S(\vv{r}, E, \hO  ,t) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t)\\
 \end{aligned}
 \end{equation}
 
@@ -843,10 +800,10 @@ Alternatively, Eq. \eqref{eq:TE} is frequently expressed in eigenvalue form, whe
 \begin{equation}
 \label{eq:TE_eigenvalue}
 \begin{aligned}
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega},t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega},t) = \\
-\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}',t) + \\
- \frac{1}{k}\left\lbrack\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hat{\Omega}'(1-\beta(E'))\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hat{\Omega}',t) + 
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
+\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + \\
+ \frac{1}{k}\left\lbrack\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '(1-\beta(E'))\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t) + 
  \sum_{j = 1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r}, t))\right\rbrack
 \end{aligned}
 \end{equation}
@@ -862,7 +819,7 @@ And, although the form in Eq. \eqref{eq:TE} appears very daunting, it is a simpl
 This section discusses the boundary conditions used in Eq. \eqref{eq:TE}. The incoming flux \(\psi_{inc}\) can be specified for incoming directions:
 
 \begin{equation}
-\psi(\vv{r},\hat{\Omega},E,t)=\psi_{inc}\quad\vv{r}\in \partial V\quad\hat{\Omega}\cdot\hat{n}<0
+\psi\spa =\psi_{inc}\quad\vv{r}\in \partial V\quad\hO  \cdot\hat{n}<0
 \end{equation}
 
 where \(\partial V\) is a common way of denoting one lower dimension than the problem domain \(V\). Hence, if the problem is 2-D, \(V\) represents the two-dimensional domain, while \(\partial V\) represents the one-dimensional boundaries. For eigenvalue problems, \(\psi_{inc}=0\) on all boundaries because an eigenvalue problem is defined such that there are no external sources present. 
@@ -870,7 +827,7 @@ where \(\partial V\) is a common way of denoting one lower dimension than the pr
 All problems can also specify reflecting conditions:
 
 \begin{equation}
-\psi(\vv{r},\hat{\Omega},E,t)=\psi(\vv{r},-\hat{\Omega},E,t)\quad\vv{r}\in\partial V
+\psi\spa =\psi(\vv{r},-\hO  ,E,t)\quad\vv{r}\in\partial V
 \end{equation}
 
 \subsection{Legendre Polynomial and Spherical Harmonics Expansions}
@@ -883,11 +840,11 @@ By expanding the scattering cross section in Legendre polynomials as in Eq. \ref
 \begin{equation}
 \label{eq:TEPLnoSHwithPL}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hat{\Omega},t)}{\partial t} +
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega},t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega},t) = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r}, E'\rightarrow E) \int_{4\pi}^{} d\hat{\Omega}'P_l(\hat{\Omega}'\cdot\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}', t) + S(\vv{r}, E, \hat{\Omega},t)+\\
-  \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hat{\Omega}'\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hat{\Omega}',t)\\
+\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
+ \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r}, E'\rightarrow E) \int_{4\pi}^{} d\hO  'P_l(\hO  '\cdot\hO  )\psi(\vv{r}, E', \hO  ', t) + S(\vv{r}, E, \hO  ,t)+\\
+  \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t)\\
 \end{aligned}
 \end{equation}
 
@@ -898,11 +855,11 @@ Expanding the Legendre polynomials in Eq. \eqref{eq:TEPLnoSHwithPL} in the spher
 \begin{equation}
 \label{eq:TEPLnomoments}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hat{\Omega},t)}{\partial t} +
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega},t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega},t) = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hat{\Omega})\int_{4\pi}^{} d\hat{\Omega}'\psi(\vv{r}, E', \hat{\Omega}', t)Y_l^{m*}(\hat{\Omega}') + S(\vv{r}, E, \hat{\Omega},t)+\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hat{\Omega}'\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hat{\Omega}',t)\\
+\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
+ \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hO  )\int_{4\pi}^{} d\hO  '\psi(\vv{r}, E', \hO  ', t)Y_l^{m*}(\hO  ') + S(\vv{r}, E, \hO  ,t)+\\
+ \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t)\\
 \end{aligned}
 \end{equation}
 
@@ -913,11 +870,11 @@ From Eq. \eqref{eq:TEPLnomoments}, we can further substitute in the definition f
 \begin{equation}
 \label{eq:TEPL}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hat{\Omega},t)}{\partial t} +
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega},t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega},t) = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hat{\Omega})\phi_l^m(\vv{r}, E, t) + S(\vv{r}, E, \hat{\Omega},t)+\\
-\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hat{\Omega}'\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hat{\Omega}',t)\\
+\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
+ \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hO  )\phi_l^m(\vv{r}, E, t) + S(\vv{r}, E, \hO  ,t)+\\
+\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t)\\
 \end{aligned}
 \end{equation}
 
@@ -936,27 +893,27 @@ From Eq. \eqref{eq:TEPLnomoments}, we can further substitute in the definition f
 \end{aligned}
 \end{equation}
 
-By integrating over angle, we introduced a new variable - \(J\). Unfortunately, \(J\) cannot be expressed in terms of \(\phi\) in an exact manner, but Eq. \ref{eq:NeutronContinuityEquation} does reduced to the diffusion equation if we make the approximation of Fick's law. If instead we multiplied Eq. \ref{eq:TE} by \(\hat{\Omega}\) and then integrated over angle, we can obtain another equivalent form of the transport equation that will primarily be in terms of current, rather than flux. All source terms (fission, delayed neutrons, and external source) are bundled into \(S\) for simplicity. 
+By integrating over angle, we introduced a new variable - \(J\). Unfortunately, \(J\) cannot be expressed in terms of \(\phi\) in an exact manner, but Eq. \ref{eq:NeutronContinuityEquation} does reduced to the diffusion equation if we make the approximation of Fick's law. If instead we multiplied Eq. \ref{eq:TE} by \(\hO  \) and then integrated over angle, we can obtain another equivalent form of the transport equation that will primarily be in terms of current, rather than flux. All source terms (fission, delayed neutrons, and external source) are bundled into \(S\) for simplicity. 
 
 \begin{equation}
 \label{eq:TEAngleAngleIntegrated}
 \begin{aligned}
 \frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hat{\Omega}\hat{\Omega}\hat{\Omega}\psi(\vv{r}, E, \hat{\Omega},t) + 
+ \nabla\cdot \int_{4\pi}^{} d\hO  \hO  \hO  \psi(\vv{r}, E, \hO  ,t) + 
  \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{4\pi}^{} d\hat{\Omega} \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \hat{\Omega}\Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}',t) + \int_{4\pi}^{} d\hat{\Omega}\hat{\Omega}S(\vv{r}, E, \hat{\Omega}, t)\\
+ \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + \int_{4\pi}^{} d\hO  \hO  S\spa \\
 \end{aligned}
 \end{equation}
 
-The time derivative in the first term was first brought outside the integral (assuming the control volume doesn't change shape), and then \(\psi\hat{\Omega}\) was recognized as the angular current defined in Eq. \ref{eq:AngularCurrent}. The gradient was pulled out of the streaming term because the integral is over angle, and not space. We can recognize the lumped source term as being equal to the first moment of the source, similar to how scattering moments are defined in Eq. \ref{eq:ScatteringMomentsLegendre}. This first moment will be zero for isotropic sources because they have no dependence on angle. Then, we can rearrange the scattering term by multiplying it by \(\hat{\Omega}\cdot\hat{\Omega}\), since this is equivalent to multiplication by 1.
+The time derivative in the first term was first brought outside the integral (assuming the control volume doesn't change shape), and then \(\psi\hO  \) was recognized as the angular current defined in Eq. \ref{eq:AngularCurrent}. The gradient was pulled out of the streaming term because the integral is over angle, and not space. We can recognize the lumped source term as being equal to the first moment of the source, similar to how scattering moments are defined in Eq. \ref{eq:ScatteringMomentsLegendre}. This first moment will be zero for isotropic sources because they have no dependence on angle. Then, we can rearrange the scattering term by multiplying it by \(\hO  \cdot\hO  \), since this is equivalent to multiplication by 1.
 
 \begin{equation}
 \label{eq:TEAngleAngleIntegrated}
 \begin{aligned}
 \frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hat{\Omega} \hat{\Omega}\hat{\Omega}\psi(\vv{r}, E, \hat{\Omega},t) + 
+ \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi(\vv{r}, E, \hO  ,t) + 
  \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{4\pi}^{} d\hat{\Omega} \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \hat{\Omega}\cdot\hat{\Omega} \hat{\Omega}\Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}',t) + \vv{S_1}(\vv{r}, E, t)\\
+ \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + \vv{S_1}(\vv{r}, E, t)\\
 \end{aligned}
 \end{equation}
 
@@ -965,20 +922,20 @@ The time derivative in the first term was first brought outside the integral (as
 %\begin{equation}
 %\label{eq:1DTEScatteringIntegrated}
 %\begin{aligned}
-%\int_{4\pi}^{} d\hat{\Omega} \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \hat{\Omega}\cdot\hat{\Omega} \hat{\Omega}\Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}',t) = \\
-%3\int_{4\pi}^{} d\hat{\Omega} \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Omega_x\Omega_x\Omega_x\Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}',t)
+%\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) = \\
+%3\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Omega_x\Omega_x\Omega_x\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t)
 %\end{aligned}
 %\end{equation}
 
-Then, we can integrate out the angular dependence by recognizing that \(\hat{\Omega}\cdot\hat{\Omega}\) is simly equivalent to \(\mu\), and so one of the areal integrals of the scattering cross section becomes equivalent to the first moment of the scattering cross section, as shown in Eq. \ref{eq:ScatteringMomentsLegendre}. Then, we can substitute in our relationship for \(\vv{J} = \psi\hat{\Omega}\). The scattering term finally simplifies, leading to another equivalent form of the transport equation:
+Then, we can integrate out the angular dependence by recognizing that \(\hO  \cdot\hO  \) is simly equivalent to \(\mu\), and so one of the areal integrals of the scattering cross section becomes equivalent to the first moment of the scattering cross section, as shown in Eq. \ref{eq:ScatteringMomentsLegendre}. Then, we can substitute in our relationship for \(\vv{J} = \psi\hO  \). The scattering term finally simplifies, leading to another equivalent form of the transport equation:
 
 \begin{equation}
 \label{eq:TEAngleAngleIntegrated2}
 \begin{aligned}
 \frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hat{\Omega} \hat{\Omega}\hat{\Omega}\psi(\vv{r}, E, \hat{\Omega},t) + 
+ \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi(\vv{r}, E, \hO  ,t) + 
  \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)\\
+ \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)\\
 \end{aligned}
 \end{equation}
 
@@ -989,10 +946,10 @@ The transport equation in Cartesian coordinates substitutes in the more explicit
 \begin{equation}
 \label{eq:TE_Cartesian}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hat{\Omega},t)}{\partial t} +
- \sqrt{1-\mu^2}\left(\cos{(\phi)}\frac{\partial \psi(\vv{r}, E, \hat{\Omega},t)}{\partial x} + \sin{(\phi)} \frac{\partial \psi(\vv{r}, E, \hat{\Omega},t)}{\partial y}\right) + \mu \frac{\partial \psi(\vv{r}, E, \hat{\Omega},t)}{\partial z} +\\
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega},t) = \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}',t) + S(\vv{r}, E, \hat{\Omega}, t)+\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hat{\Omega}'\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hat{\Omega}',t)\\
+\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
+ \sqrt{1-\mu^2}\left(\cos{(\phi)}\frac{\partial \psi(\vv{r}, E, \hO  ,t)}{\partial x} + \sin{(\phi)} \frac{\partial \psi(\vv{r}, E, \hO  ,t)}{\partial y}\right) + \mu \frac{\partial \psi(\vv{r}, E, \hO  ,t)}{\partial z} +\\
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + S\spa +\\
+ \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t)\\
 \end{aligned}
 \end{equation}
 
@@ -1001,10 +958,10 @@ Eq. \ref{eq:TE_Cartesian} reduces to the 1-D form by assuming that \(\psi\) has 
 \begin{equation}
 \label{eq:TE_Cartesian_1D}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(z, E, \hat{\Omega},t)}{\partial t} +
- \mu \frac{\partial \psi(z, E, \hat{\Omega},t)}{\partial z} + \Sigma_t(z,E)\psi(z, E, \hat{\Omega},t) = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_s(z, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(z, E', \hat{\Omega}',t) + S(z, E, \hat{\Omega},t)+\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\nu(E')\Sigma_f(z, E')\int_{4\pi}^{} d\hat{\Omega}'\psi(z, E', \hat{\Omega}',t)\\
+\frac{1}{v(E)} \frac{\partial\psi(z, E, \hO  ,t)}{\partial t} +
+ \mu \frac{\partial \psi(z, E, \hO  ,t)}{\partial z} + \Sigma_t(z,E)\psi(z, E, \hO  ,t) = \\
+ \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(z, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(z, E', \hO  ',t) + S(z, E, \hO  ,t)+\\
+ \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\nu(E')\Sigma_f(z, E')\int_{4\pi}^{} d\hO  '\psi(z, E', \hO  ',t)\\
 \end{aligned}
 \end{equation}
 
@@ -1041,10 +998,10 @@ The monoenergetic transport equation can be obtained from Eq. \eqref{eq:TE} by i
 \begin{equation}
 \label{eq:TEMonoenergetic}
 \begin{aligned}
-\frac{1}{v} \frac{\partial\psi(\vv{r},\hat{\Omega},t)}{\partial t} +
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, \hat{\Omega},t) + 
- \Sigma_t(\vv{r})\psi(\vv{r}, \hat{\Omega},t) = \\
-\int_{4\pi}^{ } d\hat{\Omega}' \Sigma_s(\vv{r}, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, \hat{\Omega}',t) + S(\vv{r}, \hat{\Omega},t)+\frac{\nu\Sigma_f(\vv{r})}{4\pi} \int_{4\pi}^{} d\hat{\Omega}'\psi(\vv{r},\hat{\Omega}',t)\\
+\frac{1}{v} \frac{\partial\psi(\vv{r},\hO  ,t)}{\partial t} +
+ \hO  \cdot\nabla\psi(\vv{r}, \hO  ,t) + 
+ \Sigma_t(\vv{r})\psi(\vv{r}, \hO  ,t) = \\
+\int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, \hO  '\rightarrow\hO  )\psi(\vv{r}, \hO  ',t) + S(\vv{r}, \hO  ,t)+\frac{\nu\Sigma_f(\vv{r})}{4\pi} \int_{4\pi}^{} d\hO  '\psi(\vv{r},\hO  ',t)\\
 \end{aligned}
 \end{equation}
 
@@ -1054,7 +1011,7 @@ Rather than solve a continuous-energy problem, the transport equation is often d
 
 \begin{equation}
 \label{eq:GrpAngularFlux}
-\psi_g (\vv{r}, \hat{\Omega},t) = \int_{E_{g-1}}^{E_g} dE \psi(\vv{r}, \hat{\Omega},E, t)
+\psi_g (\vv{r}, \hO  ,t) = \int_{E_{g-1}}^{E_g} dE \psi(\vv{r}, \hO  ,E, t)
 \end{equation}
 
 Similarly, an integral over the entire energy domain can be discretized into \(G\) integrals over each energy group
@@ -1068,7 +1025,7 @@ The multigroup transport equation can be derived by two separate means - the fir
 
 \begin{equation}
 \label{eq:MultiGroupSeparate}
-\psi(\vv{r}, E, \hat{\Omega},t) \approx f(E)\psi(\vv{r}, \hat{\Omega},t)
+\psi(\vv{r}, E, \hO  ,t) \approx f(E)\psi(\vv{r}, \hO  ,t)
 \end{equation}
 
 where
@@ -1083,8 +1040,8 @@ The second approach assumes nothing about energy-space separability by using the
 \begin{equation}
 \label{eq:multigroupTE1}
 \begin{aligned}
-\frac{1}{v_g}\frac{\partial \psi_g(\vv{r}, \hat{\Omega}, t)}{\partial t} + \hat{\Omega}\cdot\nabla\psi_g(\vv{r}, \hat{\Omega}, t) + \Sigma_{tg}(\vv{r})\psi_g(\vv{r}, \hat{\Omega}, t) =\\
-\sum_{g'=1}^{G} \int_{4\pi}^{} d\hat{\Omega}' \Sigma_{s, g'\rightarrow g}(\vv{r}, \hat{\Omega}' \rightarrow\hat{\Omega})\psi_{g'}(\vv{r}, \hat{\Omega}, t) + \chi_g \sum_{g'=1}^{G}\int_{4\pi}^{} d\hat{\Omega}' \nu_{g'}\Sigma_{f,g'}(\vv{r})\psi_g(\vv{r}, \hat{\Omega}', t)
+\frac{1}{v_g}\frac{\partial \psi_g(\vv{r}, \hO  , t)}{\partial t} + \hO  \cdot\nabla\psi_g(\vv{r}, \hO  , t) + \Sigma_{tg}(\vv{r})\psi_g(\vv{r}, \hO  , t) =\\
+\sum_{g'=1}^{G} \int_{4\pi}^{} d\hO  ' \Sigma_{s, g'\rightarrow g}(\vv{r}, \hO  ' \rightarrow\hO  )\psi_{g'}(\vv{r}, \hO  , t) + \chi_g \sum_{g'=1}^{G}\int_{4\pi}^{} d\hO  ' \nu_{g'}\Sigma_{f,g'}(\vv{r})\psi_g(\vv{r}, \hO  ', t)
 \end{aligned}
 \end{equation}
 
@@ -1176,7 +1133,7 @@ The adjoint neutron transport equation can be derived by multiplying Eq. \ref{eq
 
 \begin{equation}
 \label{eq:PhaseSpaceIntegration}
-\int d\oslash = \int dVdEd\hat{\Omega}dt
+\int d\oslash = \int dVdEd\hO  dt
 \end{equation}
 
 where for simplicity the generic phase space is denoted as \(\oslash\). This derivation is performed in parts due to the linearity of the transport equation.
@@ -1220,26 +1177,26 @@ where the adjoint form of the removal operator is self-adjoint:
 
 \begin{equation}
 \begin{aligned}
-<\psi^\dagger,\zeta_l\psi>= & \int d\oslash \psi^\dagger\hat{\Omega}\cdot\nabla\psi\\
-= & \int d\oslash \left(\nabla\cdot(\hat{\Omega}\psi\psi^\dagger)-\psi\hat{\Omega}\cdot\nabla\psi^\dagger\right)\\
-= & -\int d\oslash \left(\hat{\Omega}\psi\psi^\dagger +\psi\hat{\Omega}\cdot\nabla\psi^\dagger\right)+ \int_{\partial\oslash}\hat{\Omega}\psi\psi^\dagger\cdot\hat{n}\\
+<\psi^\dagger,\zeta_l\psi>= & \int d\oslash \psi^\dagger\hO  \cdot\nabla\psi\\
+= & \int d\oslash \left(\nabla\cdot(\hO  \psi\psi^\dagger)-\psi\hO  \cdot\nabla\psi^\dagger\right)\\
+= & -\int d\oslash \left(\hO  \psi\psi^\dagger +\psi\hO  \cdot\nabla\psi^\dagger\right)+ \int_{\partial\oslash}\hO  \psi\psi^\dagger\cdot\hat{n}\\
 \end{aligned}
 \end{equation}
 
 where the first step applies an identity to the dot product, and second the divergence theorem. The streaming term is non-self-adjoint. The adjoint form of the streaming term is:
 
 \begin{equation}
-\zeta_l=-\hat{\Omega}(.)-\hat{\Omega}\cdot\nabla(.)+\left\lbrack\hat{\Omega}(.)\right\rbrack
+\zeta_l=-\hO  (.)-\hO  \cdot\nabla(.)+\left\lbrack\hO  (.)\right\rbrack
 \end{equation}
 
 \item The (in)scattering term becomes:
 
 \begin{equation}
 \begin{aligned}
-<\psi^\dagger,\zeta_s\psi>=& \int d\oslash\psi^\dagger(\vv{r},\hat{\Omega},E,t)\int_0^\infty dE'\int_{4\pi}d\hat{\Omega}^{'}\Sigma_s(\hat{\Omega}^{'}\rightarrow\hat{\Omega}, E^{'}\rightarrow E)\psi(\vv{r},\hat{\Omega}^{'},E^{'},t)\\
-=& \int d\oslash\int_0^\infty dE\int_{4\pi}d\hat{\Omega}\psi^\dagger(\vv{r},\hat{\Omega},E,t)\Sigma_s(\hat{\Omega}^{'}\rightarrow\hat{\Omega}, E^{'}\rightarrow E)\psi(\vv{r},\hat{\Omega}^{'},E^{'},t)\\
-=& \int d\oslash\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega}^{'},E^{'},t)\Sigma_s(\hat{\Omega}\rightarrow\hat{\Omega}^{'}, E\rightarrow E^{'})\psi(\vv{r},\hat{\Omega},E,t)\\
-=& \int d\oslash\psi(\vv{r},\hat{\Omega},E,t)\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega}^{'},E^{'},t)\Sigma_s(\hat{\Omega}\rightarrow\hat{\Omega}^{'}, E\rightarrow E^{'})\\
+<\psi^\dagger,\zeta_s\psi>=& \int d\oslash\psi^\dagger\spa \int_0^\infty dE'\int_{4\pi}d\hO  ^{'}\Sigma_s(\hO  ^{'}\rightarrow\hO  , E^{'}\rightarrow E)\psi(\vv{r},\hO  ^{'},E^{'},t)\\
+=& \int d\oslash\int_0^\infty dE\int_{4\pi}d\hO  \psi^\dagger\spa \Sigma_s(\hO  ^{'}\rightarrow\hO  , E^{'}\rightarrow E)\psi(\vv{r},\hO  ^{'},E^{'},t)\\
+=& \int d\oslash\int_0^\infty dE^{'}\int_{4\pi}d\hO  ^{'}\psi^\dagger(\vv{r},\hO  ^{'},E^{'},t)\Sigma_s(\hO  \rightarrow\hO  ^{'}, E\rightarrow E^{'})\psi\spa \\
+=& \int d\oslash\psi\spa \int_0^\infty dE^{'}\int_{4\pi}d\hO  ^{'}\psi^\dagger(\vv{r},\hO  ^{'},E^{'},t)\Sigma_s(\hO  \rightarrow\hO  ^{'}, E\rightarrow E^{'})\\
 =& <\psi, \zeta_s^\dagger\psi^\dagger>
 \end{aligned}
 \end{equation}
@@ -1247,7 +1204,7 @@ where the first step applies an identity to the dot product, and second the dive
 where the adjoint form of the scattering operator is:
 
 \begin{equation}
-\zeta_s^\dagger= \int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}(.)\Sigma_s(\hat{\Omega}\rightarrow\hat{\Omega}^{'}, E\rightarrow E^{'})
+\zeta_s^\dagger= \int_0^\infty dE^{'}\int_{4\pi}d\hO  ^{'}(.)\Sigma_s(\hO  \rightarrow\hO  ^{'}, E\rightarrow E^{'})
 \end{equation}
 
 First, the order of integration of the pre- and post-collision energies and angles are interchanged, since integrating over either all of the starting energies, or all of the ending energies, will equally capture the total number of scattering interactions. Then, the adjoint flux must be moved inside of the integration, since it depends on the variables of integration. Second, the symbols for the pre- and post-collision energies and angles are swapped, since the symbols are dummy symbols. Finally, the forward flux is brought outside the integral. The adjoint of the scattering operator is obtained by simply reversing the order of the pre- and post-collision energies and angles. Scattering is generally rotationally symmetric (dependent on only one angle), so this only impacts the energy loss portion of the kernel. If there is no energy loss in scattering, such as in coherent scattering, then the scattering operator is self-adjoint. However, if there is energy loss in scattering, then the scattering operator is non-self-adjoint.
@@ -1256,9 +1213,9 @@ First, the order of integration of the pre- and post-collision energies and angl
 
 \begin{equation}
 \begin{aligned}
-<\psi^\dagger,\zeta_f\psi>=& \int d\oslash\psi^\dagger(\vv{r},\hat{\Omega},E,t)\frac{\chi_p(E)}{4\pi}\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\nu\Sigma_f(E^{'})\psi(\vv{r},\hat{\Omega}^{'},E^{'},t)\\
-=& \int d\oslash\int_0^\infty dE\int_{4\pi}d\hat{\Omega}\psi^\dagger(\vv{r},\hat{\Omega},E,t)\frac{\chi_p(E)}{4\pi}\nu\Sigma_f(E^{'})\psi(\vv{r},\hat{\Omega}^{'},E^{'},t)\\
-=& \int d\oslash\psi(\vv{r},\hat{\Omega},E,t)\nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega}^{'},E^{'},t)\frac{\chi_p(E^{'})}{4\pi}\\
+<\psi^\dagger,\zeta_f\psi>=& \int d\oslash\psi^\dagger\spa \frac{\chi_p(E)}{4\pi}\int_0^\infty dE^{'}\int_{4\pi}d\hO  ^{'}\nu\Sigma_f(E^{'})\psi(\vv{r},\hO  ^{'},E^{'},t)\\
+=& \int d\oslash\int_0^\infty dE\int_{4\pi}d\hO  \psi^\dagger\spa \frac{\chi_p(E)}{4\pi}\nu\Sigma_f(E^{'})\psi(\vv{r},\hO  ^{'},E^{'},t)\\
+=& \int d\oslash\psi\spa \nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hO  ^{'}\psi^\dagger(\vv{r},\hO  ^{'},E^{'},t)\frac{\chi_p(E^{'})}{4\pi}\\
 =& <\psi,\zeta^\dagger\psi^\dagger>\\
 \end{aligned}
 \end{equation}
@@ -1266,7 +1223,7 @@ First, the order of integration of the pre- and post-collision energies and angl
 where the adjoint form of the fission operator is:
 
 \begin{equation}
-\zeta_f^\dagger=\nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}(.)\frac{\chi_p(E^{'})}{4\pi}\\
+\zeta_f^\dagger=\nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hO  ^{'}(.)\frac{\chi_p(E^{'})}{4\pi}\\
 \end{equation}
 
 In a similar process as that performed for the scattering term, first the pre- and post-collision energy and angular variables are switched, since integration over either all of the starting energies, or over all of the ending energies, will still fully account for all fission events. Then, the dummy variables for pre- and post-collision energies and angular variables are swapped, whereupon the forward flux can be brought outside the integration. The fission operator is also non-self adjoint with respect to energy, since the angular distribution of fission neutrons is assumed isotropic. This operator becomes self-adjoint if all neutrons are born with the same energy (\(\chi_p=1\)) and the fission cross section is energy-independent. These are both true for the one-speed approximation.
@@ -1276,11 +1233,11 @@ The adjoint neutron transport equation becomes, summing all of these terms toget
 
 \begin{equation} % verify
 \begin{aligned}
--\frac{1}{v}\frac{\partial\psi^\dagger(\vv{r},\hat{\Omega},E,t)}{\partial t}
-& -\hat{\Omega}\cdot\nabla\psi^\dagger(\vv{r},\hat{\Omega},E,t)
-+\Sigma_t\psi^\dagger(\vv{r},\hat{\Omega},E,t)=\\
-& \int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega},E,t)\Sigma_s(\hat{\Omega}\rightarrow\hat{\Omega}^{'}, E\rightarrow E^{'})+\\
-& \nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hat{\Omega}^{'}\psi^\dagger(\vv{r},\hat{\Omega},E,t)\frac{\chi_p(E^{'})}{4\pi} + Q^\dagger(\vv{r},\hat{\Omega},E,t)\\
+-\frac{1}{v}\frac{\partial\psi^\dagger\spa }{\partial t}
+& -\hO  \cdot\nabla\psi^\dagger\spa 
++\Sigma_t\psi^\dagger\spa =\\
+& \int_0^\infty dE^{'}\int_{4\pi}d\hO  ^{'}\psi^\dagger\spa \Sigma_s(\hO  \rightarrow\hO  ^{'}, E\rightarrow E^{'})+\\
+& \nu\Sigma_f(E)\int_0^\infty dE^{'}\int_{4\pi}d\hO  ^{'}\psi^\dagger\spa \frac{\chi_p(E^{'})}{4\pi} + Q^\dagger\spa \\
 \end{aligned}
 \end{equation}
 
@@ -1324,8 +1281,8 @@ The only two terms in the transport equation that had resulting boundary terms w
 \begin{equation}
 \label{eq:ReciprocityCondition}
 \begin{aligned}
-<\psi^\dagger,Q>-<\psi,Q^\dagger> \ =& \int_0^\infty dE\int_{4\pi}d\hat{\Omega}\int dV\psi^\dagger (\vv{r},\hat{\Omega},E,t)\frac{1}{v} \psi(\vv{r},\hat{\Omega},E,t)\biggr\rvert_{0}^{t=T} +\\
-& \int_0^{T}dt\int_0^\infty dE\int d\hat{\Omega}\int_{\partial V}dA\hat{n}\cdot\hat{\Omega}\psi(\vv{r},\hat{\Omega},E,t)\psi^\dagger\psi(\vv{r},\hat{\Omega},E,t)\biggr\rvert_{\hat{n}\cdot\hat{\Omega}<0}^{\hat{n}\cdot\hat{\Omega}>0}
+<\psi^\dagger,Q>-<\psi,Q^\dagger> \ =& \int_0^\infty dE\int_{4\pi}d\hO  \int dV\psi^\dagger \spa \frac{1}{v} \psi\spa \biggr\rvert_{0}^{t=T} +\\
+& \int_0^{T}dt\int_0^\infty dE\int d\hO  \int_{\partial V}dA\hat{n}\cdot\hO  \psi\spa \psi^\dagger\psi\spa \biggr\rvert_{\hat{n}\cdot\hO  <0}^{\hat{n}\cdot\hO  >0}
 \end{aligned}
 \end{equation}
 
@@ -1337,14 +1294,14 @@ The adjoint form of the neutron transport equation is widely used for source-det
 
 \begin{equation}
 \label{eq:Response}
-\textrm{Response}=\int_0^\infty dE\int_{4\pi}d\hat{\Omega}\int_RdVf(\vv{r},\hat{\Omega},E)\psi(\vv{r},\hat{\Omega},E)
+\textrm{Response}=\int_0^\infty dE\int_{4\pi}d\hO  \int_RdVf(\vv{r},\hO  ,E)\psi(\vv{r},\hO  ,E)
 \end{equation}
 
 For instance, to calculate the absorption rate in the detector, \(f\) would be \(\Sigma_a\). Note that the use of the word ``detector'' simply refers to the fact that adjoint problems are usually applied to realistic problems, where the quantity measured by a detector is to be predicted. Source-detector problems are often assumed to be in steady-state, whereupon the time terms in Eq. \eqref{eq:ReciprocityCondition} are eliminated to give:
 
 \begin{equation}
 \label{eq:ReciprocityCondition2}
-<\psi^\dagger,Q>-<\psi,Q^\dagger> \ = \int_0^{T}dt\int_0^\infty dE\int d\hat{\Omega}\int_{\partial V}dA\hat{n}\cdot\hat{\Omega}\psi(\vv{r},\hat{\Omega},E,t)\psi^\dagger\psi(\vv{r},\hat{\Omega},E,t)\biggr\rvert_{\hat{n}\cdot\hat{\Omega}<0}^{\hat{n}\cdot\hat{\Omega}>0}
+<\psi^\dagger,Q>-<\psi,Q^\dagger> \ = \int_0^{T}dt\int_0^\infty dE\int d\hO  \int_{\partial V}dA\hat{n}\cdot\hO  \psi\spa \psi^\dagger\psi\spa \biggr\rvert_{\hat{n}\cdot\hO  <0}^{\hat{n}\cdot\hO  >0}
 \end{equation}
 
 If we require that the outward-directed adjoint flux at the boundary is zero, then the term on the RHS also goes to zero. Finally, because the adjoint source is arbitrary, we can specify that it is to be the detector response. These two assumptions lead Eq. \eqref{eq:ReciprocityCondition2} to simplify to:
@@ -1354,21 +1311,21 @@ If we require that the outward-directed adjoint flux at the boundary is zero, th
 <\psi^\dagger,Q>=<\psi,f>
 \end{equation}
 
-This shows that the desired detector response (\(<f,\psi>\) from Eq. \eqref{eq:Response}) can be expressed as the inner product of the adjoint flux with the physical source. The adjoint flux is determined by solving the adjoint neutron transport equation, with \(Q^\dagger=f\) and \(\psi^\dagger=0\) for \(\hat{\Omega}\cdot\hat{n}>0\) on the boundary of the detector region. 
+This shows that the desired detector response (\(<f,\psi>\) from Eq. \eqref{eq:Response}) can be expressed as the inner product of the adjoint flux with the physical source. The adjoint flux is determined by solving the adjoint neutron transport equation, with \(Q^\dagger=f\) and \(\psi^\dagger=0\) for \(\hO  \cdot\hat{n}>0\) on the boundary of the detector region. 
 
 This adjoint formulation is very useful for two reasons. First, the adjoint flux is independent of the actual source distribution - it only depends on the detector response. So, a single adjoint calculation can be performed in order to calculate the adjoint flux for any number of physical sources. It is easier to evaluate the inner product of the adjoint flux and the physical source than to perform multiple forward calculations. 
 
 Second, the adjoint flux can be interpreted as an importance function. Suppose the forward source consists of a single particle injected into phase space with a given position, direction, and energy:
 
 \begin{equation}
-Q=\delta(\vv{r}-\vv{r}_0)\delta(\hat{\Omega}-\hat{\Omega}_0)\delta(E-E_0)
+Q=\delta(\vv{r}-\vv{r}_0)\delta(\hO  -\hO  _0)\delta(E-E_0)
 \end{equation}
 
 Then, from Eq. \eqref{eq:ReciprocityCondition3}, the detector response is equal to the adjoint flux at the point of injection of the forward neutron. So, the adjoint flux is often interpreted as the importance of forward neutrons at those locations to a contribution towards the detector response. The \(\psi^\dagger=0\) outgoing boundary condition also supports this interpretation, since neutrons leaving the boundary of the system obviously have no impact on the flux or reaction rates within the body. 
 
 \begin{equation}
 \label{eq:ReciprocityCondition3}
-\psi^\dagger(\vv{r}_0,\hat{\Omega}_0,E_0)=<\psi,f>
+\psi^\dagger(\vv{r}_0,\hO  _0,E_0)=<\psi,f>
 \end{equation}
 
 \subsection{Acceleration of Monte Carlo Computations}
@@ -1386,7 +1343,7 @@ The CADIS method generates a biased source \(\hat{q}\) from the forward source \
 \begin{equation}
 \label{eq:CADIS}
 \begin{aligned}
-\hat{q}= \frac{\psi^\dagger(\vv{r},\hat{\Omega},E)q(\vv{r},\hat{\Omega},E)}{\int_{4\pi}\hat{\Omega}\int dE\int_RdV\psi^\dagger(\vv{r},\hat{\Omega},E)q(\vv{r},\hat{\Omega},E)}= \frac{\psi^\dagger(\vv{r},\hat{\Omega},E)q(\vv{r},\hat{\Omega},E)}{\textrm{Response}}\\
+\hat{q}= \frac{\psi^\dagger(\vv{r},\hO  ,E)q(\vv{r},\hO  ,E)}{\int_{4\pi}\hO  \int dE\int_RdV\psi^\dagger(\vv{r},\hO  ,E)q(\vv{r},\hO  ,E)}= \frac{\psi^\dagger(\vv{r},\hO  ,E)q(\vv{r},\hO  ,E)}{\textrm{Response}}\\
 \end{aligned}
 \end{equation}
 
@@ -1394,14 +1351,14 @@ where \(R\) is the detector physical bounds. This is an intuitive biasing, since
 
 \begin{equation}
 \label{eq:WeightsCADIS}
-w(\vv{r},\hat{\Omega},E)\hat{q}(\vv{r},\hat{\Omega},E)=w_0q(\vv{r},\hat{\Omega},E)
+w(\vv{r},\hO  ,E)\hat{q}(\vv{r},\hO  ,E)=w_0q(\vv{r},\hO  ,E)
 \end{equation}
 
 where \(w\) and \(w_0\) reflect particle weights. Substituting the biased source from Eq. \eqref{eq:CADIS} into Eq. \eqref{eq:WeightsCADIS} gives the second equivalent form for the new biased particle weights:
 
 \begin{equation}
 \label{eq:WeightsCADIS2}
-w(\vv{r},\hat{\Omega},E)=\frac{w_0\textrm{Response}}{\psi^\dagger(\vv{r},\hat{\Omega},E)}
+w(\vv{r},\hO  ,E)=\frac{w_0\textrm{Response}}{\psi^\dagger(\vv{r},\hO  ,E)}
 \end{equation}
 
 Hence, the statistical weight is inversely proportional to the importance function. This method is ``consistent'' because the particle weights are consistent with those used in source sampling and the particle transport process.
@@ -1411,21 +1368,21 @@ Hence, the statistical weight is inversely proportional to the importance functi
 One rough method for obtaining uniform uncertainty throughout a domain is to obtain a uniform distribution of particles throughout the system. This should \textit{roughly} lead to equally-merited statistics throughout the domain. The FW-CADIS method is based upon the objective of developing an importance function that represents the importance of particles to achieving a uniform distribution throughout the domain. Then, instead of optimizing a detector response, we optimize for the particle density throughout the domain by setting \(f\) in Eq. \eqref{eq:Response} such that the response represents the particle density throughout the domain. This function \(f\) must convert flux to Monte Carlo particle density. The physical particle density \(n\) is equal to the product of the average particle weight \(\bar{w}\) with the Monte Carlo particle density \(m\):
 
 \begin{equation}
-n(\vv{r},\hat{\Omega},E)=\bar{w}(\vv{r},\hat{\Omega},E)m(\vv{r},\hat{\Omega},E)
+n(\vv{r},\hO  ,E)=\bar{w}(\vv{r},\hO  ,E)m(\vv{r},\hO  ,E)
 \end{equation}
 
 And the angular flux is defined as \(\psi=nv\), where \(v\) is the particle velocity. The Monte Carlo particle density can be estimated by combining these two definitions:
 
 \begin{equation}
 \label{eq:MCDensity}
-m(\vv{r},\hat{\Omega},E)=\frac{\psi(\vv{r},\hat{\Omega},E)}{\bar{w}(\vv{r},\hat{\Omega},E)v(\vv{r},\hat{\Omega},E)}
+m(\vv{r},\hO  ,E)=\frac{\psi(\vv{r},\hO  ,E)}{\bar{w}(\vv{r},\hO  ,E)v(\vv{r},\hO  ,E)}
 \end{equation}
 
 The total Monte Carlo particle density is obtained by integrating Eq. \eqref{eq:MCDensity} over the entire domain. If the average particle weight is set proportional to the physical particle density \(n\), then the Monte Carlo particle density should be nearly uniform. In this case, \(\bar{w}\) can be replaced by \(n\) in Eq. \eqref{eq:MCDensity}, giving the following optimized response:
 
 \begin{equation}
 \label{eq:FWCADISResponse}
-\textrm{Response}=\int_0^\infty dE\int_{4\pi}d\hat{\Omega}\int_RdV\psi(\vv{r},\hat{\Omega},E)\left(\frac{1}{\psi(\vv{r},\hat{\Omega},E)}\right)
+\textrm{Response}=\int_0^\infty dE\int_{4\pi}d\hO  \int_RdV\psi(\vv{r},\hO  ,E)\left(\frac{1}{\psi(\vv{r},\hO  ,E)}\right)
 \end{equation}
 
 From Eq. \eqref{eq:ReciprocityCondition2}, Eq. \eqref{eq:FWCADISResponse} is effectively setting the adjoint source equal to the inverse of the forward flux. So, the FW-CADIS method computes the adjoint source as the inverse of the forward flux in an effort to obtain approximately uniform statistical uncertainties. Once this adjoint source is used to compute the adjoint flux, the CADIS method is executed to calculate consistent source biasing parameters.
@@ -1443,30 +1400,30 @@ All fission sources are bundled into the source \(Q\). This simplified transport
 
 \begin{equation}
 \label{eq:SAAFStart}
-\hat{\Omega}\cdot\nabla\psi(\vv{r}, \hat{\Omega}, E) + R\psi(\vv{r}, \hat{\Omega}, E) = Q
+\hO  \cdot\nabla\psi(\vv{r}, \hO  , E) + R\psi(\vv{r}, \hO  , E) = Q
 \end{equation}
 
 Solving this equation symbolically for \(\psi\) in terms of \(\nabla\psi\):
 
 \begin{equation}
 \label{eq:SAAFStep1}
-\psi(\vv{r}, \hat{\Omega}, E) = R^{-1}\left(Q-\hat{\Omega}\cdot\nabla\psi(\vv{r}, \hat{\Omega}, E)\right)
+\psi(\vv{r}, \hO  , E) = R^{-1}\left(Q-\hO  \cdot\nabla\psi(\vv{r}, \hO  , E)\right)
 \end{equation}
 
 Then, substituting this back into Eq. \ref{eq:SAAFStart} for \(\psi\) gives the SAAF equation:
 
 \begin{equation}
 \label{eq:SAAF}
-\hat{\Omega} \cdot \nabla \left( R^{-1}\left(Q-\hat{\Omega}\cdot\nabla\psi(\vv{r}, \hat{\Omega}, E)\right)\right) + R\psi(\vv{r}, \hat{\Omega}, E) = Q
+\hO   \cdot \nabla \left( R^{-1}\left(Q-\hO  \cdot\nabla\psi(\vv{r}, \hO  , E)\right)\right) + R\psi(\vv{r}, \hO  , E) = Q
 \end{equation}
 
-The advantage of the SAAF equation is that it allows us to apply the Galerkin finite element method while maintaining Symmetric Positive Definite (SPD) characteristics. We still need a formal definition for the inverse of the removal operator. Multiplying the time-independet form of Eq. \ref{eq:TEPLnomoments} (with the fission and external source replaced by \(Q\) as in Eq. \ref{eq:SAAF}) by \(Y_l^{m*}(\hat{\Omega})\) and integrating over angle, after applying the spherical harmonics orthogonality condition given by Eq. \ref{eq:SHOrthogonality} gives (after also removing the energy-dependence from the scattering moment)
+The advantage of the SAAF equation is that it allows us to apply the Galerkin finite element method while maintaining Symmetric Positive Definite (SPD) characteristics. We still need a formal definition for the inverse of the removal operator. Multiplying the time-independet form of Eq. \ref{eq:TEPLnomoments} (with the fission and external source replaced by \(Q\) as in Eq. \ref{eq:SAAF}) by \(Y_l^{m*}(\hO  )\) and integrating over angle, after applying the spherical harmonics orthogonality condition given by Eq. \ref{eq:SHOrthogonality} gives (after also removing the energy-dependence from the scattering moment)
 
 \begin{equation}
 \label{eq:RemovalOperatorDerivation1}
 \begin{aligned}
- \int_{4\pi}^{}d\hat{\Omega} \psi(\vv{r}, E, \hat{\Omega},t)Y_l^{m*}(\hat{\Omega}) = \\
- (\Sigma_t(\vv{r},E) - \Sigma_{s,l}(\vv{r}))^{-1}\int_{4\pi}^{} d\hat{\Omega}Y_l^{m*}(\hat{\Omega}) \left(Q - \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega},t)\right)
+ \int_{4\pi}^{}d\hO   \psi(\vv{r}, E, \hO  ,t)Y_l^{m*}(\hO  ) = \\
+ (\Sigma_t(\vv{r},E) - \Sigma_{s,l}(\vv{r}))^{-1}\int_{4\pi}^{} d\hO  Y_l^{m*}(\hO  ) \left(Q - \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t)\right)
 \end{aligned}
 \end{equation}
 
@@ -1475,8 +1432,8 @@ Replacing the angle integral term in the time-independet form of Eq. \ref{eq:TEP
 \begin{equation}
 \label{eq:RemovalOperatorDerivation2}
 \begin{aligned}
-\psi(\vv{r}, \hat{\Omega}, E) = \frac{1} {\Sigma_t(\vv{r}, E)} \left(Q - \hat{\Omega}\cdot\nabla\psi(\vv{r}, \hat{\Omega}, E)\right) +\\
-\frac{1}{\Sigma_t(\vv{r}, E)} \int_{0}^{\infty}dE' \sum_{l=0}^{L} \frac{\Sigma_{s,l}(\vv{r}, E)}{\Sigma_t(\vv{r}, E) - \Sigma_l(\vv{r}, E)} \sum_{m=-l}^{l}  Y_{lm}(\hat{\Omega}) \int_{4\pi}^{} d\hat{\Omega}' Y_l^{m*}(\hat{\Omega}') \left(Q(\vv{r}, \hat{\Omega}') - \hat{\Omega}'\cdot\nabla\psi(\vv{r}, \hat{\Omega}', E)\right)
+\psi(\vv{r}, \hO  , E) = \frac{1} {\Sigma_t(\vv{r}, E)} \left(Q - \hO  \cdot\nabla\psi(\vv{r}, \hO  , E)\right) +\\
+\frac{1}{\Sigma_t(\vv{r}, E)} \int_{0}^{\infty}dE' \sum_{l=0}^{L} \frac{\Sigma_{s,l}(\vv{r}, E)}{\Sigma_t(\vv{r}, E) - \Sigma_l(\vv{r}, E)} \sum_{m=-l}^{l}  Y_{lm}(\hO  ) \int_{4\pi}^{} d\hO  ' Y_l^{m*}(\hO  ') \left(Q(\vv{r}, \hO  ') - \hO  '\cdot\nabla\psi(\vv{r}, \hO  ', E)\right)
 \end{aligned}
 \end{equation}
 
@@ -1484,21 +1441,21 @@ By combining Eqs. \ref{eq:RemovalOperatorDerivation2} and \ref{eq:SAAFStep1} giv
 
 \begin{equation}
 \label{eq:RemovalOperatorDerivation3}
-R^{-1} f(\vv{r}, \hat{\Omega}) = \frac{1}{\Sigma_t(\vv{r}, E)} \left(f(\vv{r}, \hat{\Omega}) + \sum_{l=0}^{L} \frac{\Sigma_{s,l}(\vv{r}, E)}{\Sigma_t(\vv{r}, E) - \Sigma_l(\vv{r}, E)}\sum_{m=-l}^{l}  Y_{lm}(\hat{\Omega})\int_{4\pi}^{} d\hat{\Omega}' Y_l^{m*}(\hat{\Omega}') f(\vv{r}, \hat{\Omega})\right)
+R^{-1} f(\vv{r}, \hO  ) = \frac{1}{\Sigma_t(\vv{r}, E)} \left(f(\vv{r}, \hO  ) + \sum_{l=0}^{L} \frac{\Sigma_{s,l}(\vv{r}, E)}{\Sigma_t(\vv{r}, E) - \Sigma_l(\vv{r}, E)}\sum_{m=-l}^{l}  Y_{lm}(\hO  )\int_{4\pi}^{} d\hO  ' Y_l^{m*}(\hO  ') f(\vv{r}, \hO  )\right)
 \end{equation}
 
 Because the SAAF is second order, we require one extra boundary condition above that which would be required for the 1st-order transport equation. We can require this boundary condition to be on the outgoing flux, where we simply require the outgoing flux for the SAAF equation to match the flux from the 1st-order transport equation at the boundary. Using this extra boundary condition should allow us to eliminate the extra solutions that are permitted by a second order equation over a first order equation. As can be seen from Eq. \ref{eq:RemovalOperatorDerivation3}, the SAAF equation as it stands in Eq. \ref{eq:SAAF} cannot be used in void regions with zero \(\Sigma_t\). Hence, we need a special void treatment. In a void, we can set the source equal to zero. Then, Eq. \ref{eq:SAAF} becomes:
 
 \begin{equation}
 \label{eq:SAAFvoid1}
-\hat{\Omega} \cdot \nabla \left( \frac{1}{\Sigma_a}\left(-\hat{\Omega}\cdot\nabla\psi(\vv{r}, \hat{\Omega}, E)\right)\right) + \Sigma_a\psi(\vv{r}, \hat{\Omega}, E) = 0
+\hO   \cdot \nabla \left( \frac{1}{\Sigma_a}\left(-\hO  \cdot\nabla\psi(\vv{r}, \hO  , E)\right)\right) + \Sigma_a\psi(\vv{r}, \hO  , E) = 0
 \end{equation}
 
 Although \(\Sigma_a\) is also zero in a void, we have not set it equal to zero above. Now, taking the limit as \(\Sigma_a\) tends to zero:
 
 \begin{equation}
 \label{eq:SAAFvoid2}
--\hat{\Omega} \cdot \nabla\hat{\Omega}\cdot\nabla\psi(\vv{r}, \hat{\Omega}, E) = 0
+-\hO   \cdot \nabla\hO  \cdot\nabla\psi(\vv{r}, \hO  , E) = 0
 \end{equation}
 
 This represents the void form of the SAAF equation to be used in voids.
@@ -1527,15 +1484,15 @@ The neutron transport equation can also be written in even and odd parity forms.
 For all collocation in angle methods, the scattering and source terms (the only two sources that depend on angle, since the fission source is normally taken as isotropic), as well as the angular flux, are expanded in spherical harmonics. 
 
 \subsection{Discrete Ordinates}
-The discrete ordinates method, or the \(S_N\) method, was first developed to study radiation transport in stellar media. With the discrete ordinates method, the neutrons are only allowed to travel in specific directions. That is, \(\hat{\Omega}\) is discretized into allowable angles, and then the transport equation is derived for each one of these directions (and the flux that travels in that direction). The \(S_N\) method is the primary way in which the transport equation is discretized in angle, since it has a simple derivation, closely resembles the Boltzmann transport equation, and does not have to deal with as many strange math properties as the \(P_N\) method, and in 1-D, \(S_N\) is equivalent to Legendre expansions. 
+The discrete ordinates method, or the \(S_N\) method, was first developed to study radiation transport in stellar media. With the discrete ordinates method, the neutrons are only allowed to travel in specific directions. That is, \(\hO  \) is discretized into allowable angles, and then the transport equation is derived for each one of these directions (and the flux that travels in that direction). The \(S_N\) method is the primary way in which the transport equation is discretized in angle, since it has a simple derivation, closely resembles the Boltzmann transport equation, and does not have to deal with as many strange math properties as the \(P_N\) method, and in 1-D, \(S_N\) is equivalent to Legendre expansions. 
 
 To begin, the scattering and external source are expanded into spherical harmonics. Assuming azimuthal symmetry, the scattering cross section can be expanded as in Eq. \eqref{eq:ScatteringLegendre2}. Beginning with the fixed-source problem in Eq. \eqref{eq:TE_fixedsource}, repeated here for reference:
 
 \begin{equation*}
 \begin{aligned}
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega}) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega}) = \\
-S(\vv{r}, E, \hat{\Omega}) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_s(\vv{r}, E'\rightarrow E, \hat{\Omega}'\rightarrow\hat{\Omega})\psi(\vv{r}, E', \hat{\Omega}')\\
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ) = \\
+S(\vv{r}, E, \hO  ) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ')\\
 \end{aligned}
 \end{equation*}
 
@@ -1543,18 +1500,18 @@ The scattering source is expanded in Legendre polynomials according to Eq. \eqre
 
 \begin{equation}
 \begin{aligned}
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega}) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega}) = \\
-S(\vv{r}, E, \hat{\Omega}) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)P_l(\hat{\Omega}\cdot\hat{\Omega}')\psi(\vv{r}, E', \hat{\Omega}')\\
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ) = \\
+S(\vv{r}, E, \hO  ) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)P_l(\hO  \cdot\hO  ')\psi(\vv{r}, E', \hO  ')\\
 \end{aligned}
 \end{equation}
 
-Because the scattering operator is real (i.e. not complex), \(P_l(\hat{\Omega}\cdot\hat{\Omega}')\) can be expanded in real and complex components, and then the complex components set to zero. The end result of this expansion, where only real components result, is given in Eq. \eqref{eq:FullExpansion5}. Using this expansion, the scattering term becomes:
+Because the scattering operator is real (i.e. not complex), \(P_l(\hO  \cdot\hO  ')\) can be expanded in real and complex components, and then the complex components set to zero. The end result of this expansion, where only real components result, is given in Eq. \eqref{eq:FullExpansion5}. Using this expansion, the scattering term becomes:
 
 \begin{equation}
 \label{eq:ScatteringSourceSN}
 \begin{aligned}
-\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \sum_{l=0}^{\infty}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)\left\lbrack Y_{l0}^e(\hat{\Omega})Y_{l0}^e(\hat{\Omega}')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega})Y_{lm}^{e}(\hat{\Omega}')+Y_{lm}^o(\hat{\Omega})Y_{lm}^{o}(\hat{\Omega}')\right)\right\rbrack\psi(\vv{r}, E', \hat{\Omega}')\\
+\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \sum_{l=0}^{\infty}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)\left\lbrack Y_{l0}^e(\hO  )Y_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )Y_{lm}^{e}(\hO  ')+Y_{lm}^o(\hO  )Y_{lm}^{o}(\hO  ')\right)\right\rbrack\psi(\vv{r}, E', \hO  ')\\
 \end{aligned}
 \end{equation}
 
@@ -1564,17 +1521,17 @@ For simplicity, Eq. \eqref{eq:ScatteringSourceSN} is sometimes written in compac
 \begin{equation}
 \label{eq:FluxMoments31}
 \begin{aligned}
-e_{lm}(\vv{r},E')=\int_{4\pi}^{}d\hat{\Omega}'Y_{lm}^e(\hat{\Omega}')\psi(\vv{r}, E',\hat{\Omega}')\\
-o_{lm}(\vv{r},E')=\int_{4\pi}^{}d\hat{\Omega}'Y_{lm}^o(\hat{\Omega}')\psi(\vv{r}, E',\hat{\Omega}')\\
+e_{lm}(\vv{r},E')=\int_{4\pi}^{}d\hO  'Y_{lm}^e(\hO  ')\psi(\vv{r}, E',\hO  ')\\
+o_{lm}(\vv{r},E')=\int_{4\pi}^{}d\hO  'Y_{lm}^o(\hO  ')\psi(\vv{r}, E',\hO  ')\\
 \end{aligned}
 \end{equation}
 
-Inserting these definitions removes, in compact notation, the angular dependency on \(\hat{\Omega}'\):
+Inserting these definitions removes, in compact notation, the angular dependency on \(\hO  '\):
 
 \begin{equation}
 \label{eq:ScatteringSourceSNSimple}
 \begin{aligned}
-\int_{0}^{\infty}dE' \sum_{l=0}^{\infty}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)\left\lbrack Y_{l0}^e(\hat{\Omega})e_{l0}(\vv{r},E')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega})e_{lm}(\vv{r},E')+Y_{lm}^o(\hat{\Omega})o_{lm}(\vv{r},E')\right)\right\rbrack\\
+\int_{0}^{\infty}dE' \sum_{l=0}^{\infty}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)\left\lbrack Y_{l0}^e(\hO  )e_{l0}(\vv{r},E')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )e_{lm}(\vv{r},E')+Y_{lm}^o(\hO  )o_{lm}(\vv{r},E')\right)\right\rbrack\\
 \end{aligned}
 \end{equation}
 \end{tcolorbox}
@@ -1585,7 +1542,7 @@ Likewise, the external source can also be expanded into real and imaginary compo
 
 \begin{equation}
 \label{eq:14}
-S(\vv{r},E, \hat{\Omega})=\int_{4\pi}^{}d\hat{\Omega}'\sum_{l=0}^{\infty}S(\vv{r},E', \hat{\Omega}')\left\lbrack Y_{l0}^e(\hat{\Omega})Y_{l0}^e(\hat{\Omega}')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega})Y_{lm}^{e}(\hat{\Omega}')+Y_{lm}^o(\hat{\Omega})Y_{lm}^{o}(\hat{\Omega}')\right)\right\rbrack 
+S(\vv{r},E, \hO  )=\int_{4\pi}^{}d\hO  '\sum_{l=0}^{\infty}S(\vv{r},E', \hO  ')\left\lbrack Y_{l0}^e(\hO  )Y_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )Y_{lm}^{e}(\hO  ')+Y_{lm}^o(\hO  )Y_{lm}^{o}(\hO  ')\right)\right\rbrack 
 \end{equation}
 
 \begin{tcolorbox}[breakable]
@@ -1593,17 +1550,17 @@ For simplicity, Eq. \eqref{eq:14} is sometimes written in compact notation by de
 
 \begin{equation}
 \begin{aligned}
-s_{lm}(\vv{r},E')=\int_{4\pi}^{}d\hat{\Omega}'Y_{lm}^e(\hat{\Omega}')S(\vv{r}, E',\hat{\Omega}')\\
-v_{lm}(\vv{r},E')=\int_{4\pi}^{}d\hat{\Omega}'Y_{lm}^o(\hat{\Omega}')S(\vv{r}, E',\hat{\Omega}')\\
+s_{lm}(\vv{r},E')=\int_{4\pi}^{}d\hO  'Y_{lm}^e(\hO  ')S(\vv{r}, E',\hO  ')\\
+v_{lm}(\vv{r},E')=\int_{4\pi}^{}d\hO  'Y_{lm}^o(\hO  ')S(\vv{r}, E',\hO  ')\\
 \end{aligned}
 \end{equation}
 
-Inserting these definitions removes, in compact notation, the angular dependency on \(\hat{\Omega}'\):
+Inserting these definitions removes, in compact notation, the angular dependency on \(\hO  '\):
 
 \begin{equation}
 \label{eq:ExternalSourceSNSimple}
 \begin{aligned}
-S(\vv{r},E, \hat{\Omega})=\sum_{l=0}^{\infty}\left\lbrack Y_{l0}^e(\hat{\Omega})s_{l0}(\vv{r},E)+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega})s_{lm}(\vv{e},E)+Y_{lm}^o(\hat{\Omega})v_{lm}(\vv{r},E)\right)\right\rbrack
+S(\vv{r},E, \hO  )=\sum_{l=0}^{\infty}\left\lbrack Y_{l0}^e(\hO  )s_{l0}(\vv{r},E)+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )s_{lm}(\vv{e},E)+Y_{lm}^o(\hO  )v_{lm}(\vv{r},E)\right)\right\rbrack
 \end{aligned}
 \end{equation}
 \end{tcolorbox}
@@ -1613,10 +1570,10 @@ The external source expansion in Eq. \eqref{eq:ExternalSourceSNSimple}, and the 
 \begin{equation}
 \label{eq:SnGeneral}
 \begin{aligned}
- \hat{\Omega}\cdot\nabla\psi(\vv{r}, E, \hat{\Omega}) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hat{\Omega}) = \\
-\sum_{l=0}^{N}\left\lbrack Y_{l0}^e(\hat{\Omega})s_{l0}(\vv{r},E)+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega})s_{lm}(\vv{e},E)+Y_{lm}^o(\hat{\Omega})v_{lm}(\vv{r},E)\right)\right\rbrack+\\
-\int_{0}^{\infty}dE' \sum_{l=0}^{N}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)\left\lbrack Y_{l0}^e(\hat{\Omega})e_{l0}(\vv{r},E')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega})e_{lm}(\vv{r},E')+Y_{lm}^o(\hat{\Omega})o_{lm}(\vv{r},E')\right)\right\rbrack\quad\\
+ \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ) + 
+ \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ) = \\
+\sum_{l=0}^{N}\left\lbrack Y_{l0}^e(\hO  )s_{l0}(\vv{r},E)+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )s_{lm}(\vv{e},E)+Y_{lm}^o(\hO  )v_{lm}(\vv{r},E)\right)\right\rbrack+\\
+\int_{0}^{\infty}dE' \sum_{l=0}^{N}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)\left\lbrack Y_{l0}^e(\hO  )e_{l0}(\vv{r},E')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )e_{lm}(\vv{r},E')+Y_{lm}^o(\hO  )o_{lm}(\vv{r},E')\right)\right\rbrack\quad\\
 \end{aligned}
 \end{equation}
 
@@ -1624,35 +1581,35 @@ where the infinite sums in \(l\) have been truncated to \(N\) terms. For \(N\), 
 
 \begin{equation}
 \label{eq:multigroupTE2}
-\int_{4\pi}^{} f(\hat{\Omega})d\hat{\Omega} = \sum_{n=1}^{N} w_n f(\hat{\Omega}_n)
+\int_{4\pi}^{} f(\hO  )d\hO   = \sum_{n=1}^{N} w_n f(\hO  _n)
 \end{equation}
 
 where \(N\) is the order, or the amount of directions modeled. These weights are normalized such that an integral over the unit sphere still provides the correct numerical result:
 
 \begin{equation}
 \label{eq:QuadratureNormalization}
-\int_{4\pi}^{}d\hat{\Omega}=\sum_{n=1}^{N} w_n =4\pi
+\int_{4\pi}^{}d\hO  =\sum_{n=1}^{N} w_n =4\pi
 \end{equation}
 
-We replace each occurrence of \(\hat{\Omega}\) in Eq. \eqref{eq:SnGeneral} by \(\hat{\Omega}_a\) to indicate a particular direction. Then, Eq. \eqref{eq:SnGeneral} applies for each direction. All other terms in the equation are then integrated using quadrature rules. 
+We replace each occurrence of \(\hO  \) in Eq. \eqref{eq:SnGeneral} by \(\hO  _a\) to indicate a particular direction. Then, Eq. \eqref{eq:SnGeneral} applies for each direction. All other terms in the equation are then integrated using quadrature rules. 
 
 \begin{equation}
 \label{eq:SnGeneral}
 \begin{aligned}
- \hat{\Omega}_a\cdot\nabla\psi_a(\vv{r}, E) + 
+ \hO  _a\cdot\nabla\psi_a(\vv{r}, E) + 
  \Sigma_t(\vv{r},E)\psi_a(\vv{r}, E) = \\
-\sum_{l=0}^{N}\left\lbrack Y_{l0}^e(\hat{\Omega}_a)s_{l0}(\vv{r},E)+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega}_a)s_{lm}(\vv{e},E)+Y_{lm}^o(\hat{\Omega}_a)v_{lm}(\vv{r},E)\right)\right\rbrack+\\
-\int_{0}^{\infty}dE' \sum_{l=0}^{N}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)\left\lbrack Y_{l0}^e(\hat{\Omega}_a)e_{l0}(\vv{r},E')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega}_a)e_{lm}(\vv{r},E')+Y_{lm}^o(\hat{\Omega}_a)o_{lm}(\vv{r},E')\right)\right\rbrack\quad\\
+\sum_{l=0}^{N}\left\lbrack Y_{l0}^e(\hO  _a)s_{l0}(\vv{r},E)+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  _a)s_{lm}(\vv{e},E)+Y_{lm}^o(\hO  _a)v_{lm}(\vv{r},E)\right)\right\rbrack+\\
+\int_{0}^{\infty}dE' \sum_{l=0}^{N}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)\left\lbrack Y_{l0}^e(\hO  _a)e_{l0}(\vv{r},E')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  _a)e_{lm}(\vv{r},E')+Y_{lm}^o(\hO  _a)o_{lm}(\vv{r},E')\right)\right\rbrack\quad\\
 \end{aligned}
 \end{equation}
 
-where notation has been simplified by indicating that \(\psi_a(\vv{r},E)\equiv\psi(\vv{r},E,\hat{\Omega}_a\). In addition, all the moments are computed using the quadrature rule:
+where notation has been simplified by indicating that \(\psi_a(\vv{r},E)\equiv\psi(\vv{r},E,\hO  _a\). In addition, all the moments are computed using the quadrature rule:
 
 \begin{equation}
-e_{lm}=\sum_{n=1}^{N} w_nY_{lm}^e(\hat{\Omega}_n)\psi_a(\vv{r},E)
+e_{lm}=\sum_{n=1}^{N} w_nY_{lm}^e(\hO  _n)\psi_a(\vv{r},E)
 \end{equation}
 
-and so forth for the remaining moments. Note that the quadrature rule used is a quadrature rule in angle. It is customary to select the quadrature points in this quadrature rule, i.e. the \(\hat{\Omega}_n\) in the above equation, to match the discrete choices of \(\hat{\Omega}_a\) that appear in the \(S_N\) equations. 
+and so forth for the remaining moments. Note that the quadrature rule used is a quadrature rule in angle. It is customary to select the quadrature points in this quadrature rule, i.e. the \(\hO  _n\) in the above equation, to match the discrete choices of \(\hO  _a\) that appear in the \(S_N\) equations. 
 
 The order of the \(S_N\) method and the order of the \(P_L\) expansion discussed in reference to Eq. \ref{eq:ScatteringMomentsLegendre} result in different numbers of discrete directions and angular moments depending on the dimensionality of the problem. In 1-D, there are \(N\) discrete directions and \(L\) angular moments. In 2-D however, there are \(N(N+2)/2\) directions and \((L+1)(L+2)/2\) angular moments, and in 3-D, there are \(N(N+2)\) directions and \((L+1)^2\) moments. 
 
@@ -1661,7 +1618,7 @@ The \(S_N\) method will converge to the true solution provided the quadrature ru
 \subsubsection{Quadrature}
 
 \subsubsubsection{Level-Symmetric Quadrature}
-While there are many options for quadrature sets, the Level-Symmetric quadrature set is the set most often associated with the \(S_N\) method. With this set, there are \(N(N+2)\) angular directions per spatial location (N(N+2)/8 per octant). The Level-Symmetric quadrature set uses the same set of \(N/2\) positive values of direction cosines for each of the components of \(\hat{\Omega}\). Because this quadrature set is symmetric, no direction gets preferential treatment. Different quadrature sets could be used for different computations where it is expected for streaming to occur preferentially in some directions over others. 
+While there are many options for quadrature sets, the Level-Symmetric quadrature set is the set most often associated with the \(S_N\) method. With this set, there are \(N(N+2)\) angular directions per spatial location (N(N+2)/8 per octant). The Level-Symmetric quadrature set uses the same set of \(N/2\) positive values of direction cosines for each of the components of \(\hO  \). Because this quadrature set is symmetric, no direction gets preferential treatment. Different quadrature sets could be used for different computations where it is expected for streaming to occur preferentially in some directions over others. 
 
 Because of the symmetry constraints, not all of the choices for the quadrature points are independent, and in fact there is only one degree of freedom for each choice of quadrature set. A second constraint given by Eq. \eqref{eq:QuadratureNormalization} then narrows down the options for the quadrature set. With these two constraints, \(S_2\) quadrature is fixed, but for higher orders, there are several options remaining for the quadrature points. 
 
@@ -1675,7 +1632,7 @@ The \(S_N\) equations provide the framework to discretize the angular flux in an
 
 \begin{equation}
 \label{eq:SimpleTE}
-\hat{\Omega}\cdot\nabla\psi(\vv{r},E)+\Sigma_t{\vv{r},E}\psi(\vv{r},E)=S(\vv{r},E)
+\hO  \cdot\nabla\psi(\vv{r},E)+\Sigma_t{\vv{r},E}\psi(\vv{r},E)=S(\vv{r},E)
 \end{equation}
 
 where \(S\) represents the scattering, fission, and external sources. There will be one of these equations for each discrete direction in the \(S_N\) method. For all the following discretization schemes, a Cartesian mesh given in Fig. \ref{fig:CartesianDiscretization} is assumed, with \(i\) representing indices in the \(x\)-direction, \(j\) in the \(y\)-direction, and \(k\) in the \(z\)-direction.
@@ -1809,7 +1766,7 @@ The term in the numerator of the fraction on the LHS of Eq. \eqref{eq:125} is ve
 \subsubsection{Quadrature}
 
 \subsubsubsection{Level-Symmetric Quadrature}
-While there are many options for quadrature sets, the Level-Symmetric quadrature set is the set most often associated with the \(S_N\) method. With this set, there are \(N(N+2)\) angular directions per spatial location (N(N+2)/8 per octant). The Level-Symmetric quadrature set uses the same set of \(N/2\) positive values of direction cosines for each of the components of \(\hat{\Omega}\). Because this quadrature set is symmetric, no direction gets preferential treatment. Different quadrature sets could be used for different computations where it is expected for streaming to occur preferentially in some directions over others. 
+While there are many options for quadrature sets, the Level-Symmetric quadrature set is the set most often associated with the \(S_N\) method. With this set, there are \(N(N+2)\) angular directions per spatial location (N(N+2)/8 per octant). The Level-Symmetric quadrature set uses the same set of \(N/2\) positive values of direction cosines for each of the components of \(\hO  \). Because this quadrature set is symmetric, no direction gets preferential treatment. Different quadrature sets could be used for different computations where it is expected for streaming to occur preferentially in some directions over others. 
 
 Because of the symmetry constraints, not all of the choices for the quadrature points are independent, and in fact there is only one degree of freedom for each choice of quadrature set. A second constraint given by Eq. \eqref{eq:QuadratureNormalization} then narrows down the options for the quadrature set. With these two constraints, \(S_2\) quadrature is fixed, but for higher orders, there are several options remaining for the quadrature points. 
 
@@ -1823,7 +1780,7 @@ The \(S_N\) equations provide the framework to discretize the angular flux in an
 
 \begin{equation}
 \label{eq:SimpleTE}
-\hat{\Omega}\cdot\nabla\psi(\vv{r},E)+\Sigma_t({\vv{r},E})\psi(\vv{r},E)=S(\vv{r},E)
+\hO  \cdot\nabla\psi(\vv{r},E)+\Sigma_t({\vv{r},E})\psi(\vv{r},E)=S(\vv{r},E)
 \end{equation}
 
 where \(S\) represents the scattering, fission, and external sources. There will be one of these equations for each discrete direction in the \(S_N\) method. For all the following discretization schemes, a Cartesian mesh given in Fig. \ref{fig:CartesianDiscretization} is assumed, with \(i\) representing indices in the \(x\)-direction, \(j\) in the \(y\)-direction, and \(k\) in the \(z\)-direction.
@@ -1962,23 +1919,23 @@ This section covers the operator form of the transport equation, where the scatt
 \begin{equation}
 \label{eq:StartofOperatorForm}
 \begin{aligned}
- \hat{\Omega}_a\cdot\nabla\psi_a^g(\vv{r}) + 
+ \hO  _a\cdot\nabla\psi_a^g(\vv{r}) + 
  \Sigma_t^g(\vv{r})\psi_a^g(\vv{r}) = \\
-\sum_{l=0}^{N}\left\lbrack Y_{l0}^e(\hat{\Omega}_a)s_{l0}^g(\vv{r})+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega}_a)s_{lm}^g(\vv{r})+Y_{lm}^o(\hat{\Omega}_a)v_{lm}^g(\vv{r})\right)\right\rbrack+\\
-\sum_{g'=1}^G\sum_{l=0}^{N}\Sigma_{s,l}(\vv{r}, g'\rightarrow g)\left\lbrack Y_{l0}^e(\hat{\Omega}_a)e_{l0}^{g'}(\vv{r})+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega}_a)e_{lm}^{g'}(\vv{r})+Y_{lm}^o(\hat{\Omega}_a)o_{lm}^{g'}(\vv{r})\right)\right\rbrack\quad\\
+\sum_{l=0}^{N}\left\lbrack Y_{l0}^e(\hO  _a)s_{l0}^g(\vv{r})+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  _a)s_{lm}^g(\vv{r})+Y_{lm}^o(\hO  _a)v_{lm}^g(\vv{r})\right)\right\rbrack+\\
+\sum_{g'=1}^G\sum_{l=0}^{N}\Sigma_{s,l}(\vv{r}, g'\rightarrow g)\left\lbrack Y_{l0}^e(\hO  _a)e_{l0}^{g'}(\vv{r})+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  _a)e_{lm}^{g'}(\vv{r})+Y_{lm}^o(\hO  _a)o_{lm}^{g'}(\vv{r})\right)\right\rbrack\quad\\
 \end{aligned}
 \end{equation}
 
 where the equation has now been transformed to a form that accounts for energy groups, rather than applying to a within-group equation. So, all energy dependence is removed, since a group structure now accounts for that dependence. The \(g\) superscript refers to the energy group number, and \(G\) to the total number of energy groups. Within-group scattering is counted in the scattering term, but is canceled by the total interaction term, which avoids double counting. The above equation can be cast in operator form. The external group source is defined as:
 
 \begin{equation}
-q_e^g(\vv{r})=\sum_{l=0}^{N}\left\lbrack Y_{l0}^e(\hat{\Omega}_a)s_{l0}^g(\vv{r})+\sum_{m=1}^{l}\left(Y_{lm}^e(\hat{\Omega}_a)s_{lm}^g(\vv{r})+Y_{lm}^o(\hat{\Omega}_a)v_{lm}^g(\vv{r})\right)\right\rbrack
+q_e^g(\vv{r})=\sum_{l=0}^{N}\left\lbrack Y_{l0}^e(\hO  _a)s_{l0}^g(\vv{r})+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  _a)s_{lm}^g(\vv{r})+Y_{lm}^o(\hO  _a)v_{lm}^g(\vv{r})\right)\right\rbrack
 \end{equation}
 
 in order to permit easier equation manipulation. In addition, several operators are defined. The transport operator is:
 
 \begin{equation}
-\textbf{L}\equiv\hat{\Omega}_a\cdot\nabla+\Sigma_t^g
+\textbf{L}\equiv\hO  _a\cdot\nabla+\Sigma_t^g
 \end{equation}
 
 and the solution vector \(\Psi\) is a column vector containing each energy group flux vector \(\vv{\psi}\):
@@ -2006,17 +1963,17 @@ N_e=&\ \text{number of unknowns per cell}\\
 \end{aligned}
 \end{equation} 
 
-So, if the problem consisted of a single cell with a single node (i.e. only one spatial unknown), then \(\Psi\) would be an \((Gn)\times1\) vector. However, the problems solves will consist of a spatial domain that is also present in \(\Psi\). In reality, each \(\psi_{\hat{\Omega}_n}^g\) term is solved as a function of space, and is therefore not a scalar value, but an \(N_cN_e\times1\) vector. The \(S_N\) equation for a particular angle and group is solved as a function of space using a variety of methods, such as the finite element method or the finite difference method. So, the total size of \(\Psi\) is \(N_cN_eGn\times1\). The external source \(q_e^g\) is defined in a similar manner, and is represented as \(Q\), an \(N_cN_eGn\times1\) vector.
+So, if the problem consisted of a single cell with a single node (i.e. only one spatial unknown), then \(\Psi\) would be an \((Gn)\times1\) vector. However, the problems solves will consist of a spatial domain that is also present in \(\Psi\). In reality, each \(\psi_{\hO  _n}^g\) term is solved as a function of space, and is therefore not a scalar value, but an \(N_cN_e\times1\) vector. The \(S_N\) equation for a particular angle and group is solved as a function of space using a variety of methods, such as the finite element method or the finite difference method. So, the total size of \(\Psi\) is \(N_cN_eGn\times1\). The external source \(q_e^g\) is defined in a similar manner, and is represented as \(Q\), an \(N_cN_eGn\times1\) vector.
 
 Expressing the mapping between flux moments and the scattering term is more difficult simply due to the difficulty in visualizing the matrix multiplication. The moment-to-discrete matrix is used to project harmonic moments onto discrete angle space. It is defined as:
 
 \begin{equation}
 \textbf{M}=\left\{
 \begin{array}{*{13}c}
-Y_{00}^o(\hat{\Omega}_1) & Y_{00}^e(\hat{\Omega}_1) & Y_{01}^o(\hat{\Omega}_1) & Y_{01}^e(\hat{\Omega}_1) & Y_{10}^o(\hat{\Omega}_1) & Y_{10}^e(\hat{\Omega}_1) & Y_{11}^o(\hat{\Omega}_1) & Y_{11}^e(\hat{\Omega}_1) & \cdots & Y_{NN}^o(\hat{\Omega}_1) & Y_{NN}^e(\hat{\Omega}_1)\\
-Y_{00}^o(\hat{\Omega}_2) & Y_{00}^e(\hat{\Omega}_2) & Y_{01}^o(\hat{\Omega}_2) & Y_{01}^e(\hat{\Omega}_2) & Y_{10}^o(\hat{\Omega}_2) & Y_{10}^e(\hat{\Omega}_2) & Y_{11}^o(\hat{\Omega}_2) & Y_{11}^e(\hat{\Omega}_2) & \cdots & Y_{NN}^o(\hat{\Omega}_2) & Y_{NN}^e(\hat{\Omega}_2)\\
+Y_{00}^o(\hO  _1) & Y_{00}^e(\hO  _1) & Y_{01}^o(\hO  _1) & Y_{01}^e(\hO  _1) & Y_{10}^o(\hO  _1) & Y_{10}^e(\hO  _1) & Y_{11}^o(\hO  _1) & Y_{11}^e(\hO  _1) & \cdots & Y_{NN}^o(\hO  _1) & Y_{NN}^e(\hO  _1)\\
+Y_{00}^o(\hO  _2) & Y_{00}^e(\hO  _2) & Y_{01}^o(\hO  _2) & Y_{01}^e(\hO  _2) & Y_{10}^o(\hO  _2) & Y_{10}^e(\hO  _2) & Y_{11}^o(\hO  _2) & Y_{11}^e(\hO  _2) & \cdots & Y_{NN}^o(\hO  _2) & Y_{NN}^e(\hO  _2)\\
 \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
-Y_{00}^o(\hat{\Omega}_n) & Y_{00}^e(\hat{\Omega}_n) & Y_{01}^o(\hat{\Omega}_n) & Y_{01}^e(\hat{\Omega}_n) & Y_{10}^o(\hat{\Omega}_n) & Y_{10}^e(\hat{\Omega}_n) & Y_{11}^o(\hat{\Omega}_n) & Y_{11}^e(\hat{\Omega}_n) & \cdots & Y_{NN}^o(\hat{\Omega}_n) & Y_{NN}^e(\hat{\Omega}_n)\\
+Y_{00}^o(\hO  _n) & Y_{00}^e(\hO  _n) & Y_{01}^o(\hO  _n) & Y_{01}^e(\hO  _n) & Y_{10}^o(\hO  _n) & Y_{10}^e(\hO  _n) & Y_{11}^o(\hO  _n) & Y_{11}^e(\hO  _n) & \cdots & Y_{NN}^o(\hO  _n) & Y_{NN}^e(\hO  _n)\\
 \end{array}\right\}
 \end{equation}
 
@@ -2025,10 +1982,10 @@ But, some of these components are actually always zero - for instance, from the 
 \begin{equation}
 \textbf{M}=\left\{
 \begin{array}{*{13}c}
-Y_{00}^e(\hat{\Omega}_1)  & Y_{10}^e(\hat{\Omega}_1) & Y_{11}^o(\hat{\Omega}_1) & Y_{11}^e(\hat{\Omega}_1) & Y_{20}^e(\hat{\Omega}_1) & \cdots & Y_{NN}^o(\hat{\Omega}_1) & Y_{NN}^e(\hat{\Omega}_1)\\
-Y_{00}^e(\hat{\Omega}_2)  & Y_{10}^e(\hat{\Omega}_2) & Y_{11}^o(\hat{\Omega}_2) & Y_{11}^e(\hat{\Omega}_2) & Y_{20}^e(\hat{\Omega}_2) & \cdots & Y_{NN}^o(\hat{\Omega}_2) & Y_{NN}^e(\hat{\Omega}_2)\\
+Y_{00}^e(\hO  _1)  & Y_{10}^e(\hO  _1) & Y_{11}^o(\hO  _1) & Y_{11}^e(\hO  _1) & Y_{20}^e(\hO  _1) & \cdots & Y_{NN}^o(\hO  _1) & Y_{NN}^e(\hO  _1)\\
+Y_{00}^e(\hO  _2)  & Y_{10}^e(\hO  _2) & Y_{11}^o(\hO  _2) & Y_{11}^e(\hO  _2) & Y_{20}^e(\hO  _2) & \cdots & Y_{NN}^o(\hO  _2) & Y_{NN}^e(\hO  _2)\\
 \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
-Y_{00}^e(\hat{\Omega}_n) & Y_{10}^e(\hat{\Omega}_n) & Y_{11}^o(\hat{\Omega}_n) & Y_{11}^e(\hat{\Omega}_n) & Y_{20}^e(\hat{\Omega}_n) & \cdots & Y_{NN}^o(\hat{\Omega}_n) & Y_{NN}^e(\hat{\Omega}_n)\\
+Y_{00}^e(\hO  _n) & Y_{10}^e(\hO  _n) & Y_{11}^o(\hO  _n) & Y_{11}^e(\hO  _n) & Y_{20}^e(\hO  _n) & \cdots & Y_{NN}^o(\hO  _n) & Y_{NN}^e(\hO  _n)\\
 \end{array}\right\}
 \end{equation}
 
@@ -2101,7 +2058,7 @@ Due to the added complexity associated with higher dimensions, the \(P_N\) equat
 
 \begin{equation*}
 \mu \frac{\partial \psi(z, \mu)}{\partial z} +
- \Sigma_t(z)\psi(z, \mu) =\int_{4\pi}^{} d\hat{\Omega}' \Sigma_s(z, \hat{\Omega}\cdot\hat{\Omega}')\psi(z,\hat{\Omega}') + \frac{S(z)}{4\pi}
+ \Sigma_t(z)\psi(z, \mu) =\int_{4\pi}^{} d\hO  ' \Sigma_s(z, \hO  \cdot\hO  ')\psi(z,\hO  ') + \frac{S(z)}{4\pi}
  \end{equation*}
 
 The \(P_N\) approximation is made by expanding both the flux and scattering cross section in Legendre polynomials in a similar fashion to the scattering cross section as shown in Eq. \eqref{eq:ScatteringLegendre}. We use Legendre polynomials here because we're in 1-D Cartesian geometry; in higher dimensions or in non-Cartesian frames, the spherical harmonics would be needed.
@@ -2113,7 +2070,7 @@ The \(P_N\) approximation is made by expanding both the flux and scattering cros
 
 \begin{equation}
 \label{eq:PNScatteringCrossSectionExpansion}
-\Sigma_s(z,\hat{\Omega}\cdot\hat{\Omega}')=\sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\hat{\Omega}\cdot\hat{\Omega}')\rightarrow\sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')
+\Sigma_s(z,\hO  \cdot\hO  ')=\sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\hO  \cdot\hO  ')\rightarrow\sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')
 \end{equation}
 
 where \(n\) is used in the expansion of the flux to differentiate it from \(l\) used in expanding the scattering cross section. From the 1-D form of the addition theorem for spherical harmonics given in Eq. \eqref{eq:AddSpherical1D}, the scattering cross section expansion has been simplified. Now, inserting Eqs. \eqref{eq:AngularFluxPN} and \eqref{eq:AngularFluxPN} into the 1-D transport equation listed in the beginning of this section:
@@ -2121,11 +2078,11 @@ where \(n\) is used in the expansion of the flux to differentiate it from \(l\) 
 \begin{equation}
 \begin{aligned}
 \mu \frac{\partial}{\partial z}\left(\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu)\right) + \Sigma_t(z)\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) =\quad\quad\\
-\int_{4\pi}^{} d\hat{\Omega}' \sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) + \frac{S(z)}{4\pi}
+\int_{4\pi}^{} d\hO  ' \sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) + \frac{S(z)}{4\pi}
  \end{aligned}
  \end{equation}
 
-Because no quantities depend on \(\hat{\Omega}\), the scattering integral can be integrated over \(0\leq\phi\leq2\pi\) so that the integral becomes a function of only \(\mu\) and space.
+Because no quantities depend on \(\hO  \), the scattering integral can be integrated over \(0\leq\phi\leq2\pi\) so that the integral becomes a function of only \(\mu\) and space.
 
 \begin{equation}
 \label{eq:PNStep1}
@@ -2212,13 +2169,13 @@ In order to truncate the infinite series to \(N\) unknowns, \(\phi_{-1}=0\) is o
 Marshak boundary conditions require continuity in the odd flux moments at boundaries. 
 
 \begin{equation}
-2\pi\int_{\hat{\Omega}\cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi(\mu)=2\mu\int_{\hat{\Omega}\cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi_b(\mu)\quad\quad l=1, 3, 5\cdots N
+2\pi\int_{\hO  \cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi(\mu)=2\mu\int_{\hO  \cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi_b(\mu)\quad\quad l=1, 3, 5\cdots N
 \end{equation}
 
 where \(\psi_b(\mu)\) is the incoming flux. Expanding flux according to Eq. \eqref{eq:AngularFluxPN} gives:
 
 \begin{equation}
-2\pi\int_{\hat{\Omega}\cdot\hat{n}<0}^{}d\mu P_l(\mu)\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu)=2\mu\int_{\hat{\Omega}\cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi_b(\mu)\quad\quad l=1, 3, 5\cdots N
+2\pi\int_{\hO  \cdot\hat{n}<0}^{}d\mu P_l(\mu)\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu)=2\mu\int_{\hO  \cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi_b(\mu)\quad\quad l=1, 3, 5\cdots N
 \end{equation}
 
 This gives \((N+1)/2\) boundary conditions. For an isotropic boundary:
@@ -2296,7 +2253,7 @@ The diffusion equation is derived by assuming a \(P_1\) expansion for the flux. 
 
 \begin{equation}
 \label{eq:FluxLegendreP1}
-\psi(\vv{r}, E, \hat{\Omega}, t) \approx \frac{\phi_0(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hat{\Omega}\phi_1(\vv{r}, E, t)
+\psi\spa  \approx \frac{\phi_0(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hO  \phi_1(\vv{r}, E, t)
 \end{equation}
 
 Note that To interpret the flux moments \(\phi_0\) and \(\phi_1\), we integrated Eq. \ref{eq:FluxLegendreP1} over angle:
@@ -2304,17 +2261,17 @@ Note that To interpret the flux moments \(\phi_0\) and \(\phi_1\), we integrated
 \begin{equation}
 \label{eq:FluxLegendreP1_AngleIntegration}
 \begin{aligned}
-\int_{4\pi}^{} d\hat{\Omega} \psi(\vv{r}, E, \hat{\Omega}, t) = \int_{4\pi}^{} d\hat{\Omega} \frac{\phi_0(\vv{r}, E, t)}{4\pi} + \int_{4\pi}^{} d\hat{\Omega} \frac{3}{4\pi} \hat{\Omega}\phi_1(\vv{r}, E, t)\\
-\phi(\vv{r}, E, t) = \phi_0 + \frac{3}{4\pi}\phi_1\int_{4\pi}^{} d\hat{\Omega}\hat{\Omega} = \phi_0
+\int_{4\pi}^{} d\hO   \psi\spa  = \int_{4\pi}^{} d\hO   \frac{\phi_0(\vv{r}, E, t)}{4\pi} + \int_{4\pi}^{} d\hO   \frac{3}{4\pi} \hO  \phi_1(\vv{r}, E, t)\\
+\phi(\vv{r}, E, t) = \phi_0 + \frac{3}{4\pi}\phi_1\int_{4\pi}^{} d\hO  \hO   = \phi_0
 \end{aligned}
 \end{equation}
 
-where we have used the property of \(\hat{\Omega}\) that an integral of any single one of its components over the entire solid angle is zero, based on its component definitions in Eq. \ref{eq:OmegaCartesian}. Eq. \ref{eq:FluxLegendreP1_AngleIntegration} above indicates that \(\phi = \phi_0\). To demonstrate the interpretation of \(\phi_1\), multiply Eq. \ref{eq:FluxLegendreP1} by \(\hat{\Omega}\) and then integrate over the solid angle:
+where we have used the property of \(\hO  \) that an integral of any single one of its components over the entire solid angle is zero, based on its component definitions in Eq. \ref{eq:OmegaCartesian}. Eq. \ref{eq:FluxLegendreP1_AngleIntegration} above indicates that \(\phi = \phi_0\). To demonstrate the interpretation of \(\phi_1\), multiply Eq. \ref{eq:FluxLegendreP1} by \(\hO  \) and then integrate over the solid angle:
 
 \begin{equation}
 \label{eq:FluxLegendreP1_AngleIntegration2}
 \begin{aligned}
-\int_{4\pi}^{} d\hat{\Omega} \hat{\Omega}\psi(\vv{r}, E, \hat{\Omega}, t) = \int_{4\pi}^{} d\hat{\Omega} \hat{\Omega}\frac{\phi_0(\vv{r}, E, t)}{4\pi} + \int_{4\pi}^{} d\hat{\Omega} \hat{\Omega}\frac{3}{4\pi} \hat{\Omega}\phi_1(\vv{r}, E, t)\\
+\int_{4\pi}^{} d\hO   \hO  \psi\spa  = \int_{4\pi}^{} d\hO   \hO  \frac{\phi_0(\vv{r}, E, t)}{4\pi} + \int_{4\pi}^{} d\hO   \hO  \frac{3}{4\pi} \hO  \phi_1(\vv{r}, E, t)\\
 J(\vv{r}, E, t) = \phi_1(\vv{r}, E, t)\\
 \end{aligned}
 \end{equation}
@@ -2325,13 +2282,13 @@ where we have used the defintion of angular current from Eq. \ref{eq:AngularCurr
 \label{eq:P1a}
 \begin{aligned}
 \frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hat{\Omega} \hat{\Omega}\hat{\Omega}\left(\frac{\phi(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hat{\Omega}\cdot\vv{J}(\vv{r}, E, t)\right) + 
+ \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \left(\frac{\phi(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hO  \cdot\vv{J}(\vv{r}, E, t)\right) + 
  \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)
+ \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)
 \end{aligned}
 \end{equation}
 
-Because the integral of any odd number of \(\hat{\Omega}\) components vanish due to symmetry, the current portion in the streaming term evaluates to zero. In addition, including the results from Eq. \ref{eq:4PiOmegaOmega}, the streaming term becomes:
+Because the integral of any odd number of \(\hO  \) components vanish due to symmetry, the current portion in the streaming term evaluates to zero. In addition, including the results from Eq. \ref{eq:4PiOmegaOmega}, the streaming term becomes:
 
 \begin{equation}
 \label{eq:P1b}
@@ -2339,7 +2296,7 @@ Because the integral of any odd number of \(\hat{\Omega}\) components vanish due
 \frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
  \frac{1}{3}\nabla\phi + 
  \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hat{\Omega}' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)
+ \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)
 \end{aligned}
 \end{equation}
 
@@ -2359,7 +2316,7 @@ Eqs. \ref{eq:P1b} and \ref{eq:NeutronContinuityEquation_BundledSource} are the e
 
 \begin{equation}
 \label{eq:IsotropicScatteringAngle}
-\bar{\mu_o} = \frac{\int_{4\pi}^{} d\hat{\Omega}\Sigma_s(\mu_o)\mu_o}{\Sigma_s} = \frac{\Sigma_{s1}}{\Sigma_s}
+\bar{\mu_o} = \frac{\int_{4\pi}^{} d\hO  \Sigma_s(\mu_o)\mu_o}{\Sigma_s} = \frac{\Sigma_{s1}}{\Sigma_s}
 \end{equation}
 
 Then, if we further make the one-speed approximation so that the integrals over energy disappear from Eqs. \ref{eq:P1b} and \ref{eq:NeutronContinuityEquation_BundledSource}, we obtain the 1-group \(P_1\) equations. 
@@ -2427,7 +2384,7 @@ To derive the boundary condition for zero incoming/outgoing current, introduce t
 
 \begin{equation}
 \label{eq:PartialCurrent_BC1}
-J_\pm (\vv{r}, E, t) = \int_{2\pi\pm}^{} d\hat{\Omega} \left(\frac{\phi_0(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hat{\Omega}\phi_1(\vv{r}, E, t)\right)\hat{\Omega}\cdot\hat{n}
+J_\pm (\vv{r}, E, t) = \int_{2\pi\pm}^{} d\hO   \left(\frac{\phi_0(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hO  \phi_1(\vv{r}, E, t)\right)\hO  \cdot\hat{n}
 \end{equation}
 
 Using Eqs. \ref{eq:OmegaDotOmega} and \ref{eq:P1b_CurrentApproximation_2}, the integral over half the solid angle becomes an integral over \(\theta\) and \(\phi\), and recalling that the integral of any two components of solid angle over \(4\pi\) equals \(4\pi/3\):
@@ -2561,21 +2518,23 @@ where the removal cross section is defined to be the sum of the absorption cross
 
 
 
-
+\clearpage
 \section{Reactor Kinetics}
 
-First, some preliminary definitions. The delayed neutron fraction \(\beta\) represents the fraction of neutrons that are born delayed. With changes in the incident neutron energy, the fission yield distribution changes, and hence \(\beta\) must also change, but this energy dependence is small below neutron energies of 4 MeV. Multiplying this fraction by \(\nu\) gives the absolute number of neutrons produced from delayed neutron precursors. 
+This section discusses how the time-dependency of the neutron transport equation can be approximated. In general, the neutron transport equation can be solved in time, where some fraction of neutrons are born promptly with essentially no time delay, and some fraction born delayed according to a decay constant associated with a precursor nuclide. 
+
+The delayed neutron fraction \(\beta\) represents the fraction of neutrons that are born delayed. This parameter is a function of the identity of the fissioning nuclide, as well as the incident neutron energy. Because \(\beta\) is a function of energy for each nuclide, and because the fission cross section is also a function of energy (so the makeup of the nuclides that undergo fission changes with incident neutron energy), \(\beta\) is also a function of the incident neutron energy. However, this dependence of the makeup of the precursor groups to neutron energy is small below 4 MeV, and can be neglected. For fast reactor systems, however, note that more advanced accounting methods might be needed. Multiplying \(\beta\) by \(\nu\) gives the absolute number of neutrons produced from delayed neutron precursors. 
 
 Calculating \(\beta\) requires you to weight not only the fraction of the fuel that is made up of each isotope, but also the fraction of fissions that occur in each isotope. This requires weighting by the adjoint flux, since the fractions of fissions that occur in each isotope are related to cross sections that are a function of energy. The most accurate calculation will also include spatial effects, since the fissile material is most likely not distributed homogeneously within an infinite reactor, and this then impacts the multiplication of the adjoint flux and the material locations. For fast reactors, \(\beta\) will be lower for heterogeneous designs, because in homogeneous designs, a greater fraction of the U-238 contributes to fission due to its correspondingly lower fissile fraction, and U-238 has a higher \(\beta\) than the fissile isotopes used in fast reactors.
 
-\(C\) is the precusor number density, where the density refers to the amount of precursor atoms that always decay by neutron emission. So, \(C\) is really some fraction of the total precursor concentration to reflect the fraction that on average undergoes delayed neutron emission. 
+\(C\) is the precursor number density, where the density refers to the amount of precursor atoms that always decay by neutron emission. So, \(C\) is really some fraction of the total precursor concentration to reflect the fraction that on average undergoes delayed neutron emission. 
 
 Delayed neutrons are typically grouped into 6 groups, since this yields a sufficient model of a reactor. These 6 groups are relatively similar for thermal and fast spectra. The delayed neutrons for the thermal spectrum in the table below are for U-235, while for the fast spectrum are for Pu-239. Something important to note about the data below is how the decay constants for each group are selected. If the decay constants were to be calculated from the listed half-lives, then it would be clear that the half-lives are chosen so as to match the exponential decay curve, rather than matching actual decay data from various delayed neutron precursors. On average, delayed neutrons are born about 12 seconds after fission. 
 
 \begin{table}[h]
 \caption{Delayed Neutron Group Characteristics for U-235 (thermal) and Pu-239 (fast)} % title name of the table
 \centering % centering table
-\begin{tabular}{c c c c c} % creating 10 columns
+\begin{tabular}{c |c c |c c} % creating 10 columns
 \hline\hline % inserting double-line
  Group & (Thermal) Half-Life (s) & (Thermal) \(\beta_i\) & (Fast) Half-Life (s) & (Fast) \(\beta_i\)
 \\ [0.5ex]
@@ -2586,7 +2545,6 @@ Delayed neutrons are typically grouped into 6 groups, since this yields a suffic
 4 & 2.3  & 0.0026 &  2.09 & 0.0006757\\
 5 & 0.6  & 0.0007 & 0.549 & 0.0002122\\
 6 & 0.23 & 0.0003 & 0.216 & 0.0000721\\
-% [1ex] adds vertical space
 \hline % inserts single-line
 \end{tabular}
 \label{tab:PPer}
@@ -2594,7 +2552,7 @@ Delayed neutrons are typically grouped into 6 groups, since this yields a suffic
 
 Neutron ``hold-up'' in a reflector due to many scattering interactions before return to the core can be represented by an artificial delayed neutron group, though this is better approximated by using a modified neutron lifetime. While the data given in the above table are for U-238 in a thermal system and Pu-239 in a fast system, the value of \(\beta\) varies significantly depending on the fissioning isotope, though the group structure itself is relatively constant. 
 
-\begin{table}[h] 
+\begin{table}[H] 
 \caption{\(\beta\) and \(\nu\) for Various Isotopes} % title name of the table
 \centering % centering table
 \begin{tabular}{l l l} % creating 10 columns
@@ -2630,7 +2588,7 @@ While this section will use a 1-group treatment for the point kinetics equations
 \beta_i \rightarrow \frac{\beta_i p_i P_{NL,i}^{fast}}{(1-\beta)pP_{NL}^{fast}+\sum_{i=1}^{6}\beta_i p_i P_{NL}^{fast}}
 \end{equation}
 
-Whether or not the effective \(\beta\) is greater than or less than the actual \(\beta\) depends on whether the reactor is fast or thermal spectrum. For thermal reactors, the effective \(\beta\) of the delayed neutrons is higher than the actual fraction of neutrons born delayed, since these delayed neutrons represent a fraction greater than \(\beta\) that eventually induce fission (they are closer to the thermal energies necessary for fission). In large LWRs, the effective \(\beta\) is several percent larger than the actual \(\beta\), but in small research reactors can be 20-30\% larger. However, for fast reactors, the effective \(\beta\) is even smaller than the actual \(\beta\), but about 10\%, since delayed neutrons are still born at lower energies, but in this case fission is more likely at high energies.
+Whether or not the effective \(\beta\) is greater than or less than the actual \(\beta\) depends on whether the reactor is in the fast or thermal spectrum. For thermal reactors, the effective \(\beta\) of the delayed neutrons is higher than the actual fraction of neutrons born delayed, since these delayed neutrons represent a fraction greater than \(\beta\) that eventually induce fission (they are closer to the thermal energies necessary for fission). In large LWRs, the effective \(\beta\) is several percent larger than the actual \(\beta\), but in small research reactors can be 20-30\% larger. However, for fast reactors, the effective \(\beta\) is even smaller than the actual \(\beta\), but about 10\%, since delayed neutrons are still born at lower energies, but in this case fission is more likely at high energies.
 
 The simplest model of kinetics if that the neutron population is related to the \(n\) number of cycles of neutrons:
 
@@ -3206,13 +3164,13 @@ This section lists all the important notation used in this document. Quantities 
 \(\delta\) & Kronecker delta \(\doteq 1\) & ---\\
 \(E\) & energy \(\doteq MeV\) & ---\\
 \(\Sigma\) & macroscopic cross section \(\doteq 1/m\) & ---\\
-\(\xi\) & Cartesian \(x\)-component of \(\hat{\Omega}\) \(\doteq 1\) & Eq. \ref{eq:OmegaComponentsCartesian}\\
+\(\xi\) & Cartesian \(x\)-component of \(\hO  \) \(\doteq 1\) & Eq. \ref{eq:OmegaComponentsCartesian}\\
 \(G\) & total number of energy groups \(\doteq 1\) & ---\\
 \(\vv{j}\) & angular current \(\doteq 1/cm^2sMeV\textrm{steradian}\) & Eq. \ref{eq:AngularCurrent}\\
-\(\eta\) & Cartesian \(y\)-component of \(\hat{\Omega}\) \(\doteq 1\) & Eq. \ref{eq:OmegaComponentsCartesian}\\
-\(\hat{\Omega}\) & directional unit vector \(\doteq 1\) & Eq. \ref{eq:OmegaCartesian}\\
+\(\eta\) & Cartesian \(y\)-component of \(\hO  \) \(\doteq 1\) & Eq. \ref{eq:OmegaComponentsCartesian}\\
+\(\hO  \) & directional unit vector \(\doteq 1\) & Eq. \ref{eq:OmegaCartesian}\\
 \(\mu\) & cosine of the scattering angle \(\doteq 1\) & Eq. \ref{eq:OmegaComponentsCartesian}\\
-\(\theta\) & angle between \(\hat{\Omega}\) and \(z\) \(\doteq \textrm{radians}\) & ---\\
+\(\theta\) & angle between \(\hO  \) and \(z\) \(\doteq \textrm{radians}\) & ---\\
 \(L\) & order of scattering anisotropy \(\doteq 1\) & Eq. \ref{eq:LegendrePolynomialDefinitions}\\
 \(l\) & order of Legendre polynomial \(\doteq 1\) & Eq. \ref{eq:LegendrePolynomialDefinitions}\\
 \(\lambda\) & decay constant \(\doteq 1/s\) & ---\\
@@ -3220,7 +3178,7 @@ This section lists all the important notation used in this document. Quantities 
 \(n\) & neutron density \(\doteq 1/m^3\) & ---\\
 \(\oslash\) & entire phase space \(\doteq m^3sMeV\textrm{steradian}\) & Eq. \ref{eq:PhaseSpaceIntegration}\\
 \(P_i\) & Legendre polynomial \(\doteq \textrm{radians}\) & Eq. \ref{eq:LegendrePolynomialDefinitions}\\
-\(\phi\) & angle between \(\hat{\Omega}\) projected in \(x-y\) with \(x\) \(\doteq \textrm{radians}\) & ---\\
+\(\phi\) & angle between \(\hO  \) projected in \(x-y\) with \(x\) \(\doteq \textrm{radians}\) & ---\\
 \(\phi(\vv{r}, E, t)\) & scalar flux \(\doteq /cm^2sMeV\) & Eq. \ref{eq:ScalarFlux}\\
 \(t\) & time \(\doteq s\) & ---\\
 \(V\) & volume element \(\doteq m^3\) & ---\\
@@ -3228,7 +3186,8 @@ This section lists all the important notation used in this document. Quantities 
 \(\nu\) & average number of neutrons born from fission \(\doteq 1\) & ---\\
 \(\chi\) & yield \(\doteq 1\) & ---\\
 \(Y\) & spherical harmonic \(\doteq 1\) & Eq. \ref{eq:SHAdditionTheorem}\\
-\(\psi(\vv{r}, E, \hat{\Omega}, t)\) & angular flux \(\doteq 1/cm^2sMeV\cdot\textrm{steradian}\) & Eq. \ref{eq:AngularFlux}\\
+\(\psi\spa \) & angular flux \(\doteq 1/cm^2sMeV\cdot\textrm{steradian}\) & Eq. \ref{eq:AngularFlux}\\
+\(\volume\) & Volume\\
 
 \end{tabular}
 
