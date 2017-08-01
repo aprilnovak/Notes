@@ -57,6 +57,11 @@
 \newcommand{\hO}{\hat{\Omega}}
 \newcommand{\Om}{\Omega}
 \newcommand{\spa}{(\vv{r}, E, \hO, t)}
+\newcommand{\spas}{\spas}
+\newcommand{\spap}{(\vv{r}, E', \hO',t)}
+\newcommand{\spaps}{(\vv{r},E',t)}
+\newcommand{\spang}{(\vv{r},E'\rightarrow E, \hO'\rightarrow\hO,t)}
+\newcommand{\spangr}{(\vv{r},E\rightarrow E', \hO\rightarrow\hO',t)}
 
 \titleclass{\subsubsubsection}{straight}[\subsection]
 
@@ -223,10 +228,10 @@ All angular quantities can be integrated over \(4\pi\) solid angle to give the c
 
 \beq
 \label{eq:ScalarFlux}
-\phi(\vv{r}, E, t) = \int_{4\pi}^{} d\hO\psi\spa
+\phi\spas = \int_{4\pi}^{} d\hO\psi\spa
 \eeq
 
-If the angular flux is isotropic, i.e. independent of angle, then the above integral would simply evaluate to \(\phi(\vv{r}, E, t)=4\pi\psi\). However, the entire crux of neutron transport is that the angular flux usually has strong angular dependence, especially near boundaries or interfaces between regions with very different cross-sections, such as near vacuum boundaries or strong absorbers. 
+If the angular flux is isotropic, i.e. independent of angle, then the above integral would simply evaluate to \(\phi\spas=4\pi\psi\). However, the entire crux of neutron transport is that the angular flux usually has strong angular dependence, especially near boundaries or interfaces between regions with very different cross-sections, such as near vacuum boundaries or strong absorbers. 
 
 \subsubsection{Current}
 
@@ -255,14 +260,14 @@ Eq. \ref{eq:AngularCurrent} would then also be integrated over angle and energy 
 
 \beq
 \label{eq:PartialCurrent}
-J_\pm (\vv{r}, E, t) = \int dA\int_{2\pi\pm}^{} d\hO   \vv{j}\spa \cdot\hat{n}
+J_\pm \spas = \int dA\int_{2\pi\pm}^{} d\hO   \vv{j}\spa \cdot\hat{n}
 \eeq
 
 The net current through a surface is then the sum of the two partial currents (note that \(J_+\) is positive (pointing in the positive direction) while \(J_-\) is negative (pointing in the negative direction), so that we have to actually take the difference between the two to find the net current):
 
 \beq
 \label{eq:TotalCurrent}
-J (\vv{r}, E, t) = J_+ - J_-
+J \spas = J_+ - J_-
 \eeq
 
 \subsubsection{Pressure Tensor}
@@ -597,8 +602,6 @@ And because the odd functions are zero for \(m=0\), the second line above could 
 
 \end{tcolorbox}
 
-
-
 \begin{tcolorbox}[breakable]
 We can also express \(\hat{Y}_{lm}^e\) in terms of \(\hat{Y}_{l,-m}^e\) using the definition in Eq. \eqref{eq:RealImaginary}. 
 
@@ -632,8 +635,6 @@ Likewise,
 \end{equation}
 
 \end{tcolorbox}
-
-
 
 In order to remove the imaginary components in Eq. \eqref{eq:SphericalHarmonics2}, express the summation in terms of ``hatted'' spherical harmonics as shown in Eq. \eqref{eq:RealImaginary}:
 
@@ -696,139 +697,135 @@ Further, because the scattering cross section usually appears within an integral
 
 \begin{equation}
 \label{eq:FluxMomentSH}
-\phi_l^m(\vv{r}, E, t) = \int_{4\pi}^{} d\hO  '\psi(\vv{r}, E', \hO  ', t)Y_l^{m*}(\hO  ')
+\phi_l^m\spas = \int_{4\pi}^{} d\hO  '\psi(\vv{r}, E', \hO  ', t)Y_l^{m*}(\hO  ')
 \end{equation}
 
-\section{Derivation of the Transport Equation in Various Geometries}
+\clearpage
+\section{Derivation of the Transport Equation}
 
-The transport equation can be derived from conservation principles in an arbitrary control volume \(V\). We will derive the equation in terms of neutron density \(N\) since we are really conserving the number of neutrons, and not the flux itself. The neutron density is in general a function of \(\vv{r}, E, \hO  , \) and \(t\), and hence the neutron transport equation is, in general, a 7-dimensional equation (3 spatial variables, 2 angular variables, 1 energy variable, and 1 time variable). It is this rich phase space that makes solving the neutron transport equation so difficult. 
+The transport equation can be derived from conservation principles in an arbitrary control volume \(\volume\). We will derive the equation in terms of neutron density \(n\) since we are really conserving the number of neutrons, and not the flux itself. The neutron density is in general a function of \(\vv{r}, E, \hO,\) and \(t\), and hence the neutron transport equation is in general a 7-dimensional equation (3 spatial variables, 2 angular variables, 1 energy variable, and 1 time variable). It is this rich phase space that makes solving the neutron transport equation so difficult. 
 
 Assuming neutrons are conserved, the time rate of change of neutrons in the control volume equals the net change of neutrons in the control volume. 
 
-\begin{equation}
+\beqa
 \label{eq:Conservation1}
-\frac{\partial}{\partial t} \left\lbrack\int dV N(\vv{r}, E, \hO  ,t)\right\rbrack dEd\hO   = \textrm{gain} - \textrm{loss}
-\end{equation}
+\frac{\partial}{\partial t} \left\lbrack\int d\volume n\spa \right\rbrack dEd\hO   =\ & \textrm{gain} - \textrm{loss}\\
+\left\lbrack\int d\volume \frac{\partial n\spa  }{\partial t}\right\rbrack dEd\hO   =\ & \textrm{gain} - \textrm{loss}\\
+\eeqa
 
-Because \(N\) is a density per cm\textsuperscript{3}, the amount of neutrons in the \textit{space} of the control volume is only dictated by an integral over \(dV\), which is why we can simply multiply the entire expression by \(dEd\hO  \). This is performed similarly for the other terms in the transport equation that are derived below. Assuming the shape of the control volume does not change in time, then the time derivative can be brought inside the integral.
+Because \(n\) is a density (per volume), the amount of neutrons in the \textit{space} of the control volume is only dictated by an integral over \(d\volume\), which is why we can simply multiply the entire expression by \(dEd\hO\). This is performed similarly for the other terms in the transport equation that are derived below. Assuming the shape of the control volume does not change in time, then the time derivative can be brought inside the integral, giving the second form shown above.
 
-\begin{equation}
-\label{eq:Conservation2}
-\left\lbrack\int dV \frac{\partial N(\vv{r}, E, \hO  ,t) }{\partial t}\right\rbrack dEd\hO   = \textrm{gain} - \textrm{loss}
-\end{equation}
+The sources of neutrons in the control volume can come from external sources whose magnitude are independent of the neutron density itself, or sources whose magnitudes depend on the neutron population itself, such as inscattering from other energy groups, prompt fission neutrons, and delayed neutrons. The external source gain is
 
-The sources of neutrons in the control volume can come from external sources whose magnitude are independent of the neutron density itself, inscattering from other energy groups, prompt fission neutrons, and delayed neutrons. The external source gain is
-
-\begin{equation}
+\beq
 \label{eq:ConservationExternalSource}
-\textrm{external source} = \left\lbrack\int dV S(\vv{r}, E, \hO  ,t)\right\rbrack dEd\hO  
-\end{equation}
+\textrm{external source} = \left\lbrack\int d\volume S\spa \right\rbrack dEd\hO  
+\eeq
 
-The inscattering source gain is an integral over all possible neutron energies \(E'\) and angles \(\hO  '\), since theoretically any other neutron could scatter into another neutron energy group. A reaction frequency is given, in units of time, as in Eq. \ref{eq:ReactionFrequency}. The rate at which interactions, such as inscattering, occur is directly controlled by this frequency, and hence the reaction frequency will appear in all terms related to reactions in the transport equation.
+The inscattering source gain is an integral over all possible neutron energies \(E'\) and angles \(\hO'\), since theoretically any other neutron could scatter into another neutron energy group. A reaction frequency is given, in units of time, as in Eq. \ref{eq:ReactionFrequency}. The rate at which interactions, such as inscattering, occur is directly controlled by this frequency, and hence the reaction frequency will appear in all terms related to reactions in the transport equation.
 
-\begin{equation}
+\beq
 \label{eq:ConservationInscatteringSource}
-\textrm{inscattering source} = \left\lbrack\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int dV v(E')\Sigma_s(\vv{r},E'\rightarrow E, \hO  '\rightarrow\hO  ) N(\vv{r}, E', \hO  ',t)\right\rbrack dEd\hO  
-\end{equation}
+\textrm{inscattering source} = \left\lbrack\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int d\volume v(E')\Sigma_s\spang n\spap\right\rbrack dEd\hO  
+\eeq
 
-The fission source is also an integral over all possible neutron energies and angles, since fission can theoretically be caused by a neutron of any energy. Because neutrons from fission are born (very nearly) isotropically, we can avoid writing another integral over angle and simply divide the prompt fission yield spectrum \(\chi_p(E)\) by \(4\pi\). The fraction of neutrons born delayed is given as \(\beta\), which we must be accounted for separately because we are using the prompt fission neutron spectrum.
+The fission source is also an integral over all possible neutron energies and angles, since fission can technically be caused by a neutron of any energy (though some energies are very unlikely). Because neutrons from fission are born (very nearly) isotropically, we can avoid writing the prompt neutron energy spectrum \(\chi_p(E,\hO)\), and instead simply use \(\chi_p(E)/4\pi\) based on integrating the angular-dependent term over \(4\pi\) solid angle. The fraction of fission neutrons born delayed is given as \(\beta\), which we must be accounted for separately because we are using the prompt fission neutron spectrum.
 
-\begin{equation}
+\beq
 \label{eq:ConservationFissionPrompt}
-\textrm{(prompt) fission source} = \left\lbrack\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int dV (1-\beta(E'))\nu(E')v(E')\Sigma_f(\vv{r},E')N(\vv{r}, E, \hO  ,t)\right\rbrack dEd\hO  
-\end{equation}
+\textrm{(prompt) fission source} = \left\lbrack\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int d\volume (1-\beta(E'))\nu(E')v(E')\Sigma_f(\vv{r},E',t)n\spa \right\rbrack dEd\hO  
+\eeq
 
-The delayed neutron source is the sum of the delayed neutrons from \(J\) delayed neutron precursor groups, where each group has a decay constant \(\lambda\) from a precursor with concentration \(C\) with a neutron energy spectrum \(\chi_d\). \(J\) is customarily taken to be 6.
+The delayed neutron source is the sum of the delayed neutrons from \(J\) delayed neutron precursor groups, where each group has a decay constant \(\lambda\) from a precursor with concentration \(C\) with a neutron energy spectrum \(\chi_d\). Like the prompt fission neutrons, the delayed fission neutrons are assumed to be born isotropically so that \(\chi_d(E)/4\pi\) can be used in place of \(\chi_d(E,\hO)\). \(J\) is customarily taken to be 6.
 
-\begin{equation}
+\beq
 \label{eq:ConservationFissionDelayed}
-\textrm{(delayed) fission source} = \left\lbrack\int dV \sum_{j=1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r}, t)\right\rbrack dEd\hO  
-\end{equation}
+\textrm{(delayed) fission source} = \left\lbrack\int d\volume \sum_{j=1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r}, t)\right\rbrack dEd\hO  
+\eeq
 
 The losses from the control volume include absorption and streaming (leakage). Instead of including simply an absorption term as a loss, however, we need to balance the inscattering term in Eq. \ref{eq:ConservationInscatteringSource}. This equation has no indication of whether or not the neutron scattering caused it to leave an energy group - in fact, it still contains within-group scattering, which should not be counted as a gain. For this reason, we will subtract as a loss the sum of absorption and outscattering from the present energy group to all other energy groups, \textit{including inscattering}, as this will balance the double counting of within-group scatterings. 
 
-\begin{equation}
+\beq
 \label{eq:ConservationTotal}
-\textrm{absorption and outscattering loss}=\left\lbrack\int dV v(E)\Sigma_t(\vv{r}, E) N(\vv{r}, E, \hO  ,t)\right\rbrack dEd\hO  
-\end{equation}
+\textrm{absorption and outscattering loss}=\left\lbrack\int d\volume v(E)\Sigma_t(\vv{r},E\rightarrow E',\hO\rightarrow\hO',t) n\spa \right\rbrack dEd\hO  
+\eeq
 
-where \(\Sigma_t=\Sigma_a+\Sigma_s\) is the total cross section, and \(\Sigma_s\) indicates the total scattering probability from an energy group \(E\) to any other energy group, including its own group. 
+where the total cross section is given as
 
-Finally, neutron streaming from the control volume is only a function of the neutrons that move perpendicularly to the bounding surface, since neutrons moving parallel to the surface are not actually leaving the control volume. Because the direction of the neutrons is what is important in this case, we should integrate the product of the angular current, defined in Eq. \eqref{eq:AngularCurrent}, over the surface area, dotted with the unit normal vector of the surface. 
+\beq
+\Sigma_t\spangr=\Sigma_a\spangr+\Sigma_s(\vv{r},E\rightarrow E',\hO\rightarrow\hO',t)
+\eeq
 
-\begin{equation}
+Finally, neutrons can stream out of the domain (exit by passing a surface), where streaming from the control volume is only a function of the neutrons that move perpendicularly to the bounding surface, since neutrons moving parallel to the surface are not actually leaving the control volume. Because the direction of the neutrons is what is important in this case, we should integrate the product of the angular current, defined in Eq. \eqref{eq:AngularCurrent}, over the surface area, dotted with the unit normal vector of the surface. 
+
+\beqa
 \label{eq:ConservationStreaming1}
-\textrm{streaming loss} = \left\lbrack\int dA \vv{j}(\vv{r}, E, \hO  ,t)\cdot \hat{n}\right\rbrack dEd\hO  =\left\lbrack\int dA v(E)N(\vv{r}, E, \hO  ,t)\hO  \cdot \hat{n}\right\rbrack dEd\hO  
-\end{equation}
+\textrm{streaming loss} =& \left\lbrack\int dA \vv{j}\spa \cdot \hat{n}\right\rbrack dEd\hO  \\
+=&\left\lbrack\int dA v(E)n\spa \hO  \cdot \hat{n}\right\rbrack dEd\hO\\
+=&\left\lbrack\int d\volume \hO  \cdot\nabla\left(v(E)n\spa \right)\right\rbrack dEd\hO\\
+\eeqa
 
-where the angular flux definition in Eq. \eqref{eq:AngularFlux} has been used. Apply the divergence theorem so that this integral becomes a volume integral instead of an area integral:
+where the angular flux definition in Eq. \eqref{eq:AngularFlux} has been used. The third form is obtained by applying the divergence theorem so that an area integral becomes converted to a volume integral.
 
-\begin{equation}
-\label{eq:ConservationStreaming2}
-\textrm{streaming loss} =\left\lbrack\int dV \hO  \cdot\nabla\left(v(E)N(\vv{r}, E, \hO  ,t)\right)\right\rbrack dEd\hO  
-\end{equation}
+Combining all of these terms together yields the transport equation. \(dEd\hO  \) cancels in every term. Because all the integrals are over \(d\volume\), the only way for the entire expression to always be true is if the integrand of the term goes to zero, since the selection of the control volume was arbitrary. This leads to the integro-differential transport equation, which is named as such because it contains both integrals and derivatives. Note also that neutron density \(n\) has been replaced with angular flux according to the definition in Eq. \eqref{eq:AngularFlux}. The neutron transport equation is equivalent to the linear Boltzmann transport equation, because we have neglected any nonlinearities due to neutron-neutron interactions. 
 
-Combining all of these terms together yields the transport equation. \(dEd\hO  \) cancels in every term. Because all the integrals are over \(dV\), the only way for the entire expression to always be true is if the integrand of the term to go to zero, since the selection of the specific control volume was arbitrary. This leads to the integro-differential transport equation, which is named as such because it contains both integrals and derivatives. Note also that neutron density \(N\) has been replaced with angular flux according to the definition in Eq. \eqref{eq:AngularFlux}. This is also known as the linear Boltzmann transport equation, because we have neglected any nonlinearities due to neutron-neutron interactions. 
-
-\begin{equation}
+\beqa
 \label{eq:TE}
-\begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
- \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
-S(\vv{r}, E, \hO  ,t) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + \\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '(1-\beta(E'))\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t) + 
+\frac{1}{v(E)} \frac{\partial\psi\spa}{\partial t} +
+ \hO  \cdot\nabla\psi\spa  + 
+ \Sigma_t\spa\psi\spa  = \\
+S\spa  + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s\spangr\psi\spap + \\
+ \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '(1-\beta(E'))\nu(E')\Sigma_f\spaps\psi\spap + 
  \sum_{j = 1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r}, t))
-\end{aligned}
-\end{equation}
+\eeqa
 
-From here moving forward, the distinction between prompt and delayed source will be neglected, and the fission source will be lumped together as a single term with a single spectrum \(\chi_p\). Most codes do not separately treat the prompt and delayed sources, but rather use great simplifications such as point kinetics to avoid working with the very complicated transport equation in kinetics problems. 
+From here moving forward, the distinction between prompt and delayed neutron sources will often be neglected, and the fission source will be lumped together as a single term with a single spectrum \(\chi_p\). If \(\chi_d\) does not appear in the equation, then this is the approximation that has been made. Most codes do not separately treat the prompt and delayed sources, but rather use great simplifications such as point kinetics to avoid working with the very complicated transport equation in kinetics problems. 
 
-Eq. \eqref{eq:TE} is commonly written in one of two forms, since the form in Eq. \eqref{eq:TE} is extremely difficult to solve as-is. The fixed-source form removes all time dependence and the fission source to create a form that is used to solve shielding problems for which a known source drives the results:
+Although the form in Eq. \eqref{eq:TE} appears daunting, it is a simple expression of conservation of neutrons. By removing the time-dependent term and combining the fission and external sources together into \(q\), integrating over space, angle, and energy reduces Eq. \eqref{eq:TE} to:
 
-\begin{equation}
-\label{eq:TE_fixedsource}
-\begin{aligned}
- \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
-S(\vv{r}, E, \hO  ,t) + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t)\\
-\end{aligned}
-\end{equation}
-
-Alternatively, Eq. \eqref{eq:TE} is frequently expressed in eigenvalue form, where \(k\) is the eigenvalue. Time dependence is also removed as in the fixed source problem, but now the external source, rather than the fission source, is removed, since eigenvalue problems represent situations for which there is no external source.
-
-\begin{equation}
-\label{eq:TE_eigenvalue}
-\begin{aligned}
- \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
-\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + \\
- \frac{1}{k}\left\lbrack\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '(1-\beta(E'))\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t) + 
- \sum_{j = 1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r}, t))\right\rbrack
-\end{aligned}
-\end{equation}
-
-And, although the form in Eq. \eqref{eq:TE} appears very daunting, it is a simple expression of conservation of neutrons. By removing the time-dependent term and combining the fission and external sources together into \(q\), integrating over space, angle, and energy reduces Eq. \eqref{eq:TE} to:
-
-\begin{equation}
+\beq
 \nabla\cdot\vv{J}(\vv{r})+(\Sigma_t(\vv{r})-\Sigma_s(\vv{r}))\phi(\vv{r})=q(\vv{r})
-\end{equation}
+\eeq
+
+Eq. \eqref{eq:TE} is commonly written in one of two more simplified forms - fixed-source and eigenvalue. The fixed-source form removes all time dependence and the fission source to create a form that is used to solve shielding problems in non-fissile material for which a known source drives the results:
+
+\beqa
+\label{eq:TE_fixedsource}
+ \hO  \cdot\nabla\psi(\vv{r},E,\hO)  + 
+ \Sigma_t(\vv{r},E,\hO)\psi(\vv{r},E,\hO)  = \\
+S(\vv{r},E,\hO)  + \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r},E',\hO')\\
+\eeqa
+
+In the eigenvalue form, time dependence is also removed, but instead of removing the fission source, the external source is removed. The eigenvalue, \(k\), therefore represents the criticality of the reactor given no external sources. Eigenvalue problems represent situations for which there is no external source.
+
+\beqa
+\label{eq:TE_eigenvalue}
+ \hO  \cdot\nabla\psi(\vv{r},E,\hO)  + 
+ \Sigma_t(\vv{r},E,\hO)\psi(\vv{r},E,\hO)  = \\
+\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r},E',\hO') + \\
+ \frac{1}{k}\left\lbrack\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '(1-\beta(E'))\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r},E',\hO')+
+ \sum_{j = 1}^{J} \frac{\chi_{d,j}(E)}{4\pi} \lambda_j C_j(\vv{r})\right\rbrack\\
+\eeqa
 
 \subsubsection{Boundary Conditions}
 
-This section discusses the boundary conditions used in Eq. \eqref{eq:TE}. The incoming flux \(\psi_{inc}\) can be specified for incoming directions:
+This section discusses the boundary conditions used in Eq. \eqref{eq:TE}.
 
-\begin{equation}
-\psi\spa =\psi_{inc}\quad\vv{r}\in \partial V\quad\hO  \cdot\hat{n}<0
-\end{equation}
+\subsubsubsection{Incoming Flux}
+The incoming flux \(\psi_{inc}\) can be specified for incoming directions:
 
-where \(\partial V\) is a common way of denoting one lower dimension than the problem domain \(V\). Hence, if the problem is 2-D, \(V\) represents the two-dimensional domain, while \(\partial V\) represents the one-dimensional boundaries. For eigenvalue problems, \(\psi_{inc}=0\) on all boundaries because an eigenvalue problem is defined such that there are no external sources present. 
+\beq
+\psi\spa =\psi_{inc}\quad\vv{r}\in \partial \volume\quad\hO  \cdot\hat{n}<0
+\eeq
 
-All problems can also specify reflecting conditions:
+where \(\partial\volume\) is a common way of denoting one lower dimension than the problem domain \(\volume\). Hence, if the problem is 2-D, \(\volume\) represents the two-dimensional domain, while \(\partial \volume\) represents the one-dimensional boundaries. For eigenvalue problems, \(\psi_{inc}=0\) on all boundaries because an eigenvalue problem is defined such that there are no external sources present. 
 
-\begin{equation}
-\psi\spa =\psi(\vv{r},-\hO  ,E,t)\quad\vv{r}\in\partial V
-\end{equation}
+\subsubsubsection{Reflecting}
+A reflecting condition specifies that the outgoing flux on one boundary is equivalent to the incoming flux on that same boundary.
+
+\beq
+\psi\spa =\psi(\vv{r},-\hO  ,E,t)\quad\vv{r}\in\partial \volume
+\eeq
 
 \subsection{Legendre Polynomial and Spherical Harmonics Expansions}
 This section will show how to reduce Eq. \eqref{eq:TE} to simpler forms by expanding cross sections and flux in Legendre polynomials or spherical harmonics.
@@ -840,11 +837,11 @@ By expanding the scattering cross section in Legendre polynomials as in Eq. \ref
 \begin{equation}
 \label{eq:TEPLnoSHwithPL}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
- \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r}, E'\rightarrow E) \int_{4\pi}^{} d\hO  'P_l(\hO  '\cdot\hO  )\psi(\vv{r}, E', \hO  ', t) + S(\vv{r}, E, \hO  ,t)+\\
-  \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t)\\
+\frac{1}{v(E)} \frac{\partial\psi\spa }{\partial t} +
+ \hO  \cdot\nabla\psi\spa  + 
+ \Sigma_t(\vv{r},E)\psi\spa  = \\
+ \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r}, E'\rightarrow E) \int_{4\pi}^{} d\hO  'P_l(\hO  '\cdot\hO  )\psi(\vv{r}, E', \hO  ', t) + S\spa +\\
+  \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi\spap\\
 \end{aligned}
 \end{equation}
 
@@ -855,11 +852,11 @@ Expanding the Legendre polynomials in Eq. \eqref{eq:TEPLnoSHwithPL} in the spher
 \begin{equation}
 \label{eq:TEPLnomoments}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
- \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hO  )\int_{4\pi}^{} d\hO  '\psi(\vv{r}, E', \hO  ', t)Y_l^{m*}(\hO  ') + S(\vv{r}, E, \hO  ,t)+\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t)\\
+\frac{1}{v(E)} \frac{\partial\psi\spa }{\partial t} +
+ \hO  \cdot\nabla\psi\spa  + 
+ \Sigma_t(\vv{r},E)\psi\spa  = \\
+ \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hO  )\int_{4\pi}^{} d\hO  '\psi(\vv{r}, E', \hO  ', t)Y_l^{m*}(\hO  ') + S\spa +\\
+ \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi\spap\\
 \end{aligned}
 \end{equation}
 
@@ -870,38 +867,41 @@ From Eq. \eqref{eq:TEPLnomoments}, we can further substitute in the definition f
 \begin{equation}
 \label{eq:TEPL}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
- \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hO  )\phi_l^m(\vv{r}, E, t) + S(\vv{r}, E, \hO  ,t)+\\
-\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t)\\
+\frac{1}{v(E)} \frac{\partial\psi\spa }{\partial t} +
+ \hO  \cdot\nabla\psi\spa  + 
+ \Sigma_t(\vv{r},E)\psi\spa  = \\
+ \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hO  )\phi_l^m\spas + S\spa +\\
+\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi\spap\\
 \end{aligned}
 \end{equation}
 
-\subsection{Integrating Over Angle}
+\subsection{The Neutron Continuity Equation}
+If we integrate Eq. \ref{eq:TE} over angle, we obtain what is known as the neutron continuity equation:
 
- If we integrate Eq. \ref{eq:TE} over angle, we obtain what is known as the neutron continuity equation:
-
-\begin{equation}
+\beqa
 \label{eq:NeutronContinuityEquation}
-\begin{aligned}
-\frac{1}{v(E)} \frac{\partial\phi(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot J(\vv{r}, E, t) + 
- \Sigma_t(\vv{r},E)\phi(\vv{r}, E, t) = \\
- \int_{0}^{\infty}dE' \Sigma_s(\vv{r}, E'\rightarrow E)\phi(\vv{r}, E', t) + S(\vv{r}, E, t)+\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\nu(E')\Sigma_f(\vv{r}, E')\phi(\vv{r}, E',t)
-\end{aligned}
-\end{equation}
+\frac{1}{v(E)} \frac{\partial\phi\spas}{\partial t} +
+ \nabla\cdot \vv{J}\spas + 
+ \Sigma_t\spas\phi\spas = \\
+ \int_{0}^{\infty}dE' \Sigma_s(\vv{r}, E'\rightarrow E,t)\phi(\vv{r}, E', t) + S\spas+\\
+ \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\nu(E')\Sigma_f(\vv{r}, E',t)\phi(\vv{r}, E',t)
+\eeqa
 
-By integrating over angle, we introduced a new variable - \(J\). Unfortunately, \(J\) cannot be expressed in terms of \(\phi\) in an exact manner, but Eq. \ref{eq:NeutronContinuityEquation} does reduced to the diffusion equation if we make the approximation of Fick's law. If instead we multiplied Eq. \ref{eq:TE} by \(\hO  \) and then integrated over angle, we can obtain another equivalent form of the transport equation that will primarily be in terms of current, rather than flux. All source terms (fission, delayed neutrons, and external source) are bundled into \(S\) for simplicity. 
+By integrating over angle, we introduced a new variable - \(J\). Unfortunately, \(J\) cannot be expressed in terms of \(\phi\) in an exact manner, but Eq. \ref{eq:NeutronContinuityEquation} does reduce to the diffusion equation if we make the approximation of Fick's law:
+
+\beq
+\vv{J}\approx-D\nabla\phi\spas
+\eeq
+
+If instead we multiplied Eq. \ref{eq:TE} by \(\hO  \) and then integrated over angle, we can obtain another equivalent form of the transport equation that will primarily be in terms of current, rather than flux. All source terms (fission, delayed neutrons, and external source) are bundled into \(S\) for simplicity. 
 
 \begin{equation}
 \label{eq:TEAngleAngleIntegrated}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hO  \hO  \hO  \psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + \int_{4\pi}^{} d\hO  \hO  S\spa \\
+\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
+ \nabla\cdot \int_{4\pi}^{} d\hO  \hO  \hO  \psi\spa  + 
+ \Sigma_t(\vv{r},E)\vv{J}\spas = \\
+ \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap + \int_{4\pi}^{} d\hO  \hO  S\spa \\
 \end{aligned}
 \end{equation}
 
@@ -910,10 +910,10 @@ The time derivative in the first term was first brought outside the integral (as
 \begin{equation}
 \label{eq:TEAngleAngleIntegrated}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + \vv{S_1}(\vv{r}, E, t)\\
+\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
+ \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi\spa  + 
+ \Sigma_t(\vv{r},E)\vv{J}\spas = \\
+ \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap + \vv{S_1}\spas\\
 \end{aligned}
 \end{equation}
 
@@ -922,8 +922,8 @@ The time derivative in the first term was first brought outside the integral (as
 %\begin{equation}
 %\label{eq:1DTEScatteringIntegrated}
 %\begin{aligned}
-%\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) = \\
-%3\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Omega_x\Omega_x\Omega_x\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t)
+%\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap = \\
+%3\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Omega_x\Omega_x\Omega_x\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap
 %\end{aligned}
 %\end{equation}
 
@@ -932,10 +932,10 @@ Then, we can integrate out the angular dependence by recognizing that \(\hO  \cd
 \begin{equation}
 \label{eq:TEAngleAngleIntegrated2}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi(\vv{r}, E, \hO  ,t) + 
- \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)\\
+\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
+ \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi\spa  + 
+ \Sigma_t(\vv{r},E)\vv{J}\spas = \\
+ \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}\spas\\
 \end{aligned}
 \end{equation}
 
@@ -946,10 +946,10 @@ The transport equation in Cartesian coordinates substitutes in the more explicit
 \begin{equation}
 \label{eq:TE_Cartesian}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(\vv{r}, E, \hO  ,t)}{\partial t} +
- \sqrt{1-\mu^2}\left(\cos{(\phi)}\frac{\partial \psi(\vv{r}, E, \hO  ,t)}{\partial x} + \sin{(\phi)} \frac{\partial \psi(\vv{r}, E, \hO  ,t)}{\partial y}\right) + \mu \frac{\partial \psi(\vv{r}, E, \hO  ,t)}{\partial z} +\\
- \Sigma_t(\vv{r},E)\psi(\vv{r}, E, \hO  ,t) = \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(\vv{r}, E', \hO  ',t) + S\spa +\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi(\vv{r}, E', \hO  ',t)\\
+\frac{1}{v(E)} \frac{\partial\psi\spa }{\partial t} +
+ \sqrt{1-\mu^2}\left(\cos{(\phi)}\frac{\partial \psi\spa }{\partial x} + \sin{(\phi)} \frac{\partial \psi\spa }{\partial y}\right) + \mu \frac{\partial \psi\spa }{\partial z} +\\
+ \Sigma_t(\vv{r},E)\psi\spa  = \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap + S\spa +\\
+ \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi\spap\\
 \end{aligned}
 \end{equation}
 
@@ -1025,7 +1025,7 @@ The multigroup transport equation can be derived by two separate means - the fir
 
 \begin{equation}
 \label{eq:MultiGroupSeparate}
-\psi(\vv{r}, E, \hO  ,t) \approx f(E)\psi(\vv{r}, \hO  ,t)
+\psi\spa  \approx f(E)\psi(\vv{r}, \hO  ,t)
 \end{equation}
 
 where
@@ -1422,8 +1422,8 @@ The advantage of the SAAF equation is that it allows us to apply the Galerkin fi
 \begin{equation}
 \label{eq:RemovalOperatorDerivation1}
 \begin{aligned}
- \int_{4\pi}^{}d\hO   \psi(\vv{r}, E, \hO  ,t)Y_l^{m*}(\hO  ) = \\
- (\Sigma_t(\vv{r},E) - \Sigma_{s,l}(\vv{r}))^{-1}\int_{4\pi}^{} d\hO  Y_l^{m*}(\hO  ) \left(Q - \hO  \cdot\nabla\psi(\vv{r}, E, \hO  ,t)\right)
+ \int_{4\pi}^{}d\hO   \psi\spa Y_l^{m*}(\hO  ) = \\
+ (\Sigma_t(\vv{r},E) - \Sigma_{s,l}(\vv{r}))^{-1}\int_{4\pi}^{} d\hO  Y_l^{m*}(\hO  ) \left(Q - \hO  \cdot\nabla\psi\spa \right)
 \end{aligned}
 \end{equation}
 
@@ -2253,7 +2253,7 @@ The diffusion equation is derived by assuming a \(P_1\) expansion for the flux. 
 
 \begin{equation}
 \label{eq:FluxLegendreP1}
-\psi\spa  \approx \frac{\phi_0(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hO  \phi_1(\vv{r}, E, t)
+\psi\spa  \approx \frac{\phi_0\spas}{4\pi} + \frac{3}{4\pi} \hO  \phi_1\spas
 \end{equation}
 
 Note that To interpret the flux moments \(\phi_0\) and \(\phi_1\), we integrated Eq. \ref{eq:FluxLegendreP1} over angle:
@@ -2261,8 +2261,8 @@ Note that To interpret the flux moments \(\phi_0\) and \(\phi_1\), we integrated
 \begin{equation}
 \label{eq:FluxLegendreP1_AngleIntegration}
 \begin{aligned}
-\int_{4\pi}^{} d\hO   \psi\spa  = \int_{4\pi}^{} d\hO   \frac{\phi_0(\vv{r}, E, t)}{4\pi} + \int_{4\pi}^{} d\hO   \frac{3}{4\pi} \hO  \phi_1(\vv{r}, E, t)\\
-\phi(\vv{r}, E, t) = \phi_0 + \frac{3}{4\pi}\phi_1\int_{4\pi}^{} d\hO  \hO   = \phi_0
+\int_{4\pi}^{} d\hO   \psi\spa  = \int_{4\pi}^{} d\hO   \frac{\phi_0\spas}{4\pi} + \int_{4\pi}^{} d\hO   \frac{3}{4\pi} \hO  \phi_1\spas\\
+\phi\spas = \phi_0 + \frac{3}{4\pi}\phi_1\int_{4\pi}^{} d\hO  \hO   = \phi_0
 \end{aligned}
 \end{equation}
 
@@ -2271,8 +2271,8 @@ where we have used the property of \(\hO  \) that an integral of any single one 
 \begin{equation}
 \label{eq:FluxLegendreP1_AngleIntegration2}
 \begin{aligned}
-\int_{4\pi}^{} d\hO   \hO  \psi\spa  = \int_{4\pi}^{} d\hO   \hO  \frac{\phi_0(\vv{r}, E, t)}{4\pi} + \int_{4\pi}^{} d\hO   \hO  \frac{3}{4\pi} \hO  \phi_1(\vv{r}, E, t)\\
-J(\vv{r}, E, t) = \phi_1(\vv{r}, E, t)\\
+\int_{4\pi}^{} d\hO   \hO  \psi\spa  = \int_{4\pi}^{} d\hO   \hO  \frac{\phi_0\spas}{4\pi} + \int_{4\pi}^{} d\hO   \hO  \frac{3}{4\pi} \hO  \phi_1\spas\\
+J\spas = \phi_1\spas\\
 \end{aligned}
 \end{equation}
 
@@ -2281,10 +2281,10 @@ where we have used the defintion of angular current from Eq. \ref{eq:AngularCurr
 \begin{equation}
 \label{eq:P1a}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \left(\frac{\phi(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hO  \cdot\vv{J}(\vv{r}, E, t)\right) + 
- \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)
+\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
+ \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \left(\frac{\phi\spas}{4\pi} + \frac{3}{4\pi} \hO  \cdot\vv{J}\spas\right) + 
+ \Sigma_t(\vv{r},E)\vv{J}\spas = \\
+ \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}\spas
 \end{aligned}
 \end{equation}
 
@@ -2293,10 +2293,10 @@ Because the integral of any odd number of \(\hO  \) components vanish due to sym
 \begin{equation}
 \label{eq:P1b}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\vv{J}(\vv{r}, E, t)}{\partial t} +
+\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
  \frac{1}{3}\nabla\phi + 
- \Sigma_t(\vv{r},E)\vv{J}(\vv{r}, E, t) = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}(\vv{r}, E, t)
+ \Sigma_t(\vv{r},E)\vv{J}\spas = \\
+ \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}\spas
 \end{aligned}
 \end{equation}
 
@@ -2305,10 +2305,10 @@ Bundling all source terms Eq. \ref{eq:NeutronContinuityEquation} in \(S\), this 
 \begin{equation}
 \label{eq:NeutronContinuityEquation_BundledSource}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\phi(\vv{r}, E, t)}{\partial t} +
- \nabla\cdot J(\vv{r}, E, t) + 
- \Sigma_t(\vv{r},E)\phi(\vv{r}, E, t) = \\
- \int_{0}^{\infty}dE' \Sigma_s(\vv{r}, E'\rightarrow E)\phi(\vv{r}, E', t) + S(\vv{r}, E, t)\\
+\frac{1}{v(E)} \frac{\partial\phi\spas}{\partial t} +
+ \nabla\cdot J\spas + 
+ \Sigma_t(\vv{r},E)\phi\spas = \\
+ \int_{0}^{\infty}dE' \Sigma_s(\vv{r}, E'\rightarrow E)\phi(\vv{r}, E', t) + S\spas\\
 \end{aligned}
 \end{equation}
 
@@ -2361,14 +2361,14 @@ The energy-dependent diffusion equation can be derived from the \(P_1\) equation
 
 \begin{equation}
 \label{eq:P1b_energyDepdendent}
-\vv{J}(\vv{r}, E, t) = - \frac{1}{\Sigma_t(\vv{r},E)}\left(\frac{1}{3}\nabla\phi + \int_{0}^{\infty}dE' \int_{4\pi}^{ } \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t)\right)
+\vv{J}\spas = - \frac{1}{\Sigma_t(\vv{r},E)}\left(\frac{1}{3}\nabla\phi + \int_{0}^{\infty}dE' \int_{4\pi}^{ } \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t)\right)
 \end{equation}
 
 This does not give a very nice-looking diffusion coefficient... But, if we assume the scattering is isotropic in the lab frame (which is highly unrealistic – scattering is only approximately isotropic in the center of mass frame), then \(\Sigma_{s1}=0\) because there would be no angular dependence, which would reduce to the same version of Fick’s law as was obtained in the energy-independent case. Alternatively, bceause that approximation is rather bad, using Eq. \ref{eq:IsotropicScatteringAngle} to express the scattering term, and applying a delta function to the scattering integral so that the integral drops out, the energy-dependent diffusion coefficient can be defined as:
 
 \begin{equation}
 \label{eq:P1b_energyDepdendent2}
-\vv{J}(\vv{r}, E, t) = -\frac{1}{3\left(\Sigma_{tr}(\vv{r},E)\right)}\nabla\phi
+\vv{J}\spas = -\frac{1}{3\left(\Sigma_{tr}(\vv{r},E)\right)}\nabla\phi
 \end{equation}
 
 This diffusion coefficient assumed no anisotropic contribution to the energy transfer in a scattering collision. More rigorous derivations are possible with knowledge of neutron thermalization theory. The energy-dependent diffusion equation is therefore simply one of the energy-dependent \(P_1\) equations, Eq. \ref{eq:NeutronContinuityEquation_BundledSource}, with the energy-dependent Fick's law in Eq. \ref{eq:P1b_energyDepdendent2} inserted for \(J\). The fission source, once ``un-bundled'' from \(S\), would have the form:
@@ -2384,14 +2384,14 @@ To derive the boundary condition for zero incoming/outgoing current, introduce t
 
 \begin{equation}
 \label{eq:PartialCurrent_BC1}
-J_\pm (\vv{r}, E, t) = \int_{2\pi\pm}^{} d\hO   \left(\frac{\phi_0(\vv{r}, E, t)}{4\pi} + \frac{3}{4\pi} \hO  \phi_1(\vv{r}, E, t)\right)\hO  \cdot\hat{n}
+J_\pm \spas = \int_{2\pi\pm}^{} d\hO   \left(\frac{\phi_0\spas}{4\pi} + \frac{3}{4\pi} \hO  \phi_1\spas\right)\hO  \cdot\hat{n}
 \end{equation}
 
 Using Eqs. \ref{eq:OmegaDotOmega} and \ref{eq:P1b_CurrentApproximation_2}, the integral over half the solid angle becomes an integral over \(\theta\) and \(\phi\), and recalling that the integral of any two components of solid angle over \(4\pi\) equals \(4\pi/3\):
 
 \begin{equation}
 \label{eq:PartialCurrent_BC2}
-J_\pm (\vv{r}, E, t) = \frac{\phi}{4} \mp \frac{D}{2}\hat{n}\cdot\nabla\phi
+J_\pm \spas = \frac{\phi}{4} \mp \frac{D}{2}\hat{n}\cdot\nabla\phi
 \end{equation}
 
 Applying this condition in 1-D geometry implies that if we linearly extrapolated the flux beyond the boundary, it would vanish at the extrapolated distance \(x = x_{surface} + 2D\):
@@ -3179,7 +3179,7 @@ This section lists all the important notation used in this document. Quantities 
 \(\oslash\) & entire phase space \(\doteq m^3sMeV\textrm{steradian}\) & Eq. \ref{eq:PhaseSpaceIntegration}\\
 \(P_i\) & Legendre polynomial \(\doteq \textrm{radians}\) & Eq. \ref{eq:LegendrePolynomialDefinitions}\\
 \(\phi\) & angle between \(\hO  \) projected in \(x-y\) with \(x\) \(\doteq \textrm{radians}\) & ---\\
-\(\phi(\vv{r}, E, t)\) & scalar flux \(\doteq /cm^2sMeV\) & Eq. \ref{eq:ScalarFlux}\\
+\(\phi\spas\) & scalar flux \(\doteq /cm^2sMeV\) & Eq. \ref{eq:ScalarFlux}\\
 \(t\) & time \(\doteq s\) & ---\\
 \(V\) & volume element \(\doteq m^3\) & ---\\
 \(\vv{v}\) & velocity \(\doteq m/s\) & ---\\
