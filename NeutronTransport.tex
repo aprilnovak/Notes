@@ -57,7 +57,7 @@
 \newcommand{\hO}{\hat{\Omega}}
 \newcommand{\Om}{\Omega}
 \newcommand{\spa}{(\vv{r}, E, \hO, t)}
-\newcommand{\spas}{\spas}
+\newcommand{\spas}{(\vv{r},E,t)}
 \newcommand{\spap}{(\vv{r}, E', \hO',t)}
 \newcommand{\spaps}{(\vv{r},E',t)}
 \newcommand{\spang}{(\vv{r},E'\rightarrow E, \hO'\rightarrow\hO,t)}
@@ -217,7 +217,7 @@ where \(n\) is the volumetric neutron density (neutrons/cm\textsuperscript{3}).
 
 \subsubsection{Flux}
 
-The reaction rate density definition in Eq. \ref{eq:ReactionRateDensity} leads to a convenient \textit{definition} for the angular flux - the angular flux is the proportionality between a reaction rate and the macroscopic cross section for that reaction rate.
+The reaction rate density definition leads to a convenient \textit{definition} for the angular flux - the angular flux is the proportionality between a reaction rate and the macroscopic cross section for that reaction rate.
 
 \beq
 \label{eq:AngularFlux}
@@ -328,14 +328,14 @@ In neutron transport applications, Legendre polynomials are most often used to e
 \beqa
 \label{eq:ScatteringLegendre}
 \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  ) =& \Sigma_s(\vv{r}, E'\rightarrow E, \mu) \\
-=& \sum_{l=0}^{\infty}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)P_l(\mu)\\
+=& \frac{2l+1}{4\pi}\sum_{l=0}^{\infty}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)P_l(\mu)\\
 \eeqa
 
 The scattering moments appearing in Eq. \ref{eq:ScatteringLegendre} can be derived by using the orthogonality condition, Eq. \ref{eqn:LegendrePolynomialsOrthogonality}. Multiplying both sides of Eq. \ref{eq:ScatteringLegendre} by \(P_k(\mu)\) and integrating over \(\mu\), and then applying the results of Eq. \ref{eqn:LegendrePolynomialsOrthogonality} gives
 
 \beq
 \label{eq:ScatteringMomentsLegendre}
-\Sigma_{s,l}(\vv{r}, E'\rightarrow E) = \frac{2l+1}{2}\int_{-1}^{1} d\mu \Sigma_s(\vv{r}, E'\rightarrow E, \mu) P_l(\mu)
+\Sigma_{s,l}(\vv{r}, E'\rightarrow E) = 2\pi\int_{-1}^{1} d\mu \Sigma_s(\vv{r}, E'\rightarrow E, \mu) P_l(\mu)
 \eeq
 
 Expanding the scattering cross section in Legendre polynomials is known as the \(P_L\) approximation. 
@@ -834,16 +834,14 @@ This section will show how to reduce Eq. \eqref{eq:TE} to simpler forms by expan
 
 By expanding the scattering cross section in Legendre polynomials as in Eq. \ref{eq:ScatteringLegendre}, we obtain:
 
-\begin{equation}
+\beqa
 \label{eq:TEPLnoSHwithPL}
-\begin{aligned}
 \frac{1}{v(E)} \frac{\partial\psi\spa }{\partial t} +
  \hO  \cdot\nabla\psi\spa  + 
- \Sigma_t(\vv{r},E)\psi\spa  = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r}, E'\rightarrow E) \int_{4\pi}^{} d\hO  'P_l(\hO  '\cdot\hO  )\psi(\vv{r}, E', \hO  ', t) + S\spa +\\
-  \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi\spap\\
-\end{aligned}
-\end{equation}
+ \Sigma_t\spas\psi\spa  = \\
+ \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r}, E'\rightarrow E,t) \int_{4\pi}^{} d\hO  'P_l(\hO  '\cdot\hO  )\psi\spap + S\spa +\\
+  \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f\spaps\psi\spap\\
+\eeqa
 
 \subsubsection{Spherical Harmonics}
 
@@ -890,54 +888,52 @@ If we integrate Eq. \ref{eq:TE} over angle, we obtain what is known as the neutr
 By integrating over angle, we introduced a new variable - \(J\). Unfortunately, \(J\) cannot be expressed in terms of \(\phi\) in an exact manner, but Eq. \ref{eq:NeutronContinuityEquation} does reduce to the diffusion equation if we make the approximation of Fick's law:
 
 \beq
-\vv{J}\approx-D\nabla\phi\spas
+\vv{J}\spas\approx-D(\vv{r},E)\nabla\phi\spas
 \eeq
 
-If instead we multiplied Eq. \ref{eq:TE} by \(\hO  \) and then integrated over angle, we can obtain another equivalent form of the transport equation that will primarily be in terms of current, rather than flux. All source terms (fission, delayed neutrons, and external source) are bundled into \(S\) for simplicity. 
+If instead we multiplied Eq. \ref{eq:TE} by \(\hO\) and then integrated over angle, we can obtain another equivalent form of the transport equation that will primarily be in terms of current, rather than flux. All source terms (fission, delayed neutrons, and external source) are bundled into \(S\) for simplicity. 
 
-\begin{equation}
+\beqa
 \label{eq:TEAngleAngleIntegrated}
-\begin{aligned}
 \frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
  \nabla\cdot \int_{4\pi}^{} d\hO  \hO  \hO  \psi\spa  + 
- \Sigma_t(\vv{r},E)\vv{J}\spas = \\
- \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap + \int_{4\pi}^{} d\hO  \hO  S\spa \\
-\end{aligned}
-\end{equation}
+ \Sigma_t\spas\vv{J}\spas = \\
+ \int_{4\pi}^{} d\hO\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \Sigma_s\spang\psi\spap + \int_{4\pi}^{} d\hO  \hO  S\spa\\
+\eeqa
 
-The time derivative in the first term was first brought outside the integral (assuming the control volume doesn't change shape), and then \(\psi\hO  \) was recognized as the angular current defined in Eq. \ref{eq:AngularCurrent}. The gradient was pulled out of the streaming term because the integral is over angle, and not space. We can recognize the lumped source term as being equal to the first moment of the source, similar to how scattering moments are defined in Eq. \ref{eq:ScatteringMomentsLegendre}. This first moment will be zero for isotropic sources because they have no dependence on angle. Then, we can rearrange the scattering term by multiplying it by \(\hO  \cdot\hO  \), since this is equivalent to multiplication by 1.
+The time derivative in the first term was first brought outside the integral (assuming the control volume doesn't change shape), and then \(\psi\hO  \) was recognized as the angular current defined in Eq. \ref{eq:AngularCurrent}. The gradient was pulled out of the streaming term because the integral is over angle, and not space. We can recognize the lumped source term as being equal to the first moment of the source, \(S_1\), similar to how scattering moments are defined in Eq. \ref{eq:ScatteringMomentsLegendre}. This first moment will be zero for isotropic sources because they have no dependence on angle. Then, we can rearrange the scattering term by multiplying it by \(\hO  \cdot\hO  \), since this is equivalent to multiplication by 1. 
 
-\begin{equation}
+\beqa
 \label{eq:TEAngleAngleIntegrated}
-\begin{aligned}
 \frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
  \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi\spa  + 
- \Sigma_t(\vv{r},E)\vv{J}\spas = \\
- \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap + \vv{S_1}\spas\\
-\end{aligned}
-\end{equation}
+ \Sigma_t\spas\vv{J}\spas = \\
+ \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s\spang\psi\spap + S_1\spas\\
+\eeqa
 
-%To interpret this dot product in terms of moments such as in Eq. \ref{eq:ScatteringMomentsLegendre}, we can reduce the scattering term in the above equation to the one-dimensional form:
-
-%\begin{equation}
-%\label{eq:1DTEScatteringIntegrated}
-%\begin{aligned}
-%\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap = \\
-%3\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Omega_x\Omega_x\Omega_x\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap
-%\end{aligned}
-%\end{equation}
-
-Then, we can integrate out the angular dependence by recognizing that \(\hO  \cdot\hO  \) is simly equivalent to \(\mu\), and so one of the areal integrals of the scattering cross section becomes equivalent to the first moment of the scattering cross section, as shown in Eq. \ref{eq:ScatteringMomentsLegendre}. Then, we can substitute in our relationship for \(\vv{J} = \psi\hO  \). The scattering term finally simplifies, leading to another equivalent form of the transport equation:
+\begin{comment}
+To interpret this dot product in terms of moments such as in Eq. \ref{eq:ScatteringMomentsLegendre}, we can reduce the scattering term in the above equation to the one-dimensional form:
 
 \begin{equation}
-\label{eq:TEAngleAngleIntegrated2}
+\label{eq:1DTEScatteringIntegrated}
 \begin{aligned}
-\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi\spa  + 
- \Sigma_t(\vv{r},E)\vv{J}\spas = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}\spas\\
+\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap = \\
+3\int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Omega_x\Omega_x\Omega_x\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap
 \end{aligned}
 \end{equation}
+\end{comment}
+
+\begin{comment}
+Then, we can integrate out the angular dependence of the scattering term by recognizing that \(\hO  \cdot\hO  =\mu\), and so one of the areal integrals of the scattering cross section becomes equivalent to the first moment of the scattering cross section, as shown in Eq. \ref{eq:ScatteringMomentsLegendre}. Then, we can substitute in our relationship for \(\vv{j} = \psi\hO  \). This leads to another equivalent form of the transport equation:
+
+\beqa
+\label{eq:TEAngleAngleIntegrated2}
+\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
+ \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \vv{j}\spa  + 
+ \Sigma_t\spas\vv{J}\spas = \\
+ \frac{3}{2}\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{j}(\vv{r}, E', t) + S_1\spas\\
+\eeqa
+\end{comment}
 
 \subsection{Cartesian Coordinates}
 
@@ -1005,6 +1001,7 @@ The monoenergetic transport equation can be obtained from Eq. \eqref{eq:TE} by i
 \end{aligned}
 \end{equation}
 
+\clearpage
 \section{The Multigroup Transport Equation}
 
 Rather than solve a continuous-energy problem, the transport equation is often discretized into energy groups to produce a set of coupled integro-differential equations that are more amenable to solutions on a computer. Each energy group covers the range \(E_g\) to \(E_{g-1}\), and we number the energy groups with 1 being the faster, 2 the second fastest, and so on. The groups increase in lethargy with this notation. The group angular flux is
@@ -1072,7 +1069,7 @@ However, this is really only acceptable at lower neutron energies where the cros
 
 
 
-
+\clearpage
 \section{The Method of Characteristics (MOC)}
 
 
@@ -1081,7 +1078,7 @@ However, this is really only acceptable at lower neutron energies where the cros
 
 
 
-
+\clearpage
 \section{The Adjoint Neutron Transport Equation}
 
 The adjoint form of an operator \(\zeta\) is defined such that the inner product, defined in Eq. \ref{eq:innerproduct}, gives:
@@ -1387,6 +1384,7 @@ The total Monte Carlo particle density is obtained by integrating Eq. \eqref{eq:
 
 From Eq. \eqref{eq:ReciprocityCondition2}, Eq. \eqref{eq:FWCADISResponse} is effectively setting the adjoint source equal to the inverse of the forward flux. So, the FW-CADIS method computes the adjoint source as the inverse of the forward flux in an effort to obtain approximately uniform statistical uncertainties. Once this adjoint source is used to compute the adjoint flux, the CADIS method is executed to calculate consistent source biasing parameters.
 
+\clearpage
 \section{The Self-Adjoint Angular Flux (SAAF) Equation}
 
 The SAAF equation, though it has a name very similar to the adjoint neutron transport equation, is a fairly different concept, and does not consider the adjoint operators in its derivation. Do not confuse the two formulations, for they are different. The SAAF equation can be very easily derived symbolically starting from the time-independent version of Eq. \ref{eq:TE}, where the combined effects of absorption and scattering removal are bundled into a removal operator, which contains the scattering operator \(S\) that performs the action of the scattering integral on the flux:
@@ -1462,7 +1460,7 @@ This represents the void form of the SAAF equation to be used in voids.
 
 
 
-
+\clearpage
 \section{Nonlinear Diffusion Acceleration (NDA)}
 
 
@@ -1470,7 +1468,7 @@ NDA, also known as Coarse Mesh Finite Difference (CMFD), uses a two-equation sys
 
 
 
-
+\clearpage
 \section{The Even and Odd Parity Transport Equations}
 
 The neutron transport equation can also be written in even and odd parity forms.
@@ -1478,7 +1476,7 @@ The neutron transport equation can also be written in even and odd parity forms.
 
 
 
-
+\clearpage
 \section{Collocation Angular Methods}
 
 For all collocation in angle methods, the scattering and source terms (the only two sources that depend on angle, since the fission source is normally taken as isotropic), as well as the angular flux, are expanded in spherical harmonics. 
@@ -2043,7 +2041,7 @@ e_{00}^g & e_{10}^g & o_{11}^g & e_{11}^g & \cdots & o_{NN}^g & e_{NN}^g\\
 The flux moment vector can be related to the angular flux vector by \(\textbf{D}\):
 
 
-
+\clearpage
 \section{Spectral Angular Methods}
 An alternative to the \(S_N\) method is to expand the angular dependence in a set of functions. In general 3-D geometries, we choose these functions to be the spherical harmonics functions. In 1-D, the spherical harmonics reduce to Legendre polynomials. 
 
@@ -2247,46 +2245,44 @@ The second-order form of the \(SP_N\) equations results in the need to solve hal
 
 Heuristic arguments can be used to determine how the 1-D boundary conditions for the \(P_N\) method can be extended to the \(SP_N\) method. All derivatives are transformed according to \(\partial(.)/\partial x\rightarrow\hat{n}\cdot\nabla(.)\). 
 
+\clearpage
 \section{Deriving the Diffusion Equation}
 
-The diffusion equation is derived by assuming a \(P_1\) expansion for the flux. This is justified if the angular flux is only weakly dependent on angle - actually, the \(P_1\) expansion assumes a linearly anisotropic angular dependence, since we only keep one anisotropic term (\(l=0\) is the isotropic term, \(l=1\) is the linearly anisotropic term). Expanding the flux in Legendre polynomials as in Eq. \ref{eq:ScatteringLegendre}, where instead of expanding the scattering cross section, we expand the flux, gives:
+The diffusion equation is derived by assuming a \(P_1\) expansion for the angular dependence of the flux; in other words, expand the angular dependence of the flux in a first-order Legendre series such that the flux is ``linearly anisotropic.'' This approximation is reasonably accurate if the angular flux is only weakly dependent on angle. Expanding the flux in Legendre polynomials as in Eq. \ref{eq:ScatteringLegendre}, where instead of expanding the scattering cross section, we expand the flux, gives:
 
-\begin{equation}
+\beq
 \label{eq:FluxLegendreP1}
 \psi\spa  \approx \frac{\phi_0\spas}{4\pi} + \frac{3}{4\pi} \hO  \phi_1\spas
-\end{equation}
+\eeq
 
-Note that To interpret the flux moments \(\phi_0\) and \(\phi_1\), we integrated Eq. \ref{eq:FluxLegendreP1} over angle:
+To interpret the physical meaning of the flux moments \(\phi_0\) and \(\phi_1\), integrate Eq. \ref{eq:FluxLegendreP1} over angle:
 
-\begin{equation}
+\beqa
 \label{eq:FluxLegendreP1_AngleIntegration}
-\begin{aligned}
-\int_{4\pi}^{} d\hO   \psi\spa  = \int_{4\pi}^{} d\hO   \frac{\phi_0\spas}{4\pi} + \int_{4\pi}^{} d\hO   \frac{3}{4\pi} \hO  \phi_1\spas\\
-\phi\spas = \phi_0 + \frac{3}{4\pi}\phi_1\int_{4\pi}^{} d\hO  \hO   = \phi_0
-\end{aligned}
-\end{equation}
+\int_{4\pi}^{} d\hO   \psi\spa  =& \int_{4\pi}^{} d\hO   \frac{\phi_0\spas}{4\pi} + \int_{4\pi}^{} d\hO   \frac{3}{4\pi} \hO  \phi_1\spas\\
+\phi\spas = &\ \phi_0 + \frac{3}{4\pi}\phi_1\int_{4\pi}^{} d\hO  \hO\\
+   = &\ \phi_0
+\eeqa
 
-where we have used the property of \(\hO  \) that an integral of any single one of its components over the entire solid angle is zero, based on its component definitions in Eq. \ref{eq:OmegaCartesian}. Eq. \ref{eq:FluxLegendreP1_AngleIntegration} above indicates that \(\phi = \phi_0\). To demonstrate the interpretation of \(\phi_1\), multiply Eq. \ref{eq:FluxLegendreP1} by \(\hO  \) and then integrate over the solid angle:
+where we have used the fact that the integral of any single component of \(\hO\) over solid angle is zero as in Eq. \ref{eq:OmegaCartesian}. Eq. \ref{eq:FluxLegendreP1_AngleIntegration} above indicates that \(\phi = \phi_0\), so the zeroth moment of the flux is simply the scalar flux. To interpret \(\phi_1\), multiply Eq. \ref{eq:FluxLegendreP1} by \(\hO\) and then integrate over solid angle:
 
-\begin{equation}
+\beqa
 \label{eq:FluxLegendreP1_AngleIntegration2}
-\begin{aligned}
-\int_{4\pi}^{} d\hO   \hO  \psi\spa  = \int_{4\pi}^{} d\hO   \hO  \frac{\phi_0\spas}{4\pi} + \int_{4\pi}^{} d\hO   \hO  \frac{3}{4\pi} \hO  \phi_1\spas\\
-J\spas = \phi_1\spas\\
-\end{aligned}
-\end{equation}
+\int_{4\pi}^{} d\hO   \hO  \psi\spa  =& \int_{4\pi}^{} d\hO   \hO  \frac{\phi_0\spas}{4\pi} + \int_{4\pi}^{} d\hO   \hO  \frac{3}{4\pi} \hO  \phi_1\spas\\
+J\spas = &\ \phi_1\spas\\
+\eeqa
 
-where we have used the defintion of angular current from Eq. \ref{eq:AngularCurrent}, the integration of any two components of solid angle from Eq. \ref{eq:4PiOmegaOmega}, and the fact that the integral of any component of solid angle over the entire solid angle is zero. Therefore, this has demonstrated that \(J=\phi_1\). With these defintions, we can attempt to evaluate the messy streaming term in Eq. \ref{eq:TEAngleAngleIntegrated2}. Inserting the expansion from Eq. \ref{eq:FluxLegendreP1} into Eq. \ref{eq:TEAngleAngleIntegrated2} for \(\psi\), and applying the interpretations of Eqs. \ref{eq:FluxLegendreP1_AngleIntegration} and \ref{eq:FluxLegendreP1_AngleIntegration2}, we obtain:
+where we have used the definition of angular current from Eq. \ref{eq:AngularCurrent}, the integration of any two components of solid angle from Eq. \ref{eq:4PiOmegaOmega}, and the fact that the integral of any component of solid angle over the entire solid angle is zero. Therefore, the current is equivalent to the first moment of the flux.
 
-\begin{equation}
+Inserting the expansion from Eq. \ref{eq:FluxLegendreP1} into Eq. \ref{eq:TEAngleAngleIntegrated2} for \(\psi\), and applying the interpretations of Eqs. \ref{eq:FluxLegendreP1_AngleIntegration} and \ref{eq:FluxLegendreP1_AngleIntegration2}, we obtain:
+
+\beqa
 \label{eq:P1a}
-\begin{aligned}
 \frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
  \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \left(\frac{\phi\spas}{4\pi} + \frac{3}{4\pi} \hO  \cdot\vv{J}\spas\right) + 
  \Sigma_t(\vv{r},E)\vv{J}\spas = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}\spas
-\end{aligned}
-\end{equation}
+ \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + S_1\spas
+\eeqa
 
 Because the integral of any odd number of \(\hO  \) components vanish due to symmetry, the current portion in the streaming term evaluates to zero. In addition, including the results from Eq. \ref{eq:4PiOmegaOmega}, the streaming term becomes:
 
@@ -2523,13 +2519,11 @@ where the removal cross section is defined to be the sum of the absorption cross
 
 This section discusses how the time-dependency of the neutron transport equation can be approximated. In general, the neutron transport equation can be solved in time, where some fraction of neutrons are born promptly with essentially no time delay, and some fraction born delayed according to a decay constant associated with a precursor nuclide. 
 
-The delayed neutron fraction \(\beta\) represents the fraction of neutrons that are born delayed. This parameter is a function of the identity of the fissioning nuclide, as well as the incident neutron energy. Because \(\beta\) is a function of energy for each nuclide, and because the fission cross section is also a function of energy (so the makeup of the nuclides that undergo fission changes with incident neutron energy), \(\beta\) is also a function of the incident neutron energy. However, this dependence of the makeup of the precursor groups to neutron energy is small below 4 MeV, and can be neglected. For fast reactor systems, however, note that more advanced accounting methods might be needed. Multiplying \(\beta\) by \(\nu\) gives the absolute number of neutrons produced from delayed neutron precursors. 
+The delayed neutron fraction \(\beta\) represents the fraction of neutrons that are born delayed. Multiplying \(\beta\) by \(\nu\) gives the absolute number of neutrons produced per fission from delayed neutron precursors. This parameter is a function of the identity of the fissioning nuclide, as well as the incident neutron energy. Because \(\beta\) is a function of energy for each nuclide, and because the fission cross section is also a function of energy (so the makeup of the nuclides that undergo fission changes with incident neutron energy), \(\beta\) is also a function of the incident neutron energy. However, this dependence on neutron energy is small below 4 MeV, and can be neglected for thermal systems.
 
-Calculating \(\beta\) requires you to weight not only the fraction of the fuel that is made up of each isotope, but also the fraction of fissions that occur in each isotope. This requires weighting by the adjoint flux, since the fractions of fissions that occur in each isotope are related to cross sections that are a function of energy. The most accurate calculation will also include spatial effects, since the fissile material is most likely not distributed homogeneously within an infinite reactor, and this then impacts the multiplication of the adjoint flux and the material locations. For fast reactors, \(\beta\) will be lower for heterogeneous designs, because in homogeneous designs, a greater fraction of the U-238 contributes to fission due to its correspondingly lower fissile fraction, and U-238 has a higher \(\beta\) than the fissile isotopes used in fast reactors.
+\(1-\beta\) describes the fraction of neutrons that are born delayed; these delayed neutrons are born from decay of precursor atoms (i.e. fission products). The number density of these precursor nuclides is given as \(C\), where the density refers to the amount of precursor atoms that {\it always} decay by neutron emission. So, \(C\) is really some fraction of the total precursor concentration in order to reflect the fraction that on average undergoes delayed neutron emission. 
 
-\(C\) is the precursor number density, where the density refers to the amount of precursor atoms that always decay by neutron emission. So, \(C\) is really some fraction of the total precursor concentration to reflect the fraction that on average undergoes delayed neutron emission. 
-
-Delayed neutrons are typically grouped into 6 groups, since this yields a sufficient model of a reactor. These 6 groups are relatively similar for thermal and fast spectra. The delayed neutrons for the thermal spectrum in the table below are for U-235, while for the fast spectrum are for Pu-239. Something important to note about the data below is how the decay constants for each group are selected. If the decay constants were to be calculated from the listed half-lives, then it would be clear that the half-lives are chosen so as to match the exponential decay curve, rather than matching actual decay data from various delayed neutron precursors. On average, delayed neutrons are born about 12 seconds after fission. 
+Delayed neutrons are typically grouped into 6 groups based on the half life of their precursors. These 6 groups are relatively similar for thermal and fast spectra, though the value of \(\beta\) is very dependent on the fissioning nuclide. Something important to note about the values for \(\beta\) below is how the decay constants for each group are selected. On average, delayed neutrons are born about 12 seconds after fission. 
 
 \begin{table}[h]
 \caption{Delayed Neutron Group Characteristics for U-235 (thermal) and Pu-239 (fast)} % title name of the table
@@ -2550,7 +2544,7 @@ Delayed neutrons are typically grouped into 6 groups, since this yields a suffic
 \label{tab:PPer}
 \end{table}
 
-Neutron ``hold-up'' in a reflector due to many scattering interactions before return to the core can be represented by an artificial delayed neutron group, though this is better approximated by using a modified neutron lifetime. While the data given in the above table are for U-238 in a thermal system and Pu-239 in a fast system, the value of \(\beta\) varies significantly depending on the fissioning isotope, though the group structure itself is relatively constant. 
+Neutron ``hold-up'' in a reflector due to scattering interactions (before returning to the core) can be represented by an artificial delayed neutron group, though this is better approximated by using a modified neutron lifetime. Table \ref{tab:PPer} shows values for \(\beta\) as a function of the fissioning nuclide and energy range.
 
 \begin{table}[H] 
 \caption{\(\beta\) and \(\nu\) for Various Isotopes} % title name of the table
@@ -2566,131 +2560,135 @@ Pu-239 fast fission & 0.00206 & 2.93\\
 Pu-241 fast fission & 0.00530 & 2.95\\
 U-235 thermal fission & 0.00644 & 2.4\\
 U-233 thermal fission & 0.00264 & 2.5\\
-% [1ex] adds vertical space
 \hline % inserts single-line
 \end{tabular}
 \label{tab:PPer}
 \end{table}
 
-So, natural-U fueled reactors (CANDU) have the highest \(\beta\), and are the furthest from criticality accidents. Th-232 has a very large \(\beta\), the largest of potential fuel materials. U-235 has one of the lowest \(\nu\) - the plutonium isotopes are all on the order of 3. As Pu-239 transmutes to Pu-240, the average \(\nu\) increases, increasing reactivity. Once averaged over the isotopes in a fast reactor, \(\beta\) is around 0.0036 for heterogeneous designs.
+For fast reactors, \(\beta\) will be lower for heterogeneous designs; in homogeneous designs, a greater fraction of the fissions occur from U-238, and U-238 has a higher \(\beta\) than the fissile isotopes (actinides) used in fast reactors. In an LWR, \(\beta\) typically ranges from 0.007137 (more U-238) to 0.005465 (build-in of Pu-239) over a cycle. However, in fast reactors, \(\beta\) often increases over the core life as Pu-239 transmutes to Pu-241. Once averaged over the isotopes in a fast reactor, \(\beta\) is around 0.0036 for heterogeneous designs. For thermal reactors, natural-U fueled reactors (CANDU) have the highest \(\beta\), and are the furthest from criticality accidents. 
 
-The isotopic composition and the fraction of fissions that occur in each isotope have a strong impact on \(\beta\), as well as the fraction of fissions that occur in the blanket (for fast reactors), since blankets are typically composed of significantly different materials than the central core region.  In an LWR, \(\beta\) typically ranges from 0.007137 (more U-238) to 0.005465 (build-in of Pu-239) over a cycle. However, in fast reactors, \(\beta\) often increases over the core life as Pu-239 transmutes to Pu-241.
+As shown in the table, \(\nu\) is also strongly a function of the fissioning nuclide. U-235 has one of the lowest \(\nu\), while the plutonium isotopes are all on the order of \(\nu=3\). As U-238 transmutes to Pu-239, the average \(\nu\) increases, increasing reactivity.
 
-While this section will use a 1-group treatment for the point kinetics equations, some energy dependence must be taken into account, since the delayed neutrons are born at an average of 0.5 MeV, and hence they have higher \(p\) and \(P_{NL}^{fast}\), but lower \(\epsilon\). They are about 20\% more likely to fission than prompt neutrons. This can be roughly taken into account by modifying the point kinetics parameters in the following manner:
+While this section will show approximations using only one neutron energy group, some energy dependence must be taken into account, since the delayed neutrons are born at an average of 0.5 MeV. This energy, in both fast and thermal systems, is substantially different from the average energy at which fission neutrons are born. Delayed neutrons have higher \(p\) and \(P_{NL}^{fast}\), but lower \(\epsilon\). This energy dependence can be roughly taken into account by modifying the kinetics parameters in the following manner:
 
-\begin{equation}
+\beq
 \label{eq:ModifiedKineticsParameters_Lambda1}
 \lambda_i \rightarrow \lambda_i p_i P_{NL,i}^{fast}
-\end{equation}
+\eeq
 
-\begin{equation}
+\beq
 \label{eq:ModifiedKineticsParameters_Beta2}
 \beta_i \rightarrow \frac{\beta_i p_i P_{NL,i}^{fast}}{(1-\beta)pP_{NL}^{fast}+\sum_{i=1}^{6}\beta_i p_i P_{NL}^{fast}}
-\end{equation}
+\eeq
 
-Whether or not the effective \(\beta\) is greater than or less than the actual \(\beta\) depends on whether the reactor is in the fast or thermal spectrum. For thermal reactors, the effective \(\beta\) of the delayed neutrons is higher than the actual fraction of neutrons born delayed, since these delayed neutrons represent a fraction greater than \(\beta\) that eventually induce fission (they are closer to the thermal energies necessary for fission). In large LWRs, the effective \(\beta\) is several percent larger than the actual \(\beta\), but in small research reactors can be 20-30\% larger. However, for fast reactors, the effective \(\beta\) is even smaller than the actual \(\beta\), but about 10\%, since delayed neutrons are still born at lower energies, but in this case fission is more likely at high energies.
+Whether or not the effective \(\beta\) is greater than or less than the actual \(\beta\) depends on whether the reactor is in the fast or thermal spectrum. For thermal reactors, the effective \(\beta\) of the delayed neutrons is higher than the actual fraction of neutrons born delayed, since these delayed neutrons represent a fraction greater than \(\beta\) that eventually induce fission (they are closer to the thermal energies necessary for fission). In large LWRs, the effective \(\beta\) is several percent larger than the actual \(\beta\), but in small research reactors can be 20-30\% larger. However, for fast reactors, the effective \(\beta\) is even smaller than the actual \(\beta\), since fission is even less likely at low energies than in thermal systems. 
 
-The simplest model of kinetics if that the neutron population is related to the \(n\) number of cycles of neutrons:
-
+\begin{comment}
 \begin{equation}
 \label{eq:SimplestKineticsModel}
 N(t)=N_0k_{eff}^{n}
 \end{equation}
-
-A slightly more detailed model, for an infinite reactor, begins from the diffusion equation. Using the infinite medium approximation, there are no spatial derivatives, so the Laplacian term goes to zero. 
-
-\begin{equation}
-\label{eq:InfiniteReactorKinetics1}
-\frac{1}{v}\frac{d\phi}{dt}=(\nu\Sigma_f-\Sigma_a)\phi
-\end{equation}
-
-For the one-group approximation, \(\epsilon\) and \(p\) equal 1, so \(k_\infty=\eta f\).
-
-\begin{equation}
-\label{eq:InfiniteReactorKinetics2}
-\frac{1}{v}\frac{d\phi}{dt}=\nu\Sigma_a(k_\infty-1)\phi
-\end{equation}
-
-The infinite medium mean prompt neutron lifetime is defined to be the ratio of the rate at which the neutron population changes \(n(t)\) to the rate at which it is lost via absorption \(L(t)\) (a reaction frequency, see Eq. \ref{eq:ReactionFrequency}), since in this infinite medium, absorption is the only way that a neutron's lifetime ends. 
-
-\begin{equation}
-\label{eq:InfinitePromptLifetime}
-l_\infty=\frac{1}{v\Sigma_a}=\frac{n(t)}{L(t)}
-\end{equation}
-
-Inserting this definition into Eq. \ref{eq:InfiniteReactorKinetics2} gives the solution
-
-\begin{equation}
-\label{eq:InfiniteReactorKineticsSolution}
-\phi(t)=\phi_0\exp\left(\frac{k_\infty-1}{l_\infty}t\right)
-\end{equation}
-
-This accuracy of this analysis can be enhanced by introducing a modified lifetime to account for both prompt and delayed neutrons by summing the original lifetime of a prompt neutron and the mean lifetime of the remaining six precursor groups. Then, using this modified lifetime should give reasonably accurate results for small reactivity changes. 
-
-\begin{equation}
-\label{eq:AdjustedLifetime}
-\textless l\textgreater=(1-\beta)l+\sum_{i=1}^{6} \beta_i\left(l+\frac{1}{\lambda_i}\right)
-\end{equation}
-
-Based on the definition for the infinite-medium lifetime in Eq. \ref{eq:InfinitePromptLifetime}, a similar lifetime can be defined for a finite medium. In a finite medium, neutrons can be lost due to both leakage and absorption, and because \(P_{NL}\) nonleakage probabilities represent the probability that a neutron \textit{won't} leak from a reactor, we can substitute \(P_{NL}\) in for \(n(t)\) in Eq. \ref{eq:InfinitePromptLifetime}.
-
-\begin{equation}
-\label{eq:FinitePromptLifetime}
-l=\frac{P_{NL}}{v\Sigma_a}=\frac{n(t)}{L(t)}
-\end{equation}
-
-\(l\) is on the order of \(10^{-4}\) seconds for thermal reactors, and \(10^{-7}\) for fast reactors, since they do not need to spend as much time slowing down as thermal neutrons before they are lost due to fission. \(l\) is basically a measure of the birth-to-death time.
+\end{comment}
 
 The real purpose of reactor kinetics analysis is to assess how a reactor responds to changes in reactivity. Reactivity is the fractional change in the neutron population per generation, expressed as a fraction of the current generation:
 
-\begin{equation}
+\beq
 \label{eq:Reactivity}
 \rho=\frac{n_ok-n_o}{n_ok}=\frac{k-1}{k}
-\end{equation}
+\eeq
 
-A common misconception is that the ``1'' in the equation above refers to some assumption that \(k_o=1\), but this is not the case - it is simply based on the definition of reactivity based on a previous generation.
+A common misconception is that the ``1'' in the equation above refers to some assumption that \(k_o=1\), but this is not the case - it is simply based on the definition of reactivity based on a previous generation. The remainder of this section will discuss kinetics approximations to the transport equation.
 
-The kinetics equations, beginning from diffusion theory, can be derived by balance statements by inserting/modifying terms in the diffusion equation. Assuming each precursor releases only one delayed neutron, then there is a one-to-one relationship between the number of delayed neutrons produced and the number of precursor atoms, representing a source. Decay represents a loss. 
+\subsection{No Delayed Neutrons}
+The simplest model of reactor kinetics is if every neutron is born promptly. Assuming an infinite medium, there are no spatial derivatives, so the Laplacian term in the diffusion equation goes to zero.
 
-\begin{equation}
+\beq
+\label{eq:InfiniteReactorKinetics1}
+\frac{1}{v}\frac{d\phi}{dt}=(\nu\Sigma_f-\Sigma_a)\phi
+\eeq
+
+For the one-group approximation, \(\epsilon\) and \(p\) equal 1, so \(k_\infty=\eta f\).
+
+\beq
+\label{eq:InfiniteReactorKinetics2}
+\frac{1}{v}\frac{d\phi}{dt}=\nu\Sigma_a(k_\infty-1)\phi
+\eeq
+
+The infinite medium mean prompt neutron lifetime is defined to be the ratio of the rate at which the neutron population changes \(n(t)\) to the rate at which it is lost via absorption \(L(t)\), since in this infinite medium, absorption is the only way that a neutron's lifetime ends. 
+
+\beq
+\label{eq:InfinitePromptLifetime}
+l_\infty=\frac{n(t)}{L(t)}=\frac{n(t)}{v\Sigma_an(t)}=\frac{1}{v\Sigma_a}
+\eeq
+
+Inserting this definition into Eq. \ref{eq:InfiniteReactorKinetics2} gives the solution
+
+\beq
+\label{eq:InfiniteReactorKineticsSolution}
+\phi(t)=\phi_0\exp\left(\frac{k_\infty-1}{l_\infty}t\right)
+\eeq
+
+This accuracy of this analysis can be enhanced by introducing a modified lifetime to account for both prompt and delayed neutrons by summing the original lifetime of a prompt neutron and the mean lifetime of the remaining six precursor groups. This modified lifetime \(<l>\) should give reasonably accurate results for small reactivity changes. 
+
+\beq
+\label{eq:AdjustedLifetime}
+\textless l_\infty\textgreater=(1-\beta)l_\infty+\sum_{i=1}^{6} \beta_i\left(l_\infty+\frac{1}{\lambda_i}\right)
+\eeq
+
+\begin{comment}
+, and because \(P_{NL}\) represents the probability that a neutron \textit{won't} leak from a reactor, we can substitute \(P_{NL}\) in for \(n(t)\) in Eq. \ref{eq:InfinitePromptLifetime}.
+
+\beq
+\label{eq:FinitePromptLifetime}
+l=\frac{n(t)}{L(t)}=\frac{n(t)}\frac{P_{NL}}{v\Sigma_an(t)}
+\eeq
+\end{comment}
+
+For a finite medium, neutrons can be lost due to both leakage and absorption, and a similar mean neutron lifetime can be defined, \(l\). \(l\) is on the order of \(10^{-4}\) seconds for thermal reactors, and \(10^{-7}\) for fast reactors, since neutrons in fast systems do not need to spend as much time slowing down as thermal neutrons before they fission. \(l\) is basically a measure of the birth-to-death time.
+
+\subsection{Point Kinetics Equations}
+The kinetics equations are derived from diffusion theory. Delayed neutron precursors are produced as a result of fission, and are lost due to decay. Each delayed neutron precursor group is characterized by a decay constant \(\lambda_i\) and the fraction of total delayed neutrons \(\beta_i\) that are born from that precursor group.
+
+\beq
 \label{eq:PrecursorEquationKinetics}
 \frac{\partial C_i}{\partial t}=-\lambda_i C_i + \beta_i \nu\Sigma_f\phi
-\end{equation} 
+\eeq
 
-where \(i\) refers to each group of precursors. The second term reflects the assumption that each delayed neutron precusor \(C\) produces one delayed neutron, since the second term on the right-hand side is equivalent to the fraction of neutrons born delayed. The source term in the diffusion equation is modified to account for prompt and delayed neutrons. Assuming again that each decay of a precursor produces one delayed neutron, the source term inserted in the equation gives
+where \(i\) refers to each group of precursors. In the diffusion equation, the source term in the diffusion equation is modified to account for prompt and delayed neutrons separately.
 
-\begin{equation}
+\beq
 \label{eq:NeutronEquationKinetics}
 \frac{1}{v}\frac{\partial\phi}{\partial t}=D\nabla^2\phi + (1-\beta)\nu\Sigma_f\phi + \sum_{n=1}^{6} \lambda_i C_i -\Sigma_a\phi
-\end{equation} 
+\eeq
 
-So far, Eqs. \ref{eq:PrecursorEquationKinetics} and \ref{eq:NeutronEquationKinetics} are exact (within the limitations of 1-group diffusion theory). The point kinetics approximation assumes that the flux and precursor densities are separable in space and time. The spatial component is taken to equal the fundamental mode spatial eigenfunction, \(\psi_1(\vv{r})\), such that \(C(\vv{r},t) = C(t)\psi_1(\vv{r})\) and \(\phi(\vv{r},x)=vn(t)\psi_1(\vv{r})\). Inserting these assumptions into Eq. \ref{eq:PrecursorEquationKinetics}, and then cancelling the shape function from each term:
+So far, Eqs. \ref{eq:PrecursorEquationKinetics} and \ref{eq:NeutronEquationKinetics} are exact (within the limitations of 1-group diffusion theory). The main assumption of the point kinetics approximation is that the flux and precursor densities are separable in space and time, and that they both have the same spatial distribution. It will be convenient to assume that the spatial distribution is given as the fundamental mode spatial eigenfunction, \(\psi_1(\vv{r})\), such that \(C_i(\vv{r},t) = C_i(t)\psi_1(\vv{r})\) and \(\phi(\vv{r},x)=vn(t)\psi_1(\vv{r})\). Inserting these assumptions into Eq. \ref{eq:PrecursorEquationKinetics}, and then canceling the shape function from each term:
 
-\begin{equation}
+\beq
 \label{eq:PrecursorEquationKinetics_Separable1}
-\frac{dC_i(t)}{dt}=-\lambda_i C_i(t) + \beta_i \nu\Sigma_f n(t)
-\end{equation} 
+\frac{dC_i(t)}{dt}=-\lambda_i C_i(t) + \beta_i \nu\Sigma_f vn(t)
+\eeq
 
-Substituting the same approximations into Eq. \ref{eq:NeutronEquationKinetics}:
+Substituting the same spatial approximation into Eq. \ref{eq:NeutronEquationKinetics}:
 
-\begin{equation}
+\beq
 \label{eq:NeutronEquationKinetics_Separable1}
-\frac{\partial n(t)\psi_1(\vv{r})}{\partial t}=D\nabla^2(vn(t)\psi_1(\vv{r})) + (1-\beta)\nu\Sigma_fvn(t)\psi_1(\vv{r}) + \sum_{n=1}^{6} \lambda_i C_i(t)\psi_1(\vv{r}) -\Sigma_avn(t)\psi_1(\vv{r})
-\end{equation} 
+\psi_1(\vv{r})\frac{\partial n(t)}{\partial t}=vn(t)D\nabla^2\psi_1(\vv{r}) + (1-\beta)\nu\Sigma_fvn(t)\psi_1(\vv{r}) + \sum_{n=1}^{6} \lambda_i C_i(t)\psi_1(\vv{r}) -\Sigma_avn(t)\psi_1(\vv{r})
+\eeq
 
-To fully eliminate \(\psi_1(\vv{r})\), we make the approximation that:
+To fully eliminate \(\psi_1(\vv{r})\) from the second equation, we make the approximation that:
 
-\begin{equation}
+\beq
 \label{eq:FundamentalModeAssumption}
 \nabla^2\psi_1+B_{1}^{2}\psi_1=0
-\end{equation} 
+\eeq
 
-where \(B_1\) is the geometric buckling from time-dependent analysis of neutron diffusion. We can make this assumption because Eq. \ref{eq:FundamentalModeAssumption} represents the fundamental mode solution to the diffusion equation (since we could plug in any eigenfunction to the diffusion equation instead of \(\phi\) and still satisfy the equation, since the fundamental mode solution is characterized by the first eigenvalue (\(B_1\)) and the first eigenfunction (\(\psi_1\)). Note that \(\psi_1\) is not the fundamental mode of the unperturbed reactor, but rather of the reactor that has been pushed away from critical. This assumption is only valid for systems not perturbed extremely far from criticality, since then the eigenvalue problem would not be valid. Making this substitution in Eq. \ref{eq:NeutronEquationKinetics_Separable1} allows cancellation of \(\psi_1\).
+where \(B_1\) is the geometric buckling from time-dependent analysis of neutron diffusion. We can make this assumption because Eq. \ref{eq:FundamentalModeAssumption} represents the fundamental mode solution to the diffusion equation (since we could plug in any eigenfunction to the diffusion equation instead of \(\phi\) and still satisfy the equation, since the fundamental mode solution is characterized by the first eigenvalue (\(B_1\)) and the first eigenfunction (\(\psi_1\)). Note that \(\psi_1\) is not the fundamental mode of the unperturbed reactor, but rather of the reactor that has been pushed away from critical. This assumption is therefore only valid for systems not perturbed {\it far} from criticality, since then the eigenvalue problem would not be valid. Making this substitution in Eq. \ref{eq:NeutronEquationKinetics_Separable1} allows cancellation of \(\psi_1\).
 
-\begin{equation}
+\beqa
 \label{eq:NeutronEquationKinetics_Separable2}
-\frac{1}{v}\frac{\partial vn(t)}{\partial t}=-B_{1}^{2}Dvn(t) + (1-\beta)\nu\Sigma_fvn(t) + \sum_{n=1}^{6} \lambda_i C_i(t) -\Sigma_{a}vn(t)
-\end{equation} 
+\frac{\partial n(t)}{\partial t}=&-vn(t)DB_1^2 + (1-\beta)\nu\Sigma_fvn(t) + \sum_{n=1}^{6} \lambda_i C_i(t) -\Sigma_avn(t)\\
+=&\ vn(t)\left(-DB_1^2 + (1-\beta)\nu\Sigma_f-\Sigma_a\right) + \sum_{n=1}^{6} \lambda_i C_i(t)\\
+\eeqa
 
 Eqs. \ref{eq:PrecursorEquationKinetics_Separable1} and \ref{eq:NeutronEquationKinetics_Separable2} are the point kinetics equations, though they may appear to have a different form from the final appearance that appears in most texts because we have yet to substitute in the definitions for \(l\) from Eq. \ref{eq:FinitePromptLifetime} and \(k=\eta fP_{NL}\), or the 1-group six factor formula. \(\epsilon = 1\) because there is only one group (no fast fission), and \(p=1\) as well because all neutrons reach thermal energies because they are all (supposedly) born thermal. Substituting these assumptions into Eqs. \ref{eq:PrecursorEquationKinetics_Separable1} and \ref{eq:NeutronEquationKinetics_Separable2} gives, after some rearranging, the point-kinetics equations. Several versions of the neutron equation are given to reflect the additional inclusion of the definition of reactivity. In addition, many texts replace \(n\) by \(P\), the power, since the neutron flux is directly related to the power. With this conversion, note that the meaning of \(C\) changes, as it must be normalized in the same way that the neutron density is to obtain consistent units. Replacement of neutron density by power neglects any delay in power generation due to prompt energy and delayed energy (decay of fission products, activation, etc.). 
 
@@ -2723,85 +2721,79 @@ The \(\rho(t)\) in Eq. \ref{eq:PointKineticsNeutrons3} is only a function of tim
 Now, several approximations to the point kinetics equations can be made to offer analytical solutions.
 
 
-\subsection{One Delayed Neutron Group (One Precursor Group)}
-
+\subsection{One Delayed Neutron Group}
 If we assume one delayed neutron group, then the summation terms in Eqs. \ref{eq:PointKineticsPrecursor3} and \ref{eq:PointKineticsNeutrons3} become simpler and reduce to a single term, yielding:
 
-\begin{equation}
+\beq
 \label{eq:PointKineticsPrecursor_OneDelayedGroup}
-\frac{dC(t)}{dt}=-\lambda C(t)+\frac{\beta}{\Lambda}n(t)
-\end{equation} 
+\frac{\partial C(t)}{\partial t}=\frac{\beta}{\Lambda}n(t)-\lambda C(t)
+\eeq
 
-\begin{equation}
+\beq
 \label{eq:PointKineticsNeutrons_OneDelayedGroup}
-\frac{dn(t)}{dt}=\left(\frac{\rho(t)-\beta}{\Lambda}\right)n(t)+\lambda C(t)
-\end{equation} 
+\frac{\partial n(t)}{\partial t}=\left\lbrack\frac{\rho(t)-\beta}{\Lambda}\right\rbrack n(t)+\lambda C(t)
+\eeq
 
-where \(\lambda\) represents a weighted decay constant representative of all the groups:
+where \(\lambda\) represents a decay constant that is weighted by all of the precursor groups:
 
-\begin{equation}
+\beq
 \label{eq:Lambda_OneGroup}
 \lambda=\left(\frac{1}{\beta}\sum_{i=1}^{6}\frac{\beta_i}{\lambda_i}\right)^{-1}
-\end{equation} 
+\eeq
 
-To solve Eqs. \ref{eq:PointKineticsPrecursor_OneDelayedGroup} and \ref{eq:PointKineticsNeutrons_OneDelayedGroup}, we need two initial conditions, which can be obtained by assuming that at \(t=0\) the reactor was at steady state such that the time derivaties are zero:
+and \(\beta\) is now the sum of all of the \(\beta_i\) for each precursor group:
 
-\begin{equation}
+\beq
+\beta=\sum_{i}\beta_i
+\eeq
+
+To solve Eqs. \ref{eq:PointKineticsPrecursor_OneDelayedGroup} and \ref{eq:PointKineticsNeutrons_OneDelayedGroup}, we need two initial conditions. These initial conditions can be obtained by assuming that at \(t=0\) the reactor was at steady state such that the time derivatives are zero:
+
+\beqa
 \label{eq:PKE_OneGroup_ICs}
-\begin{aligned}
-P(t=0)=P_0\\
-C(t=0)=\frac{\beta}{\lambda\Lambda}P_0\\
-\end{aligned}
-\end{equation} 
+n(t=0)=&\ n_0\\
+C(t=0)=&\frac{\beta}{\lambda\Lambda}n_0\\
+\eeqa
 
-We seek exponential solutions of the form \(P=P\exp(\omega t)\) and \(C=C\exp(\omega t)\). Inserting these forms into Eqs. \ref{eq:PointKineticsPrecursor_OneDelayedGroup} and \ref{eq:PointKineticsNeutrons_OneDelayedGroup}, we obtain:
+This system of equations can be solved by seeking exponential solutions of the form \(n=n\exp(\omega t)\) and \(C=C\exp(\omega t)\). Note that this essentially implies that the frequency of the neutron population and the precursor population are the same, which is as expected with a single delayed neutron group. Inserting these forms into Eqs. \ref{eq:PointKineticsPrecursor_OneDelayedGroup} and \ref{eq:PointKineticsNeutrons_OneDelayedGroup} and canceling the exponential terms, we obtain:
 
-\begin{equation}
+\beqa
 \label{eq:PKE_OneGroup_AssumedForm}
-\begin{aligned}
-C\omega=-\lambda C+\frac{\beta}{\Lambda}P\\
-P\omega=\lambda C+\left(\frac{\rho-\beta}{\Lambda}\right)\\
-\end{aligned}
-\end{equation} 
+C\omega=&-\lambda C+\frac{\beta}{\Lambda}n\\
+n\omega=&\lambda C+\left(\frac{\rho(t)-\beta}{\Lambda}\right)n\\
+\eeqa
 
-Solving Eqs. \ref{eq:PKE_OneGroup_AssumedForm} simultaneously requires the following, which gives two solutions for \(\omega\) using the quadratic formula.  
+Substituting \(C\) from the first equation into the second gives two solutions for \(\omega\):  
 
-\begin{equation}
-\label{eq:RequiredPKE}
-\Lambda\omega^2+(\Lambda\lambda+\beta-\rho)\omega-\rho\lambda=0
-\end{equation} 
-
-\begin{equation}
+\beq
 \label{eq:PKEomega}
 \omega=\frac{-(\Lambda\lambda+\beta-\rho)\pm\sqrt{(\Lambda\lambda+\beta-\rho)^2+4\Lambda\lambda\rho}}{2\Lambda}
-\end{equation} 
+\eeq
 
 Hence, because we have two solutions for \(\omega\), our solutions are of the form:
 
-\begin{equation}
+\beqa
 \label{eq:PKE_Solutions_OneGroup}
-\begin{aligned}
-P(t)=P_1\exp{\omega_1 t}+P_2\exp{\omega_2 t}\\
-C(t)=C_1\exp{\omega_1 t}+C_2\exp{\omega_2 t}\\
-\end{aligned}
-\end{equation} 
+n(t)=&n_1\exp{\omega_1 t}+n_2\exp{\omega_2 t}\\
+C(t)=&C_1\exp{\omega_1 t}+C_2\exp{\omega_2 t}\\
+\eeqa 
 
-Using our two initial conditions in Eq. \ref{eq:PKE_OneGroup_ICs} and by plugging in the solutions into the original differential equations (to obtain time-dependent conditions) in Eqs. \ref{eq:PointKineticsPrecursor_OneDelayedGroup} and \ref{eq:PointKineticsNeutrons_OneDelayedGroup} will provide four equations and four unknowns (\(P_1, P_2, C_1, C_2\)). The solution for power then becomes:
+Using our two initial conditions from Eq. \ref{eq:PKE_OneGroup_ICs} and by plugging in the solutions into the original differential equations (to obtain two time-dependent conditions) in Eqs. \ref{eq:PointKineticsPrecursor_OneDelayedGroup} and \ref{eq:PointKineticsNeutrons_OneDelayedGroup} will provide four equations and four unknowns (\(P_1, P_2, C_1, C_2\)). The solution for neutron population then becomes:
 
-\begin{equation}
+\beq
 \label{eq:PowerPKE}
-P(t)=P_0\left(\frac{\omega_1+\lambda}{\lambda}\frac{\omega_2}{\omega_2-\omega_1}\exp{\omega_1 t} + \frac{\omega_2+\lambda}{\lambda}\frac{\omega_1}{\omega_1-\omega_2}\exp{\omega_2 t}\right)
-\end{equation} 
+n(t)=n_0\left(\frac{\omega_1+\lambda}{\lambda}\frac{\omega_2}{\omega_2-\omega_1}\exp{\omega_1 t} + \frac{\omega_2+\lambda}{\lambda}\frac{\omega_1}{\omega_1-\omega_2}\exp{\omega_2 t}\right)
+\eeq
 
-In the limit that \((\Lambda\lambda+\beta-\rho)^2 \gg 4\Lambda\lambda\rho\) and \(\abs{\rho}\ll\beta\), the roots become:
+The two-term exponential behavior will give two different time behaviors, where the \(\omega_1\) term represents the prompt power jump that occurs due to a near-immediate change in the prompt neutron population. The \(\omega_2\) term, which will necessarily result in a slower time response since \(\omega_2<\omega_1\), represents the neutron population changes due to changes in the delayed neutron population. The time behavior is often quoted in terms of a ``period,'' which is the inverse of the coefficient on time in the exponential terms. A period represents the time it takes for the reactor power to increase by a factor of \(e\).
 
-\begin{equation}
+In the limit that \((\Lambda\lambda+\beta-\rho)^2 \gg 4\Lambda\lambda\rho\) and \(\abs{\rho}\ll\beta\) (i.e. a small reactivity insertion), the roots become:
+
+\beqa
 \label{eq:omegaPKE2}
-\begin{aligned}
-\omega_1=\frac{\lambda\rho}{\beta-\rho}\\
-\omega_2=-\frac{\beta-\rho}{\Lambda}\\
-\end{aligned}
-\end{equation} 
+\omega_1=&\frac{\lambda\rho}{\beta-\rho}\\
+\omega_2=&-\frac{\beta-\rho}{\Lambda}\\
+\eeqa 
 
 which when inserted into Eq. \ref{eq:PowerPKE} gives an approximate form for \(P(t)\).
 
@@ -2810,10 +2802,7 @@ which when inserted into Eq. \ref{eq:PowerPKE} gives an approximate form for \(P
 P(t)=P_0\left(\frac{\beta}{\beta-\rho}\exp{\left(\frac{\lambda\rho}{\beta-\rho} t\right)} - \frac{\rho}{\beta-\rho}\exp{\left(-\frac{\beta-\rho}{\Lambda} t\right)}\right)
 \end{equation} 
 
-For a step reactivity insertion, this will give a prompt jump or decrease, followed by a slower transient with a period equal to the larger of the two periods. Period is defined as the inverse of the coefficient on \(t\) in the exponential terms, where each period represents the time it takes for the reactor power to increase by a factor of \(e\). While this period is undefined for exactly \(\rho_0=\beta\), for insertions of magnitude less than \(\beta\), the period is always dictated by the first term in Eq. \ref{eq:PowerPKE2}, since the second exponential term would die out very quickly. However, for insertions of magnitude greater than \(\beta\), the period is always dictated by the second term in Eq. \ref{eq:PowerPKE2}, since the first exponential term would die out. Eq. \ref{eq:PowerPKE2} should be used with caution, however, becuase it has assumed small reactivity insertions based on \((\Lambda\lambda+\beta-\rho)^2 \gg 4\Lambda\lambda\rho\) and \(\abs{\rho}\ll\beta\). 
-
-For reactivity of less than \$0.90, the period is unaffected by \(l\), since only the second exponential term includes \(\Lambda\), and hence thermal and fast reactors would behave equivalently.
-
+Note that with this approximation, the period is undefined for exactly \(\rho_0=\beta\). For reactivity insertions of magnitude less than \(\beta\), the period is always dictated by the first term in Eq. \ref{eq:PowerPKE2}, since the second exponential term dies out quickly. However, for insertions of magnitude greater than \(\beta\), the period is dictated by the second term in Eq. \ref{eq:PowerPKE2}, since the first exponential term dies out quickly. For reactivity insertions of less than \$0.90, the period is unaffected by \(l\), since only the second exponential term includes \(\Lambda\), and hence thermal and fast reactors would behave approximately the same.
 
 \subsection{The Prompt Jump Approximation}
 
