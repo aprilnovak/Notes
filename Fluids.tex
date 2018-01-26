@@ -107,7 +107,7 @@
 \section{Introduction}
 \begin{flushleft}\justify
 
-This document contains my course notes for fluids, though a large portion of the theory is included in the Pronghorn manual, and isn't be repeated here.
+This document contains information regarding the theory and modeling of fluids that is outside the scope of the Pronghorn theory manual, but is useful for obtaining a deeper understanding of the fluid flow equations. To avoid repetition, refer to the Pronghorn theory manual for the detailed derivations of the Navier-Stokes equations and definitions of all of the notation used in this document.
 
 \section{Equivalent Forms of the Navier-Stokes Equations}
 
@@ -252,6 +252,66 @@ where the definition of the expansivity from Eq. \eqref{eq:expansivity}, with \(
 
 Working with the vorticity equation, as opposed to the momentum equation in terms of velocity, is advantageous for barotropic flows. A flow is barotropic if density is only a function of pressure, and can result for either isothermal/isentropic flow (depending on how \(\rho=\rho(a,b)\) is structured for variables \(a\) and \(b\)) or incompressible flow, two rather common situations. Because Pronghorn assumes inviscid flow, if the user selects the barotropic EOS, then the vorticity equation will not provide any additional information, and hence would not be useful for implementation in all cases. In addition, because pressure is allowed to be a function of density and internal energy, Pronghorn does not, in general, assume barotropic flows, which makes the use of the vorticity equation, with its cross products, more cumbersome than the velocity-based momentum equations. The equations in this section also generally require the direct computation of entropy or that \(\vv{g}\) aligns with the \(z\)-axis. 
 
+\section{Incompressible Flow}
+
+The Navier-Stokes equations are so frequently written in incompressible form (without a disclaimer) that many people (including myself once upon a time) believed that the incompressible form was valid for compressible flows. The continuity equation simplifies by setting the time derivative and gradient of density to zero (i.e. the material derivative of density is zero), giving:
+
+\beq
+\nabla\cdot\vv{V}=0
+\eeq
+
+Note that the condition for incompressibility arising from the continuity equation is {\it not} that \(d\rho/dt=0\) - it is that the velocity field is divergence-free. Taking the \(x\)-direction Navier-Stokes equation in Cartesian coordinates for an incompressible fluid (\(\nabla\cdot\vv{V}=0\)) as an example:
+
+\beqa
+\rho&\left(\frac{\partial V_x}{\partial t}+V_x\frac{\partial V_x}{\partial x}+V_y\frac{\partial V_x}{\partial y}+V_z\frac{\partial V_x}{\partial z}\right)-\rho g_x+\frac{\partial P}{\partial x}=\\
+&\hspace{0.75cm}\frac{\partial}{\partial x}\left\lbrack\mu\left(\frac{\partial V_x}{\partial x}+\frac{\partial V_x}{\partial x}\right)\right\rbrack+\frac{\partial}{\partial y}\left\lbrack\mu\left(\frac{\partial V_x}{\partial y}+\frac{\partial V_y}{\partial x}\right)\right\rbrack+\frac{\partial}{\partial z}\left\lbrack\mu\left(\frac{\partial V_x}{\partial z}+\frac{\partial V_z}{\partial x}\right)\right\rbrack\\
+&\hspace{0.75cm}\frac{\partial}{\partial x}\left(\mu\frac{\partial V_x}{\partial x}\right)+\frac{\partial}{\partial y}\left(\mu\frac{\partial V_x}{\partial y}\right)+\frac{\partial}{\partial z}\left(\mu\frac{\partial V_x}{\partial z}\right)+\frac{\partial}{\partial x}\left\lbrack\mu\left(\cancel{\frac{\partial V_x}{\partial x}+\frac{\partial V_y}{\partial y}+\frac{\partial V_z}{\partial z}}\right)\right\rbrack\\
+\eeqa
+
+where the continuity equation for an incompressible fluid is used to cancel the last term. This gives, in vector notation, the Navier-Stokes equation for an incompressible fluid:
+
+\begin{subequations}
+\label{eq:NSIncompressibleMomentum}
+\begin{eqnarray}
+\rho\frac{d\vv{V}}{dt}&=&\rho\vv{g}-\nabla P+\nabla\cdot(\mu\nabla\vv{V})\\
+\rho\frac{d\vv{V}}{dt}&=&\rho\vv{g}-\nabla P+\mu\nabla^2\vv{V}
+\end{eqnarray}
+\end{subequations}
+
+where an additional simplifying assumption of constant viscosity is often made, giving Eq. \eqref{eq:NSIncompressibleMomentum}b. The incompressible form of the fluid energy equation can be derived by first expanding all gradients on the LHS:
+
+\begin{subequations}
+\begin{eqnarray}
+\frac{\partial (\rho E)}{\partial t}+\frac{\partial}{\partial x_i}\left(\rho hV_i\right)&=&\rho g_iV_i+\frac{\partial}{\partial x_i}\left(\tau_{ij}V_j\right)-\frac{\partial q_i}{\partial x_i}\\
+\rho\frac{\partial E}{\partial t}+E\cancel{\frac{\partial\rho}{\partial t}}+V_i\frac{\partial}{\partial x_i}\rho h+\rho h\cancel{\frac{\partial V_i}{\partial x_i}}&=&\rho g_iV_i+\frac{\partial}{\partial x_i}\left(\tau_{ij}V_j\right)-\frac{\partial q_i}{\partial x_i}
+\end{eqnarray}
+\end{subequations}
+
+Inserting the definition for \(\tau\) for an incompressible fluid:
+
+\beq
+\rho\frac{\partial E}{\partial t}+V_i\frac{\partial}{\partial x_i}\rho h=\rho g_iV_i+\frac{\partial}{\partial x_i}\left\lbrack\mu V_j\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)\right\rbrack-\frac{\partial q_i}{\partial x_i}
+\eeq
+
+Switching the order of integration on the second term on the RHS allows the incompressibility condition to again cancel one term, where for simplicity it has been assumed that \(\mu\) is constant. This gives the incompressible form of the conservative energy equation:
+
+\beq
+\rho\frac{\partial E}{\partial t}+\vv{V}\cdot\nabla(\rho h)=\rho\vv{V}\cdot\vv{g}+\mu\nabla\cdot\left((\nabla\vv{V}+(\nabla\vv{V})^T)\cdot\vv{V}\right)-\nabla\cdot\vv{q}
+\eeq
+
+For the incompressible flow equations, the three components of velocity and two thermodynamic quantities are the solution variables. Pressure no longer has a relationship to density through an EOS, and the incompressible Navier-Stokes equations are equations in terms of pressure, energy/temperature, and three components of velocity. Because an EOS cannot be used to specify pressure, the incompressible Navier-Stokes equations must be modified so that an evolution equation for pressure is obtained. A Pressure-Poisson equation is obtained by taking the divergence of the momentum equation:
+
+\begin{subequations}
+\label{eq:PP}
+\begin{eqnarray}
+\frac{\partial V_j}{\partial x_i}\frac{\partial V_i}{\partial x_j}&=&-\frac{1}{\rho}\frac{\partial^2 P^{'}}{\partial x_i^2}\\
+\nabla\cdot(\vv{V}\cdot\nabla\vv{V})&=&-\frac{1}{\rho}\nabla^2P'
+\end{eqnarray}
+\end{subequations}
+
+where \(\mu\) was assumed constant and \(P'\) is the reduced pressure. Satisfaction of the Pressure-Poisson equation is a necessary condition to satisfy incompressibility. The non-evolutionary feature of the \(\nabla\cdot\vv{V}=0\) condition (which results in a time-independent equation for pressure) makes the incompressible flow equations somewhat difficult to solve.
+
+For incompressible flow that is also isothermal, the energy equation becomes decoupled from the mass and momentum equations because none of the thermal properties like viscosity and thermal conductivity are temperature-dependent.
 
 \section{The Physics of Turbulence}
 
@@ -697,10 +757,6 @@ f(V_1,V_2,V_3; x_1,x_2,x_3,t)=f(V_1,-V_2,V_3;x_1,-x_2,x_3,t)
 From this, we can conclude that \(\la V_1V_2\ra\) is an odd function of \(x_2\), while \(\la V_1V_1\ra\) and \(\la V_2V_2\ra\) are even functions of \(x_2\). However, because the flow is not independent of \(x_2\), we cannot conclude anything about these components being zero throughout the entire domain as we could with respect to the \(x_3\) axis. 
 
 
-
-
-
-
 \section{Irrotational Motion}
 An essential feature of turbulent flows is that they are rotational. If the vorticity is zero, then \(\xi_{ij}=0\) (as well as the product of the mean rate of rotation with velocity). The average is therefore also zero:
 
@@ -965,6 +1021,10 @@ The RANS equations solves the Reynolds equations to determine the mean fields. T
 
 Models can be distinguished by whether or not they are \textit{complete}. A complete model gives results that depend solely on material properties and initial and boundary conditions, while incomplete models contain closure relationships that depend on the nature of the flow. For example, with the mixing length model, the selection of the mixing length depends on the \textit{type} of flow, assumed to be known by the modeler. For some models, the cost scales with the Reynolds number, but for others, the cost is relatively independent of the Reynolds number. Many models, such as those that are based on velocity spectra or two-point correlations, are only applicable to homogeneous turbulent flows, and hence they are not discussed in this document. 
 
+Turbulence is a global instability that arises due to the nonlinear convective term in the momentum equation.
+
+\subsection{Large Eddy Simulation}
+LES is a combination of DNS for the largest-scale turbulent motions, with models for the smaller scale motions. The LES equations are obtained by averaging the Navier-Stokes equations over only the high energy range (small wavelength). 
 
 
 
@@ -1044,10 +1104,15 @@ This model requires the mixing length \(l_m\) to be defined, and hence this is n
 
 
 \subsection{Direct Numerical Simulation}
-DNS involves solving the Navier-Stokes equations (\textit{not} the Reynolds equations), resolving all of the scales of motion. Each simulation produces a single realization of the flow. Because the cost of DNS scales are \(Re^3\), this approach is infeasible for large \(Re\), which unfortunately is the most relevant application area. 
+DNS involves solving the Navier-Stokes equations (\textit{not} the Reynolds equations), resolving all of the scales of motion. Each simulation produces a single realization of the flow. Because the cost of DNS scales are \(Re^3\), this approach is infeasible for large \(Re\), which unfortunately is the most relevant application area. Provided all the details of initial conditions, boundary conditions, and geometry are specified accurately, in principle the Navier-Stokes equations can be used to simulate turbulent flows. This is known as DNS. 
 
 \subsubsection{Homogeneous Turbulence}
 For homogeneous turbulence, pseudo-spectral methods are preferred for numerical simulation because of their superior accuracy. 
+
+
+\section{The Euler Equations}
+The classical Euler equations are fully hyperbolic. The fluxes are purely convective, which results in behavior very similar to wave propagation due to the passive nature of convective fluxes - fluxes in directions other than the velocity vector cannot be supported.
+
 
 \end{flushleft}
 \end{document}
