@@ -109,106 +109,61 @@
 
 This document contains information regarding the theory and modeling of fluids that is outside the scope of the Pronghorn theory manual, but is useful for obtaining a deeper understanding of the fluid flow equations. To avoid repetition, refer to the Pronghorn theory manual for the detailed derivations of the Navier-Stokes equations and definitions of all of the notation used in this document.
 
+The Navier-Stokes equations are five tightly coupled equations for the components of velocity and two thermodynamic quantities. There is some flexibility in which thermodynamic quantities can be the solution variables, which gives rise to many different, but mathematically equivalent, forms of the equations. 
+
 \section{Equivalent Forms of the Navier-Stokes Equations}
 
-Pronghorn models inviscid, compressible, flow by neglecting the viscous terms in the momentum and energy equations. The particular forms of the equations given in Eq. \eqref{eq:NavierStokesNonPorous} are not unique, however, and several equivalent equations exist to describe the same phenomena. This section shows these alternative formulations for the \textit{incompressible, uniform-\(\mu\), Navier-Stokes momentum equation}, though their derivation for the more general compressible Navier-Stokes equations, including the mass, momentum, and energy equations, with the porous media terms included, can be performed. To obtain equivalent forms for the equations used in Pronghorn (inviscid), simply set \(\mu=0\). The incompressible Navier-Stokes equation, Eq. \eqref{eq:NSIncompressibleMomentum}, is repeated here for reference:
+Several equivalent equations exist to describe the same phenomena as the Navier-Stokes equations - these forms are discussed in this section. The Navier-Stokes equation is repeated here for reference:
 
 \begin{equation*}
-\frac{\partial\vv{V}}{\partial t}+\vv{V}\cdot\nabla\vv{V}=-\frac{1}{\rho}\nabla P+\vv{g}+\nu\nabla^2\vv{V}
+\frac{\partial\vv{V}}{\partial t}+\vv{V}\cdot\nabla\vv{V}+\frac{1}{\rho}\nabla P-\vv{g}-\frac{1}{\rho}\nabla\cdot\tau=0
 \end{equation*}
 
-Several equivalent forms of the Navier-Stokes momentum equation are now listed. Eq. (\ref{eq:EquivalenttoEuler}c), which sets \(\vv{g}=-g\vv{e}_z\) such that \(\nabla(gz)=g\vv{e}_z\), is often known as the Crocco-Vazsonyi equation when viscous effects are neglected. 
+Several equivalent forms of the Navier-Stokes momentum equation are now derived through manipulations of mechanical and thermodynamic relations. First, we will rewrite the advective term by using the definitions of \(e_{ij}\) and \(\xi_{ij}\) and then taking the scalar product with velocity:
 
 \begin{subequations}
-\label{eq:EquivalenttoEuler}
-\begin{align}
-\frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2\right)+\frac{1}{\rho}\nabla P-\vv{g}-(\vv{V}\times\vv{\omega})-\nu\nabla^2\vv{V}=0\\
-\frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2+h\right)-T\nabla s-\vv{g}-(\vv{V}\times\vv{\omega})-\nu\nabla^2\vv{V}=0\\
-\frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2+h+gz\right)-T\nabla s-(\vv{V}\times\vv{\omega})-\nu\nabla^2\vv{V}=0
-\end{align}
-\end{subequations}
-
-\begin{tcolorbox}[breakable]
-Eq. (\ref{eq:EquivalenttoEuler}a) can be derived by using definitions previously developed. In suffix notation, the Navier-Stokes equation is:
-
-\beq
-\label{eq:EulerSuffix}
-\frac{\partial V_i}{\partial t}+V_j\frac{\partial V_i}{\partial x_j}=-\frac{1}{\rho}\frac{\partial P}{\partial x_i}+g_i+\nu\frac{\partial^2 V_i}{\partial x_i^2}
-\eeq
-
-From Eq. \eqref{eq:VelocitySymmetricAntisymmetric} and Eq. \eqref{eq:xi_ij}:
-
-\beq
-\frac{\partial V_i}{\partial x_j}=\frac{1}{2}\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)-\frac{1}{2}\varepsilon_{ijk}\omega_k
-\eeq
-
-Rearranging, and then taking the scalar product with \(V_j\) gives the following identity:
-
-\beqa
 \label{eq:FluidsIdentity}
-V_j\frac{\partial V_i}{\partial x_j}=&\ V_j\frac{\partial V_j}{\partial x_i}-\varepsilon_{ijk}V_j\omega_k\\
-=&\ \frac{\partial}{\partial x_i}\left(\frac{1}{2}V_jV_j\right)-\varepsilon_{ijk}V_j\omega_k\\
-=&\ \nabla\left(\frac{1}{2}V^2\right)+(\vv{\omega}\times\vv{V})\\
-\eeqa
-
-Substituting this identity into Eq. \eqref{eq:EulerSuffix} for \(\vv{V}\cdot\nabla\vv{V}\) gives Eq. \eqref{eq:EquivalenttoEuler}. Note that \(V^2=V_jV_j\) is the velocity squared, taking into account all components.
-\end{tcolorbox}
-
-\begin{tcolorbox}[breakable]
-Eq. (\ref{eq:EquivalenttoEuler}b) can be derived by modifying the Gibbs identity in Eq. \eqref{eq:GibbsIdentity} to be a differential with respect to \(e+P\nu\):
-
-\beq
-d(e+P\nu)=Tds-\cancel{Pd\nu}+\cancel{Pd\nu}+\nu dP
-\eeq
-
-Because the Gibbs identity is an exact differential, the above can be used to remove the pressure term in Eq. \eqref{eq:EquivalenttoEuler}:
-
-\beq
-\label{eq:RemovePressureGrad}
-\rho\left(\nabla h-T\nabla s\right)=\nabla P
-\eeq
-
-where the definition for enthalpy from Eq. \eqref{eq:Enthalpy} has been inserted. Inserting Eq. \eqref{eq:RemovePressureGrad} into Eq. \eqref{eq:EquivalenttoEuler} gives Eq. \eqref{eq:EquivalenttoEuler}.
-\end{tcolorbox}
-
-\begin{tcolorbox}[breakable]
-The minimum number of assumptions that can be made to Eq. (\ref{eq:EquivalenttoEuler}c) to obtain the Bernoulli equation is to assume 1) steady, 2) inviscid, 3) isentropic, and 4) irrotational flow. These assumptions apply {\it anywhere} in the flow field.
-
-\beq
-\label{eq:Bernoulli1}
-\underbrace{\cancel{\frac{\partial \vv{V}}{\partial t}}}_{\textrm{steady}}+\nabla\left(\frac{1}{2}V^2+h+gz\right)=\underbrace{T\cancel{\nabla s}}_{\text{isentropic}}+\underbrace{(\vv{V}\times\cancel{\vv{\omega})}}_{\text{irrotational}}+\underbrace{\cancel{\mu\nabla^2\vv{V}}}_{\text{inviscid}}
-\eeq
-
-Alternatively, take the scalar product of Eq. (\ref{eq:EquivalenttoEuler}c) with velocity to obtain a form that only applies along a streamline. Then, by assuming 1) steady, 2) inviscid, and 3) isentropic flow 4) along a streamline, a form equivalent to the form above is obtained that only applies along streamlines, but does not require irrotational flow.
-
-\beq
-\label{eq:Bernoulli2}
-\underbrace{\cancel{\vv{V}\cdot\frac{\partial \vv{V}}{\partial t}}}_{\text{steady}}+\vv{V}\cdot\nabla\left(\frac{1}{2}V^2+h+gz\right)=\underbrace{\vv{V}\cdot T\cancel{\nabla s}}_{\text{isentropic}}+\underbrace{\cancel{\vv{V}\cdot(\vv{V}\times\vv{\omega})}}_{\text{definition}}+\underbrace{\vv{V}\cdot(\cancel{\mu\nabla^2\vv{V})}}_{\text{inviscid}}
-\eeq
-
-Then, if the flow is assumed incompressible, for \(E=E(\rho,s)\), \(E\) will be constant, as isentropic flow is already assumed. Then, both of the forms above would reduce to:
-
-\beq
-\label{eq:Bernoulli3}
-\nabla\left(\frac{1}{2}V^2+\frac{P}{\rho}+gz\right)=0
-\eeq
-
-\end{tcolorbox}
-
-A fourth equivalent form can be obtained by taking the cross product of the Navier-Stokes equation to give the following, which is shown in several equivalent forms using different vector calculus properties. Like the equations shown above, this only assumes incompressibility in the form of the viscous term. These forms, where velocity has largely been replaced by vorticity, are referred to as the ``vorticity equation.''
-
-\begin{subequations}
-\begin{align}
-\nabla\times\left(\frac{\partial \vv{V}}{\partial t}+\vv{V}\cdot\nabla\vv{V}\right)=&\frac{\nabla\rho\times\nabla P}{\rho^2}+\nabla\times(\nu\nabla^2\vv{V})\\
-\frac{\partial \vv{\omega}}{\partial t}+\nabla\times\left(\vv{\omega}\times\vv{V}\right)=&\frac{\nabla\rho\times\nabla P}{\rho^2}+\nu\nabla^2\vv{\omega}\\
-\frac{\partial \vv{\omega}}{\partial t}+\nabla\times\left(\vv{\omega}\times\vv{V}\right)=&\frac{\nabla\rho\times\nabla P}{\rho^2}-\nu\nabla\times(\nabla\times\vv{\omega})\\
-\frac{d}{dt}\left(\frac{\vv{\omega}}{\rho}\right)-\frac{\vv{\omega}}{\rho}\cdot\nabla\vv{V}=&\frac{\nabla\rho\times\nabla P}{\rho^3}+\frac{\nu}{\rho}\nabla^2\vv{\omega}\\
-\frac{d}{dt}\left(\frac{\vv{\omega}}{\rho}\right)-\frac{\vv{\omega}}{\rho}\cdot\nabla\vv{V}=&\frac{-\beta\rho\nabla T\times\nabla P}{\rho^3}+\frac{\nu}{\rho}\nabla^2\vv{\omega}
-\end{align}
+\begin{eqnarray}
+\frac{\partial V_i}{\partial x_j}&=&\frac{1}{2}\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)-\frac{1}{2}\varepsilon_{ijk}\omega_k\\
+V_j\frac{\partial V_i}{\partial x_j}&=&\ V_j\frac{\partial V_j}{\partial x_i}-\varepsilon_{ijk}V_j\omega_k\\
+V_j\frac{\partial V_i}{\partial x_j}&=&\ \nabla\left(\frac{1}{2}V^2\right)+(\vv{\omega}\times\vv{V})
+\end{eqnarray}
 \end{subequations}
 
-\begin{tcolorbox}[breakable]
-Eq. (\ref{eq:EquivalenttoEuler}a) can be derived by taking the cross product of the Navier-Stokes equation:
+Using the above relationship in the Navier-Stokes equations gives:
+
+\beq
+\label{eq:EquivalenttoEulera}
+\frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2\right)+\frac{1}{\rho}\nabla P-\vv{g}-(\vv{V}\times\vv{\omega})-\frac{1}{\rho}\nabla\cdot\tau=0
+\eeq
+
+A second equivalent form can be derived by modifying the Gibbs identity to be a differential with respect to \(e+P\nu\). Then, inserting the definition of enthalpy and transforming the exact differential to a spatial differential:
+
+\begin{subequations}
+\begin{eqnarray}
+d(e+P\nu)&=&Tds-\cancel{Pd\nu}+\cancel{Pd\nu}+\nu dP\\
+\nabla h&=&T\nabla s+\frac{\nabla P}{\rho}
+\end{eqnarray}
+\end{subequations}
+
+Using the above equation in Eq. \eqref{eq:EquivalenttoEulera} gives a second equivalent form:
+
+\beq
+\label{eq:EquivalenttoEulerb}
+\frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2+h\right)-T\nabla s-\vv{g}-(\vv{V}\times\vv{\omega})-\frac{1}{\rho}\nabla\cdot\tau=0
+\eeq
+
+Gravity can also be moved inside the gradient if we assume that \(\vv{g}=-g\vv{e}_z\) such that \(\nabla(gz)=g\vv{e}_z\):
+
+\beq
+\label{eq:EquivalenttoEulerc}
+\frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2+h+gz\right)-T\nabla s-(\vv{V}\times\vv{\omega})-\frac{1}{\rho}\nabla\cdot\tau=0
+\eeq
+
+When viscous effects are neglected, Eq. \eqref{eq:EquivalenttoEulerc} is known as the Crocco-Vazsonyi equation. This equation reveals several important properties about fluid flows - first, the flow will be rotational (nonzero vorticity) in a stationary reference frame even in steady flows unless the flow is isentropic, frictionless, and isoenergetic (sum of kinetic energy per unit mass, enthalpy, and gravitational potential are constant along a streamline).
+
+\subsection{The Vorticity Equation}
+The vorticity equation(s) are forms of the Navier-Stokes equations that are derived by taking the curl of momentum equation and using various vector calculus properties to reduce the equations to different forms. This section assumes incompressibility in the form of the viscous term and constant \(\nu\). Take the curl of the momentum equation:
 
 \beq
 \label{eq:Equiv4}
@@ -222,13 +177,31 @@ where gravity is assumed to be a conservative vector field. By a vector calculus
 \nabla\times\frac{\nabla P}{\rho}\rightarrow\frac{\rho\cancel{\nabla\times\nabla P}-\nabla\rho\times\nabla P}{\rho^2}
 \eeq
 
-Inserting Eq. \eqref{eq:VectorCalculusIdentityCrossProduct} into Eq. \eqref{eq:Equiv4} gives Eq. (\ref{eq:EquivalenttoEuler}a). Eq. (\ref{eq:EquivalenttoEuler}b) results by inserting the definition for vorticity into the time-dependent term (by noting that a gradient is only a derivative in space, it can be brought inside the time differentiation) and the identity given by Eq. \eqref{eq:FluidsIdentity}. Then, similar to the cancellation of the gravitational force in Eq. \eqref{eq:Equiv4}, \(\nabla\times(\nabla(V^2/2))\) is zero since the velocity is a singly-valued function. Eq. (\ref{eq:EquivalenttoEuler}c) is obtained using the following vector identity:
+Inserting Eq. \eqref{eq:VectorCalculusIdentityCrossProduct} into Eq. \eqref{eq:Equiv4} gives:
+
+\beq
+\nabla\times\left(\frac{\partial \vv{V}}{\partial t}+\vv{V}\cdot\nabla\vv{V}\right)=\frac{\nabla\rho\times\nabla P}{\rho^2}+\nabla\times(\nu\nabla^2\vv{V})
+\eeq
+
+Then, insert the definition for vorticity into the time-dependent term (by noting that a gradient is only a derivative in space, it can be brought inside the time differentiation) and the identity given by Eq. \eqref{eq:FluidsIdentity}. Then, similar to the cancellation of the gravitational force, \(\nabla\times(\nabla(V^2/2))\) is zero since the velocity is a singly-valued function:
+
+\beq
+\frac{\partial \vv{\omega}}{\partial t}+\nabla\times\left(\vv{\omega}\times\vv{V}\right)=\frac{\nabla\rho\times\nabla P}{\rho^2}+\nu\nabla^2\vv{\omega}
+\eeq
+
+Another equivalent form is obtained using the following vector identity:
 
 \beq
 \nabla\times(\nabla\times\vv{\omega})=\underbrace{\cancel{\nabla(\nabla\cdot\vv{\omega})}}_{\text{definition}}-\nabla^2\vv{\omega}
 \eeq
 
-Eq. (\ref{eq:EquivalenttoEuler}d) can be obtained by expanding the \(\nabla\times(\vv{\omega}\times\vv{V})\) term using vector identities:
+which upon insertion gives the form:
+
+\beq
+\frac{\partial \vv{\omega}}{\partial t}+\nabla\times\left(\vv{\omega}\times\vv{V}\right)=\frac{\nabla\rho\times\nabla P}{\rho^2}-\nu\nabla\times(\nabla\times\vv{\omega})
+\eeq
+
+Another equivalent form can be obtained by expanding the \(\nabla\times(\vv{\omega}\times\vv{V})\) term using vector identities:
 
 \beq
 \nabla\times(\vv{\omega}\times\vv{V})=\vv{\omega}(\nabla\cdot\vv{V})+(\vv{V}\cdot\nabla)\vv{\omega}-\underbrace{\vv{V}(\cancel{\nabla\cdot\vv{\omega}})}_{\text{definition}}-(\vv{\omega}\cdot\nabla)\vv{V}
@@ -240,17 +213,73 @@ where \(\nabla\cdot\vv{\omega}=0\) by definition since the divergence of a curl 
 \underbrace{\frac{\partial \vv{\omega}}{\partial t}+(\vv{V}\cdot\nabla)\vv{\omega}}_{\text{material derivative}}+\vv{\omega}\left(-\frac{1}{\rho}\frac{d\rho}{dt}\right)-(\vv{\omega}\cdot\nabla)\vv{V}=\frac{\nabla\rho\times\nabla P}{\rho^2}+\nu\nabla^2\vv{\omega}
 \eeq
 
-where the continuity equation has been inserted for \(\nabla\cdot\vv{V}\). Multiplying each term through by \(1/\rho\) and grouping terms gives Eq. (\ref{eq:EquivalenttoEuler}d). Eq. (\ref{eq:EquivalenttoEuler}e) is derived by assuming density to be a function of pressure and temperature such that:
+where the continuity equation has been inserted for \(\nabla\cdot\vv{V}\). Multiplying each term through by \(1/\rho\) and grouping terms gives:
+
+\beq
+\frac{d}{dt}\left(\frac{\vv{\omega}}{\rho}\right)-\frac{\vv{\omega}}{\rho}\cdot\nabla\vv{V}=\frac{\nabla\rho\times\nabla P}{\rho^3}+\frac{\nu}{\rho}\nabla^2\vv{\omega}
+\eeq
+
+Finally, the last equivalent form discussed in this section is derived by assuming density to be a function of pressure and temperature such that:
 
 \beq
 \nabla\rho=\left(\frac{\partial\rho}{\partial P}\right)_T\nabla P-\beta\rho\nabla T\\
 \eeq
 
-where the definition of the expansivity from Eq. \eqref{eq:expansivity}, with \(\nu\) replaced equivalently in both the constant and derivative term by \(\rho\), has been inserted, where by definition \(\nabla P\times\nabla P=0\). 
+where the definition of the expansivity has been inserted, with \(\nu\) replaced equivalently in both the constant and derivative term by \(\rho\), has been inserted, where by definition \(\nabla P\times\nabla P=0\). This gives: 
 
-\end{tcolorbox}
+\beq
+\frac{d}{dt}\left(\frac{\vv{\omega}}{\rho}\right)-\frac{\vv{\omega}}{\rho}\cdot\nabla\vv{V}=\frac{-\beta\rho\nabla T\times\nabla P}{\rho^3}+\frac{\nu}{\rho}\nabla^2\vv{\omega}
+\eeq
 
-Working with the vorticity equation, as opposed to the momentum equation in terms of velocity, is advantageous for barotropic flows. A flow is barotropic if density is only a function of pressure, and can result for either isothermal/isentropic flow (depending on how \(\rho=\rho(a,b)\) is structured for variables \(a\) and \(b\)) or incompressible flow, two rather common situations. Because Pronghorn assumes inviscid flow, if the user selects the barotropic EOS, then the vorticity equation will not provide any additional information, and hence would not be useful for implementation in all cases. In addition, because pressure is allowed to be a function of density and internal energy, Pronghorn does not, in general, assume barotropic flows, which makes the use of the vorticity equation, with its cross products, more cumbersome than the velocity-based momentum equations. The equations in this section also generally require the direct computation of entropy or that \(\vv{g}\) aligns with the \(z\)-axis. 
+Working with the vorticity equation, as opposed to the momentum equation in terms of velocity, is advantageous for barotropic flows. A flow is barotropic if density is only a function of pressure, and can result for isothermal, isentropic, or incompressible flow.
+
+\subsection{The Bernoulli Equation}
+The minimum number of assumptions that can be made to Eq. \ref{eq:EquivalenttoEulerc} to obtain the Bernoulli equation is to assume 1) steady, 2) inviscid, 3) isentropic, and 4) irrotational flow. These assumptions apply {\it anywhere} in the flow field.
+
+\beq
+\label{eq:Bernoulli1}
+\underbrace{\cancel{\frac{\partial \vv{V}}{\partial t}}}_{\textrm{steady}}+\nabla\left(\frac{1}{2}V^2+h+gz\right)=\underbrace{T\cancel{\nabla s}}_{\text{isentropic}}+\underbrace{(\vv{V}\times\cancel{\vv{\omega})}}_{\text{irrotational}}+\underbrace{\cancel{\mu\nabla^2\vv{V}}}_{\text{inviscid}}
+\eeq
+
+Alternatively, take the scalar product of Eq. \ref{eq:EquivalenttoEulerc} with velocity to obtain a form that only applies along a streamline. Then, by assuming 1) steady, 2) inviscid, and 3) isentropic flow 4) along a streamline, a form equivalent to the form above is obtained that only applies along streamlines, but does not require irrotational flow.
+
+\beq
+\label{eq:Bernoulli2}
+\underbrace{\cancel{\vv{V}\cdot\frac{\partial \vv{V}}{\partial t}}}_{\text{steady}}+\vv{V}\cdot\nabla\left(\frac{1}{2}V^2+h+gz\right)=\underbrace{\vv{V}\cdot T\cancel{\nabla s}}_{\text{isentropic}}+\underbrace{\cancel{\vv{V}\cdot(\vv{V}\times\vv{\omega})}}_{\text{definition}}+\underbrace{\vv{V}\cdot(\cancel{\mu\nabla^2\vv{V})}}_{\text{inviscid}}
+\eeq
+
+Then, if the flow is assumed incompressible, for \(e=e(\rho,s)\), \(e\) will be constant, as isentropic flow is already assumed. Then, both of the forms above would reduce to:
+
+\beq
+\label{eq:Bernoulli3}
+\nabla\left(\frac{1}{2}V^2+\frac{P}{\rho}+gz\right)=0
+\eeq
+
+
+\subsection{Potential Flow}
+Potential flow is a huge simplification of the Navier-Stokes equations that assumes the velocity is only a function of a potential \(\phi\):
+
+\beq
+\vv{V}\equiv\nabla\phi
+\eeq
+
+The curl of a gradient of a scalar is zero - expanding each term, and switching the order of integration causes every component to cancel. The curl of the velocity, when velocity is expressed as above, is zero. In other words, if \(\vv{V}=\nabla\phi\), then the flow is irrotational. Potential flow theorists usually also assume inviscid flow. Therefore, assuming irrotational flow in the Crocco-Vaszonyi equation gives:
+
+\beq
+\frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2+h+gz\right)-T\nabla s=0
+\eeq
+
+If the flow is also assumed to be isentropic:
+
+\beq
+\frac{\partial \vv{V}}{\partial t}+\nabla H=0
+\eeq
+
+where \(H\) is defined as the stagnation enthalpy:
+
+\beq
+H\equiv\frac{1}{2}V^2+h+gz
+\eeq
 
 \section{Incompressible Flow}
 
@@ -1002,7 +1031,16 @@ Self-similarity is a very important concept in the study of fluids because it is
 
 If \(\hat{Q}(\xi,x)\) is independent of \(x\), then \(Q(x,y)\) is self-similar, and its variation with respect to two variables \(x\) and \(y\) can be reduced to variation with respect to a single variable \(\xi\) that is some function of \(x\) and \(y\). In this case, the PDE for \(Q\) in terms of \(x\) and \(y\) is reduced to an ODE in terms of \(Q_0(x), \delta(x), \hat{Q}(\xi)\). Based on the starting equations for applying self-similarity arguments, self-similar behavior may only be observed over some range in \(x\) and \(y\). 
 
+\section{Boundary Layer Theory}
+If boundary layers are assumed to be much thinner than the characteristic flow dimension and boundary layers do not become separated such that the viscous region does not enter the main flow, the core flow can be treated as inviscid (far from no-slip boundaries), and various corrections can be made in the vicinity of walls. Inviscid calculations generally predict the actual pressure fairly well (which is important for accurate drag and life calculations for aerospace applications. 
 
+At high \(Re\), the boundary layer thickness \(\delta\) is of the order \(\delta/L\approx\sqrt{Re}\). From boundary layer theory, if the velocity component perpendicular to the surface is assumed small, every term in the momentum equation perpendicular to the wall cancels except the pressure gradient term, giving:
+
+\beq
+\frac{\partial P}{\partial n}\approx 0
+\eeq
+
+In other words, the pressure across the boundary layer is nearly constant. This permits the combination of viscid-invsicid calculations, where an inviscid calculation is used to compute pressure. The thickness of the boundary layer is initially unknown, but to a good first approximation, the entire domain can be considered inviscid. Then, the pressure at some initial guess for the boundary layer thickness can be used to solve a viscous problem in the boundary layer (matching the velocities at the interface with the inviscid core). Iteration can be performed until convergence on the thickness of the boundary layer.
 
 \section{The Modeling of Turbulence}
 
@@ -1021,12 +1059,32 @@ The RANS equations solves the Reynolds equations to determine the mean fields. T
 
 Models can be distinguished by whether or not they are \textit{complete}. A complete model gives results that depend solely on material properties and initial and boundary conditions, while incomplete models contain closure relationships that depend on the nature of the flow. For example, with the mixing length model, the selection of the mixing length depends on the \textit{type} of flow, assumed to be known by the modeler. For some models, the cost scales with the Reynolds number, but for others, the cost is relatively independent of the Reynolds number. Many models, such as those that are based on velocity spectra or two-point correlations, are only applicable to homogeneous turbulent flows, and hence they are not discussed in this document. 
 
-Turbulence is a global instability that arises due to the nonlinear convective term in the momentum equation.
+%\cite{hirsch}
+Turbulence is a global instability that arises due to the nonlinear convective term in the momentum equation. Once turbulent, all flow quantities show statistical fluctuations. These fluctuations can be on the order of 10\% in common situations, and much higher in separated flow regions.
 
 \subsection{Large Eddy Simulation}
 LES is a combination of DNS for the largest-scale turbulent motions, with models for the smaller scale motions. The LES equations are obtained by averaging the Navier-Stokes equations over only the high energy range (small wavelength). 
 
+\subsection{Reynolds-Averaged Navier-Stokes}
+The RANS equations compute the time-averaged turbulent flow by averaging all statistical turbulent fluctuations out of the equations. Note that this does not mean the governing equations are completely time-independent; provided the averaging time interval is smaller than the non-turbulent time scales characterizing the system, only the turbulent time scales are averaged out. The RANS equations consist of a large subset of different turbulence models that differ in how they model the Reynolds stress terms that arise from the averaged momentum equation. This section discusses several of the common RANS formulations.
 
+\subsubsection{The Mixing Length Model}
+The mixing length model can be applied to statistically two-dimensional boundary-layer flows. Solve the boundary layer equations for \(\la U\ra\) and \(\la V\ra\), and determine the Reynolds shear stress and the turbulent viscosity from the model equations:
+
+\beq
+\la U'V'\ra=-\nu_T\frac{\partial\la U\ra}{\partial y}
+\eeq
+
+\beq
+\nu_T=l_m(x,y)^2\biggr\rvert\frac{\partial\la U\ra}{\partial y}\biggr\rvert
+\eeq
+
+This model requires the mixing length \(l_m\) to be defined, and hence this is not a complete model, since the appropriate specification of the mixing length is flow-dependent. The cost of this simulation is relatively independent of the Reynolds number. 
+
+\subsubsection{Thin Shear Layer Approximation}
+For flows with little separation or back-flow such that the flow is primarily one-directional, viscous and turbulent diffusion can be neglected in the mainstream direction, which reduces the number of Reynolds stress tensor entries. This is also supported by the fact that the mesh is generally much more refined perpendicular to the main flow direction to capture wall effects, so the neglected terms would have been computed with lower accuracy anyways. %\cite{hirsch} (chapter 2)
+
+The thins shear layer approximation is similar to the boundary layer approximation, except that the momentum equation is retained in the direction perpendicular to the main flow direction such that the transition from viscous to inviscid flow at the edge of the boundary layer is still an integral part of the calculation (as opposed to performing an inviscid-viscid iterative method). The thin shear layer approximation was developed during a time when aggressive computing cost reductions had to be made, and modern day it is not really motivated by any simplicity, since it still requires RANS models for the mainstream directions.
 
 \subsection{Gradient-Diffusion Methods}
 This model assumes that the turbulent transport of the passive scalar \(\phi\), \(\la \vv{V}'\phi'\ra\), occurs down the mean scalar gradient, in the direction of \(-\nabla\la\phi\ra\) proportional to the turbulent diffusivity \(\Gamma_T\). This is equivalent to Fourier's law of heat conduction or Fick's law.
@@ -1042,10 +1100,6 @@ Because this form will lead to two diffusion terms in mean equation, the two ter
 \eeq
 
 This model assumes that \(\la \vv{V}'\phi'\ra\) is aligned with \(\la\nabla\la\phi\ra\), which is not the case even in simple turbulent flows. 
-
-
-
-
 
 
 \subsection{Turbulent Viscosity Methods}
@@ -1083,24 +1137,6 @@ Pr_T=\frac{\nu_T}{\Gamma_T}
 
 and is often near unity for simply turbulent flows. 
 
-% exercise 4.8 and 4.9
-
-
-
-\subsection{The Mixing Length Model}
-The mixing length model can be applied to statistically two-dimensional boundary-layer flows. Solve the boundary layer equations for \(\la U\ra\) and \(\la V\ra\), and determine the Reynolds shear stress and the turbulent viscosity from the model equations:
-
-\beq
-\la U'V'\ra=-\nu_T\frac{\partial\la U\ra}{\partial y}
-\eeq
-
-\beq
-\nu_T=l_m(x,y)^2\biggr\rvert\frac{\partial\la U\ra}{\partial y}\biggr\rvert
-\eeq
-
-This model requires the mixing length \(l_m\) to be defined, and hence this is not a complete model, since the appropriate specification of the mixing length is flow-dependent. The cost of this simulation is relatively independent of the Reynolds number. 
-
-
 
 
 \subsection{Direct Numerical Simulation}
@@ -1111,7 +1147,7 @@ For homogeneous turbulence, pseudo-spectral methods are preferred for numerical 
 
 
 \section{The Euler Equations}
-The classical Euler equations are fully hyperbolic. The fluxes are purely convective, which results in behavior very similar to wave propagation due to the passive nature of convective fluxes - fluxes in directions other than the velocity vector cannot be supported.
+The classical Euler equations are fully hyperbolic. The fluxes are purely convective, which results in behavior very similar to wave propagation due to the passive nature of convective fluxes - fluxes in directions other than the velocity vector cannot be supported. The Euler equations permit discontinuous solutions such as vortex sheets, contact discontinuities, and shock waves, but only when solving the integral form of the conservation equations. %\cite{hirsch} (chapter 2).
 
 
 \end{flushleft}
