@@ -111,7 +111,7 @@ This document contains information regarding the theory and modeling of fluids t
 
 The Navier-Stokes equations are five tightly coupled equations for the components of velocity and two thermodynamic quantities. There is some flexibility in which thermodynamic quantities can be the solution variables, which gives rise to many different, but mathematically equivalent, forms of the equations. 
 
-\section{Equivalent Forms of the Navier-Stokes Equations}
+\section{Equivalent Forms and Simplifications of the Navier-Stokes Equations}
 
 Several equivalent equations exist to describe the same phenomena as the Navier-Stokes equations - these forms are discussed in this section. The Navier-Stokes equation is repeated here for reference:
 
@@ -140,6 +140,7 @@ Using the above relationship in the Navier-Stokes equations gives:
 A second equivalent form can be derived by modifying the Gibbs identity to be a differential with respect to \(e+P\nu\). Then, inserting the definition of enthalpy and transforming the exact differential to a spatial differential:
 
 \begin{subequations}
+\label{eq:EnthalpyEqn}
 \begin{eqnarray}
 d(e+P\nu)&=&Tds-\cancel{Pd\nu}+\cancel{Pd\nu}+\nu dP\\
 \nabla h&=&T\nabla s+\frac{\nabla P}{\rho}
@@ -231,7 +232,7 @@ where the definition of the expansivity has been inserted, with \(\nu\) replaced
 \frac{d}{dt}\left(\frac{\vv{\omega}}{\rho}\right)-\frac{\vv{\omega}}{\rho}\cdot\nabla\vv{V}=\frac{-\beta\rho\nabla T\times\nabla P}{\rho^3}+\frac{\nu}{\rho}\nabla^2\vv{\omega}
 \eeq
 
-Working with the vorticity equation, as opposed to the momentum equation in terms of velocity, is advantageous for barotropic flows. A flow is barotropic if density is only a function of pressure, and can result for isothermal, isentropic, or incompressible flow.
+Working with the vorticity equation, as opposed to the momentum equation in terms of velocity, is advantageous for barotropic flows. A flow is barotropic if density is only a function of pressure, and can result for isothermal, isentropic, or incompressible flow. If the initial conditions are compatible with uniform entropy, then for continuous flows, the entropy will be constant over the entire flow field (hirsch, chapter 2).
 
 \subsection{The Bernoulli Equation}
 The minimum number of assumptions that can be made to Eq. \ref{eq:EquivalenttoEulerc} to obtain the Bernoulli equation is to assume 1) steady, 2) inviscid, 3) isentropic, and 4) irrotational flow. These assumptions apply {\it anywhere} in the flow field.
@@ -269,19 +270,72 @@ The curl of a gradient of a scalar is zero - expanding each term, and switching 
 \frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2+h+gz\right)-T\nabla s=0
 \eeq
 
-If the flow is also assumed to be isentropic:
+The Euler equations describe isentropic flow provided there are no additional momentum sources/losses {\it and the initial conditions correspond to uniform entropy}. Because we assume inviscid flow in the potential flow model, we can therefore also assume uniform entropy (provided the initial conditions correspond to isentropic flow) such that the flow is isentropic:
 
-\beq
-\frac{\partial \vv{V}}{\partial t}+\nabla H=0
-\eeq
+\begin{subequations}
+\label{eq:EnergyEqnPotential}
+\begin{eqnarray}
+\frac{\partial \vv{V}}{\partial t}+\nabla H&=&0\\
+\frac{\partial\phi}{\partial t}+H&=&H_0
+\end{eqnarray}
+\end{subequations}
 
-where \(H\) is defined as the stagnation enthalpy:
+where the second form has moved the gradient outside of the time derivative (and "cancelled") because space and time derivatives can be interchanges. \(H\) is defined as the stagnation enthalpy:
 
 \beq
 H\equiv\frac{1}{2}V^2+h+gz
 \eeq
 
-\section{Incompressible Flow}
+The continuity equation for potential flow is:
+
+\beq
+\label{eq:ContinuityEqnPotential}
+\frac{\partial\rho}{\partial t}+\nabla\cdot(\rho\nabla\phi)=0
+\eeq
+
+Because potential flows assume isentropic flows, density can be expressed entirely as a function of velocity. To rewrite the above equation, use Eq. \eqref{eq:EnthalpyEqn}, simplified for isentropic flows:
+
+\beqa
+dh=&\frac{dP}{\rho}\\
+=&c^2\frac{d\rho}{\rho}
+\eeqa
+
+Neglecting gravitational forces, Eq. \eqref{eq:EnergyEqnPotential}a can be written as:
+
+\begin{subequations}
+\label{eq:R1}
+\begin{eqnarray}
+\frac{\partial (\nabla\phi)}{\partial t}+\nabla \left(\frac{1}{2}V^2\right)+\nabla h&=&0\\
+\frac{\partial (\nabla\phi)}{\partial t}+\nabla \left(\frac{1}{2}(\nabla\phi)^2\right)+\frac{c^2}{\rho}\nabla\rho&=&0
+\end{eqnarray}
+\end{subequations}
+
+The above can also be written equivalently as:
+
+\begin{subequations}
+\begin{eqnarray}
+\nabla\left(\frac{\partial\phi}{\partial t}+\frac{1}{2}V^2+h\right)&=&0\\
+\frac{\partial}{\partial t}\left(\frac{\partial\phi}{\partial t}+\frac{1}{2}V^2+h\right)&=&0\\
+\frac{\partial^2\phi}{\partial t^2}+\frac{1}{2}\frac{\partial (\nabla\phi)^2}{\partial t}+\frac{\partial h}{\partial t}&=&0
+\end{eqnarray}
+\end{subequations}
+
+Inserting the thermodynamic relationship between enthalpy and pressure that is valid for isentropic flows:
+
+\beq
+\label{eq:R2}
+\frac{\partial^2\phi}{\partial t^2}+\frac{1}{2}\frac{\partial (\nabla\phi)^2}{\partial t}+\frac{c^2}{\rho}\frac{\partial\rho}{\partial t}=0
+\eeq
+
+Inserting Eqs. \eqref{eq:R1}b and \eqref{eq:R2} into Eq. \eqref{eq:ContinuityEqnPotential} gives the potential flow equation:
+
+\beq
+\left(\delta_{ij}-Ma_iMa_j\right)\frac{\partial^2\phi}{\partial x_i\partial x_j}=\frac{1}{c^2}\left(\frac{\partial^2\phi}{\partial t^2}+\frac{\partial(\nabla\phi)^2}{\partial t}\right)
+\eeq
+
+where \(Ma_i\equiv V_i/c\). Recall that this equation is valid for irrotational and isentropic flow.
+
+\subsection{Incompressible Flow}
 
 The Navier-Stokes equations are so frequently written in incompressible form (without a disclaimer) that many people (including myself once upon a time) believed that the incompressible form was valid for compressible flows. The continuity equation simplifies by setting the time derivative and gradient of density to zero (i.e. the material derivative of density is zero), giving:
 
