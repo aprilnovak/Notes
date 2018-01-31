@@ -330,6 +330,7 @@ Inserting the thermodynamic relationship between enthalpy and pressure that is v
 Inserting Eqs. \eqref{eq:R1}b and \eqref{eq:R2} into Eq. \eqref{eq:ContinuityEqnPotential} gives the potential flow equation:
 
 \beq
+\label{eq:PotentialFlowModel}
 \left(\delta_{ij}-Ma_iMa_j\right)\frac{\partial^2\phi}{\partial x_i\partial x_j}=\frac{1}{c^2}\left(\frac{\partial^2\phi}{\partial t^2}+\frac{\partial(\nabla\phi)^2}{\partial t}\right)
 \eeq
 
@@ -395,6 +396,97 @@ For the incompressible flow equations, the three components of velocity and two 
 where \(\mu\) was assumed constant and \(P'\) is the reduced pressure. Satisfaction of the Pressure-Poisson equation is a necessary condition to satisfy incompressibility. The non-evolutionary feature of the \(\nabla\cdot\vv{V}=0\) condition (which results in a time-independent equation for pressure) makes the incompressible flow equations somewhat difficult to solve.
 
 For incompressible flow that is also isothermal, the energy equation becomes decoupled from the mass and momentum equations because none of the thermal properties like viscosity and thermal conductivity are temperature-dependent.
+
+\section{The Mathematical Structure of the Fluid Equations}
+This section discusses the mathematical structure of systems of differential equations that will be important in selecting which form of the conservation equations to implement numerically. The previous section showed many equivalent forms of the Navier-Stokes equations, so this section attempts to describe why certain forms are more preferable numerically. The mathematical properties of equations are complicated by the fact that the properties can vary dramatically if time dependence is included or neglected. Only incompressible potential flow problems are linear, so the properties of these nonlinear equations will also depend on the values of variables and constants that appear. In other words, the behavior of the equations is dependent on the flow regime!
+
+A good way to begin this discussion is to look at the mathematical properties of two sets of equations that describe the same physics, but have different forms. For isentropic, irrotational, and steady flow, both the time-independent Euler equations (assuming the initial conditions correspond to isentropic flow) and the potential flow equations, are equivalent. The Euler equations in two dimensions are:
+
+\begin{subequations}
+\begin{eqnarray}
+u\frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}&=&-\frac{c^2}{\rho}\frac{\partial\rho}{\partial x}\\
+u\frac{\partial v}{\partial x}+v\frac{\partial v}{\partial y}&=&-\frac{c^2}{\rho}\frac{\partial\rho}{\partial y}
+\end{eqnarray}
+\end{subequations}
+
+The (physically) equivalent potential flow equation from Eq. \eqref{eq:PotentialFlowModel} in two dimensions is:
+
+\beq
+\left(1-\frac{u^2}{c^2}\right)\frac{\partial^2\phi}{\partial x^2}-2\frac{uv}{c^2}\frac{\partial^2\phi}{\partial x\partial y}+\left(1-\frac{v^2}{c^2}\right)\frac{\partial^2\phi}{\partial y^2}=0
+\eeq
+
+For the potential flow equations, if the flow is simplified to unidirectional velocity, then it can be seen that the equation has a Laplacian-like behavior, except that the ``diffusion coefficients'' on the second derivatives are different. For supersonic flows, one coefficient will be positive, while the other will be negative! This behavior is not at all obvious from the one-dimensional Euler equation.
+
+\subsection{Wave Solutions for Simple Equations}
+Many of the equations of fluids permit wave-like equations. This section considers the solutions to pure convection and pure diffusion equations in 1-D. The pure convection equation is:
+
+\beq
+\frac{\partial u}{\partial t}+a(u)\frac{\partial u}{\partial x}=0
+\eeq
+
+If \(a(u)=u\), the above equation is Burger's equation, which has many known analytical solutions. Burger's equation permits discontinuous solutions from {\it initially continuous} data, i.e. the formation of shocks. For linear convection, the convection velocity \(a(u)\rightarrow a\) is a constant, so that the initial condition is simply translated in space:
+
+\beq
+u(x,t)=u_o(x-at)
+\eeq
+
+This is a wave solution, which can be expressed as some amplitude \(\hat{u}\) multiplied by a complex exponential:
+
+\beqa
+u=&\ \hat{u}e^{\frac{2\pi i}{\lambda}(x-at)}\\
+=&\ \hat{u}e^{i(kx-\omega t)}\\
+\eeqa
+
+where \(\lambda\) is the wavelength of the wave, \(k=2\pi/\lambda\) is the wavenumber, \(\omega=2\pi f\) is the pulsation, \(f\) is the frequency, and \(a\equiv\lambda f\) is the speed of the wave. The \(2\pi/\lambda\) factor is simply a normalization constant. Therefore, pure convection is a wave phenomenon, and as such can be described using properties of waves. Diffusion, while not strictly a wave phenomenon, can be interpreted as such by seeking a solution in the form above to the pure diffusion equation:
+
+\beq
+\frac{\partial u}{\partial t}=\alpha \frac{\partial^2u}{\partial x^2}
+\eeq
+
+where \(\alpha\) is the diffusivity. By plugging in the assumed form for the solution gives:
+
+\beq
+a=\alpha\frac{2\pi}{i\lambda}
+\eeq
+
+Substituting this purely imaginary wave speed into the assumed solution gives:
+
+\beq
+u=\hat{u}e^{\frac{2\pi i}{\lambda}x}e^{-\frac{4\pi^2}{\lambda^2}\alpha t}
+\eeq
+
+So, a purely diffusive solution {\it can} be represented as a wave, but that wave is exponentially damped in time. If the diffusion coefficient is negative, then the wave grows exponentially in time, which does not correspond to a diffusive process (which by definition acts to {\it reduce}, not increase, gradients of \(u\)). 
+
+\subsection{Mathematical Properties of Time-Independent Equations}
+Based on the plane wave solutions discussed in the previous section, we can extend the types of waves permitted by a differential equation to provide a definition of the mathematical character of that equation or system of equations. A system of time-independent equations is:
+
+\begin{itemize}
+\item Hyperbolic if the homogeneous part permits wave-like solutions,
+\item Parabolic if the homogeneous part permits damped wave solutions, or
+\item Elliptic if the homogeneous part does not permit wave-like solution
+\end{itemize}
+
+Recognizing that any second-order system can be written as a system of first-order PDEs (though this transformation is not necessarily unique and could lead to an artificially degenerate system), we will consider the following general first-order PDE:
+
+\beq
+A_j\frac{\partial U}{\partial x_j}=Q
+\eeq
+
+Now, assume a wave-like solution for all components of the solution vector \(U\):
+
+\beq
+U=\hat{U}e^{i\vv{n}\cdot\vv{x}}
+\eeq
+
+where \(\vv{x}\) is a vector representing the spatial coordinate and \(\vv{n}\) is a unit normal at that coordinate. This is identical to the one-dimensional solutions shown in the previous section, where the time-independent part of the exponential had the form \(kx\). To determine the character of a system of first-order PDEs, introduce this assumed solution into the homogeneous form of the PDE (where the exponent is now expressed in summation notation for clarity):
+
+\beqa
+A_j\frac{\partial}{\partial x_j}\left(\hat{U}e^{in_jx_j}\right)=&0\\
+A_jin_j\hat{U}e^{in_jx_j}=&0\\
+A_jn_j\hat{U}=&0\\
+\eeqa
+
+The above equation states that the coefficients of the solution, when assuming a wave-like solution, lie in the nullspace of the matrix formed by the linear combination of the matrices \(A_j\) with the components of the normal vector \(n_j\). For this time-independent system, the system is hyperbolic if all of the components of \(\vv{n}\) are real and if the solutions of the equations are linearly independent. If all of the components are real, but there are duplicated normals, the system is parabolic. If all of the components are complex, then the system is elliptic. Parabolic equations are usually characterized by combinations of convection and diffusion, while elliptic generally corresponds to purely diffusive systems.
 
 \section{The Physics of Turbulence}
 
