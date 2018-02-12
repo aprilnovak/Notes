@@ -403,7 +403,9 @@ This section discusses the mathematical structure of systems of differential equ
 A good way to begin this discussion is to look at the mathematical properties of two sets of equations that describe the same physics, but have different forms. For isentropic, irrotational, and steady flow, both the time-independent Euler equations (assuming the initial conditions correspond to isentropic flow) and the potential flow equations, are equivalent. The Euler equations in two dimensions are:
 
 \begin{subequations}
+\label{eq:2DEuler}
 \begin{eqnarray}
+\rho\frac{\partial u}{\partial x}+\rho\frac{\partial v}{\partial y}+u\frac{\partial\rho}{\partial x}+v\frac{\partial\rho}{\partial y}&=&0\\
 u\frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}&=&-\frac{c^2}{\rho}\frac{\partial\rho}{\partial x}\\
 u\frac{\partial v}{\partial x}+v\frac{\partial v}{\partial y}&=&-\frac{c^2}{\rho}\frac{\partial\rho}{\partial y}
 \end{eqnarray}
@@ -481,12 +483,85 @@ U=\hat{U}e^{i\vv{n}\cdot\vv{x}}
 where \(\vv{x}\) is a vector representing the spatial coordinate and \(\vv{n}\) is a unit normal at that coordinate. This is identical to the one-dimensional solutions shown in the previous section, where the time-independent part of the exponential had the form \(kx\). To determine the character of a system of first-order PDEs, introduce this assumed solution into the homogeneous form of the PDE (where the exponent is now expressed in summation notation for clarity):
 
 \beqa
+\label{eq:Condition}
 A_j\frac{\partial}{\partial x_j}\left(\hat{U}e^{in_jx_j}\right)=&0\\
 A_jin_j\hat{U}e^{in_jx_j}=&0\\
 A_jn_j\hat{U}=&0\\
 \eeqa
 
-The above equation states that the coefficients of the solution, when assuming a wave-like solution, lie in the nullspace of the matrix formed by the linear combination of the matrices \(A_j\) with the components of the normal vector \(n_j\). For this time-independent system, the system is hyperbolic if all of the components of \(\vv{n}\) are real and if the solutions of the equations are linearly independent. If all of the components are real, but there are duplicated normals, the system is parabolic. If all of the components are complex, then the system is elliptic. Parabolic equations are usually characterized by combinations of convection and diffusion, while elliptic generally corresponds to purely diffusive systems.
+The above equation states that the coefficients of the solution, when assuming a wave-like solution, lie in the nullspace of the matrix formed by the linear combination of the matrices \(A_j\) with the components of the normal vector \(n_j\). For this time-independent system, the system is hyperbolic if all of the components of \(\vv{n}\) are real and if the solutions of the equations are linearly independent. If all of the components are real, but there are duplicated normals, the system is parabolic. Parabolic equations usually arise when there is a combination of convection and diffusion. If all of the components are complex, then the system is elliptic. Elliptic equations generally correspond to purely diffusive systems.
+
+We can use these definitions to investigate the time-independent Euler equations in Eq. \eqref{eq:2DEuler}. These equations are solved for the two components of velocity and density, giving the following matrix system:
+
+\beq
+\begin{bmatrix}
+u & \rho & 0\\
+c^2/\rho & u & 0\\
+0 & 0 & u\\
+\end{bmatrix}
+\frac{\partial}{\partial x}\begin{bmatrix}\rho \\ u \\ v\end{bmatrix}+
+\begin{bmatrix}
+v & 0 & \rho\\
+0 & v & 0\\
+c^2/\rho & 0 & v
+\end{bmatrix}
+\frac{\partial}{\partial y}\begin{bmatrix}\rho \\ u \\ v\end{bmatrix}=0
+\eeq
+
+To satisfy Eq. \eqref{eq:Condition}, we require:
+
+\beq
+\text{det}\left(\begin{bmatrix}
+un_x+vn_y & \rho n_x & \rho n_y\\
+c^2n_x/\rho & un_x+vn_y & 0\\
+c^2n_y/\rho & 0 & un_x+vn_y
+\end{bmatrix}\right)=0
+\eeq
+
+This gives the following solutions for \(n_x\) and \(n_y\):
+
+\begin{subequations}
+\begin{eqnarray}
+\frac{n_x}{n_y}&=&-\frac{v}{u}\\
+\frac{n_x}{n_y}&=&\frac{-uv\pm c^2\sqrt{Ma^2-1}}{u^2-c^2}
+\end{eqnarray}
+\end{subequations}
+
+where the Mach number has been introduced. The first solution is always real, so the system of equations will always be at least partly hyperbolic. For subsonic flow, two solutions are complex, in which case the system of equations is hybrid hypberolic-elliptic. For supersonic flow, all solutions are real, and the system is fully hyperbolic. Exactly at \(Ma=1\), the components of the normal are not unique, in which case the system is parabolic. This strong flow-regime dependence on the character of the solutions makes creating numerical methods for all ranges challenging. 
+
+Carrying out the same analysis for the steady 2-D potential flow equations, we find that for subsonic flows, the equations are purely elliptic, while for supersonic flows they are also purely hyperbolic. Exactly at \(Ma=1\), the normal components are not unique, and the system is parabolic. So, despite the Euler and potential flow equations describing the same set of physics (for uniform inlet conditions), the Euler equations are hybrid elliptic-hyperbolic for subsonic flows, while the potential flow equations are purely elliptic. Hyperbolic equations permit shocks, so both the stationary Euler and potential flow equations permit shocks for supersonic flows.
+
+The characteristic normals correspond to characteristic surfaces \(S\). The normal to a surface is equivalent to taking the (normalized) gradient of that surface:
+
+\beq
+\vv{n}=\nabla S
+\eeq
+
+Substituting this form into the generic wave solution for time-independent systems gives:
+
+\beqa
+U=&\hat{U}e^{i\nabla S\cdot\vv{x}}\\
+=&\hat{U}e^{i\frac{\partial S}{\partial x_j}x_j}
+\eeqa
+
+The solution is constant along constant values of \(x_j\frac{\partial S}{\partial x_j}\). So, along the direction of the normal \(\vv{n}\), \(U\) is constant. To have real normals in the solution can be physically interpreted as convection at constant values being permitted in those directions. If the normals are complex, then the solution does not propagate at equal value along any direction (a characteristic of convection, as seen from the 1-D convection solution). \(S\) is also known as a wavefront surface, because it separates the space domain that has already influenced the propagating \(U\) from the points not yet reached by the wave. Propagation at constant value occurs normal to the wavefront surface. For a purely hyperbolic system of \(n\) unknowns, there will be \(n\) unique characteristic surfaces, with normals along which each of the \(n\) unknowns propagates at constant value. Knowing the components of the normal, the surface (at a point) is parallel to the tangent plane defined by the location at which the component of the normal onto a vector \(d\vv{x}\) is zero:
+
+\beqa
+\nabla S\cdot d\vv{x}=&\frac{\partial S}{\partial x}dx+\frac{\partial S}{\partial y}dy+\frac{\partial S}{\partial z}dz\\
+=&n_xdx+n_ydy+n_zdz\\
+=&0
+\eeqa
+
+In 2-D, the direction of the characteristic line (perpendicular to the characteristic normal) is therefore:
+
+\beq
+\frac{dy}{dx}=-\frac{n_x}{n_y}
+\eeq
+
+For a problem in \(n\) space dimensions, at each point there are \(n\) characteristics, defined by the components of the normals at those locations found by taking the determinant of the matrix system. Those characteristics propagate from every point. At any point in space, the solution can be obtained from the characteristics that have propagated from the boundary to that location. This allows the definition of the region of dependence of a point consisting of all of the points in space that can physically influence that point's value. Likewise, the zone of influence is the region of points in space that can be physically influences by that point's value. For parabolic problems, the characteristic normals are not all unique, in which case the region of dependence of a point is no longer an \(n\)-dimensional space - it is of reduced order so that the amount of points influencing the point is smaller (smaller/collapsed regions of dependence). For elliptic problems, because there are no real characteristics, the solution at a point depends on all other points, so the zone of influence and the region of dependence consist of the entire space of the domain, and are identical.
+
+\subsection{Mathematical Properties of Time-Dependent Equations}
+
 
 \section{The Physics of Turbulence}
 
@@ -1294,6 +1369,145 @@ For homogeneous turbulence, pseudo-spectral methods are preferred for numerical 
 
 \section{The Euler Equations}
 The classical Euler equations are fully hyperbolic. The fluxes are purely convective, which results in behavior very similar to wave propagation due to the passive nature of convective fluxes - fluxes in directions other than the velocity vector cannot be supported. The Euler equations permit discontinuous solutions such as vortex sheets, contact discontinuities, and shock waves, but only when solving the integral form of the conservation equations. %\cite{hirsch} (chapter 2).
+
+\section{Finite Difference Methods}
+This section discusses finite difference methods and their use in solving the Navier-Stokes equations. This section is organized to first present a discussion of FD methods and their numerical properties. A method is {\it convergent} if the error in our numerical solution goes to zero as \(\Delta t\rightarrow0\) at some fixed time \(t_n\):
+
+\beq
+\lim_{\Delta t\rightarrow0}U^n=u(t_n)
+\eeq
+
+The convergence of a method in general depends on the specific problem to which it is applied and the starting values (required for higher-order multistep methods) used. As \(\Delta t\rightarrow0\), all of these starting values should converge to the initial condition, so we can place the following condition on the \(r\) starting values:
+
+\beq
+\lim_{\Delta t\rightarrow0}U^n=u(0)\hspace{1cm} \text{for\ } n=0, 1, \cdots, r-1
+\eeq
+
+Therefore, a method is {\it convergent} if applying the method to any ODE of the form \(u'=f(u,t)\), with \(f(u,t)\) Lipschitz continuous in \(u\), with starting values that converge to the initial condition as \(\Delta t\rightarrow0\), results in the error in the numerical solution tending to zero as \(\Delta t\rightarrow0\). Convergence requires both consistency and stability. Definitions for consistency and stability will be given in the sections that follow.
+
+\subsection{Linear Multistep Methods}
+Linear Multistep Methods (LMMs) are perhaps the easiest-to-understand of the FD formulas - the derivative at a point is a linear combination of the derivatives and values at nearby points:
+
+\beq
+\label{eq:LMM}
+\sum_{i=0}^{r}\alpha_iU^{n+1}=\Delta t\sum_{i=0}^{r}\beta_if(U^{n+1},t_{n+1})
+\eeq
+
+\begin{tcolorbox}[breakable]
+Due to the limitless possibilities suggested by the above formula, names are given to several of the more common variations of LMMs. The Adams methods compute the derivative using only two adjacent point evaluations, but any number of derivative evaluations:
+
+\beq
+U^{n+r}-U^{n+r-1}=\Delta t\sum_{i=0}^{r}\beta_if(U^{n+i},t_{n+i})
+\eeq
+
+If the method is made explicit such that \(\beta_r=0\), then the remaining \(r\) coefficients (an \(r\)-step method) can be selected such that the method is \(r\)-th order accurate. These explicit methods are often referred to as the Adams-Bashforth methods. The Adams-Bashforth methods can be derived by using Taylor series to expand each of the terms that appear in the above equation to form a system of \(r\) equations for \(r\) unknown coefficients such that the highest possible truncation error terms are zero. Alternatively, the above equation can be interpreted as a quadrature rule for integrating \(f(u(t))\) between the two point evaluations:
+
+\beqa
+u(t_{n+r})=&\ u(t_{n+r-1})+\int_{t_{n+r-1}}^{t_{n+r}}u'(t)dt\\
+=&\ u(t_{n+r-1})+\int_{t_{n+r-1}}^{t_{n+r}}f(u(t))dt\\
+\approx&\ \Delta t\sum_{i=0}^{r-1}\beta_if(U^{n+i},t_{n+i})
+\eeqa
+
+Quadrature rules can be derived by interpolating the integrand in a polynomial through \(r\) points (order \(r-1\) polynomial) and performing analytic integration. The backward Euler method is the 1-step Adams-Bashforth method.\newline
+
+If the LMM is made implicit such that \(\beta_r\neq0\), then by analogue of the Taylor series expansion method, there is one greater degree of freedom (\(\beta_r\)), so one higher order of truncation term can be eliminated, giving an order \(r+1\) method. This family of implicit LMMs is known as the Adams-Moulton methods. The trapezoidal method is the 1-step Adams-Moulton method.\newline
+
+If instead of writing the derivative in terms of two {\it adjacent} points like the Adams-Bashforth methods, using points separated by one gridpoint gives Nystrom methods:
+
+\beq
+U^{n+r}-U^{n+r-2}=\Delta t\sum_{i=0}^r\beta_if(U^{n+r},t_{n+r})
+\eeq
+
+The midpoint method, or leapfrog method, is a two-step explicit Nystrom method, while Simpson's method is a two-step implicit Nystrom method.
+\end{tcolorbox}
+
+\subsubsection{Consistency}
+
+The local truncation error is defined as the error made in the approximation of the derivative, and can be evaluated by plugging in the true solution to the FD approximation. The LTE is a function of the time step:
+
+\begin{subequations}
+\label{eq:ConsistencyLMM}
+\begin{eqnarray}
+\tau(t_{n+r})&=&\frac{1}{\Delta t}\sum_{i=0}^r\alpha_iu(t_{n+i})-\sum_{i=0}^r\beta_iu'(t_{n+i})\\
+&=&\frac{1}{\Delta t}\left(\sum_{i=0}^r\alpha_i\right)u(t_n)+\left(\sum_{i=0}^r(i\alpha_i-\beta_i)\right)u'(t_n)+\Delta t\left(\sum_{i=0}^r\left\lbrack\frac{1}{2}i^2\alpha_i-i\beta_i\right\rbrack\right)u''(t_n)+\cdots\hspace{1cm}
+\end{eqnarray}
+\end{subequations}
+
+By expressing \(u(t_{n+i})=u(t_n)+u'(t_n)i\Delta t+u''(t_n)(i\Delta t)^2/2+\cdots\) and \(u'(t_{n+i})=u'(t_n)+u''(t_n)i\Delta t+u'''(t_n)(i\Delta t)^2/2+\cdots\), Eq. \eqref{eq:ConsistencyLMM}b arises. For a consistent method, we require that the LTE go to zero as the mesh size goes to zero. Two terms above do not scale as \(\Delta t\) to a positive power, so to be a consistent method, we require that:
+
+\beq
+\sum_{i=0}^r\alpha_i=0
+\eeq
+
+\beq
+\sum_{i=0}^r(i\alpha_i-\beta_i)=0
+\eeq
+
+Hence, note that consistency depends only on the numerical method itself, and not on the equation to which is it applied. Having derived the conditions for consistency, the conditions for stability can be given in terms of the characteristic polynomials \(\rho\) and \(\sigma\) of an LMM, defined as:
+
+\beq
+\rho(\xi)=\sum_{i=0}^r\alpha_i\xi^i
+\eeq
+
+\beq
+\sigma(\xi)=\sum_{i=0}^r\beta_i\xi^i
+\eeq
+
+\begin{tcolorbox}[breakable]
+If \(\xi=1\), then:
+
+\beq
+\rho(1)=\sum_{i=0}^r\alpha_i
+\eeq
+
+\beq
+\rho'(1)=\sum_{i=0}^ri\alpha_j
+\eeq
+
+\beq
+\sigma(1)=\sum_{i=0}^r\beta_i
+\eeq
+
+Therefore, the characteristic polynomials can be used to concisely express the consistency requirement for LMMs as \(\rho(1)=0\) and \(\rho'(1)=\sigma(1)\).
+\end{tcolorbox}
+
+\subsubsection{Stability}
+Stability will be illustrated through the solution to a simple model scalar problem:
+
+\beq
+\label{eq:ModelP}
+u'(t)=\lambda u(t)+g(t)
+\eeq
+
+A method is stable if the global error is bounded (independently of \(\Delta t\)) in terms of the sums of all of the individual one-step truncation errors. 
+
+\subsubsubsection{Zero Stability}
+If the method is consistent such that the truncation error goes to zero as \(\Delta t\rightarrow0\), the method is zero stable (stability under the conditions of \(\Delta t\rightarrow0\)). This is the minimum stability requirement that {\it must} be satisfied by a FD method. Note, however, that zero stability does not give any sort of guarantee for stability for a finite \(\Delta t\), because the two consistency requirements derived from the previous section still leave ``wiggle room'' in the method that can make the method unstable. Zero stability is often assessed by setting \(\lambda=g(t)=0\) in Eq. \eqref{eq:ModelP}; a method is zero stable if the eigenvalue \(\lambda=0\) is within its range of stability. Zero-stability for a general LMM in Eq. \eqref{eq:LMM} can be determined by analyzing the solutions to \(u'(t)=0\):
+
+\beq
+\sum_{i=0}^r\alpha_iU^{n+i}=0
+\eeq
+
+We will hypothesize a solution of the form \(U^n=\xi^n\), where the \(n\) represents an exponent on \(\xi\), but a time index on \(U\). Plugging in this solution, and dividing by \(\xi^n\), gives:
+
+\beq
+\sum_{i=0}^r\alpha_i\xi^i=0
+\eeq
+
+which we can recognize as the characteristic polynomial \(\rho\). So, if \(\xi\) is a root of \(\rho(\xi)\), then our hypothesis of the form of the solution is correct. Therefore, the solution to a generic linear difference equation can be written as a linear combination (with coefficients \(c\)) of the \(r\) linearly independent solutions \(\xi_j^n\), to give the solution at step \(n\):
+
+\beq
+U^n=c_0\xi_0^n+c_1\xi_1^n+c_2\xi_2^n+\cdots +c_r\xi_r^n
+\eeq
+
+If any of the roots are repeated, then the solutions will not all be linearly independent, so an additional form of a valid solution is \(n\xi^n\) (and \(n^2\xi^2\) and \(n^3\xi^3\), etc. for even more repeated roots). The coefficients of the linear combination are determined based on the starting data, permitting the determination of a general solution for \(U^n\) in terms of the starting values and the roots of \(\rho(\xi)\). If any of the roots of \(\rho(\xi)\) are greater than unity in magnitude, then any errors in the initial starting values grow with some power of \(n\), and the method will not be convergent, even if those initial errors are proportional to \(\Delta t\). In addition to this requirement, it is also required that there are no repeated roots of unity magnitude, because then the additional linearly independent solution(s) \(n\xi^n\) (required to avoid a singular system when solving for the coefficients \(c\)) would not tend to zero as \(\Delta t\rightarrow0\).
+
+An \(r\)-step LMM is zero-stable if the roots of \(\rho(\xi)\) all have magnitude less than or equal unity, and there are no repeated roots of unity magnitude. Note that this condition specifically refers to zero stability because we refer to the roots of the characteristic polynomial \(\rho(\xi)\) that arises from the general equation \(u'(t)=0\). This condition is also referred to as the ``root condition.'' 
+
+If a FD method has a solution that does not satisfy the root condition, then either the solution does not converge at all (if the roots have magnitude greater than unity, then the error \(E^n\equiv U^n-u(t_n)=U^n\) (for \(U^0=0\)) increases exponentially with \(n\)); or the solution converges on a different equation (such as the case when the error increases as \(n\), rather than as \(n^p\) with \(p>1\)). From our consistency requirement for LMMs that \(\rho(1)=0\), it is clear that all consistent LMMs have at least one root equal to unity, also called the ``principal root.'' Therefore, all consistent one-step LMMs are automatically zero stable, and thus convergent in the limit of \(\Delta t\rightarrow0\).
+
+While zero stability only specifies convergence for problems of the form \(u'(t)=0\), it can be shown that zero stability is the only type of stability that is required to converge an LMM for any initial value problem \(u'(t)=f(u,t)\), where \(u\) is only a function of time.
+
 
 
 \end{flushleft}
