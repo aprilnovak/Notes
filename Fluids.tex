@@ -398,7 +398,7 @@ where \(\mu\) was assumed constant and \(P'\) is the reduced pressure. Satisfact
 For incompressible flow that is also isothermal, the energy equation becomes decoupled from the mass and momentum equations because none of the thermal properties like viscosity and thermal conductivity are temperature-dependent.
 
 \section{The Mathematical Structure of the Fluid Equations}
-This section discusses the mathematical structure of systems of differential equations that will be important in selecting which form of the conservation equations to implement numerically. The previous section showed many equivalent forms of the Navier-Stokes equations, so this section attempts to describe why certain forms are more preferable numerically. The mathematical properties of equations are complicated by the fact that the properties can vary dramatically if time dependence is included or neglected. Only incompressible potential flow problems are linear, so the properties of these nonlinear equations will also depend on the values of variables and constants that appear. In other words, the behavior of the equations is dependent on the flow regime!
+This section discusses the mathematical structure of systems of differential equations that will be important in selecting which form of the conservation equations to implement numerically. The previous section showed many equivalent forms of the Navier-Stokes equations, so this section attempts to describe why certain forms are more preferable from a numerical point of view. The mathematical properties of equations are complicated by the fact that the properties can be very different depending on if time dependence is included or neglected. 
 
 A good way to begin this discussion is to look at the mathematical properties of two sets of equations that describe the same physics, but have different forms. For isentropic, irrotational, and steady flow, both the time-independent Euler equations (assuming the initial conditions correspond to isentropic flow) and the potential flow equations, are equivalent. The Euler equations in two dimensions are:
 
@@ -417,16 +417,16 @@ The (physically) equivalent potential flow equation from Eq. \eqref{eq:Potential
 \left(1-\frac{u^2}{c^2}\right)\frac{\partial^2\phi}{\partial x^2}-2\frac{uv}{c^2}\frac{\partial^2\phi}{\partial x\partial y}+\left(1-\frac{v^2}{c^2}\right)\frac{\partial^2\phi}{\partial y^2}=0
 \eeq
 
-For the potential flow equations, if the flow is simplified to unidirectional velocity, then it can be seen that the equation has a Laplacian-like behavior, except that the ``diffusion coefficients'' on the second derivatives are different. For supersonic flows, one coefficient will be positive, while the other will be negative! This behavior is not at all obvious from the one-dimensional Euler equation.
+For the potential flow equations, if the flow is simplified to unidirectional velocity, then it can be seen that the equation has a Laplacian-like behavior, except that the ``diffusion coefficients'' on the second derivatives are different. For supersonic flows, one coefficient will be positive, while the other will be negative! This behavior is not present in the two-dimensional Euler equations, and will lead to different numerical properties.
 
 \subsection{Wave Solutions for Simple Equations}
-Many of the equations of fluids permit wave-like equations. This section considers the solutions to pure convection and pure diffusion equations in 1-D. The pure convection equation is:
+This section discusses wave solutions for two of the simplest equations - linear convection and linear diffusion. The linear convection equation is:
 
 \beq
 \frac{\partial u}{\partial t}+a(u)\frac{\partial u}{\partial x}=0
 \eeq
 
-If \(a(u)=u\), the above equation is Burger's equation, which has many known analytical solutions. Burger's equation permits discontinuous solutions from {\it initially continuous} data, i.e. the formation of shocks. For linear convection, the convection velocity \(a(u)\rightarrow a\) is a constant, so that the initial condition is simply translated in space:
+If \(a(u)=u\), the above equation is known as ``Burger's equation,'' which has many known analytical solutions. Burger's equation permits discontinuous solutions from {\it initially continuous} data, i.e. the formation of shocks. For linear convection, the convection velocity \(a(u)\rightarrow a\) is a constant, so that the initial condition \(u_o\) is simply translated in space:
 
 \beq
 u(x,t)=u_o(x-at)
@@ -435,6 +435,7 @@ u(x,t)=u_o(x-at)
 This is a wave solution, which can be expressed as some amplitude \(\hat{u}\) multiplied by a complex exponential:
 
 \beqa
+\label{eq:1DWave}
 u=&\ \hat{u}e^{\frac{2\pi i}{\lambda}(x-at)}\\
 =&\ \hat{u}e^{i(kx-\omega t)}\\
 \eeqa
@@ -460,38 +461,47 @@ u=\hat{u}e^{\frac{2\pi i}{\lambda}x}e^{-\frac{4\pi^2}{\lambda^2}\alpha t}
 So, a purely diffusive solution {\it can} be represented as a wave, but that wave is exponentially damped in time. If the diffusion coefficient is negative, then the wave grows exponentially in time, which does not correspond to a diffusive process (which by definition acts to {\it reduce}, not increase, gradients of \(u\)). 
 
 \subsection{Mathematical Properties of Time-Independent Equations}
-Based on the plane wave solutions discussed in the previous section, we can extend the types of waves permitted by a differential equation to provide a definition of the mathematical character of that equation or system of equations. A system of time-independent equations is:
+Based on the plane wave solutions discussed in the previous section, we can extend the types of waves permitted by a differential equation to provide a definition of the mathematical character of that equation or system of equations. A system of time-independent equations is characterized based on its homogeneous part:
 
 \begin{itemize}
-\item Hyperbolic if the homogeneous part permits wave-like solutions,
-\item Parabolic if the homogeneous part permits damped wave solutions, or
-\item Elliptic if the homogeneous part does not permit wave-like solution
+\item Hyperbolic - permits wave-like solutions,
+\item Parabolic - permits damped wave solutions), or
+\item Elliptic - does not permit wave-like solutions
 \end{itemize}
 
 Recognizing that any second-order system can be written as a system of first-order PDEs (though this transformation is not necessarily unique and could lead to an artificially degenerate system), we will consider the following general first-order PDE:
 
 \beq
+\label{eq:SteadyStateEqn}
 A_j\frac{\partial U}{\partial x_j}=Q
 \eeq
 
 Now, assume a wave-like solution for all components of the solution vector \(U\):
 
-\beq
-U=\hat{U}e^{i\vv{n}\cdot\vv{x}}
-\eeq
+\beqa
+\label{eq:WaveSolution}
+U=&\hat{U}e^{i\vv{k}\cdot\vv{x}}\\
+=&\hat{U}e^{in_jx_j}\\
+\eeqa
 
-where \(\vv{x}\) is a vector representing the spatial coordinate and \(\vv{n}\) is a unit normal at that coordinate. This is identical to the one-dimensional solutions shown in the previous section, where the time-independent part of the exponential had the form \(kx\). To determine the character of a system of first-order PDEs, introduce this assumed solution into the homogeneous form of the PDE (where the exponent is now expressed in summation notation for clarity):
+where \(\vv{x}\) is a vector representing the spatial coordinate and \(\vv{k}\) is a normal at that coordinate. Each component of \(\vv{k}\) can be interpreted as the wave number in that direction (or proportional to the number of wavelengths in that direction). This is identical to the one-dimensional solutions shown in the previous section, where the time-independent part of the exponential had the form \(kx\), but now has the form \(\vv{k}\cdot\vv{x}\). To determine the character of a system of first-order PDEs, introduce this assumed solution into the homogeneous form of the PDE:
 
 \beqa
 \label{eq:Condition}
-A_j\frac{\partial}{\partial x_j}\left(\hat{U}e^{in_jx_j}\right)=&0\\
-A_jin_j\hat{U}e^{in_jx_j}=&0\\
-A_jn_j\hat{U}=&0\\
+A_j\frac{\partial}{\partial x_j}\left(\hat{U}e^{ik_jx_j}\right)=&0\\
+A_jik_j\hat{U}e^{ik_jx_j}=&0\\
+A_jk_j\hat{U}=&0\\
 \eeqa
 
-The above equation states that the coefficients of the solution, when assuming a wave-like solution, lie in the nullspace of the matrix formed by the linear combination of the matrices \(A_j\) with the components of the normal vector \(n_j\). For this time-independent system, the system is hyperbolic if all of the components of \(\vv{n}\) are real and if the solutions of the equations are linearly independent. If all of the components are real, but there are duplicated normals, the system is parabolic. Parabolic equations usually arise when there is a combination of convection and diffusion. If all of the components are complex, then the system is elliptic. Elliptic equations generally correspond to purely diffusive systems.
+The above equation states that the coefficients of the solution, when assuming a wave-like solution, lie in the nullspace of the matrix formed by the linear combination of the matrices \(A\) with the components of the normal vector \(\vv{k}\). For this time-independent system, the mathematical character is based on the components of \(\vv{k}\):
 
-We can use these definitions to investigate the time-independent Euler equations in Eq. \eqref{eq:2DEuler}. These equations are solved for the two components of velocity and density, giving the following matrix system:
+\begin{itemize}
+\item Hyperbolic - all real (with linearly independent solutions)
+\item Parabolic - all real (with some linearly dependent solutions)
+\item Elliptic - all complex
+\end{itemize}
+
+Parabolic equations usually arise when there is a combination of convection and diffusion, while elliptic equations generally correspond to purely diffusive systems. We can use these definitions to investigate the time-independent Euler equations in Eq. \eqref{eq:2DEuler}. These equations are solved for the two components of velocity and density, giving the following matrix system:
 
 \beq
 \begin{bmatrix}
@@ -512,56 +522,108 @@ To satisfy Eq. \eqref{eq:Condition}, we require:
 
 \beq
 \text{det}\left(\begin{bmatrix}
-un_x+vn_y & \rho n_x & \rho n_y\\
-c^2n_x/\rho & un_x+vn_y & 0\\
-c^2n_y/\rho & 0 & un_x+vn_y
+uk_x+vk_y & \rho k_x & \rho k_y\\
+c^2k_x/\rho & uk_x+vk_y & 0\\
+c^2k_y/\rho & 0 & uk_x+vk_y
 \end{bmatrix}\right)=0
 \eeq
 
-This gives the following solutions for \(n_x\) and \(n_y\):
+This gives the following solutions for \(k_x\) and \(k_y\):
 
 \begin{subequations}
 \begin{eqnarray}
-\frac{n_x}{n_y}&=&-\frac{v}{u}\\
-\frac{n_x}{n_y}&=&\frac{-uv\pm c^2\sqrt{Ma^2-1}}{u^2-c^2}
+\frac{k_x}{k_y}&=&-\frac{v}{u}\\
+\frac{k_x}{k_y}&=&\frac{-uv\pm c^2\sqrt{Ma^2-1}}{u^2-c^2}
 \end{eqnarray}
 \end{subequations}
 
-where the Mach number has been introduced. The first solution is always real, so the system of equations will always be at least partly hyperbolic. For subsonic flow, two solutions are complex, in which case the system of equations is hybrid hypberolic-elliptic. For supersonic flow, all solutions are real, and the system is fully hyperbolic. Exactly at \(Ma=1\), the components of the normal are not unique, in which case the system is parabolic. This strong flow-regime dependence on the character of the solutions makes creating numerical methods for all ranges challenging. 
+where the Mach number has been introduced. The first solution is always real. For subsonic flow, two solutions are complex, in which case the system of equations is hybrid hyperbolic-elliptic. For supersonic flow, all solutions are real, and the system is fully hyperbolic. Exactly at \(Ma=1\), the components of the normal are not unique, in which case the system is parabolic. This strong flow-regime dependence on the character of the solutions makes creating numerical methods for all ranges challenging. 
 
 Carrying out the same analysis for the steady 2-D potential flow equations, we find that for subsonic flows, the equations are purely elliptic, while for supersonic flows they are also purely hyperbolic. Exactly at \(Ma=1\), the normal components are not unique, and the system is parabolic. So, despite the Euler and potential flow equations describing the same set of physics (for uniform inlet conditions), the Euler equations are hybrid elliptic-hyperbolic for subsonic flows, while the potential flow equations are purely elliptic. Hyperbolic equations permit shocks, so both the stationary Euler and potential flow equations permit shocks for supersonic flows.
 
-The characteristic normals correspond to characteristic surfaces \(S\). The normal to a surface is equivalent to taking the (normalized) gradient of that surface:
+The characteristic normals correspond to characteristic surfaces \(S\). The normal to a surface is equivalent to taking the gradient of that surface:
 
 \beq
-\vv{n}=\nabla S
+\vv{k}=\nabla S
 \eeq
 
 Substituting this form into the generic wave solution for time-independent systems gives:
 
 \beqa
-U=&\hat{U}e^{i\nabla S\cdot\vv{x}}\\
-=&\hat{U}e^{i\frac{\partial S}{\partial x_j}x_j}
+U=&\ \hat{U}e^{i\nabla S\cdot\vv{x}}\\
+=&\ \hat{U}e^{i\frac{\partial S}{\partial x_j}x_j}
 \eeqa
 
-The solution is constant along constant values of \(x_j\frac{\partial S}{\partial x_j}\). So, along the direction of the normal \(\vv{n}\), \(U\) is constant. To have real normals in the solution can be physically interpreted as convection at constant values being permitted in those directions. If the normals are complex, then the solution does not propagate at equal value along any direction (a characteristic of convection, as seen from the 1-D convection solution). \(S\) is also known as a wavefront surface, because it separates the space domain that has already influenced the propagating \(U\) from the points not yet reached by the wave. Propagation at constant value occurs normal to the wavefront surface. For a purely hyperbolic system of \(n\) unknowns, there will be \(n\) unique characteristic surfaces, with normals along which each of the \(n\) unknowns propagates at constant value. Knowing the components of the normal, the surface (at a point) is parallel to the tangent plane defined by the location at which the component of the normal onto a vector \(d\vv{x}\) is zero:
+The solution is constant along constant values of \(x_j\frac{\partial S}{\partial x_j}\). So, along the direction of the normal \(\vv{k}\), \(U\) is constant. To have real normals in the solution can be physically interpreted as convection at constant values being permitted in those directions. If the normals are complex, then the solution does not propagate at equal value along any direction (a characteristic of convection, as seen from the 1-D convection solution). \(S\) is also known as a wavefront surface, because it separates the space domain that has already influenced the propagating \(U\) from the points not yet reached by the wave. Propagation at constant value occurs normal to the wavefront surface. For a purely hyperbolic system of \(n\) unknowns, there will be \(n\) unique characteristic surfaces, with normals along which each of the \(n\) unknowns propagates at constant value. Knowing the components of the normal, the surface (at a point) is parallel to the tangent plane defined by the location at which the component of the normal onto a vector \(d\vv{x}\) is zero:
 
 \beqa
 \nabla S\cdot d\vv{x}=&\frac{\partial S}{\partial x}dx+\frac{\partial S}{\partial y}dy+\frac{\partial S}{\partial z}dz\\
-=&n_xdx+n_ydy+n_zdz\\
+=&k_xdx+k_ydy+k_zdz\\
 =&0
 \eeqa
 
 In 2-D, the direction of the characteristic line (perpendicular to the characteristic normal) is therefore:
 
 \beq
-\frac{dy}{dx}=-\frac{n_x}{n_y}
+\frac{dy}{dx}=-\frac{k_x}{k_y}
 \eeq
 
 For a problem in \(n\) space dimensions, at each point there are \(n\) characteristics, defined by the components of the normals at those locations found by taking the determinant of the matrix system. Those characteristics propagate from every point. At any point in space, the solution can be obtained from the characteristics that have propagated from the boundary to that location. This allows the definition of the region of dependence of a point consisting of all of the points in space that can physically influence that point's value. Likewise, the zone of influence is the region of points in space that can be physically influences by that point's value. For parabolic problems, the characteristic normals are not all unique, in which case the region of dependence of a point is no longer an \(n\)-dimensional space - it is of reduced order so that the amount of points influencing the point is smaller (smaller/collapsed regions of dependence). For elliptic problems, because there are no real characteristics, the solution at a point depends on all other points, so the zone of influence and the region of dependence consist of the entire space of the domain, and are identical.
 
 \subsection{Mathematical Properties of Time-Dependent Equations}
 
+A common solution technique for steady-state problems is to treat the problem as time-dependent, but march forward in time using a time-dependent system of equations until reaching a nearly steady-state system. When including time dependence, Eq. \eqref{eq:SteadyStateEqn} becomes:
+
+\beq
+\label{eq:TransientEqn}
+\frac{\partial U}{\partial t}+A_j\frac{\partial U}{\partial x_j}=Q
+\eeq
+
+We can use the same analysis framework used above for the time-independent equations by introducing an additional component into \(\vv{x}\), which initially only represented the spatial coordinates. We now define \(U=\begin{bmatrix}U & t\end{bmatrix}^T\), where it is clear that the flux Jacobian matrix for this new component is simply the identity matrix. The assumed wave solution now includes an additional component in the exponent in Eq. {eq:WaveSolution}:
+
+\beq
+U=\hat{U}e^{i(\nabla S\cdot\vv{x}+\frac{\partial S}{\partial t}t)}
+\eeq
+
+where we have expanded \(\nabla S\cdot\vv{x}\) to the strictly spatial component \(\vv{x}\) and the new time component. By comparing this to the 1-D wave solution in Eq. \eqref{eq:1DWave}, it can be seen that \(\partial S/\partial t=-\omega\). The solution is now constant along:
+
+\beq
+\vv{x}\cdot\nabla S+t\frac{\partial S}{\partial t}=0
+\eeq
+
+\(\nabla S\) is now the normal to the characteristic surface at the intersection point with surfaces of constant \(t\). Plugging this assumed solution into Eq. \eqref{eq:TransientEqn} gives:
+
+\begin{subequations}
+\begin{eqnarray}
+\left(\frac{\partial S}{\partial t}+A_j\frac{\partial S}{\partial x_j}\right)\hat{U}&=&0\\
+\left(-\omega\delta_{ij}+A_j\frac{\partial S}{\partial x_j}\right)\hat{U}&=&0
+\end{eqnarray}
+\end{subequations}
+
+Therefore, we require that the determinant of the above matrix equal zero, which from basic understanding of eigenvalue problems, reveals that the wave pulsations are the eigenvalues of \(A_j\frac{\partial S}{\partial x_j}=A_jk_j\). Divide both sides by the norm of the wave number vector so that \(\omega\) then represents the wave speeds \(a\):
+
+\beq
+\left(-a\delta_{ij}+\frac{A_j}{\|\vv{k}\|}\frac{\partial S}{\partial x_j}\right)\hat{U}=0
+\eeq
+
+Therefore, the eigenvalues are multiples of the wave speeds. For systems of equations, mathematical character is now based on the eigenvalues of the time-independent portion of the homogeneous system -
+
+\begin{itemize}
+\item Hyperbolic - all real
+\item Parabolic - all purely imaginary
+\item Elliptic - all complex
+\end{itemize}
+
+The solutions \(\hat{U}\) are the eigenvectors for this homogeneous equation set. Elliptic systems have complex eigenvalues of the form \(\omega=\xi+i\eta\). Substituting this into the solution gives two solutions, where the second solution arises because all of the entries in the flux Jacobians are real:
+
+\begin{subequations}
+\begin{eqnarray}
+U&=&\hat{U}e^{i\nabla S\cdot\vv{x}}e^{-i\xi t}e^{\eta t}\\
+U&=&\hat{U}e^{i\nabla S\cdot\vv{x}}e^{-i\xi t}e^{\eta t}
+\end{eqnarray}
+\end{subequations}
+
+%Only incompressible potential flow problems are linear, so the properties of these nonlinear equations might also depend on the values of variables and constants that appear. In other words, the behavior of the equations is dependent on the flow regime!
 
 \section{The Physics of Turbulence}
 
