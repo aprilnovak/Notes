@@ -440,7 +440,7 @@ u=&\ \hat{u}e^{\frac{2\pi i}{\lambda}(x-at)}\\
 =&\ \hat{u}e^{i(kx-\omega t)}\\
 \eeqa
 
-where \(\lambda\) is the wavelength of the wave, \(k=2\pi/\lambda\) is the wavenumber, \(\omega=2\pi f\) is the pulsation, \(f\) is the frequency, and \(a\equiv\lambda f\) is the speed of the wave. The \(2\pi/\lambda\) factor is simply a normalization constant. Therefore, pure convection is a wave phenomenon, and as such can be described using properties of waves. Diffusion, while not strictly a wave phenomenon, can be interpreted as such by seeking a solution in the form above to the pure diffusion equation:
+where \(\lambda\) is the wavelength of the wave, \(k=2\pi/\lambda\) is the wavenumber, \(\omega=2\pi f\) is the pulsation, \(f\) is the frequency, and \(a\equiv\lambda f\) is the speed of the wave. The \(2\pi/\lambda\) factor is simply a normalization constant. Therefore, pure convection is a wave phenomenon, and as such can be described using properties of waves. The solution is constant along lines \(dx/dt=a\). Diffusion, while not strictly a wave phenomenon, can be interpreted as such by seeking a solution in the form above to the pure diffusion equation:
 
 \beq
 \frac{\partial u}{\partial t}=\alpha \frac{\partial^2u}{\partial x^2}
@@ -588,6 +588,7 @@ U=\hat{U}e^{i(\nabla S\cdot\vv{x}+\frac{\partial S}{\partial t}t)}
 where we have expanded \(\nabla S\cdot\vv{x}\) to the strictly spatial component \(\vv{x}\) and the new time component. By comparing this to the 1-D wave solution in Eq. \eqref{eq:1DWave}, it can be seen that \(\partial S/\partial t=-\omega\). The solution is now constant along:
 
 \beq
+\label{eq:TransientConstant}
 \vv{x}\cdot\nabla S+t\frac{\partial S}{\partial t}=0
 \eeq
 
@@ -614,16 +615,66 @@ Therefore, the eigenvalues are multiples of the wave speeds. For systems of equa
 \item Elliptic - all complex
 \end{itemize}
 
-The solutions \(\hat{U}\) are the eigenvectors for this homogeneous equation set. Elliptic systems have complex eigenvalues of the form \(\omega=\xi+i\eta\). Substituting this into the solution gives two solutions, where the second solution arises because all of the entries in the flux Jacobians are real:
+The solutions \(\hat{U}\) are the eigenvectors for this homogeneous equation set, and the solution to the inhomogeneous problem can be constructed as a linear combination of these eigenvectors. Elliptic systems have complex eigenvalues of the form \(\omega=\xi+i\eta\). Substituting this into the solution gives two solutions, where the second solution arises because all of the entries in the flux Jacobians are real (so all eigenvalues are associated with their complex conjugates as well):
 
 \begin{subequations}
 \begin{eqnarray}
 U&=&\hat{U}e^{i\nabla S\cdot\vv{x}}e^{-i\xi t}e^{\eta t}\\
-U&=&\hat{U}e^{i\nabla S\cdot\vv{x}}e^{-i\xi t}e^{\eta t}
+U&=&\hat{U}e^{i\nabla S\cdot\vv{x}}e^{-i\xi t}e^{-\eta t}
 \end{eqnarray}
 \end{subequations}
 
+Therefore, elliptic systems are characterized by one solution that is damped in time, while another that is amplified in time. Performing the same analysis for the Euler equations as previously, but including the time derivative, in 2-D the two eigenvalues are \(a=u, u\pm c\). These are always real, so the time-dependent Euler equations are fully hyperbolic. Recall from the time-independent analysis that the mathematical character of the Euler equations was dependent on the Mach number. This example shows that once time dependence is considered, the mathematical nature of equations generally becomes independent of the flow regime, which allows the design of numerical methods that are accurate over all flow regimes.
+
 %Only incompressible potential flow problems are linear, so the properties of these nonlinear equations might also depend on the values of variables and constants that appear. In other words, the behavior of the equations is dependent on the flow regime!
+
+\subsection{Constructing a Well-Posed System}
+
+To close the system of equations, we must specify initial and/or boundary conditions. But, these conditions cannot be specified arbitrarily - they must be specified in such a way as to create a well-posed system. A system is well-posed if the solution depends continuously on the imposed conditions, i.e. a small perturbation in the initial and boundary conditions causes a correspondingly small perturbation in the solution. For example, because the solution is a linear combination of the eigenvectors, the boundary conditions cannot cause the system to have a complex eigenvalue, because then one solution will grow exponentially in time such that a small perturbation of the conditions does not lead to a correspondingly small perturbation in the domain. For \(n\) eigenvalues (entries in \(U\)), we can denote whether those eigenvalues are real and complex (I will bundle the purely imaginary eigenvalues into \(n_c\) because they just have a zero real component, and still have the exponential growth property of one of the complex conjugates):
+
+\beq
+n=n_r+n_c
+\eeq
+
+\begin{table}[H]
+\caption{Number of conditions required for hyperbolic, elliptic, and parabolic systems of equations. Pure BVP are undefined for hyperbolic equations. Pure IVP are undefined for elliptic and hybrid equations. Boundary conditions apply on {\it all} locations on a boundary unless otherwise noted.}
+\centering
+\begin{tabular}{l l l l}
+\hline\hline
+& Eigenvalue properties & Problem type & Initial conditions & Boundary conditions\\ [0.5ex]
+\hline
+\multirow{2}{*}{hyperbolic} & \multirow{2}{*}{\(n\)} real & IVP & \(n\) & 0\\
+ & IVBP & \(n\) & \(n\), but only on inflow boundaries (positive eigenvalue at that {\it point})\\
+\multirow{1}{*}{elliptic} & \multirow{1}{*}{\(n_c\) complex} & IVBP & \(n_c\) & \(n_c/2\)\\
+hybrid & \(n_r\) real and \(n_c\) complex & IVBP & \(n_r+n_c/2\)? & \(n_r+n_c/2\), \(n_r\) only on inflow boundaries\\
+parabolic & \(n_c\) pure imaginary & IVBP & \(n_c\) & \(n_c/2\)
+parabolic-hyperbolic & \(n_r\) real and \(n_c\) imaginary & IVBP & \(n_r\) & \(n_c\)\\
+\end{tabular}
+\label{table:Regimes}
+\end{table}
+
+There are no general global existence theorems for non-stationary compressible Navier-Stokes equations with a given set of BCs and ICs, so there are no practical rules for establishing BCs.
+
+\subsubsection{Initial Conditions}
+If the system is hyperbolic, you need \(n\) initial conditions. If the problem is elliptic or hybrid, then only \(n_r+n_c/2\) initial conditions can be specified, since the components with the negative imaginary component will grow exponentially in time and not satisfy our ``well-posedness'' condition. It does not make sense to run an initial value problem with less than \(n\) initial conditions, so a pure initial value problem is only well-defined for a hyperbolic system. Similarly, because \(n\) initial conditions must be specified for a hyperbolic system, the specification of any less than this number will also not be a well-posed system; a pure boundary value problem for a hyperbolic system is not well posed.
+
+Parabolic systems also require \(n\) initial conditions, but they also require boundary conditions.
+
+Pure initial value problems are only well-defined for hyperbolic problems. Likewise, pure boundary value problems are ill-posed for hyperbolic problems.
+
+
+\subsubsection{Boundary Conditions}
+For an elliptic system, because all of the eigenvalues are complex, \(n/2\) boundary conditions must be imposed on {\it every} part of the boundary. For hyperbolic systems, \(n\) boundary conditions have to be distributed along the boundaries at all values in time according to the propagation direction of the corresponding waves. If the wave number is in the direction of the interior normal vector, then that waves will propagate information inside the domain provided the velocity is positive. So, the number of BCs to impose for a hyperbolic IVBP at a point on a boundary equals the number of positive eigenvalues at that point.
+
+For parabolic problem \(n/2\) boundary conditions must be imposed. The standard form for parabolic equations is \(\partial u/\partial t=L(u)\), where \(L\) is a second order elliptic operator in space.
+
+For hybrid problems, \(n_r\) boundary conditions must be specified on boundaries on which the corresponding wave number vector propagates information inside the domain, and the remaining \(n_c/2\) conditions must be specified everywhere on the boundary.
+
+The number of boundary conditions to impose is not the only consideration in defining a well-posed system - those boundary conditions often must still be selected carefully.
+
+For a parabolic-hyperbolic set, the boundary conditions are of initial value type for the hyperbolic components, but boundary value type for elliptic.
+
+The Navier-Stokes equations are parabolic in time and space.
 
 \section{The Physics of Turbulence}
 
