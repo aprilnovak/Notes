@@ -163,77 +163,6 @@ Gravity can also be moved inside the gradient if we assume that \(\vv{g}=-g\vv{e
 
 When viscous effects are neglected, Eq. \eqref{eq:EquivalenttoEulerc} is known as the Crocco-Vazsonyi equation. This equation reveals several important properties about fluid flows - first, the flow will be rotational (nonzero vorticity) in a stationary reference frame even in steady flows unless the flow is isentropic, frictionless, and isoenergetic (sum of kinetic energy per unit mass, enthalpy, and gravitational potential are constant along a streamline).
 
-\subsection{The Vorticity Equation}
-The vorticity equation(s) are forms of the Navier-Stokes equations that are derived by taking the curl of momentum equation and using various vector calculus properties to reduce the equations to different forms. This section assumes incompressibility in the form of the viscous term and constant \(\nu\). Take the curl of the momentum equation:
-
-\beq
-\label{eq:Equiv4}
-\nabla\times\left(\frac{\partial \vv{V}}{\partial t}+\vv{V}\cdot\nabla\vv{V}\right)=-\nabla\times\frac{\nabla P}{\rho}+\cancel{\nabla\times(\vv{g})}+\nabla\times(\nu\nabla^2\vv{V})
-\eeq
-
-where gravity is assumed to be a conservative vector field. By a vector calculus identity:
-
-\beq
-\label{eq:VectorCalculusIdentityCrossProduct}
-\nabla\times\frac{\nabla P}{\rho}\rightarrow\frac{\rho\cancel{\nabla\times\nabla P}-\nabla\rho\times\nabla P}{\rho^2}
-\eeq
-
-Inserting Eq. \eqref{eq:VectorCalculusIdentityCrossProduct} into Eq. \eqref{eq:Equiv4} gives:
-
-\beq
-\nabla\times\left(\frac{\partial \vv{V}}{\partial t}+\vv{V}\cdot\nabla\vv{V}\right)=\frac{\nabla\rho\times\nabla P}{\rho^2}+\nabla\times(\nu\nabla^2\vv{V})
-\eeq
-
-Then, insert the definition for vorticity into the time-dependent term (by noting that a gradient is only a derivative in space, it can be brought inside the time differentiation) and the identity given by Eq. \eqref{eq:FluidsIdentity}. Then, similar to the cancellation of the gravitational force, \(\nabla\times(\nabla(V^2/2))\) is zero since the velocity is a singly-valued function:
-
-\beq
-\frac{\partial \vv{\omega}}{\partial t}+\nabla\times\left(\vv{\omega}\times\vv{V}\right)=\frac{\nabla\rho\times\nabla P}{\rho^2}+\nu\nabla^2\vv{\omega}
-\eeq
-
-Another equivalent form is obtained using the following vector identity:
-
-\beq
-\nabla\times(\nabla\times\vv{\omega})=\underbrace{\cancel{\nabla(\nabla\cdot\vv{\omega})}}_{\text{definition}}-\nabla^2\vv{\omega}
-\eeq
-
-which upon insertion gives the form:
-
-\beq
-\frac{\partial \vv{\omega}}{\partial t}+\nabla\times\left(\vv{\omega}\times\vv{V}\right)=\frac{\nabla\rho\times\nabla P}{\rho^2}-\nu\nabla\times(\nabla\times\vv{\omega})
-\eeq
-
-Another equivalent form can be obtained by expanding the \(\nabla\times(\vv{\omega}\times\vv{V})\) term using vector identities:
-
-\beq
-\nabla\times(\vv{\omega}\times\vv{V})=\vv{\omega}(\nabla\cdot\vv{V})+(\vv{V}\cdot\nabla)\vv{\omega}-\underbrace{\vv{V}(\cancel{\nabla\cdot\vv{\omega}})}_{\text{definition}}-(\vv{\omega}\cdot\nabla)\vv{V}
-\eeq
-
-where \(\nabla\cdot\vv{\omega}=0\) by definition since the divergence of a curl is zero. Then, the momentum equation becomes:
-
-\beq
-\underbrace{\frac{\partial \vv{\omega}}{\partial t}+(\vv{V}\cdot\nabla)\vv{\omega}}_{\text{material derivative}}+\vv{\omega}\left(-\frac{1}{\rho}\frac{d\rho}{dt}\right)-(\vv{\omega}\cdot\nabla)\vv{V}=\frac{\nabla\rho\times\nabla P}{\rho^2}+\nu\nabla^2\vv{\omega}
-\eeq
-
-where the continuity equation has been inserted for \(\nabla\cdot\vv{V}\). Multiplying each term through by \(1/\rho\) and grouping terms gives:
-
-\beq
-\frac{d}{dt}\left(\frac{\vv{\omega}}{\rho}\right)-\frac{\vv{\omega}}{\rho}\cdot\nabla\vv{V}=\frac{\nabla\rho\times\nabla P}{\rho^3}+\frac{\nu}{\rho}\nabla^2\vv{\omega}
-\eeq
-
-Finally, the last equivalent form discussed in this section is derived by assuming density to be a function of pressure and temperature such that:
-
-\beq
-\nabla\rho=\left(\frac{\partial\rho}{\partial P}\right)_T\nabla P-\beta\rho\nabla T\\
-\eeq
-
-where the definition of the expansivity has been inserted, with \(\nu\) replaced equivalently in both the constant and derivative term by \(\rho\), has been inserted, where by definition \(\nabla P\times\nabla P=0\). This gives: 
-
-\beq
-\frac{d}{dt}\left(\frac{\vv{\omega}}{\rho}\right)-\frac{\vv{\omega}}{\rho}\cdot\nabla\vv{V}=\frac{-\beta\rho\nabla T\times\nabla P}{\rho^3}+\frac{\nu}{\rho}\nabla^2\vv{\omega}
-\eeq
-
-Working with the vorticity equation, as opposed to the momentum equation in terms of velocity, is advantageous for barotropic flows. A flow is barotropic if density is only a function of pressure, and can result for isothermal, isentropic, or incompressible flow. If the initial conditions are compatible with uniform entropy, then for continuous flows, the entropy will be constant over the entire flow field (hirsch, chapter 2).
-
 \subsection{The Bernoulli Equation}
 The minimum number of assumptions that can be made to Eq. \ref{eq:EquivalenttoEulerc} to obtain the Bernoulli equation is to assume 1) steady, 2) inviscid, 3) isentropic, and 4) irrotational flow. These assumptions apply {\it anywhere} in the flow field.
 
@@ -258,41 +187,6 @@ Then, if the flow is assumed incompressible, for \(e=e(\rho,s)\), \(e\) will be 
 
 
 \subsection{Potential Flow}
-Potential flow is a huge simplification of the Navier-Stokes equations that assumes the velocity is only a function of a potential \(\phi\):
-
-\beq
-\vv{V}\equiv\nabla\phi
-\eeq
-
-The curl of a gradient of a scalar is zero - expanding each term, and switching the order of integration causes every component to cancel. The curl of the velocity, when velocity is expressed as above, is zero. In other words, if \(\vv{V}=\nabla\phi\), then the flow is irrotational. Potential flow theorists usually also assume inviscid flow. Therefore, assuming irrotational flow in the Crocco-Vaszonyi equation gives:
-
-\beq
-\frac{\partial \vv{V}}{\partial t}+\nabla\left(\frac{1}{2}V^2+h+gz\right)-T\nabla s=0
-\eeq
-
-The Euler equations describe isentropic flow provided there are no additional momentum sources/losses {\it and the initial conditions correspond to uniform entropy}. Because we assume inviscid flow in the potential flow model, we can therefore also assume uniform entropy (provided the initial conditions correspond to isentropic flow) such that the flow is isentropic:
-
-\begin{subequations}
-\label{eq:EnergyEqnPotential}
-\begin{eqnarray}
-\frac{\partial \vv{V}}{\partial t}+\nabla H&=&0\\
-\frac{\partial\phi}{\partial t}+H&=&H_0
-\end{eqnarray}
-\end{subequations}
-
-where the second form has moved the gradient outside of the time derivative (and "cancelled") because space and time derivatives can be interchanges. \(H\) is defined as the stagnation enthalpy:
-
-\beq
-H\equiv\frac{1}{2}V^2+h+gz
-\eeq
-
-The continuity equation for potential flow is:
-
-\beq
-\label{eq:ContinuityEqnPotential}
-\frac{\partial\rho}{\partial t}+\nabla\cdot(\rho\nabla\phi)=0
-\eeq
-
 Because potential flows assume isentropic flows, density can be expressed entirely as a function of velocity. To rewrite the above equation, use Eq. \eqref{eq:EnthalpyEqn}, simplified for isentropic flows:
 
 \beqa
