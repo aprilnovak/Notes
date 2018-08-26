@@ -59,8 +59,9 @@
 \newcommand{\Om}{\Omega}
 \newcommand{\spa}{(\vv{r}, E, \hO, t)}
 \newcommand{\seat}{(\vv{r}, E, \hO, t)}
+\newcommand{\sat}{(\vv{r},\hO,t)}
 \newcommand{\seatprime}{(\vv{r},E',\hO',t)}
-\newcommand{\seatout}{(\vv{r},E'\rightarrow E',\hO'\rightarrow \hO',t)}
+\newcommand{\seatout}{(\vv{r},E'\rightarrow E,\hO'\rightarrow \hO,t)}
 \newcommand{\spas}{(\vv{r},E,t)}
 \newcommand{\spap}{(\vv{r}, E', \hO',t)}
 \newcommand{\spaps}{(\vv{r},E',t)}
@@ -68,7 +69,14 @@
 \newcommand{\spangr}{(\vv{r},E\rightarrow E', \hO\rightarrow\hO',t)}
 
 % integrand (minus the flux) of the prompt fission source
-\newcommand{\promptfissionsource}{\chi_p(E,\hO)\int_0^\infty dE\int_{4\pi}d\hO'\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E,t)}
+\newcommand{\promptfissionsource}{\chi_p(E,\hO)\int_0^\infty dE'\int_{4\pi}d\hO'\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)}
+
+% summation form of the delayed neutron source
+\newcommand{\delayedfissionsource}{\sum_{j=1}^J\chi_{d,j}(E,\hO)\lambda_jC_j(\vv{r},t)}
+
+% total fission source
+\newcommand{\totalfissionsource}{\chi(E,\hO)\int_0^\infty dE'\int_{4\pi}d\hO' \nu(E')\Sigma_f(\vv{r},E',t)}
+
 
 \titleclass{\subsubsubsection}{straight}[\subsection]
 
@@ -146,43 +154,9 @@ This section defines the variables that appear in the neutron transport equation
 
 \subsubsection{Unit Direction Vector \(\hO  \)}
 
-In the neutron transport equation, the flux is a function of direction (note that the flux is not a vector itself, but only a function of direction). The direction of a neutron is given by the unit vector \(\hO \), which has the same direction as the neutron velocity vector. \(\hO \) is easy to express in Cartesian coordinates. With \(\phi\) as the angle in the \(x-y\) plane from the positive \(x\)-axis and \(\theta\) as the angle between \(\hO \) and the \(z\)-axis, it is clear that \(\hO \) is given as follows. The second form below can be obtained using the \(\sin^2{(\theta)} + \cos^2{(\theta)} = 1\) identity.
-
-\beqa
-\label{eq:OmegaCartesian}
-\hO  \equiv \frac{\vv{v}}{\mid \vv{v}\mid} =& \sin{(\theta)}\cos{(\phi)}\hat{i} + \sin{(\theta)}\sin{(\phi)}\hat{j} + \cos{(\theta)}\hat{k}\\
-=& \sqrt{1-\mu^2}\textrm{cos}(\phi)\hat{i} + \sqrt{1-\mu^2}\textrm{sin}(\phi)\hat{j} + \mu\hat{k}\\
-\eeqa
-
-Each of these components are often given their own names (caution: the naming convention of \(\xi\) and \(\eta\) differs depending on where you look). 
-
-\beqa
-\label{eq:OmegaComponentsCartesian}
- \xi \equiv &\sin{(\theta)}\cos{(\phi)}\\
- \eta \equiv &\sin{(\theta)}\sin{(\phi)}\\
- \mu \equiv &\cos{(\theta)}\\
-\eeqa
-
-The axes used in 1-D Cartesian problems are often re-oriented such that \(z\) is the independent variable (as opposed to a 1-D problem in \(x\) or a 1-D problem in \(y\)) so that the direction of neutrons is \(\mu\hat{k}\).
-
 In Cartesian coordinates, a neutron moves along constant \(\hO\) until suffering a collision. This is {\it not} the case in curvilinear (cylindrical, spherical, or other) coordinates, however. In curvilinear coordinates, as a neutron streams, the angular coordinates are constantly changing. If this is not intuitive, think of a neutron traveling in a 2-D Cartesian coordinate system along the line \(x = 1\). This neutron moves along constant \(\hO\). However, the same neutron, described in a cylindrical system, is constantly changing its angle relative to the \(x\)-axis. This means that \(\hO\), in the cylindrical coordinate frame, also changes as the neutron moves, even if it hasn't collided with anything!
 
-In a spherical coordinate system, an integral over the surface of the unit sphere is given as \(dA=r^2\sin{(\theta)}d\theta d\phi\), so an integral over the solid angle is determined by dividing by \(r^2\) since solid angle represents the dimensionless area on the unit sphere.
 
-\beqa
-\label{eq:DifferentialOmega}
-d\hO  =&\sin{(\theta)}d\theta d\phi\\
-=&d\mu d\phi\\
-\eeqa
-
-An integral over \(\hO\) is usually represented shorthand by \(\int_{4\pi}^{ } d\hO\), which represents integration over the entire \(4\pi\) solid angle.
-
-\beqa
-\label{eq:4PiOmegaIntegral}
-\int_{4\pi}^{ } d\hO   = &\int_{-1}^{1} d\mu \int_{0}^{2\pi} d\phi \\
-=& \int_{0}^{\pi} \sin{(\theta)}d\theta \int_{0}^{2\pi} d\phi \\
-= &\ 4\pi
-\eeqa
 
 The integral of any two components of \(\hO\) over \(4\pi\) solid angle gives an orthogonality condition for \(\hO\):
 
@@ -190,16 +164,6 @@ The integral of any two components of \(\hO\) over \(4\pi\) solid angle gives an
 \label{eq:4PiOmegaOmega}
 \int_{4\pi}^{ } d\hO\ \Om_i\Om_j = \frac{4\pi}{3}\delta_{ij}
 \eeq
-
-It is frequently assumed that the angular dependence of a collision is rotationally symmetric, which means that scattering cross sections really depend on the \textit{change} in angle between the incident and scattered neutron, rather than the absolute value of the incident angle. In this case, the change in the angle during scattering can be related to the dot product of the two angles
-
-\beqa
-\label{eq:OmegaDotOmega}
-\hO  \cdot\hO  ' =& |\hO  ||\hO  '| \cos{(\theta)} \\
-=&\ \mu
-\eeqa
-
-where \(\hO\) represents the incident neutron direction and \(\hO'\) represents the scattered neutron direction. Therefore, the change in angle during scattering is given by \(\mu\), and often cross sections are quoted as a function of this change-in-angle. Functions of a single variable, such as a Legendre series, can be used to expand angular-dependent cross sections provided we assume the cross sections are rotationally symmetric. Rotational symmetry implies that we are ignoring any type of anisotropic grain structure, which is sufficient since on a macroscopic scale, grains are sufficiently randomly oriented. 
 
 \subsubsection{Reaction Rates}
 
@@ -332,23 +296,6 @@ Orthogonality is a very important property, since it allows us to convert infini
 \label{eqn:LegendrePolynomialRecursion1}
 \mu P_l(\mu) = \frac{1}{2l+1} \left\lbrack(l+1)P_{l+1}(\mu) + l P_{l-1}(\mu)\right\rbrack
 \eeq
-
-In neutron transport applications, Legendre polynomials are most often used to expand the angular dependence of scattering cross sections. Instead of storing the cross sections as a function of angle, we can then instead just store the scattering moments. To expand a cross section in Legendre polynomials, we write it as an infinite sum of scattering moments \(\Sigma_{s,l}\) (basically just the coefficients on the expansion) with the Legendre polynomials. Because Legendre polynomials are a basis on [-1,1], as long as the series is infinite, no approximation has been made. In practice, however, we would truncate this expression at some finite number of terms. The sum is usually truncated so that its level of approximation matches that being applied to the angular flux. 
-
-\beqa
-\label{eq:ScatteringLegendre}
-\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  ) =& \Sigma_s(\vv{r}, E'\rightarrow E, \mu) \\
-=& \frac{2l+1}{4\pi}\sum_{l=0}^{\infty}\Sigma_{s,l}(\vv{r}, E'\rightarrow E)P_l(\mu)\\
-\eeqa
-
-The scattering moments appearing in Eq. \ref{eq:ScatteringLegendre} can be derived by using the orthogonality condition, Eq. \ref{eqn:LegendrePolynomialsOrthogonality}. Multiplying both sides of Eq. \ref{eq:ScatteringLegendre} by \(P_k(\mu)\) and integrating over \(\mu\), and then applying the results of Eq. \ref{eqn:LegendrePolynomialsOrthogonality} gives
-
-\beq
-\label{eq:ScatteringMomentsLegendre}
-\Sigma_{s,l}(\vv{r}, E'\rightarrow E) = 2\pi\int_{-1}^{1} d\mu \Sigma_s(\vv{r}, E'\rightarrow E, \mu) P_l(\mu)
-\eeq
-
-Expanding the scattering cross section in Legendre polynomials is known as the \(P_L\) approximation. 
 
 \subsubsection{Associated Legendre Polynomials}
 
@@ -777,30 +724,6 @@ Then, we can integrate out the angular dependence of the scattering term by reco
 
 \subsection{Cartesian Coordinates}
 
-The transport equation in Cartesian coordinates substitutes in the more explicit form for the streaming term, given by the operator in Eq. \ref{eq:OmegaCartesianMuOnly}, to Eq. \ref{eq:TE}. 
-
-\begin{equation}
-\label{eq:TE_Cartesian}
-\begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi\spa }{\partial t} +
- \sqrt{1-\mu^2}\left(\cos{(\phi)}\frac{\partial \psi\spa }{\partial x} + \sin{(\phi)} \frac{\partial \psi\spa }{\partial y}\right) + \mu \frac{\partial \psi\spa }{\partial z} +\\
- \Sigma_t(\vv{r},E)\psi\spa  = \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi\spap + S\spa +\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi\spap\\
-\end{aligned}
-\end{equation}
-
-Eq. \ref{eq:TE_Cartesian} reduces to the 1-D form by assuming that \(\psi\) has no dependence on \(x\) or \(y\). 
-
-\begin{equation}
-\label{eq:TE_Cartesian_1D}
-\begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi(z, E, \hO  ,t)}{\partial t} +
- \mu \frac{\partial \psi(z, E, \hO  ,t)}{\partial z} + \Sigma_t(z,E)\psi(z, E, \hO  ,t) = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_s(z, E'\rightarrow E, \hO  '\rightarrow\hO  )\psi(z, E', \hO  ',t) + S(z, E, \hO  ,t)+\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\nu(E')\Sigma_f(z, E')\int_{4\pi}^{} d\hO  '\psi(z, E', \hO  ',t)\\
-\end{aligned}
-\end{equation}
-
 \subsubsection{Integration Over Angle}
 
 We can also integrate Eq. \ref{eq:TE_Cartesian_1D} over \(0\leq \phi \leq 2\pi\), because this will then allow the scattering term to be expressed solely in terms of \(\mu\). 
@@ -842,21 +765,8 @@ The monoenergetic transport equation can be obtained from Eq. \eqref{eq:TE} by i
 \end{equation}
 
 \clearpage
+\input{multigroup-equations.tex}
 \section{The Multigroup Transport Equation}
-
-Rather than solve a continuous-energy problem, the transport equation is often discretized into energy groups to produce a set of coupled integro-differential equations that are more amenable to solutions on a computer. Each energy group covers the range \(E_g\) to \(E_{g-1}\), and we number the energy groups with 1 being the faster, 2 the second fastest, and so on. The groups increase in lethargy with this notation. The group angular flux is
-
-\begin{equation}
-\label{eq:GrpAngularFlux}
-\psi_g (\vv{r}, \hO  ,t) = \int_{E_{g-1}}^{E_g} dE \psi(\vv{r}, \hO  ,E, t)
-\end{equation}
-
-Similarly, an integral over the entire energy domain can be discretized into \(G\) integrals over each energy group
-
-\begin{equation}
-\label{eq:dEMultiGroup}
-\int_{E_{min}}^{E_{max}}dE = \sum_{g=1}^{G} \int_{E_{g-1}}^{E_g} dE
-\end{equation}
 
 The multigroup transport equation can be derived by two separate means - the first involves separating all quantities into separate functions of energy and space:
 
@@ -905,16 +815,6 @@ However, this is really only acceptable at lower neutron energies where the cros
 \sum_{g'=1}^{G} \Sigma_{s, g'\rightarrow g}(\vv{r})\phi_{g'}(\vv{r}, t) + \chi_g \sum_{g'=1}^{G} \nu_{g'}\Sigma_{f,g'}(\vv{r})\phi_{g'}(\vv{r}, t)
 \end{aligned}
 \end{equation}
-
-
-
-
-\clearpage
-\section{The Method of Characteristics (MOC)}
-
-
-
-
 
 
 
@@ -2974,8 +2874,8 @@ Although fuel depletion is important in the sense that safety analysis is usuall
 
 Precision is the ability to \textit{reproduce} a result when computing the same problem multiple times. 
 
-
-
+\clearpage
+\input{notation.tex}
 
 
 
@@ -2993,13 +2893,9 @@ This section lists all the important notation used in this document. Quantities 
 \(\delta\) & Kronecker delta \(\doteq 1\) & ---\\
 \(E\) & energy \(\doteq MeV\) & ---\\
 \(\Sigma\) & macroscopic cross section \(\doteq 1/m\) & ---\\
-\(\xi\) & Cartesian \(x\)-component of \(\hO  \) \(\doteq 1\) & Eq. \ref{eq:OmegaComponentsCartesian}\\
 \(G\) & total number of energy groups \(\doteq 1\) & ---\\
 \(\vv{j}\) & angular current \(\doteq 1/cm^2sMeV\textrm{steradian}\) & Eq. \ref{eq:AngularCurrent}\\
 \(\eta\) & Cartesian \(y\)-component of \(\hO  \) \(\doteq 1\) & Eq. \ref{eq:OmegaComponentsCartesian}\\
-\(\hO  \) & directional unit vector \(\doteq 1\) & Eq. \ref{eq:OmegaCartesian}\\
-\(\mu\) & cosine of the scattering angle \(\doteq 1\) & Eq. \ref{eq:OmegaComponentsCartesian}\\
-\(\theta\) & angle between \(\hO  \) and \(z\) \(\doteq \textrm{radians}\) & ---\\
 \(L\) & order of scattering anisotropy \(\doteq 1\) & Eq. \ref{eq:LegendrePolynomialDefinitions}\\
 \(l\) & order of Legendre polynomial \(\doteq 1\) & Eq. \ref{eq:LegendrePolynomialDefinitions}\\
 \(\lambda\) & decay constant \(\doteq 1/s\) & ---\\
@@ -3007,11 +2903,9 @@ This section lists all the important notation used in this document. Quantities 
 \(n\) & neutron density \(\doteq 1/m^3\) & ---\\
 \(\oslash\) & entire phase space \(\doteq m^3sMeV\textrm{steradian}\) & Eq. \ref{eq:PhaseSpaceIntegration}\\
 \(P_i\) & Legendre polynomial \(\doteq \textrm{radians}\) & Eq. \ref{eq:LegendrePolynomialDefinitions}\\
-\(\phi\) & angle between \(\hO  \) projected in \(x-y\) with \(x\) \(\doteq \textrm{radians}\) & ---\\
 \(\phi\spas\) & scalar flux \(\doteq /cm^2sMeV\) & Eq. \ref{eq:ScalarFlux}\\
 \(t\) & time \(\doteq s\) & ---\\
 \(V\) & volume element \(\doteq m^3\) & ---\\
-\(\vv{v}\) & velocity \(\doteq m/s\) & ---\\
 \(\nu\) & average number of neutrons born from fission \(\doteq 1\) & ---\\
 \(\chi\) & yield \(\doteq 1\) & ---\\
 \(Y\) & spherical harmonic \(\doteq 1\) & Eq. \ref{eq:SHAdditionTheorem}\\

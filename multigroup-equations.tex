@@ -1,0 +1,28 @@
+\section{The Multi-group Neutron Transport Equation}
+
+Section \ref{sec:CE_NTE} presented the derivation and equivalent forms of the \gls{ce} \gls{nte}. If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-4}-10^6\) eV is impractical. Therefore, most deterministic transport solvers use a \gls{mg}-in-energy form of the \gls{nte} that is obtained by averaging the \gls{nte} over all energies. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of increasing energy.
+
+Any quantity \(\alpha\) integrated over energy group \(g\) is subscripted as:
+
+\beq
+\label{eq:GroupwiseQuantity}
+\alpha_g(\vv{r},\hO,t)\equiv\int_{E_{g-1}}^{E_g}dE\alpha\seat
+\eeq
+
+Eq. \eqref{eq:GroupwiseQuantity} is used for the definition of the groupwise fluxes \(\psi_g\). Groupwise cross sections for reaction \(i\) are defined in a similar manner based on the flux-weighted cross sections:
+
+\beqa
+\label{eq:GroupwiseQuantityProduct}
+\Sigma_{i,g}(\vv{r},\hO,t)\equiv&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat}{\int_{E_{g-1}}^{E_g}dE\psi\seat}\\
+\equiv&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat}{\psi_g\sat}\\
+\eeqa
+
+where Eq. \eqref{eq:GroupwiseQuantity} has been inserted for the denominator. Using Eqs. \eqref{eq:GroupwiseQuantity} and \eqref{eq:GroupwiseQuantityProduct}, the \gls{mg} \gls{nte} can be derived for group \(g\) by simply integrating the \gls{nte} in Eq. \eqref{eq:nte1} over \(E_{g-1}\leq E\leq E_g\):
+
+\beqa
+\label{eq:mg_nte}
+&\int_{E_{g-1}}^{E_g}dE\frac{\partial}{\partial t}\left(\frac{\psi\seat}{v(E)}\right)+\int_{E_{g-1}}^{E_g}dE\hO\cdot\nabla\psi\seat+\Sigma_{t,g} \psi\sat=\\
+&\hspace{1cm}\int_{E_{g-1}}^{E_g}dE\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  ' \Sigma_s\seatout \psi\seatprime\\
+&\hspace{2cm}\int_{E_{g-1}}^{E_g}dE\promptfissionsource\psi\seatprime +\\
+&\hspace{3cm}\int_{E_{g-1}}^{E_g}dE\delayedfissionsource + Q_g\sat
+\eeqa
