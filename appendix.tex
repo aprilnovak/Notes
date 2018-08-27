@@ -1,0 +1,389 @@
+\section{Appendix}
+\label{sec:Appendix}
+
+\subsection{Orthogonal Polynomials}
+
+It is commonplace to approximate a complex function of phase space as a finite sum of coefficients multiplying orthogonal polynomials. This section describes the important mathematical properties of several classes of orthogonal polynomials commonly used in neutron transport.
+
+\subsubsection{Legendre Polynomials}
+
+The Legendre polynomial \(P\) of order \(l\), or \(P_l\), is the solution to the following equation, which arises from separation of variables of the Laplace equation in spherical coordinates:
+
+\beq
+\label{eq:LegendrePolynomialDiffEq}
+\frac{d}{d\mu} \left((1-\mu^2) \frac{dP_l(\mu)}{d\mu}\right) + l(l+1)P_l(\mu) = 0
+\eeq
+
+The \(l\)-th Legendre polynomial is of the form:
+
+\beq
+\label{eq:LegendrePolynomialDefinitions}
+P_l (\mu) = \frac{1}{2^l l!} \frac{d^l}{d\mu^l} \left(\mu^2 -1\right)^l
+\eeq
+
+where \(\l\) represents angular symmetry (in the \(x\)-\(y\) plane, or \(\theta\)), and is an integer such that \(l\geq0\). The first few Legendre polynomials are:
+
+\begin{subequations}
+\label{eqn:LegendrePolynomials_P0P1P2}
+\begin{eqnarray}
+ P_0 (\mu) =& 1\\
+ P_1 (\mu) =& \mu\\
+ P_2 (\mu) = \frac{1}{2} (3\mu^2 -1)
+\end{eqnarray}
+\end{subequations}
+
+The orthogonality property of Legendre polynomials is given as:
+
+\beq
+\label{eqn:LegendrePolynomialsOrthogonality}
+\int_{-1}^{1} d\mu P_l (\mu) P_k (\mu) = \frac{2\delta_{lk}}{2l+1}
+\eeq
+
+Legendre polynomials also satisfy recursion relations where \(\mu P_l(\mu)\) can be expressed in terms of only other Legendre polynomials:
+
+\beq
+\label{eqn:LegendrePolynomialRecursion1}
+\mu P_l(\mu) = \frac{1}{2l+1} \left\lbrack(l+1)P_{l+1}(\mu) + l P_{l-1}(\mu)\right\rbrack
+\eeq
+
+This is useful for certain derivations where orthogonality must be applied, but a factor of \(\mu\) is present in the integrand.
+
+\subsubsection{Associated Legendre Polynomials}
+
+The associated Legendre polynomial of order \(l\) and \(m\), or \(P_{lm}\), is central to the definition of the spherical harmonics functions in Section \ref{sec:SH}. The associated Legendre polynomials are solutions to the following differential equation:
+
+\beq
+\label{eq:AssociatedLegendrePolynomialDiffEq}
+\frac{d}{d\mu} \left((1-\mu^2) \frac{dP_{lm}}{d\mu}\right) + \left(l(l+1) -\frac{m^2}{1-\mu^2}\right)P_{lm} = 0
+\eeq
+
+where \(m\) represents azimuthal symmetry (relative to the \(z\)-axis, or \(\phi\)), and \(0\leq m\leq l\). In general, \(l\) and \(m\) can be real, complex, and non-integer, but the associated Legendre polynomials reduce to the Legendre polynomials when \(m=0\) and \(l\) is an integer. The associated Legendre polynomials have the form:
+
+\beq
+\label{eq:AssociatedLegendre}
+P_{lm}(\mu)=\frac{(-1)^m}{2^ll!}(1-\mu^2)^{m/2}\frac{d^{l+m}}{d\mu^{l+m}}(\mu^2-1)^l
+\eeq
+
+The associated Legendre polynomials are related to each other for \(\pm m\) by:
+
+\beq
+\label{eq:relatingALP}
+P_{l,-m}=(-1)^m\frac{(l-m)!}{(l+m)!}P_{lm}
+\eeq
+
+and satisfy the following orthogonality relation:
+
+\beq
+\label{eq:AssociatedLegendreOthogonality}
+\int_{-1}^{1}P_{lm}(\mu)P_{l'm'}(\mu)d\mu=\frac{2}{2l+1}\frac{(l+m)!}{(l-m)!}\delta_{ll'}
+\eeq
+
+\subsubsection{Spherical Harmonics}
+\label{sec:SH}
+
+The spherical harmonics functions are eigenfunctions of the monoenergetic Boltzmann scattering operator, and are defined in terms of the associated Legendre polynomials given in Eq. \eqref{eq:AssociatedLegendre} as:
+
+\beq
+\label{eq:SphericaltoAssociated}
+Y_{lm}(\theta,\phi)=(-1)^m\sqrt{\frac{(2l+1)}{4\pi}\frac{(l-m)!}{(l+m)!}}P_{lm}(\cos{(\theta)})e^{im\phi}
+\eeq
+
+For \(m=0\), or azimuthal symmetry, the spherical harmonics reduce to the Legendre polynomials. The spherical harmonics are orthogonal over the unit solid angle:
+
+\beq
+\label{eq:SHOrthogonality}
+\int_{4\pi}^{} d\hO   Y_{lm}(\hO  ) Y_{l'm'}^{*}(\hO  ) = \delta_{ll'}\delta_{mm'}
+\eeq
+
+The spherical harmonics are also related to the Legendre polynomials via the addition theorem:
+
+\beq
+\label{eq:SHAdditionTheorem}
+P_l(\hO  '\cdot\hO  ) = \frac{4\pi}{2l+1} \sum_{m=-l}^{l} Y_{lm}^{*} (\hO  ') Y_{lm}(\hO  )
+\eeq
+
+Eq. \eqref{eq:SHAdditionTheorem} can be split up even further into positive, zero, and negative components of \(m\):
+
+\beq
+\label{eq:SphericalHarmonics2}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}(\hO  )Y_{l0}(\hO  ')+\sum_{m=1}^{l}\left(Y_{lm}(\hO  )Y_{lm}^*(\hO  ')+Y_{l,-m}(\hO  )Y_{l,-m}^*(\hO  ')\right)\right\rbrack
+\eeq
+
+Note that the \(m=0\) term has no complex conjugate symbol on either term because, for \(m=0\), the complex portion of \(Y_{lm}\) is zero based on \(\sin{(0)}=0\) in Eq. \eqref{eq:RealImaginary}. 
+
+\begin{tcolorbox}[breakable]
+For 1-D geometries, the addition theorem in Eq. \eqref{eq:SphericalHarmonics2} can be simplified, since \(m\neq0\) represents azimuthal dependencies. In 1-D, there are no azimuthal dependencies, which reduces Eq. \eqref{eq:SphericalHarmonics2} to:
+
+\beq
+\label{eq:SphericalHarmonics3}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}(\hO  )Y_{l0}(\hO  ')+\sum_{m=1}^{l}\left(\cancel{Y_{lm}(\hO  )Y_{lm}^*(\hO  )}+\cancel{Y_{l,-m}(\hO  )Y_{l,-m}^*(\hO  ')}\right)\right\rbrack
+\eeq
+
+From Eq. \eqref{eq:SphericaltoAssociated}, \(Y_{l0}\) can be expressed in terms of the Associated Legendre polynomials:
+
+\beq
+\label{eq:SphericalHarmonics4}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \sqrt{\frac{2l+1}{4\pi}}P_{l0}(\mu)\sqrt{\frac{2l+1}{4\pi}}P_{l0}(\mu')\right\rbrack\\
+\eeq
+
+Then, from Eq. \eqref{eq:AssociatedLegendre}, it can be seen that the Associated Legendre polynomials reduce to the Legendre polynomials for \(m=0\). This gives the simplified form of the addition theorem which applies for 1-D geometries:
+
+\beq
+\label{eq:AddSpherical1D}
+P_l(\hO  '\cdot\hO  )=P_{l}(\mu)P_{l}(\mu')
+\eeq
+
+\end{tcolorbox}
+
+Eq. \eqref{eq:SphericaltoAssociated} will let us decompose the \(Y_{l0}\) terms appearing in Eq. \eqref{eq:SphericalHarmonics2}:
+
+\begin{equation}
+Y_{l0}=\sqrt{\frac{(2l+1)}{4\pi}}P_{l0}= Y_{l0}^e
+\end{equation}
+
+where Eq. \eqref{eq:SphericalHarmonicsEvenOdd} has been used to show that \(Y_{l0}=Y_{l0}^e\).
+
+\begin{tcolorbox}[breakable]
+To show Eq. \eqref{eq:SHGeneralMoments}, multiply Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion} by \(Y_{lm}^{*}\) and integrate over \(\hO  \):
+
+\begin{equation}
+\int_{4\pi}^{}f(\hO  )Y_{lm}^{*}(\hO  )d\hO  =\int_{4\pi}^{}\sum_{l=0}^{N}\sum_{m=-l}^{l}f_{lm}Y_{lm}(\hO  )Y_{lm}^{*}(\hO  )d\hO  \rightarrow f_{lm}
+\end{equation}
+
+where the orthogonality property from Eq. \eqref{eq:SHOrthogonality} is used to obtain Eq. \eqref{eq:SHGeneralMoments}.
+\end{tcolorbox}
+
+The expansion in Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion} contains both real and imaginary components, and for real functions such as the scattering source, the imaginary component must be removed. 
+
+\begin{tcolorbox}[breakable]
+The moments in Eq. \eqref{eq:SHGeneralMoments}, before removing the imaginary component to the expansion in Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion}, have a real component \(\alpha_{lm}\) and an imaginary component \(\beta_{lm}\) such that:
+
+\begin{equation}
+\label{eq:GeneralComplexNumber}
+f_{lm}=\alpha_{lm}+i\beta_{lm}
+\end{equation}
+
+From the definition in Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion}, the expansion can be broken up into positive and negative components of \(m\), where Eq. \eqref{eq:SphericaltoAssociatedShort} is used for shortening the spherical harmonics:
+
+\begin{equation}
+\label{eq:BeginningExpansion1}
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=0}^{l}\left\lbrack C_{lm}P_{lm}(\hO  )f_{lm}\exp{(im\phi)}+C_{l,-m}P_{l,-m}(\hO  )f_{l,-m}\exp{(-im\phi)}\right\rbrack
+\end{equation}
+
+Because \(\exp{(im\phi)}=\cos{(m\phi)}+i\sin{(m\phi)}\), the above equation can be further expanded by recognizing that \(Y_{lm}\) can be equivalently expressed as:
+
+\begin{equation}
+\label{eq:RealImaginary}
+\begin{aligned}
+Y_{lm}(\hO  )=C_{lm}P_{lm}(\hO  )\left(\cos{(m\phi)}+i\sin{(m\phi)}\right)=\hat{Y}_{lm}^e+i\hat{Y}_{lm}^o\\
+\hat{Y}_{lm}^e=C_{lm}P_{lm}\cos{(m\phi)}\\
+\hat{Y}_{lm}^o=C_{lm}P_{lm}\sin{(m\phi)}\\
+\end{aligned}
+\end{equation}
+
+Inserting Eq. \eqref{eq:RealImaginary} into Eq. \eqref{eq:BeginningExpansion1}:
+
+\begin{equation}
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=0}^{l}\left\lbrack C_{lm}P_{lm}(\hO  )f_{lm}\left(\cos{(m\phi)}+i\sin{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hO  )f_{l,-m}\left(\cos{(m\phi)}-i\sin{(m\phi)}\right)\right\rbrack
+\end{equation}
+
+where the fact that cosine is an even function and sine an odd function has been used in the second term. Then, inserting Eq. \eqref{eq:GeneralComplexNumber} and grouping the terms by real and imaginary components:
+
+\begin{equation}
+\label{eq:FullExpansionSH}
+\begin{aligned}
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=0}^{l}\left[ \text{Real}+i\left(\text{Imag}\right)\right]\\
+\text{Real} = C_{lm}P_{lm}(\hO  )\left(\alpha_{lm}\cos{(m\phi)}-\beta_{lm}\sin{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hO  )\left(\alpha_{l,-m}\cos{(m\phi)}+\beta_{l,-m}\sin{(m\phi)}\right)\\
+\text{Imag} = C_{lm}P_{lm}(\hO  )\left(\alpha_{lm}\sin{(m\phi)}+\beta_{lm}\cos{(m\phi)}\right)+C_{l,-m}P_{l,-m}(\hO  )\left(\beta_{l,-m}\cos{(m\phi)}-\alpha_{l,-m}\sin{(m\phi)}\right)\\\
+\end{aligned}
+\end{equation}
+
+For physically-meaningful quantities such as the scattering source, the expansion must contain only real terms. Hence, all imaginary terms go to zero. For the imaginary term above to be zero for all \(\phi\), the coefficients on the two linearly independent functions \(\sin{(m\phi)}\) and \(\cos{(m\phi)}\) must be zero. This leads to the following two conditions:
+
+\begin{equation}
+\begin{aligned}
+C_{lm}P_{lm}(\hO  )\alpha_{lm}-C_{l,-m}P_{l,-m}(\hO  )\alpha_{l,-m}=0\\
+C_{lm}P_{lm}(\hO  )\beta_{lm}+C_{l,-m}P_{l,-m}(\hO  )\beta_{l,-m}=0\\
+\end{aligned}
+\end{equation}
+
+Using these conditions to eliminate terms with \(-m\) in Eq. \eqref{eq:FullExpansionSH} (with the imaginary component removed), the real expansion of \(f\) becomes:
+
+\begin{equation}
+\label{eq:FullExpansionSH2}
+f(\hO  )=\sum_{l=0}^{N}\sum_{m=0}^{l}C_{lm}P_{lm}(\hO  )\left(2\alpha_{lm}\cos{(m\phi)}-2\beta_{lm}\sin{(m\phi)}\right)
+\end{equation}
+
+The new basis for the real expansion of \(f\) consists of the two ``hatted'' functions in Eq. \eqref{eq:RealImaginary}. These hatted functions represent a basis, and hence must be orthogonal over the unit sphere. This requirement holds for both the even and odd functions separately. Multiplying \(\hat{Y}_{lm}^e\) by itself and integrating over the unit sphere, and then applying the orthogonality condition in Eq. \eqref{eq:SHOrthogonality}:
+
+\begin{equation}
+\label{eq:EvenRequriedOrthogonality}
+\int_{4\pi}^{}\hat{Y}_{lm}^e\hat{Y}_{l'm'}^ed\hO  =C_{lm}^2\int_{0}^{2\pi}\cos{(m\phi)}\cos{(m'\phi)}d\phi\int_{-1}^{1}P_{lm}P_{lm'}d\mu
+\end{equation}
+
+The orthogonality property of cosines functions is:
+
+\begin{equation}
+\int_{0}^{2\pi}\cos{(m\phi)}\cos{(m'\phi)}d\phi=\pi(1+\delta_{m0})\delta_{mm'}
+\end{equation}
+
+Using this cosine orthogonality property and the Legendre polynomial orthogonality from Eq. \eqref{eq:AssociatedLegendreOrthogonality} in Eq. \eqref{eq:EvenRequriedOrthogonality} gives:
+
+\begin{equation}
+\label{eq:EvenRequriedOrthogonality2}
+\int_{4\pi}^{}\hat{Y}_{lm}^e\hat{Y}_{l'm'}^ed\hO  =\frac{1}{2}(1+\delta_{m0})\delta_{mm'}\delta_{ll'}
+\end{equation}
+
+where the definition for \(C_{lm}\) from Eq. \eqref{eq:Clm} has been inserted. In order for the \(\hat{Y}_{lm}^e\) to be orthogonal, the above resulting constant, multiplied by some unknown constant \(\mathscr{C}^2\), must give 1. 
+
+\begin{equation}
+\mathscr{C}^2\frac{1}{2}(1+\delta_{m0})\delta_{mm'}\delta_{ll'}=1
+\end{equation}
+
+This gives two possible solutions, one for \(m=0\) and one for \(m\neq 0\). For \(m=0\), \(\mathscr{C}=1\), and for \(m\neq0\), \(\mathscr{C}=\sqrt{2}\). The only way both of these can be satisfied is if:
+
+\begin{equation}
+\mathscr{C}=\sqrt{2-\delta_{m0}}
+\end{equation}
+
+Similarly, the odd \(\hat{Y}_{lm}\) have to be orthogonal over the unit sphere. The orthogonality property of sine functions is stated as:
+
+\begin{equation}
+\label{eq:SineOrthogonality}
+\int_{0}^{2\pi}\sin{(m\phi)}\sin{(m'\phi)}d\phi=\pi(1-\delta_{m0})\delta_{mm'}
+\end{equation}
+
+Multiplying \(\hat{Y}_{lm}^o\) by itself and then integrating over \(4\pi\) gives:
+
+\begin{equation}
+\label{eq:OddRequriedOrthogonality2}
+\int_{4\pi}^{}\hat{Y}_{lm}^o\hat{Y}_{l'm'}^od\hO  =\frac{1}{2}\delta_{ll'}(1-\delta_{m0})\delta_{mm'}
+\end{equation}
+
+where the definition for \(C_{lm}\) from Eq. \eqref{eq:Clm}, the Associated Legendre polynomial orthogonality property from Eq. \eqref{eqn:AssociatedLegendreOrthogonality}, and the sine orthogonality property from Eq. \eqref{eq:SineOrthogonality} have been used. In order for the odd basis functions to be orthogonal, the resulting above constant, multiplied by some constant \(\mathscr{C}\), must equal 1. Hence, a second condition similar to that obtained for the even functions is obtained:
+
+\begin{equation}
+\mathscr{C}^2\frac{1}{2}\delta_{ll'}(1-\delta_{m0})\delta_{mm'}=1
+\end{equation} 
+
+This gives two solutions - for \(m=0\), the odd functions are identically zero. For \(m\neq0\), \(\mathscr{C}=1/\sqrt{2}\), the same result obtained for the even functions. Hence, while the imaginary and complex expansion is defined in Eq. \eqref{eq:RealImaginary}, the real basis for \(f\) is determined by multiplying \(\hat{Y}_{lm}^e\) and \(\hat{Y}_{lm}^o\) by \(\mathscr{C}\) to give:
+
+\begin{equation}
+\label{eq:RealExpansionSH}
+\begin{aligned}
+Y_{lm}^e=\sqrt{2-\delta_{m0}}C_{lm}P_{lm}\cos{(m\phi)}\\
+Y_{lm}^o=\sqrt{2-\delta_{m0}}C_{lm}P_{lm}\sin{(m\phi)}\\
+\end{aligned}
+\end{equation}
+
+where the real expansion functions is distinguished from the complex expansion by not including ``hats.'' By comparing Eq. \eqref{eq:RealExpansionSH} with Eq. \eqref{eq:RealImaginary}, it is clear that:
+
+\begin{equation}
+\label{eq:HattoNoHat}
+\begin{aligned}
+Y_{lm}^e=\sqrt{2-\delta_{m0}}\hat{Y}_{lm}^e\\
+Y_{lm}^o=\sqrt{2-\delta_{m0}}\hat{Y}_{lm}^o\\
+\end{aligned}
+\end{equation}
+
+And because the odd functions are zero for \(m=0\), the second line above could equivalently be stated as \(Y_{lm}^o=\sqrt{2}\hat{Y}_{lm}^o\) with the understanding that \(Y_{lm}\) is zero for \(m=0\). 
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[breakable]
+We can also express \(\hat{Y}_{lm}^e\) in terms of \(\hat{Y}_{l,-m}^e\) using the definition in Eq. \eqref{eq:RealImaginary}. 
+
+\begin{equation}
+\begin{aligned}
+\hat{Y}_{lm}^e=(-1)^m\sqrt{\frac{2l+1}{4\pi}\frac{(l-m)!}{(l+m)!}}P_{lm}\cos{(m\phi)}\\
+\hat{Y}_{l,-m}^e=(-1)^{-m}\sqrt{\frac{2l+1}{4\pi}\frac{(l-(-m))!}{(l+(-m))!}}P_{l,-m}\cos{(-m\phi)}\\
+\end{aligned}
+\end{equation}
+
+The \(\hat{Y}_{l,-m}^e\) term can be further simplified to the following, 
+
+\begin{equation}
+\begin{aligned}
+\hat{Y}_{l,-m}^e=(-1)^{2m}\sqrt{\frac{2l+1}{4\pi}\frac{(l-m))!}{(l+m)!}}P_{lm}\cos{(m\phi)}\\
+\end{aligned}
+\end{equation}
+
+where \(P_{l,-m}\) is related to \(P_{lm}\) by Eq. \eqref{eq:relatingALP} and the fact that cosine is an even function has been used. Hence, it can be seen that:
+
+\begin{equation}
+\label{eq:MinusMtoM}
+\hat{Y}_{l,-m}^e=(-1)^m\hat{Y}_{lm}^e
+\end{equation}
+
+Likewise, 
+
+\begin{equation}
+\label{eq:MinusMtoMOdd}
+\hat{Y}_{l,-m}^o=-(-1)^m\hat{Y}_{lm}^o
+\end{equation}
+
+\end{tcolorbox}
+
+In order to remove the imaginary components in Eq. \eqref{eq:SphericalHarmonics2}, express the summation in terms of ``hatted'' spherical harmonics as shown in Eq. \eqref{eq:RealImaginary}:
+
+\begin{equation}
+\begin{aligned}
+\label{eq:FullExpansion}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \left(\hat{Y}_{l0}^e(\hO  )+i\cancel{\hat{Y}_{l0}^o(\hO  )}\right)\left(\hat{Y}_{l0}^e(\hO  ')+i\cancel{\hat{Y}_{l0}^o(\hO  ')}\right)\right\rbrack+\\
+\frac{4\pi}{2l+1}\left\lbrack\sum_{m=1}^{l}\left(\left(\hat{Y}_{lm}^e(\hO  )+i\hat{Y}_{lm}^o(\hO  )\right)\left(\hat{Y}_{lm}^{e*}(\hO  ')+i\hat{Y}_{lm}^{o*}(\hO  ')\right)+\left(\hat{Y}_{l,-m}^e(\hO  )+i\hat{Y}_{l,-m}^o(\hO  )\right)\left(\hat{Y}_{l,-m}^{e*}(\hO  ')+i\hat{Y}_{l,-m}^{o*}(\hO  ')\right)\right)\right\rbrack\\
+\end{aligned}
+\end{equation}
+
+where from the definition in Eq. \eqref{eq:RealImaginary}, we know that the \(Y_{l0}^o=0\). Because we want the expansion to be real for certain quantities such as the scattering source, all imaginary terms from Eq. \eqref{eq:FullExpansion} are removed to give:
+
+\begin{equation}
+\begin{aligned}
+\label{eq:FullExpansion2}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hO  )\hat{Y}_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(\hat{Y}_{lm}^e(\hO  )\hat{Y}_{lm}^{e*}(\hO  ')-\hat{Y}_{lm}^o(\hO  )\hat{Y}_{lm}^{o*}(\hO  ')+\hat{Y}_{l,-m}^e(\hO  )\hat{Y}_{l,-m}^{e*}(\hO  ')-\hat{Y}_{l,-m}^o(\hO  )\hat{Y}_{l,-m}^{o*}(\hO  ')\right)\right\rbrack\\
+\end{aligned}
+\end{equation}
+
+Because the odd component is defined as in Eq. \eqref{eq:RealImaginary}, the complex conjugate of \(\hat{Y}_{lm}^o\) simply is equal to the negative of \(\hat{Y}_{lm}^o\) (since the factor of \(i\) in front becomes negative for complex conjugates). Likewise, the complex conjugate of \(\hat{Y}_{lm}^e\) is simply equal to \(\hat{Y}_{lm}^e\) because the even component has no complex terms. In addition, the \(-m\) terms can be related to the \(+m\) terms using Eq. \eqref{eq:MinusMtoM} and \eqref{eq:MinusMtoMOdd}. Hence, the above becomes:
+
+\begin{equation}
+\begin{aligned}
+\label{eq:FullExpansion3}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hO  )\hat{Y}_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(2\hat{Y}_{lm}^e(\hO  )\hat{Y}_{lm}^{e}(\hO  ')+2\hat{Y}_{lm}^o(\hO  )\hat{Y}_{lm}^{o}(\hO  ')\right)\right\rbrack\\
+\end{aligned}
+\end{equation}
+
+From the definitions in Eq. \eqref{eq:HattoNoHat} and Eq. \eqref{eq:HattoNoHat}, the above becomes:
+
+\begin{equation}
+\begin{aligned}
+\label{eq:FullExpansion4}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack \hat{Y}_{l0}^e(\hO  )\hat{Y}_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )Y_{lm}^{e}(\hO  ')+Y_{lm}^o(\hO  )Y_{lm}^{o}(\hO  ')\right)\right\rbrack\\
+\end{aligned}
+\end{equation}
+
+Finally, using Eq. \eqref{eq:HattoNoHat} and Eq. \eqref{eq:RealExpansionSH}, \(\hat{Y}_{l0}^e=Y_{l0}^e\). This then leads to the final form of the expansion that now contains only real components:
+
+\begin{equation}
+\begin{aligned}
+\label{eq:FullExpansion5}
+P_l(\hO  '\cdot\hO  )=\frac{4\pi}{2l+1}\left\lbrack Y_{l0}^e(\hO  )Y_{l0}^e(\hO  ')+\sum_{m=1}^{l}\left(Y_{lm}^e(\hO  )Y_{lm}^{e}(\hO  ')+Y_{lm}^o(\hO  )Y_{lm}^{o}(\hO  ')\right)\right\rbrack\\
+\end{aligned}
+\end{equation}
+
+
+
+
+
+The scattering cross section is often expanded in Legendre polynomials as in Eq. \ref{eq:ScatteringLegendre}, and then the Legendre polynomials in that expansion are themselves expanded in the spherical harmonics using the identity in Eq. \ref{eq:SHAdditionTheorem}. This double expansion takes the form:
+
+\begin{equation}
+\label{eq:ScatteringLegendreandSH}
+\Sigma_s(\vv{r}, E'\rightarrow E, \hO  '\rightarrow\hO  ) = \Sigma_s(\vv{r}, E'\rightarrow E, \mu) = \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}^{*} (\hO  ') Y_{lm}(\hO  )
+\end{equation}
+
+Further, because the scattering cross section usually appears within an integral with the angular flux, such as in Eq. \ref{eq:ConservationInscatteringSource}, after we perform the spherical harmonics expansion, we can define another quantity, the flux moments:
+
+\begin{equation}
+\label{eq:FluxMomentSH}
+\phi_l^m\spas = \int_{4\pi}^{} d\hO  '\psi(\vv{r}, E', \hO  ', t)Y_l^{m*}(\hO  ')
+\end{equation}

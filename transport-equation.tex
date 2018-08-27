@@ -192,7 +192,21 @@ Eq. \eqref{eq:nte} is the \gls{nte} written in terms of neutron density. The \gl
 &\hspace{3cm}\delayedfissionsource + Q\seat
 \eeqa
 
-The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because it contains both integrals and derivatives. Several approximations exist in Eq. \eqref{eq:nte1} -
+The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because it contains both integrals and derivatives. The \gls{bc} for this equation is a condition on the incoming flux, and consists of the sum of a generic incoming flux, any specular reflective flux (i.e. the incoming angle is a reflection of the outgoing angle), and any diffusive reflective flux (i.e. the incoming angle is averaged over all outgoing angles):
+
+\beqa
+\psi\seat=&\psi_{inc}\seat+\alpha_s\seat\psi(\vv{r},E,\hO_r,t)+\\
+&\hspace{1cm}\alpha_d\seat\frac{\int_{\hO'\cdot\hat{n}>0}d\hO'\|\hO'\cdot\hat{n}\psi(\vv{r},E,\hO',t)}{\int_{\hO'\cdot\hat{n}>0}d\hO'\|\hO'\cdot\hat{n}}
+\eeqa
+
+on \(\hO\cdot\hat{n}<0\), where \(\hO_r\) is the reflected direction corresponding to \(\hO\):
+
+\beq
+\label{eq:hOrDef}
+\hO_r\equiv\hO-2\left(\hO\cdot\hat{n}\right)\hat{n}
+\eeq
+
+Several approximations exist in Eq. \eqref{eq:nte1} -
 
 \begin{itemize}
 \item Neutron-neutron interactions are negligible because the density of neutrons is much smaller than typical atomic densities. With this approximation, the \gls{nte} is equivalent to the linear Boltzmann equation.
@@ -231,6 +245,7 @@ It is frequently assumed that the angular dependence of a collision is rotationa
 Rotational symmetry implies that we are ignoring any type of anisotropic grain structure, which is sufficient since on a macroscopic scale, grains are sufficiently randomly oriented. Because the scattering cross sections can now easily be expressed as a function of \(\mu\) instead of \(\hO\) and \(\hO'\), the scattering cross section can be expanded in a series of orthogonal polynomials, where only the coefficients of the expansion need to be stored. Orthogonal polynomials commonly selected for this purpose are the Legendre polynomials and the spherical harmonics functions.
 
 \subsubsection{Legendre Polynomial Expansion}
+\label{sec:LegendrePolynomialExpansion}
 
 The scattering cross section can be expanded as a sum of Legendre polynomials multiplying coefficients \(\Sigma_{s,l}\), also known as the scattering moments:
 
@@ -239,7 +254,9 @@ The scattering cross section can be expanded as a sum of Legendre polynomials mu
 \Sigma_s\seatout \equiv\sum_{l=0}^L\frac{2l+1}{4\pi}\Sigma_{s,l}(\vv{r},E'\rightarrow E,t)P_l(\mu)
 \eeq
 
-If \(L\) is infinite, the above expansion is exact; however, in practice a finite sum is used, where \(L\) is typically chosen to match the order of the angular approximation made in the flux. The factor of \((2l+1)/4\pi\) appears to obtain the desired normalization of \(2\pi\) in the definition of the scattering moment to account for integration over \(0\leq\phi\leq2\pi\). Multiplying both sides by \(P_{l'}(\mu)\), integrating over solid angle, and using the orthogonality property of Legendre polynomials in Eq. \eqref{eqn:LegendrePolynomialsOrthogonality} gives the following definition for the scattering moments:
+\(L\) is the order of scattering anisotropy. If \(L\) is infinite, the above expansion is exact; however, in practice a finite sum is used, where \(L\) is typically chosen to match the order of the angular approximation made in the flux. For neutron and photon transport, using only a few terms is typically sufficient, though this is not the case for electron scattering. When \(L=0\), the angular dependence of a cross section is entirely neglected, which therefore represents isotropic scattering. \(L=1\) is often referred to being ``linearly anisotropic,'' since the functional form of the series expansion is \(C_0+C_1\mu\).
+
+The factor of \((2l+1)/4\pi\) appears to obtain the desired normalization of \(2\pi\) in the definition of the scattering moment to account for integration over \(0\leq\phi\leq2\pi\). Multiplying both sides by \(P_{l'}(\mu)\), integrating over \(\mu\), and using the orthogonality property of Legendre polynomials in Eq. \eqref{eqn:LegendrePolynomialsOrthogonality} gives the following definition for the scattering moments:
 
 \beqa
 \label{eq:ScatteringMomentsLegendre}
@@ -249,56 +266,34 @@ If \(L\) is infinite, the above expansion is exact; however, in practice a finit
 
 Expanding the scattering cross section in Legendre polynomials is known as the \(P_L\) approximation. 
 
-\subsubsection{Boundary Conditions}
+\subsubsection{Spherical Harmonics Expansion}
 
-This section discusses the boundary conditions used in Eq. \eqref{eq:TE}.
-
-\subsubsubsection{Incoming Flux}
-The incoming flux \(\psi_{inc}\) can be specified for incoming directions:
+Similar to the Legendre polynomials, any quantity \(f(\hO)\) can be expanded as a sum of spherical harmonics functions multiplying coefficients \(f_{lm}\), known as moments:
 
 \beq
-\psi\spa =\psi_{inc}\quad\vv{r}\in \partial \volume\quad\hO  \cdot\hat{n}<0
+\label{eq:SphericalHarmonicsGeneralExpansion}
+f(\hO)\equiv\sum_{l=0}^{N}\sum_{m=-l}^{l}Y_{lm}(\hO)f_{lm}
 \eeq
 
-where \(\partial\volume\) is a common way of denoting one lower dimension than the problem domain \(\volume\). Hence, if the problem is 2-D, \(\volume\) represents the two-dimensional domain, while \(\partial \volume\) represents the one-dimensional boundaries. For eigenvalue problems, \(\psi_{inc}=0\) on all boundaries because an eigenvalue problem is defined such that there are no external sources present. 
-
-\subsubsubsection{Reflecting}
-A reflecting condition specifies that the outgoing flux on one boundary is equivalent to the incoming flux on that same boundary.
+Multiplying both sides of Eq. \eqref{eq:SphericalHarmonicsGeneralExpansion} by \(Y_{lm}^*\), integrating over solid angle, and using the orthogonality property of spherical harmonics in Eq. \eqref{eq:SHOrthogonality} gives the following definition for the moments:
 
 \beq
-\psi\spa =\psi(\vv{r},-\hO  ,E,t)\quad\vv{r}\in\partial \volume
+\label{eq:SHGeneralMoments}
+f_{lm}\equiv\int_{4\pi}^{}f(\hO)Y_{lm}^{*}(\hO)d\hO  
 \eeq
 
-\subsection{Legendre Polynomial and Spherical Harmonics Expansions}
-This section will show how to reduce Eq. \eqref{eq:TE} to simpler forms by expanding cross sections and flux in Legendre polynomials or spherical harmonics.
+After expanding the scattering cross section in the Legendre polynomials as shown in Section \ref{sec:LegendrePolynomialExpansion}, the spherical harmonics addition theorem in Eq. \eqref{eq:SHAdditionTheorem} may be used to substitute spherical harmonics functions for Legendre functions in Eq. \eqref{eq:ScatteringLegendre}:
 
-\subsubsection{Spherical Harmonics}
+\beq
+\label{eq:ScatteringSH}
+\Sigma_s\seatout \equiv\sum_{l=0}^L\Sigma_{s,l}(\vv{r},E'\rightarrow E,t) \sum_{m=-l}^{l} Y_{lm}^{*} (\hO  ') Y_{lm}(\hO  )
+\eeq
 
-Expanding the Legendre polynomials in Eq. \eqref{eq:TEPLnoSHwithPL} in the spherical harmonics, as in Eq. \ref{eq:ScatteringLegendreandSH}, we obtain an equivalent form of the transport equation:
+When Eq. \eqref{eq:ScatteringSH} is used in the \gls{nte}, the inscattering source term can be written as follows:
 
-\begin{equation}
-\label{eq:TEPLnomoments}
-\begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi\spa }{\partial t} +
- \hO  \cdot\nabla\psi\spa  + 
- \Sigma_t(\vv{r},E)\psi\spa  = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hO  )\int_{4\pi}^{} d\hO  '\psi(\vv{r}, E', \hO  ', t)Y_l^{m*}(\hO  ') + S\spa +\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi\spap\\
-\end{aligned}
-\end{equation}
+\beq
+\label{eq:SHInscattering}
+\int_0^\infty dE\sum_{l=0}^L\Sigma_{s,l}(\vv{r},E'\rightarrow E,t) \sum_{m=-l}^{l}  Y_{lm}(\hO  )\phi_{lm}(\vv{r},E,t)
+\eeq
 
-The scattering must be real, and hence we can expand the spherical harmonics into positive and negative components of \(m\) to see how we can expand a real-valued term (the scattering integral) in complex functions. 
-
-From Eq. \eqref{eq:TEPLnomoments}, we can further substitute in the definition for the flux moments as in Eq. \ref{eq:FluxMomentSH},  to obtain another equivalent form of the transport equation:
-
-\begin{equation}
-\label{eq:TEPL}
-\begin{aligned}
-\frac{1}{v(E)} \frac{\partial\psi\spa }{\partial t} +
- \hO  \cdot\nabla\psi\spa  + 
- \Sigma_t(\vv{r},E)\psi\spa  = \\
- \int_{0}^{\infty}dE' \sum_{l=0}^{\infty} \Sigma_{s,l}(\vv{r}, E'\rightarrow E) \sum_{m=-l}^{l} Y_{lm}(\hO  )\phi_l^m\spas + S\spa +\\
-\frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\nu(E')\Sigma_f(\vv{r}, E')\psi\spap\\
-\end{aligned}
-\end{equation}
-
+ where the definition of the flux moments \(\phi_{lm}\) from Eq. \eqref{eq:SHGeneralMoments} has been used.
