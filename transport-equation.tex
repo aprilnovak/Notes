@@ -45,17 +45,16 @@ Due to the very simple form of the component of \(\hO\) along the \(z\)-axis, on
  
 \end{tcolorbox}
 
-
 While neutron transport is characterized by a single equation that does not require the same length derivation process as the Navier-Stokes equations, this seven-dimensional space makes practical solution difficult. 
 
-Because the neutron population is conserved, the rate of change of the neutron population within an arbitrary volume \(\volume(t)\) consisting of a system must equal the sum of any gains and losses of neutrons, because a system is defined such that its boundaries are closed to neutron flow:
+Because the neutron population is conserved, the rate of change of the neutron population within an arbitrary convex volume \(\volume(t)\) consisting of a system must equal the sum of any gains and losses of neutrons, because a system is defined such that its boundaries are closed to neutron flow:
 
 \beq
 \label{eq:neutron_conservation}
 \left\lbrack\frac{d}{dt}\int d\volume n(\vv{r},t)\right\rbrack dEd\hO=\text{gains}-\text{losses}
 \eeq
 
-where \(n\) is the neutron density [1/cm$^3$s] and \(d(.)/dt\) is the material derivative of \((.)\). Due to the higher dimensionality of the \gls{nte}, to provide a correct statement of conservation, all volume integrals must be multiplied by the differential \(dEd\hO\) to represent integration over all energies and angles. Taking the time derivative of an integral whose bounds depend on time requires the use of the general transport theorem:
+where \(n\) is the neutron density [1/cm$^3$s] and \(d(.)/dt\) is the material derivative of \((.)\). The volume must be convex to eliminate the possibility of boundary sources of neutrons due to leakage from one portion of the boundary to another. Due to the higher dimensionality of the \gls{nte}, to provide a correct statement of conservation, all volume integrals must be multiplied by the differential \(dEd\hO\) to represent integration over all energies and angles. Taking the time derivative of an integral whose bounds depend on time requires the use of the general transport theorem:
 
 \beq
 \label{eq:RTT}
@@ -94,7 +93,35 @@ d\hO  \equiv&\sin{(\theta)}d\theta d\phi\\
 \equiv&d\mu d\phi
 \eeqa
 
-An integral over solid angle is represented shorthand by \(\int_{4\pi}^{ } d\hO\), and is equivalent to the integral of Eq. \eqref{eq:DifferentialOmega}. From the definition of \(\mu\) in Eq. \eqref{eq:muDef}, \(d\mu=d(\cos{(\theta)})=\sin{(\theta)}d\theta\), giving the second equivalent form in Eq. \eqref{eq:DifferentialOmega}.
+From the definition of \(\mu\) in Eq. \eqref{eq:muDef}, \(d\mu=d(\cos{(\theta)})=\sin{(\theta)}d\theta\), giving the second equivalent form in Eq. \eqref{eq:DifferentialOmega}. An integral over solid angle is represented shorthand by \(\int_{4\pi}^{ } d\hO\), and is equivalent to the integral of Eq. \eqref{eq:DifferentialOmega}:
+
+\beqa
+\label{eq:SolidAngleIntegration}
+\int_{4\pi}d\hO\equiv&\ \int_{-1}^1d\mu\int_0^{2\pi}d\phi\\
+=&\ 4\pi
+\eeqa
+
+The integral of any single component of \(\hO\) defined in Eq. \eqref{eq:OmegaCartesian} over solid angle is zero:
+
+\beq
+\label{eq:OmegaCartesianIntegration}
+\int_{4\pi}d\hO\hO=0
+\eeq
+
+The integral of any two components of \(\hO\) defined in Eq. \eqref{eq:OmegaCartesian} over solid angle gives the following orthogonality condition:
+
+\beq
+\label{eq:4PiOmegaOmega}
+\int_{4\pi}^{ } d\hO\ \Om_i\Om_j = \frac{4\pi}{3}\delta_{ij}
+\eeq
+
+The integral of any three components of \(\hO\) defined in Eq. \eqref{eq:OmegaCartesian} over solid angle is zero:
+
+\beq
+\label{eq:4PiOmegaOmegaOmega}
+\int_{4\pi}d\hO \Om_i\Om_j\Om_k=0
+\eeq
+
 \end{tcolorbox}
 
 The fission source of neutrons is an integral over all energies and angles of the fission reaction rate density. The neutrons born nearly instantaneously following fission from the fragmentation of the compound nucleus are considered ``prompt'' neutrons. Delayed by up to several hundred seconds is another source of neutrons from the decay of fission products. Rather than consider the build up and decay of fission products with the Batemann equations on time scales of seconds to capture this delayed source of neutrons, these ``delayed'' neutrons are treated as a time-lagged fission source of neutrons. The fraction of fission neutrons born delayed is \(\beta\), the delayed neutron fraction:
@@ -206,7 +233,7 @@ on \(\hO\cdot\hat{n}<0\), where \(\hO_r\) is the reflected direction correspondi
 \hO_r\equiv\hO-2\left(\hO\cdot\hat{n}\right)\hat{n}
 \eeq
 
-Several approximations exist in Eq. \eqref{eq:nte1} -
+The scattering and fission terms couple all energies and angles together. Several approximations exist in Eq. \eqref{eq:nte1} -
 
 \begin{itemize}
 \item Neutron-neutron interactions are negligible because the density of neutrons is much smaller than typical atomic densities. With this approximation, the \gls{nte} is equivalent to the linear Boltzmann equation.
@@ -296,4 +323,4 @@ When Eq. \eqref{eq:ScatteringSH} is used in the \gls{nte}, the inscattering sour
 \int_0^\infty dE\sum_{l=0}^L\Sigma_{s,l}(\vv{r},E'\rightarrow E,t) \sum_{m=-l}^{l}  Y_{lm}(\hO  )\phi_{lm}(\vv{r},E,t)
 \eeq
 
- where the definition of the flux moments \(\phi_{lm}\) from Eq. \eqref{eq:SHGeneralMoments} has been used.
+ where the definition of the flux moments \(\phi_{lm}\) from Eq. \eqref{eq:SHGeneralMoments} has been used. Because the diffusion approximation is equivalent to assuming isotropic scattering, \(\phi_{00}\) is equivalent to the scalar flux.

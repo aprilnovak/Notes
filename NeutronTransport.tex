@@ -60,6 +60,7 @@
 \newcommand{\spa}{(\vv{r}, E, \hO, t)}
 \newcommand{\seat}{(\vv{r}, E, \hO, t)}
 \newcommand{\sat}{(\vv{r},\hO,t)}
+\newcommand{\sset}{(\vv{r},E,t)}
 \newcommand{\seatprime}{(\vv{r},E',\hO',t)}
 \newcommand{\seatout}{(\vv{r},E'\rightarrow E,\hO'\rightarrow \hO,t)}
 \newcommand{\spas}{(\vv{r},E,t)}
@@ -76,6 +77,9 @@
 
 % total fission source
 \newcommand{\totalfissionsource}{\chi(E,\hO)\int_0^\infty dE'\int_{4\pi}d\hO' \nu(E')\Sigma_f(\vv{r},E',t)}
+
+% in-scattering source
+\newcommand{\inscatteringsource}{\int_0^\infty dE'\int_{4\pi}d\hO'\Sigma_s\seatout}
 
 
 \titleclass{\subsubsubsection}{straight}[\subsection]
@@ -156,15 +160,6 @@ This section defines the variables that appear in the neutron transport equation
 
 In Cartesian coordinates, a neutron moves along constant \(\hO\) until suffering a collision. This is {\it not} the case in curvilinear (cylindrical, spherical, or other) coordinates, however. In curvilinear coordinates, as a neutron streams, the angular coordinates are constantly changing. If this is not intuitive, think of a neutron traveling in a 2-D Cartesian coordinate system along the line \(x = 1\). This neutron moves along constant \(\hO\). However, the same neutron, described in a cylindrical system, is constantly changing its angle relative to the \(x\)-axis. This means that \(\hO\), in the cylindrical coordinate frame, also changes as the neutron moves, even if it hasn't collided with anything!
 
-
-
-The integral of any two components of \(\hO\) over \(4\pi\) solid angle gives an orthogonality condition for \(\hO\):
-
-\beq
-\label{eq:4PiOmegaOmega}
-\int_{4\pi}^{ } d\hO\ \Om_i\Om_j = \frac{4\pi}{3}\delta_{ij}
-\eeq
-
 \subsubsection{Reaction Rates}
 
 The interaction rate of neutrons in material \(j\) is given in terms of an interaction frequency for reaction \(i\):
@@ -218,10 +213,7 @@ The angular current density has the same magnitude as the angular flux, except t
 
 The current \(\vv{J}\) is the zeroth angular momentum of the angular current, which is equivalent to the first angular moment of the angular flux, and is given by:
 
-\beq
-\label{eq:Current}
-\vv{J}(\vv{r},E,t)=\int_{4\pi}^{}d\hO  \vv{j}=\int_{4\pi}^{}d\hO\psi\spa\hO  
-\eeq
+
 
 The fundamental difference between current and flux is that current represents the net rate at which particles stream through a surface (since it is a vector), while flux represents the total rate at which particles stream through a surface, regardless of direction. While Eq. \ref{eq:Current} holds for the angular variables, there is no analogous, exact, relationship between \(J\), the scalar current, and \(\phi\). To determine how many neutrons cross a unit area, we must integrate the angular current over that area, dotted with the unit normal vector of that surface to indicate that only neutrons moving perpendicular to the surface actually cross it:
 
@@ -257,16 +249,7 @@ While the current and scalar flux are the first and zeroth moments of the angula
 \input{transport-equation.tex}
 
 \subsection{The Neutron Continuity Equation}
-If we integrate Eq. \ref{eq:TE} over angle, we obtain what is known as the neutron continuity equation:
 
-\beqa
-\label{eq:NeutronContinuityEquation}
-\frac{1}{v(E)} \frac{\partial\phi\spas}{\partial t} +
- \nabla\cdot \vv{J}\spas + 
- \Sigma_t\spas\phi\spas = \\
- \int_{0}^{\infty}dE' \Sigma_s(\vv{r}, E'\rightarrow E,t)\phi(\vv{r}, E', t) + S\spas+\\
- \frac{\chi_p(E)}{4\pi} \int_{0}^{\infty} dE'\nu(E')\Sigma_f(\vv{r}, E',t)\phi(\vv{r}, E',t)
-\eeqa
 
 By integrating over angle, we introduced a new variable - \(J\). Unfortunately, \(J\) cannot be expressed in terms of \(\phi\) in an exact manner, but Eq. \ref{eq:NeutronContinuityEquation} does reduce to the diffusion equation if we make the approximation of Fick's law:
 
@@ -284,7 +267,7 @@ If instead we multiplied Eq. \ref{eq:TE} by \(\hO\) and then integrated over ang
  \int_{4\pi}^{} d\hO\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \Sigma_s\spang\psi\spap + \int_{4\pi}^{} d\hO  \hO  S\spa\\
 \eeqa
 
-The time derivative in the first term was first brought outside the integral (assuming the control volume doesn't change shape), and then \(\psi\hO  \) was recognized as the angular current defined in Eq. \ref{eq:AngularCurrent}. The gradient was pulled out of the streaming term because the integral is over angle, and not space. We can recognize the lumped source term as being equal to the first moment of the source, \(S_1\), similar to how scattering moments are defined in Eq. \ref{eq:ScatteringMomentsLegendre}. This first moment will be zero for isotropic sources because they have no dependence on angle. Then, we can rearrange the scattering term by multiplying it by \(\hO  \cdot\hO  \), since this is equivalent to multiplication by 1. 
+We can recognize the lumped source term as being equal to the first moment of the source, \(S_1\), similar to how scattering moments are defined in Eq. \ref{eq:ScatteringMomentsLegendre}. This first moment will be zero for isotropic sources because they have no dependence on angle. Then, we can rearrange the scattering term by multiplying it by \(\hO  \cdot\hO  \), since this is equivalent to multiplication by 1. 
 
 \beqa
 \label{eq:TEAngleAngleIntegrated}
@@ -1582,188 +1565,8 @@ The second-order form of the \(SP_N\) equations results in the need to solve hal
 Heuristic arguments can be used to determine how the 1-D boundary conditions for the \(P_N\) method can be extended to the \(SP_N\) method. All derivatives are transformed according to \(\partial(.)/\partial x\rightarrow\hat{n}\cdot\nabla(.)\). 
 
 \clearpage
-\section{Deriving the Diffusion Equation}
+\input{diffusion-equation.tex}
 
-The diffusion equation is derived by assuming a \(P_1\) expansion for the angular dependence of the flux; in other words, expand the angular dependence of the flux in a first-order Legendre series such that the flux is ``linearly anisotropic.'' This approximation is reasonably accurate if the angular flux is only weakly dependent on angle. Expanding the flux in Legendre polynomials as in Eq. \ref{eq:ScatteringLegendre}, where instead of expanding the scattering cross section, we expand the flux, gives:
-
-\beq
-\label{eq:FluxLegendreP1}
-\psi\spa  \approx \frac{\phi_0\spas}{4\pi} + \frac{3}{4\pi} \hO  \phi_1\spas
-\eeq
-
-To interpret the physical meaning of the flux moments \(\phi_0\) and \(\phi_1\), integrate Eq. \ref{eq:FluxLegendreP1} over angle:
-
-\beqa
-\label{eq:FluxLegendreP1_AngleIntegration}
-\int_{4\pi}^{} d\hO   \psi\spa  =& \int_{4\pi}^{} d\hO   \frac{\phi_0\spas}{4\pi} + \int_{4\pi}^{} d\hO   \frac{3}{4\pi} \hO  \phi_1\spas\\
-\phi\spas = &\ \phi_0 + \frac{3}{4\pi}\phi_1\int_{4\pi}^{} d\hO  \hO\\
-   = &\ \phi_0
-\eeqa
-
-where we have used the fact that the integral of any single component of \(\hO\) over solid angle is zero as in Eq. \ref{eq:OmegaCartesian}. Eq. \ref{eq:FluxLegendreP1_AngleIntegration} above indicates that \(\phi = \phi_0\), so the zeroth moment of the flux is simply the scalar flux. To interpret \(\phi_1\), multiply Eq. \ref{eq:FluxLegendreP1} by \(\hO\) and then integrate over solid angle:
-
-\beqa
-\label{eq:FluxLegendreP1_AngleIntegration2}
-\int_{4\pi}^{} d\hO   \hO  \psi\spa  =& \int_{4\pi}^{} d\hO   \hO  \frac{\phi_0\spas}{4\pi} + \int_{4\pi}^{} d\hO   \hO  \frac{3}{4\pi} \hO  \phi_1\spas\\
-J\spas = &\ \phi_1\spas\\
-\eeqa
-
-where we have used the definition of angular current from Eq. \ref{eq:AngularCurrent}, the integration of any two components of solid angle from Eq. \ref{eq:4PiOmegaOmega}, and the fact that the integral of any component of solid angle over the entire solid angle is zero. Therefore, the current is equivalent to the first moment of the flux.
-
-Inserting the expansion from Eq. \ref{eq:FluxLegendreP1} into Eq. \ref{eq:TEAngleAngleIntegrated2} for \(\psi\), and applying the interpretations of Eqs. \ref{eq:FluxLegendreP1_AngleIntegration} and \ref{eq:FluxLegendreP1_AngleIntegration2}, we obtain:
-
-\beqa
-\label{eq:P1a}
-\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \left(\frac{\phi\spas}{4\pi} + \frac{3}{4\pi} \hO  \cdot\vv{J}\spas\right) + 
- \Sigma_t(\vv{r},E)\vv{J}\spas = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + S_1\spas
-\eeqa
-
-Because the integral of any odd number of \(\hO  \) components vanish due to symmetry, the current portion in the streaming term evaluates to zero. In addition, including the results from Eq. \ref{eq:4PiOmegaOmega}, the streaming term becomes:
-
-\begin{equation}
-\label{eq:P1b}
-\begin{aligned}
-\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
- \frac{1}{3}\nabla\phi + 
- \Sigma_t(\vv{r},E)\vv{J}\spas = \\
- \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t) + \vv{S_1}\spas
-\end{aligned}
-\end{equation}
-
-Bundling all source terms Eq. \ref{eq:NeutronContinuityEquation} in \(S\), this equation becomes:
-
-\begin{equation}
-\label{eq:NeutronContinuityEquation_BundledSource}
-\begin{aligned}
-\frac{1}{v(E)} \frac{\partial\phi\spas}{\partial t} +
- \nabla\cdot J\spas + 
- \Sigma_t(\vv{r},E)\phi\spas = \\
- \int_{0}^{\infty}dE' \Sigma_s(\vv{r}, E'\rightarrow E)\phi(\vv{r}, E', t) + S\spas\\
-\end{aligned}
-\end{equation}
-
-Eqs. \ref{eq:P1b} and \ref{eq:NeutronContinuityEquation_BundledSource} are the energy-dependent \(P_1\) equations. From Eq. \ref{eq:ScatteringMomentsLegendre}, the scattering term in Eq. \ref{eq:P1b} can be simplified if we first define the average of the isotropic scattering angle:
-
-\begin{equation}
-\label{eq:IsotropicScatteringAngle}
-\bar{\mu_o} = \frac{\int_{4\pi}^{} d\hO  \Sigma_s(\mu_o)\mu_o}{\Sigma_s} = \frac{\Sigma_{s1}}{\Sigma_s}
-\end{equation}
-
-Then, if we further make the one-speed approximation so that the integrals over energy disappear from Eqs. \ref{eq:P1b} and \ref{eq:NeutronContinuityEquation_BundledSource}, we obtain the 1-group \(P_1\) equations. 
-
-\begin{equation}
-\label{eq:P1b_1group}
-\frac{1}{v} \frac{\partial\vv{J}(\vv{r}, t)}{\partial t} +
- \frac{1}{3}\nabla\phi + \Sigma_t(\vv{r}\vv{J}(\vv{r},t) = \bar{\mu_o}\Sigma_s\vv{J}(\vv{r}, t) + \vv{S_1}(\vv{r}, t)
-\end{equation}
-
-\begin{equation}
-\label{eq:NeutronContinuityEquation_BundledSource_1group}
-\frac{1}{v} \frac{\partial\phi(\vv{r}, t)}{\partial t} +
- \nabla\cdot J(\vv{r}, t) + 
- \Sigma_t(\vv{r})\phi(\vv{r}, t) = \Sigma_s(\vv{r})\phi(\vv{r}, t) + S(\vv{r}, t)
-\end{equation}
-
-It is common to define a transport cross section as:
-
-\begin{equation}
-\label{eq:TransportCrossSection}
-\Sigma_tr=\Sigma_t-\bar{\mu_o}\Sigma_s
-\end{equation}
-
-and then to introduce this into Eq. \ref{eq:P1b_1group}. Further approximations will lead to the derivation of the diffusion coefficient. By assuming that the isotropic source \(\vv{S_1}\) is zero, and rearranging Eq. \ref{eq:P1b_1group} with the definition for the transport cross section inserted:
-
-\begin{equation}
-\label{eq:P1b_CurrentApproximation}
-\frac{1}{\abs{{\vv{J}}}} \frac{\partial\abs{{\vv{J}}}(\vv{r}, t)}{\partial t} = - v\frac{1}{3}\nabla\phi - v\Sigma_{tr}(\vv{r})\vv{J}(\vv{r},t) \approx 0
-\end{equation}
-
-We can assume from this equation that the time rate of change of the current is nearly zero in comparison to the total reaction frequency, since \(v\Sigma_{tr}\) is typically on the order of \(10^5\) per second or higher. The current does not tend to change extremely rapidly. Therefore, with this assumption, we can write:
-
-\begin{equation}
-\label{eq:P1b_CurrentApproximation_2}
-\vv{J}(\vv{r},t) =  - \frac{1}{3\Sigma_{tr}(\vv{r})}\nabla\phi = -D\nabla\phi
-\end{equation}
-
-This defines the diffusion coefficient. The transport mean free path, or \(1/\Sigma_{tr}\), is essentially a corrected mfp that accounts for anisotropies in the elastic scattering process.  Because neutrons are biased towards forward scattering, the transport mfp is larger than the actual mfp. So, in this derivation of the diffusion equation, along with the derivation of \(D\), the following assumptions were made: 1) the angular flux is linearly anisotropic (\(P_1\) approximation), 2) the source is isotropic, and 3) the rate of change of the current is small. Only the assumption of linearly anisotropic angular flux is crucial to this derivation, since the other assumptions can be relaxed by working with the \(P_1\) equations instead of the 1-group diffusion equation. Weak dependence on angle is violated near boundaries or where material properties change rapidly over distances comparable to a mean free path, near localized sources, and in strongly absorbing media. When the angular flux has a strong angular dependence, it typically also has a strong spatial dependence. 
-
-The energy-dependent diffusion equation can be derived from the \(P_1\) equations by again assuming that the rate of change of the current is small with respect to the total interaction frequency and the source is isotropic. So, making these assumptions in Eq. \ref{eq:P1b}, we can derive the energy-dependent version of Fick's law. 
-
-\begin{equation}
-\label{eq:P1b_energyDepdendent}
-\vv{J}\spas = - \frac{1}{\Sigma_t(\vv{r},E)}\left(\frac{1}{3}\nabla\phi + \int_{0}^{\infty}dE' \int_{4\pi}^{ } \Sigma_{s1}(\vv{r}, E'\rightarrow E)\vv{J}(\vv{r}, E', t)\right)
-\end{equation}
-
-This does not give a very nice-looking diffusion coefficient... But, if we assume the scattering is isotropic in the lab frame (which is highly unrealistic – scattering is only approximately isotropic in the center of mass frame), then \(\Sigma_{s1}=0\) because there would be no angular dependence, which would reduce to the same version of Fick’s law as was obtained in the energy-independent case. Alternatively, bceause that approximation is rather bad, using Eq. \ref{eq:IsotropicScatteringAngle} to express the scattering term, and applying a delta function to the scattering integral so that the integral drops out, the energy-dependent diffusion coefficient can be defined as:
-
-\begin{equation}
-\label{eq:P1b_energyDepdendent2}
-\vv{J}\spas = -\frac{1}{3\left(\Sigma_{tr}(\vv{r},E)\right)}\nabla\phi
-\end{equation}
-
-This diffusion coefficient assumed no anisotropic contribution to the energy transfer in a scattering collision. More rigorous derivations are possible with knowledge of neutron thermalization theory. The energy-dependent diffusion equation is therefore simply one of the energy-dependent \(P_1\) equations, Eq. \ref{eq:NeutronContinuityEquation_BundledSource}, with the energy-dependent Fick's law in Eq. \ref{eq:P1b_energyDepdendent2} inserted for \(J\). The fission source, once ``un-bundled'' from \(S\), would have the form:
-
-\begin{equation}
-\label{eq:FissionSource}
-S_{fission}=\chi(E)\int_{0}^{\infty}dE'\nu(E')\Sigma_f(\vv{r}, E', t)\phi(\vv{r}, E', t)
-\end{equation}
-
-Diffusion theory in and of itself is not extremely accurate near boundaries, but through successful modification to boundary conditions and constants used, its application can yield sufficiently accurate results. For instance, the diffusion coefficient can be altered to account for anisotropic scattering. 
-
-To derive the boundary condition for zero incoming/outgoing current, introduce the \(P_1\) approximation from Eq. \ref{eq:FluxLegendreP1} into Eq. \ref{eq:PartialCurrent}, where we have required that either the incoming or outgoing current be equal to zero:
-
-\begin{equation}
-\label{eq:PartialCurrent_BC1}
-J_\pm \spas = \int_{2\pi\pm}^{} d\hO   \left(\frac{\phi_0\spas}{4\pi} + \frac{3}{4\pi} \hO  \phi_1\spas\right)\hO  \cdot\hat{n}
-\end{equation}
-
-Using Eqs. \ref{eq:OmegaDotOmega} and \ref{eq:P1b_CurrentApproximation_2}, the integral over half the solid angle becomes an integral over \(\theta\) and \(\phi\), and recalling that the integral of any two components of solid angle over \(4\pi\) equals \(4\pi/3\):
-
-\begin{equation}
-\label{eq:PartialCurrent_BC2}
-J_\pm \spas = \frac{\phi}{4} \mp \frac{D}{2}\hat{n}\cdot\nabla\phi
-\end{equation}
-
-Applying this condition in 1-D geometry implies that if we linearly extrapolated the flux beyond the boundary, it would vanish at the extrapolated distance \(x = x_{surface} + 2D\):
-
-\begin{equation}
-\label{eq:PartialCurrent_BC2}
-\frac{1}{\phi}\frac{d\phi}{dx}=-\frac{1}{2D}
-\end{equation}
-
-This motivates replacing the zero re-entrant current condition with the extrapolated boundary condition, which introduces some error, though diffusion theory is already somewhat inaccurate near boundaries. More advanced transport calculations suggest using the condition \(x = x_{surface} + 0.7104\lambda_{tr}\). This suffices unless the radius of curvature of the boundary is smaller than a mfp, in which case more complicated extrapolated boundary conditions could be derived. Because the transport mfp is often only several centimeters, and reactor cores are several meters in diameter, we can often assume that the flux goes to zero on the boundary, ignoring the extrapolated distance entirely.
-
-It is common to define the diffusion length \(L\), which is essentially a measure of how far neutrons will diffuse from its birth to its death:
-
-\begin{equation}
-\label{eq:DiffusionLength}
-L^2=\frac{D}{\Sigma_a}
-\end{equation}
-
-We can relate the diffusion length to the average distance traveled by the neutron, which will depend on which coordinate system we choose. In general, the average traveled distance is:
-
-\begin{equation}
-\label{eq:AverageDistance}
-\bar{x}=\int_{0}^{\infty}xp(x)dx
-\end{equation}
-
-where \(p(x)\) is the probability of absorption. The probability of absorption is essentially the ratio of the absorption rate to the rate at which neutrons ``started-out'' moving in that direction. The neutron source rate in Cartesian geometries is \(S/2\) for planes, and in spherical geometries is \(S\). For a Cartesian system:
-
-\begin{equation}
-\label{eq:AbsorptionProbability_Cartesian}
-p(x)=\frac{\Sigma_a\phi dx}{S/2}
-\end{equation}
-
-Once you have expressed \(p(x)\), conduct a diffusion analysis to determine the flux from the appropriate source, and substitute this in for \(\phi\) in Eq. \ref{eq:AbsorptionProbability_Cartesian}. Again for a Cartesian geometry, this becomes:
-
-\begin{equation}
-\label{AverageDistance_Cartesian}
-\bar{x}=\int_{0}^{\infty}x\frac{\Sigma_a\left(\frac{SL}{2D}\exp(-x/L)\right)dx}{S/2}=L
-\end{equation}
-
-And hence in Cartesian geometry, the diffusion length is exactly the average distance traveled by a neutron from birth to death.
 
 
 \section{Solving the One-Group Diffusion Equation}
