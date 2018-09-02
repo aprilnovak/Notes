@@ -1,14 +1,20 @@
 \section{The Continuous-Energy Neutron Transport Equation}
 \label{sec:CE_NTE}
 
-The \gls{nte} is a statement of the conservation of neutron density. The neutron density is in general a function of the seven-dimensional space \(\vv{r}, E, \hO,\) and \(t\), where \(\hO\) is a unit vector in the same direction as the neutron velocity \(\vv{v}\):
+The \gls{nte} is a statement of the conservation of neutron density \(n\seat\), the {\it expected} number of neutrons at a point in space per unit time \(t\), energy \(E\), and (unit) direction of motion \(\hO\). The {\it true} number of neutrons at a point in space cannot be known, since statistical processes govern the exact distribution of neutrons, and we will be limited to predicting mean or average neutron populations. The neutron density is a function of a seven-dimensional space - spatial (three), energy (one), direction of motion described as two angles within and relative to one coordinate plane, and time (one). The energy of the neutron correspond to the kinetic energy:
+
+\beq
+E\equiv\frac{1}{2}mv^2
+\eeq
+
+where \(v\equiv\|\vv{v}\|_2\) is used throughout. Because neutron kinetic energies are typically very high, units of electron volts for energy are assumed throughout, rather than the more conventional unit of Joules. The unit direction of motion \(\hO\) is a unit vector in the same direction as the neutron velocity \(\vv{v}\):
 
 \beq
 \label{eq:OmegaDef}
 \hO\equiv \frac{\vv{v}}{v}
 \eeq
 
-where \(v\equiv\|\vv{v}\|\) is used throughout. A neutron's flight direction can be specified in terms of two angles \(0\leq\phi\leq2\pi\) and \(0\leq\theta\leq\pi\), where \(\phi\) is the angle in the \(x\)-\(y\) plane from the positive \(x\)-axis and \(\theta\) is the angle between the flight direction and the \(z\)-axis. 
+The direction of motion of a {\it fluid} particle is typically expressed using ``velocity,'' with one vector component corresponding to each spatial dimension. However, this can equivalently be expressed for neutron transport in terms of two angles \(0\leq\phi\leq2\pi\) and \(0\leq\theta\leq\pi\), where \(\phi\) is the angle in the \(x\)-\(y\) plane from the positive \(x\)-axis and \(\theta\) is the angle between the flight direction and the \(z\)-axis. Like velocity, \(\hO\) has three components corresponding to the three spatial dimensions, where each component is only a function of the two angles \(\phi\) and \(\theta\).
 
 \begin{tcolorbox}[breakable]
 In Cartesian coordinates, \(\hO\) is given in terms of unit vectors \(\hat{i}\), \(\hat{j}\), and \(\hat{k}\) corresponding to the \(x\), \(y\), and \(z\) axes, respectively, as:
@@ -41,50 +47,8 @@ Each of these components are often given their own names:
 \hO=\sqrt{1-\mu^2}\textrm{cos}(\phi)\hat{i} + \sqrt{1-\mu^2}\textrm{sin}(\phi)\hat{j} + \mu\hat{k}\\
 \eeq
  
-Due to the very simple form of the component of \(\hO\) along the \(z\)-axis, one-dimensional Cartesian problems are frequently reoriented such that \(z\) is the independent variable.
- 
-\end{tcolorbox}
+Due to the very simple form of the component of \(\hO\) along the \(z\)-axis, one-dimensional Cartesian problems are frequently reoriented such that \(z\) is the independent variable.\newline
 
-While neutron transport is characterized by a single equation that does not require the same length derivation process as the Navier-Stokes equations, this seven-dimensional space makes practical solution difficult. 
-
-Because the neutron population is conserved, the rate of change of the neutron population within an arbitrary convex volume \(\volume(t)\) consisting of a system must equal the sum of any gains and losses of neutrons, because a system is defined such that its boundaries are closed to neutron flow:
-
-\beq
-\label{eq:neutron_conservation}
-\left\lbrack\frac{d}{dt}\int d\volume n(\vv{r},t)\right\rbrack dEd\hO=\text{gains}-\text{losses}
-\eeq
-
-where \(n\) is the neutron density [1/cm$^3$s] and \(d(.)/dt\) is the material derivative of \((.)\). The volume must be convex to eliminate the possibility of boundary sources of neutrons due to leakage from one portion of the boundary to another. Due to the higher dimensionality of the \gls{nte}, to provide a correct statement of conservation, all volume integrals must be multiplied by the differential \(dEd\hO\) to represent integration over all energies and angles. Taking the time derivative of an integral whose bounds depend on time requires the use of the general transport theorem:
-
-\beq
-\label{eq:RTT}
-\frac{d}{dt}\int d\volume n(\vv{r},t)\equiv\int d\volume\frac{\partial n(\vv{r},t)}{\partial t}+\int dSn(\vv{r},t)\vv{w}\cdot\hat{n}
-\eeq
-
-where \(\vv{w}\) is the velocity of the surface \(S(t)\) bounding the volume, which in general is not equal to the neutron velocity. If the general transport theorem is applied to a material volume that is enclosed by a material surface, then the velocity of that surface equals the neutron velocity. For application to material volumes, the general transport theorem is often referred to as the \gls{rtt}. Applying Eq. \eqref{eq:RTT} to Eq. \eqref{eq:neutron_conservation} for a material volume \(\volume\) such that \(\vv{w}\) equals the neutron velocity \(\vv{v}\) converts the system perspective to a control volume perspective:
-
-\beq
-\label{eq:neutron_conservation2}
-\left\lbrack\int d\volume\frac{\partial n(\vv{r},t)}{\partial t}+\int dSn(\vv{r},t)\vv{v}\cdot\hat{n}\right\rbrack dEd\hO=\text{gains}-\text{losses}
-\eeq
-
-Sources of neutrons exist due to external sources \(Q\) independent of the neutron density, scattering from other energies, and fission. The external source contribution to Eq. \eqref{eq:neutron_conservation2} is:
-
-\beq
-\label{eq:ConservationExternalSource}
-\left\lbrack\int d\volume Q\seat \right\rbrack dEd\hO  
-\eeq
-
-The scattering of neutrons from other energies to \(E\), also known as the in-scattering source, is an integral of the scattering reaction rate density over all neutron energies \(E'\) and angles \(\hO'\):
-
-\beq
-\label{eq:ConservationInscatteringSource}
-\left\lbrack\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int d\volume v(E')\Sigma_s\seatout n(\vv{r},t)\right\rbrack dEd\hO  
-\eeq
-
-where \(v\equiv\|\vv{v}\|_2\). Note that Eq. \eqref{eq:ConservationInscatteringSource} includes ``sources'' of neutrons due to scattering from \(E\rightarrow E\), which should not be represented as either a source or a loss. This double-counting will be cancelled later.
-
-\begin{tcolorbox}[breakable]
 In a spherical coordinate system, an integral over the surface of the unit sphere is given as \(dA=r^2\sin{(\theta)}d\theta d\phi\), so an integral over the solid angle is determined by dividing by \(r^2\) since solid angle represents the dimensionless area on the unit sphere:
 
 \beqa
@@ -121,21 +85,52 @@ The integral of any three components of \(\hO\) defined in Eq. \eqref{eq:OmegaCa
 \label{eq:4PiOmegaOmegaOmega}
 \int_{4\pi}d\hO \Om_i\Om_j\Om_k=0
 \eeq
-
+ 
 \end{tcolorbox}
 
-The fission source of neutrons is an integral over all energies and angles of the fission reaction rate density. The neutrons born nearly instantaneously following fission from the fragmentation of the compound nucleus are considered ``prompt'' neutrons. Delayed by up to several hundred seconds is another source of neutrons from the decay of fission products. Rather than consider the build up and decay of fission products with the Batemann equations on time scales of seconds to capture this delayed source of neutrons, these ``delayed'' neutrons are treated as a time-lagged fission source of neutrons. The fraction of fission neutrons born delayed is \(\beta\), the delayed neutron fraction:
+ Because the neutron population is conserved, the rate of change of the neutron population within an arbitrary convex control volume \(\volume(t)\) consisting must equal the sum of any gains and losses of neutrons:
+
+\beq
+\label{eq:neutron_conservation}
+\left\lbrack\frac{\partial}{\partial t}\int d\volume n\seat\right\rbrack dEd\hO=\text{gains}-\text{losses}
+\eeq
+
+For those familiar with fluid mechanics, this derivation immediately begins from the control volume perspective, rather than the system perspective, eliminating the need to use the Reynolds Transport Theorem to convert a system perspective to a control volume perspective. 
+
+The volume must be convex to eliminate any boundary sources of neutrons that arise due to leakage from one portion of the volume to another across the boundary. Because the neutron density is in general a function of \(E\) and \(\hO\), a correct statement of conservation requires all volume integrals to be multiplied by the differential \(dEd\hO\) to represent integration over all energies and angles (though integration will not be shown, but implicitly assumed to simplify notation). If the volume is assumed to be independent of time, the time integration can be brought inside the integral such that the time rate of change term becomes:
+
+\beq
+\left\lbrack\int d\volume \frac{\partial n\seat}{\partial t}\right\rbrack dEd\hO
+\eeq
+
+Sources of neutrons exist due to external sources \(S\) independent of the neutron density; scattering from other energies and angles; and fission. The external source contribution to Eq. \eqref{eq:neutron_conservation} is:
+
+\beq
+\label{eq:ConservationExternalSource}
+\left\lbrack\int d\volume \source \right\rbrack dEd\hO  
+\eeq
+
+The scattering of neutrons from other energies and angles to \(E\) and \(\hO\), also known as the in-scattering source, is an integral of the scattering reaction rate density over all neutron energies \(E'\) and angles \(\hO'\):
+
+\beq
+\label{eq:ConservationInscatteringSource}
+\left\lbrack\int d\volume\inscatteringsource v(E')n\seatelse\right\rbrack dEd\hO  
+\eeq
+
+Note that Eq. \eqref{eq:ConservationInscatteringSource} includes ``sources'' of neutrons due to scattering from \(E\rightarrow E\) and \(\hO\rightarrow\hO\), which should not be represented as either a source or a loss. This double-counting will be cancelled later.
+
+The fission source is expressed as the sum of a prompt and delayed source of neutrons. The neutrons born nearly instantaneously following fission from the fragmentation of the compound nucleus are considered ``prompt'' neutrons. Delayed by up to several hundred seconds is another source of neutrons from the decay of fission products. Rather than consider the build up and decay of fission products with the Batemann equations on time scales of seconds to capture this delayed source of neutrons, these ``delayed'' neutrons are treated as a time-lagged fission source of neutrons. The fraction of fission neutrons born delayed is \(\beta\), the delayed neutron fraction:
 
 \beq
 \label{eq:BetaDef}
 \beta\equiv\frac{\text{fission neutrons born delayed}}{\text{fission neutrons born promptly and delayed}}
 \eeq
 
-The fission source is expressed differently depending on whether neutrons are born promptly or delayed. While it is not possible to change the source of prompt neutrons by removing compound nuclei from the control volume before decay (such time scales are much smaller than nanoseconds), it is possible to remove the fission products whose decay produces neutrons. The prompt fission source is written in a very similar form to the in-scattering as an integral over all neutron energies and angles:
+While it is not possible to change the source of prompt neutrons by removing compound nuclei from the control volume before decay (such time scales are much smaller than nanoseconds), it is possible to remove the fission products whose decay produces neutrons. Writing the total fission source as the sum of a prompt and delayed source permits flexibility in transient analysis of nuclear systems. The prompt fission source is written as an integral over all neutron energies and angles of the fission reaction rate density:
 
 \beq
 \label{eq:ConservationFissionPrompt}
-\left\lbrack\int d\volume\promptfissionsource v(E')n(\vv{r},t)\right\rbrack dEd\hO
+\left\lbrack\int d\volume\promptfissionsource v(E')n\seatelse\right\rbrack dEd\hO
 \eeq
 
 where \(\chi_p(E,\hO)\) is the prompt fission neutron energy and angle spectrum and \(\nu\) is the average number of neutrons born in fission, considering both prompt and delayed neutrons. If prompt neutrons are born nearly isotropically (which is frequently a good approximation), angle integration of the prompt fission neutron energy and angle spectrum yields only an energy dependence:
@@ -163,81 +158,93 @@ where \(\chi_d(E,\hO)\) is the delayed neutron energy and angle spectrum, \(C\) 
 
 \beq
 \label{eq:AbsorptionLoss}
-\left\lbrack\int d\volume v(E)\Sigma_a(\vv{r},E,t)n(\vv{r},t)\right\rbrack dEd\hO
+\left\lbrack\int d\volume \Sigma_a\seat v(E)n\seat\right\rbrack dEd\hO
 \eeq
 
 The scattering to other energy groups, referred to as ``out-scattering,'' is represented as an integral of the scattering reaction rate density:
 
 \beq
 \label{eq:ScatteringLoss}
-\left\lbrack\int d\volume v(E)\Sigma_s\seatout n(\vv{r},t)\right\rbrack dEd\hO
+\left\lbrack\int d\volume \Sigma_s\seatout v(E)n\seat\right\rbrack dEd\hO
 \eeq
 
 Note that Eq. \eqref{eq:ScatteringLoss} includes scattering from \(E\rightarrow E\), which should not be represented as a loss term. This double-counting is balanced by the same double-counting in the in-scattering term in Eq. \eqref{eq:ConservationInscatteringSource}, giving the correct conservation statement. Eqs. \eqref{eq:AbsorptionLoss} and \eqref{eq:ScatteringLoss} are frequently combined by defining the total cross section \(\Sigma_t\) as:
 
 \beq
 \label{eq:TotalSigmaDef}
-\Sigma_t\seatout\equiv\Sigma_a(\vv{r},E,t)+\Sigma_s\seatout
+\Sigma_t\seatout\equiv\Sigma_a\seat+\Sigma_s\seatout
 \eeq
 
-Summing all of the source and loss terms in Eqs. \eqref{eq:ConservationExternalSource}, \eqref{eq:ConservationInscatteringSource}, \eqref{eq:ConservationFissionPrompt}, \eqref{eq:ConservationFissionDelayed}, \eqref{eq:AbsorptionLoss}, and \eqref{eq:ScatteringLoss} and inserting into Eq. \eqref{eq:neutron_conservation2} and canceling the common \(dEd\hO\) differential gives:
+Finally, streaming of neutrons is considered both a source and a loss - when neutrons stream into the control volume, streaming represents a source, and vice versa. The net rate at which neutrons leave the control volume is given as the surface integral of the neutron density multiplying the dot product of its velocity \(v\hO\) and the unit outward normal \(\hat{n}\) for the surface \(dS\):
+
+\beq
+\label{eq:streaming1}
+\left\lbrack\int dS n\seat v(E)\hO\cdot\hat{n}\right\rbrack dEd\hO
+\eeq
+
+All source and loss terms derived thus far have been represented as volume integrals; in order to permit the entire \gls{nte} to be represented as a volume integral, convert Eq. \eqref{eq:streaming1} to a volume integral using the divergence rule:
 
 \beqa
-\label{eq:nte_0}
-\int d\volume\frac{\partial n(\vv{r},t)}{\partial t}+\int dSn(\vv{r},t)\vv{v}\cdot\hat{n}+\int d\volume v(E)\Sigma_t\seatout n(\vv{r},t)=\\
-\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int d\volume v(E')\Sigma_s\seatout n(\vv{r},t) +\\
-\chi_p(E,\hO)\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  '\int d\volume \left\lbrack1-\beta(E')\right\rbrack\nu(E')v(E')\Sigma_f(\vv{r},E',t)n(\vv{r},t) +\\
-\int d\volume \delayedfissionsource +\int d\volume Q(E,\hO)
+\label{eq:streaming2}
+\left\lbrack\int dS n\seat v(E)\hO\cdot\hat{n}\right\rbrack dEd\hO\equiv&\left\lbrack\int d\volume\nabla\cdot\left(n\seat v(E)\hO\right)\right\rbrack dEd\hO\\
+=&\left\lbrack\int d\volume\hO\cdot \nabla\left(v(E)n\seat\right)\right\rbrack dEd\hO
 \eeqa
 
-All terms are integrals over volume except the streaming term. In order to be able to cancel the streaming term, write the neutron velocity as the product of the magnitude of velocity with the unit direction vector \(\hO\) according to Eq. \eqref{eq:OmegaDef}, and apply the divergence theorem:
-
-\beqa
-\label{eq:Streaming}
-\int dSn\vv{v}\cdot\hat{n}\equiv&\int dSnv\hO\cdot\hat{n}\\
-=&\int d\volume \nabla\cdot(nv\hO)\\
-=&\int d\volume \left\lbrack nv\nabla\cdot\hO+\hO\cdot\nabla(nv)\right\rbrack
-\eeqa
-
-The \(\nabla\cdot\hO\) term is zero because \(\hO\) is constant between collisions. Inserting Eq. \eqref{eq:Streaming} into Eq. \eqref{eq:nte_0} and recognizing that because the integration volume is arbitrary, the integrand must be zero:
+where \(\nabla\cdot\hO=0\) has been used because \(\hO\) is not a function of the spatial coordinate. Summing all of the source and loss terms in Eqs. \eqref{eq:ConservationExternalSource}, \eqref{eq:ConservationInscatteringSource}, \eqref{eq:ConservationFissionPrompt}, \eqref{eq:ConservationFissionDelayed}, \eqref{eq:AbsorptionLoss}, \eqref{eq:ScatteringLoss}, and \eqref{eq:streaming2} and inserting into Eq. \eqref{eq:neutron_conservation}, canceling the common \(dEd\hO\) differential, and recognizing that because the volume is arbitrary the integrand must be zero, gives:
 
 \beqa
 \label{eq:nte}
-\frac{\partial n(\vv{r},t)}{\partial t}+\hO\cdot\nabla(vn(\vv{r},t))+v(E)\Sigma_t\seat n(\vv{r},t)=\\
-\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  ' v(E')\Sigma_s\seatout n(\vv{r},t) +\\
-\promptfissionsource v(E')n(\vv{r},t) +\\
-\delayedfissionsource + Q\seat
+&\frac{\partial n\seat}{\partial t}+\hO\cdot\nabla(v(E)n\seat)+\Sigma_t\seat v(E)n\seat=\\
+&\hspace{1cm}\inscatteringsource v(E')n\seatprime \ +\\
+&\hspace{2cm}\promptfissionsource v(E')n\seat \ +\\
+&\hspace{3cm}\delayedfissionsource + \source
 \eeqa
 
-Eq. \eqref{eq:nte} is the \gls{nte} written in terms of neutron density. The \gls{nte} is most commonly written in terms of the angular flux using Eq. \eqref{eq:AngularFlux}:
+Eq. \eqref{eq:nte} is the \gls{nte} written in terms of neutron density. As can be seen, the product \(vn\) appears in almost every term, which suggests a convenient definition of the angular flux \(\psi\):
+
+\beq
+\label{eq:AngularFlux}
+\psi\spa \equiv v(E)n\spa
+\eeq
+
+The angular flux is the number of neutrons per unit area and time with energy \(E\) and direction of motion \(\hO\). Eq. \eqref{eq:nte} can be written in terms of the angular flux using Eq. \eqref{eq:AngularFlux} as:
 
 \beqa
 \label{eq:nte1}
 &\frac{\partial}{\partial t}\left(\frac{\psi\seat}{v(E)}\right)+\hO\cdot\nabla\psi\seat+\Sigma_t\seat \psi\seat=\\
-&\hspace{1cm}\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  ' \Sigma_s\seatout \psi\seatprime\\
+&\hspace{1cm}\inscatteringsource\psi\seatprime\\
 &\hspace{2cm}\promptfissionsource\psi\seatprime +\\
-&\hspace{3cm}\delayedfissionsource + Q\seat
+&\hspace{3cm}\delayedfissionsource + \source
 \eeqa
 
-The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because it contains both integrals and derivatives. The \gls{bc} for this equation is a condition on the incoming flux, and consists of the sum of a generic incoming flux, any specular reflective flux (i.e. the incoming angle is a reflection of the outgoing angle), and any diffusive reflective flux (i.e. the incoming angle is averaged over all outgoing angles):
+The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because it contains both integrals and derivatives. The initial condition requires specification of the initial angular flux:
+
+\beq
+\psi(\vv{r},E,\hO,0)\equiv\psi_0(\vv{r},E,\hO)
+\eeq
+
+The \gls{bc} for Eq. \eqref{eq:nte1} is a condition on the incoming flux, and consists of the sum of a generic incoming flux, any specular reflective flux (i.e. the incoming angle is a reflection of the outgoing angle), and any diffusive reflective flux (i.e. the incoming angle is averaged over all outgoing angles):
 
 \beqa
-\psi\seat=&\psi_{inc}\seat+\alpha_s\seat\psi(\vv{r},E,\hO_r,t)+\\
+\psi\seat=&\ \psi_{inc}\seat+\alpha_s\seat\psi(\vv{r},E,\hO_r,t)+\\
 &\hspace{1cm}\alpha_d\seat\frac{\int_{\hO'\cdot\hat{n}>0}d\hO'\|\hO'\cdot\hat{n}\psi(\vv{r},E,\hO',t)}{\int_{\hO'\cdot\hat{n}>0}d\hO'\|\hO'\cdot\hat{n}}
 \eeqa
 
-on \(\hO\cdot\hat{n}<0\), where \(\hO_r\) is the reflected direction corresponding to \(\hO\):
+on \(\hO\cdot\hat{n}<0\), where \(\alpha_s\) is the specular reflectivity, \(\alpha_d\) is the diffusive reflectivity, and \(\hO_r\) is the reflected direction corresponding to \(\hO\):
 
 \beq
 \label{eq:hOrDef}
 \hO_r\equiv\hO-2\left(\hO\cdot\hat{n}\right)\hat{n}
 \eeq
 
-The scattering and fission terms couple all energies and angles together. Several approximations exist in Eq. \eqref{eq:nte1} -
+The scattering and fission terms couple all energies and angles together. 
+
+Several approximations exist in Eq. \eqref{eq:nte1} -
 
 \begin{itemize}
 \item Neutron-neutron interactions are negligible because the density of neutrons is much smaller than typical atomic densities. With this approximation, the \gls{nte} is equivalent to the linear Boltzmann equation.
 \item Neutron decay is negligible because the mean neutron lifetimes from birth to absorption are significantly smaller than neutron decay half lives on the order of 15 minutes.
+\item The neutron density is only a function of \(\vv{r}\), \(E\), \(\hO\), and \(t\) - other parameters such as neutron spin are neglected.
 \end{itemize}
 
 The \gls{nte} is sometimes written in a form known as the ``eigenvalue'' form, in which there is no external source and all time dependence is removed. Using such a form to find an eigenvalue solution attempts to determine the largest eigenvalue of the system; this eigenvalue is defined as the largest of the eigenvalues \(1/k\) preceding the prompt and delayed fission source term, and hence \(k\) represents the ratio of fission sources to losses for a steady-state system with no external sources.
@@ -291,7 +298,7 @@ The factor of \((2l+1)/4\pi\) appears to obtain the desired normalization of \(2
 2\pi\int_{-1}^1d\mu\Sigma_s\seatout P_{l}(\mu)=&\Sigma_{s,l}(\vv{r},E'\rightarrow E,t)\\
 \eeqa
 
-Expanding the scattering cross section in Legendre polynomials is known as the \(P_L\) approximation. 
+Expanding the scattering cross section in Legendre polynomials is known as the \(P_L\) approximation. Legendre polynomials are also frequently used to express the angular dependence of the angular flux in one-dimensional problems where \(\hO=\cos{(\theta)}\hat{z}\) has a single independent variable \(\mu\) given by Eq. \eqref{eq:muDef}.
 
 \subsubsection{Spherical Harmonics Expansion}
 
