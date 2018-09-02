@@ -804,8 +804,6 @@ For all collocation in angle methods, the scattering and source terms (the only 
 \clearpage
 \input{discrete-ordinates.tex}
 
-
-
 \subsubsubsection{Cell Balance Schemes}
 
 Cell balance schemes point values for the solution \(\psi\) over a discretized spatial mesh. With the definitions in Eq. \eqref{eq:OmegaComponentsCartesian} switched around to be consistent with the Denovo manual, integrating Eq. \eqref{eq:SimpleTE} over the mesh cell shown in Fig. \ref{fig:CartesianDiscretization} gives:
@@ -1204,16 +1202,11 @@ e_{00}^g & e_{10}^g & o_{11}^g & e_{11}^g & \cdots & o_{NN}^g & e_{NN}^g\\
 
 The flux moment vector can be related to the angular flux vector by \(\textbf{D}\):
 
+\clearpage
+\input{spectral-angular.tex}
 
 \clearpage
-\section{Spectral Angular Methods}
-An alternative to the \(S_N\) method is to expand the angular dependence in a set of functions. In general 3-D geometries, we choose these functions to be the spherical harmonics functions. In 1-D, the spherical harmonics reduce to Legendre polynomials. 
-
-
-\subsection{Spherical Harmonics \(P_N\)}
-
-Instead of discretizing in angle as with the \(S_N\) method, we can expand the flux in the spherical harmonics to approximate the angular dependence. The accuracy of this method depends on how strongly \(\psi\) is a function of angle. This method, called the \(P_N\) method, can produce equations in higher dimensions, but is easiest to derive in 1-D Cartesian geometry because then the spherical harmonics reduce to the Legendre polynomials. This method provides reasonably-correct spatial solutions, but errors are often present in magnitude, which can be difficult to detect.
-
+ 
 \subsubsection{1-D Cartesian Derivation}
 
 Due to the added complexity associated with higher dimensions, the \(P_N\) equations are derived here for the time-independent form of the 1-D, monoenergetic transport equation in Cartesian geometries given by Eq. \eqref{eq:TE_Cartesian_1D_2_noenergy}, repeated here for reference, where the external and fission source are bundled together into \(S\), which is assumed isotropic:

@@ -226,6 +226,7 @@ The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because
 The \gls{bc} for Eq. \eqref{eq:nte1} is a condition on the incoming flux, and consists of the sum of a generic incoming flux, any specular reflective flux (i.e. the incoming angle is a reflection of the outgoing angle), and any diffusive reflective flux (i.e. the incoming angle is averaged over all outgoing angles):
 
 \beqa
+\label{eq:NTEBCs}
 \psi\seat=&\ \psi_{inc}\seat+\alpha_s\seat\psi(\vv{r},E,\hO_r,t)+\\
 &\hspace{1cm}\alpha_d\seat\frac{\int_{\hO'\cdot\hat{n}>0}d\hO'\|\hO'\cdot\hat{n}\psi(\vv{r},E,\hO',t)}{\int_{\hO'\cdot\hat{n}>0}d\hO'\|\hO'\cdot\hat{n}}
 \eeqa
@@ -237,7 +238,14 @@ on \(\hO\cdot\hat{n}<0\), where \(\alpha_s\) is the specular reflectivity, \(\al
 \hO_r\equiv\hO-2\left(\hO\cdot\hat{n}\right)\hat{n}
 \eeq
 
-The scattering and fission terms couple all energies and angles together. 
+At at interface \(\vv{r_s}\) of two differing cross sections \(1\) and \(2\), the angular flux must be continuous to properly conserve neutrons:
+
+\beq
+\label{eq:NTE_interface}
+\psi_1(\vv{r}_s,E,\hO,t)=\psi_2(\vv{r}_s,E,\hO,t)
+\eeq
+
+The scattering and fission terms couple all energies and angles together. Eq. \eqref{eq:nte1} can be solved analytically for general problems for purely absorbing media, but the presence of the integral forms for fissioning and scattering media greatly complicates analytic solution, and in most cases precludes it. 
 
 Several approximations exist in Eq. \eqref{eq:nte1} -
 
@@ -276,7 +284,13 @@ It is frequently assumed that the angular dependence of a collision is rotationa
 =&\ \mu
 \eeqa
 
-Rotational symmetry implies that we are ignoring any type of anisotropic grain structure, which is sufficient since on a macroscopic scale, grains are sufficiently randomly oriented. Because the scattering cross sections can now easily be expressed as a function of \(\mu\) instead of \(\hO\) and \(\hO'\), the scattering cross section can be expanded in a series of orthogonal polynomials, where only the coefficients of the expansion need to be stored. Orthogonal polynomials commonly selected for this purpose are the Legendre polynomials and the spherical harmonics functions.
+Rotational symmetry implies that we are ignoring any type of anisotropic grain structure, which is sufficient since on a macroscopic scale, grains are sufficiently randomly oriented. Because the scattering cross sections can now easily be expressed as a function of \(\mu\) instead of \(\hO\) and \(\hO'\), the scattering cross section can be expanded in a series of orthogonal polynomials, where only the coefficients of the expansion need to be stored. Orthogonal polynomials commonly selected for this purpose are the Legendre polynomials and the spherical harmonics functions. The remainder of this section describes two such orthogonal functions that are commonly used to rewrite the scattering term. If the scattering is assumed isotropic, then a significant simplification is possible:
+
+\beq
+\frac{\Sigma_s(\vv{r},E'\rightarrow E,t)}{4\pi}=\int_{4\pi}d\hO\Sigma_s\seatout
+\eeq
+
+While scattering is typically nearly isotropic in the center of mass frame, this assumption is typically a poor approximation of reality, especially for low mass number nuclei that have significantly peaked forward scattering.
 
 \subsubsection{Legendre Polynomial Expansion}
 \label{sec:LegendrePolynomialExpansion}

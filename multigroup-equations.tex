@@ -1,28 +1,30 @@
 \section{The Multi-group Neutron Transport Equation}
 
-Section \ref{sec:CE_NTE} presented the derivation and equivalent forms of the \gls{ce} \gls{nte}. If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-4}-10^6\) eV is impractical. Therefore, most deterministic transport solvers use a \gls{mg}-in-energy form of the \gls{nte} that is obtained by averaging the \gls{nte} over all energies. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of increasing energy.
+Section \ref{sec:CE_NTE} presented the derivation and equivalent forms of the \gls{ce} \gls{nte}. If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-3}-10^7\) eV is impractical. Therefore, some type of discretization is required for the energy dependence. While the dependence of the angular flux on angle is typically rather weak such that only a few terms in a function expansion could be used for representation, the dependence of angular flux on energy is a very complicated function of the energy range; at high energies, the energy dependence is dominated by the fission spectrum, while at intermediate energies by resonance absorption and at low energies by thermalization effects. A single set of functions to describe all of this behavior would require very many terms, so a discrete ordinates in energy approach is almost universally used. Deterministic transport solvers use a \gls{mg}-in-energy form of the \gls{nte} that is obtained by averaging the \gls{nte} over all energies. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of decreasing energy, equivalent to increasing lethargy. The greatest amount of simplification occurs when using a single energy group, which is equivalent to assuming that energy does not change in scattering collisions.
 
-Any quantity \(\alpha\) integrated over energy group \(g\) is subscripted as:
+Several definitions are required for the derivation of the \gls{mg} \gls{nte}. The angular flux of group \(g\) is defined as the angular flux integrated over the energy bounds for group \(g\):
 
 \beq
 \label{eq:GroupwiseQuantity}
-\alpha_g(\vv{r},\hO,t)\equiv\int_{E_{g-1}}^{E_g}dE\alpha\seat
+\psi_g(\vv{r},\hO,t)\equiv\int_{E_{g-1}}^{E_g}dE\psi\seat
 \eeq
 
-Eq. \eqref{eq:GroupwiseQuantity} is used for the definition of the groupwise fluxes \(\psi_g\). Groupwise cross sections for reaction \(i\) are defined in a similar manner based on the flux-weighted cross sections:
+Groupwise cross sections for reaction \(i\) are defined in a similar manner based on the flux-weighted cross sections:
 
 \beqa
 \label{eq:GroupwiseQuantityProduct}
 \Sigma_{i,g}(\vv{r},\hO,t)\equiv&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat}{\int_{E_{g-1}}^{E_g}dE\psi\seat}\\
-\equiv&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat}{\psi_g\sat}\\
+=&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat}{\psi_g\sat}\\
 \eeqa
 
 where Eq. \eqref{eq:GroupwiseQuantity} has been inserted for the denominator. Using Eqs. \eqref{eq:GroupwiseQuantity} and \eqref{eq:GroupwiseQuantityProduct}, the \gls{mg} \gls{nte} can be derived for group \(g\) by simply integrating the \gls{nte} in Eq. \eqref{eq:nte1} over \(E_{g-1}\leq E\leq E_g\):
 
 \beqa
 \label{eq:mg_nte}
-&\int_{E_{g-1}}^{E_g}dE\frac{\partial}{\partial t}\left(\frac{\psi\seat}{v(E)}\right)+\int_{E_{g-1}}^{E_g}dE\hO\cdot\nabla\psi\seat+\Sigma_{t,g} \psi\sat=\\
-&\hspace{1cm}\int_{E_{g-1}}^{E_g}dE\int_{0}^{\infty} dE'\int_{4\pi}^{} d\hO  ' \Sigma_s\seatout \psi\seatprime\\
+&\int_{E_{g-1}}^{E_g}dE\frac{\partial}{\partial t}\left(\frac{\psi\seat}{v(E)}\right)+\hO\cdot\nabla\psi_g\sat+\Sigma_{t,g} \psi\sat=\\
+&\hspace{1cm}\sum_{g'=1}^G\dhOprime\Sigma_s^{g'\rightarrow g}(\vv{r},\hO'\rightarrow\hO,t)\psi_{g'}(\vv{r},\hO',t)\ +\\
 &\hspace{2cm}\int_{E_{g-1}}^{E_g}dE\promptfissionsource\psi\seatprime +\\
-&\hspace{3cm}\int_{E_{g-1}}^{E_g}dE\delayedfissionsource + Q_g\sat
+&\hspace{3cm}\sum_{j=1}^J\chi_{d,j,g}\lambda_jC_j(\vv{r},t)+ S_g\sat
 \eeqa
+
+where \(\hO\cdot\nabla\) was brought outside the streaming term since this operators is not a function of energy.
