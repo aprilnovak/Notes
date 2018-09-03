@@ -1,0 +1,165 @@
+\section{The Physics of Nuclear Interactions}
+
+This section provides the physical background needed to understand the probabilities of neutron interactions with matter. Due to the very large neutron densities on the order of \(10^8\) per cm$^3$, neutron interactions with matter will only be regarded in an average sense, as such detailed accounting of every neutron is unneccessary. 
+
+\subsection{Radioactive Decay}
+\label{sec:RadioactiveDecay}
+There are four important types of radioactive decay:
+
+\begin{enumerate}
+\item Alpha decay - a nucleus emits a helium nucleus,
+\item Beta decay - a neutron is converted to a proton in the nucleus, and an electron and neutrino are emitted,
+\item Gamma decay - a nucleus transitions from a higher energy state to a lower energy state and in the process emits a photon, and
+\item Neutron decay - a neutron is emitted
+\end{enumerate}
+
+The physics of radioactive decay are based on the assumption that the probability of decay of a nuclide is constant in time - an excellent approximation. This probability of decay per unit time, \(\lambda\) is known as the decay constant. If the probability of decay is a constant independent of the number of nuclei present or other environmental conditions, the rate of the change of the number of nuclei \(N\) is proportional to the number present:
+
+\beq
+\label{eq:Decay}
+\frac{dN(t)}{dt}=-\lambda N(t)
+\eeq
+
+The quantity \(\lambda N\) represents the instantaneous number of radioactive decays occurring, and is also referred to as the activity \(A\):
+
+\beq
+\label{eq:ActivityDef}
+A(t)\equiv\lambda N(t)
+\eeq
+
+Activity is typically quoted in units of Curies, or \(3.7\times10^{10}\) decays per second, roughly equivalent to the activity of one gram of radium. Solution of Eq. \eqref{eq:Decay} provides an expression for the number of nuclei present given an initial number \(N_0\):
+
+\beq
+\label{eq:DecayEqn}
+N(t)=N_0e^{-\lambda t}
+\eeq
+
+Note that for systems of different nuclides, a system of equations of the form in Eq. \eqref{eq:Decay} exists with additional source terms representing decay chain effects; this constant-coefficient system can be easily solved. The instantaneous rate of radioactive decay is obtained simply by multiplying \(N(t)\) by the decay constant, from which it is clear that the probability a nuclei will decay in a time interval \(t\) to \(t+dt\) is:
+
+\beq
+\label{eq:ProbabilityDecay}
+p_{\text{decay}}=\lambda e^{-\lambda t}dt
+\eeq
+
+The expectation value of the lifetime \(\bar{t}\) of a nuclide is calculated by computing the first moment of the probability of decay:
+
+\beqa
+\label{eq:MeanLifetime}
+\bar{t}\equiv&\int_0^\infty dt\ t\lambda e^{-\lambda t}dt\\
+=&\frac{1}{\lambda}
+\eeqa
+
+Eq. \eqref{eq:MeanLifetime} can be more intuitively understood if the probability of decay were a delta function for a specific time \(t_i\), in which case the integral in Eq. \eqref{eq:MeanLifetime} would simply equal \(t_i\), as expected. For gamma decay, a nucleus transition between two states with a difference in energies \(\Delta E\). From the Heisenberg uncertainty principle, if \(\Delta t\) is taken as the average lifetime of the higher-energy state before decaying to the lower-energy state, it is clear that \(\Delta E\propto\lambda\), so states with very large transitions in energy tend to have much larger decay constants than smaller-energy transitions.
+
+\subsection{Nuclear Collisions}
+As opposed to radioactive decay discussed in Section \ref{sec:RadioactiveDecay}, the probabilities of nuclear collisions are not constants independent of all environmental factors. For nuclear collisions, the probability of interaction is dependent on both the identities of the two interacting particles and their relative velocity (which accounts for both their relative energy and directions of motion). All nuclear reactions are accompanied by the absorption or release of energy; this energy can be computed based on the mass \(m\) that is converted to energy and vice versa using the following result from general relativity:
+
+\beq
+E=mc^2
+\eeq
+
+
+%Additional collisions of importance include \((n,\alpha)\) reactions, common in absorber materials introduced for reactor control. 
+
+The microscopic cross section \(\sigma\) is the fundamental property data required for the analysis of nuclear systems. The microscopic cross section for reaction \(i\), \(\sigma_i\), is {\it proportional} to the probability that a neutron will interact with a specific nucleus through a reaction of type \(i\). More specifically, the microscopic cross section is the probability per nucleus in a target of unit cross-sectional area that a neutron in a beam of intensity \(I\) will interact with it. While not {\it equivalent} to the effective area presented by the target nuclei to a beam, typical units of \(\sigma\) do roughly correspond to the cross sectional area of a nucleus represented as a circle with nuclear radius of \(10^{-12}\) cm. The total cross section is the sum of the scattering and absorption cross sections. While neutrons are released in fission such that it could in some sense be treated as a scattering reaction, fission is customarily treated as an absorption interaction.
+
+The microscopic cross section only indicates the probability of interaction with a single nucleus in a target of unit cross-sectional area. To obtain the probability of interaction per unit distance traveled by the particle, \(\sigma\) must be multiplied by the number density \(N\) of the target material. The macroscopic cross section for reaction \(i\), \(\Sigma_i\), is defined as the probability of interaction per unit travel of a particle with {\it any} nucleus:
+
+\beq
+\label{eq:MacroscopicSigmaDef}
+\Sigma_i\equiv\sigma_iN
+\eeq
+
+Similar to the definition for the probability of decay in Eq. \eqref{eq:ProbabilityDecay}, the probability that a neutron has its first interaction in the spatial interval \(x\) to \(x+dx\) is simply the multiplication of the interaction probability per unit distance with the instantaneous local value of the beam intensity (obtained from a differential equation with solution identical to Eq. \eqref{eq:DecayEqn}):
+
+\beq
+p_{\text{interaction}}=\Sigma_te^{-\Sigma_tx}dx
+\eeq
+
+The expectation value of the distance traveled before interacting \(\bar{x}\) is calculated by computing the first moment of the probability of interaction:
+
+\beqa
+\bar{x}\equiv&\int_0^\infty dx\ x\Sigma_te^{-\Sigma tx}\\
+=&\ \frac{1}{\Sigma _t}
+\eeqa
+
+The average distance traveled between interactions, \(\bar{x}\) is commonly referred to as the mean free path. The macroscopic cross section represents the probability per unit path length traveled that a particle undergoes an interaction; multiplication by the velocity of the particle gives the frequency with which such interactions occur. This reaction frequency is often referred to as the ``collision frequency:''
+
+\beq
+\text{collision frequency}\equiv v\Sigma
+\eeq
+
+By a similar procedure as performed to obtain the average lifetime and path length, the average time between collisions can be calculated as \(1/(v\Sigma)\).
+
+For all reaction types except potential scattering, described in Section \ref{sec:PotentialScattering}, the incident neutron interacts with the nuclear potential of the target nuclide to form a compound nucleus. A compound nucleus is inferred to exist due to the relatively long times observed between interaction with a neutron and subsequent release of reaction products. During this lifetime of the compound nucleus, energy is transferred from the neutron to the nucleons, which after some time leads to the collapse of the compound nucleus. The relatively long lifetime of the compound nucleus makes it very likely that the reaction products are independent of the initial state of the neutron, and only dependent on the state of the compound nucleus. 
+
+The formation of a compound nucleus is a type of resonance reaction; the total energy available to be transferred to the compound nucleus is the sum of the energy in the \gls{cm} frame and the additional \gls{be} of the neutron. When this total available energy very closely matches an energy state of the compound nucleus, formation is much more likely to occur, leading to resonance structures in cross sections related to reactions involving compound nucleus formation. Because the formation of the compound nucleus leads to some degree of independence of the reaction products on the initial state of the neutron, the energy dependence of the cross sections for many different reactions share common features. 
+
+The neutron wavelength \(\lambda_n\) is proportional to \(1/\sqrt{E}\), and is important in understanding several of the energy ranges of cross section behavior:
+
+\beq
+\label{eq:NeutronWavelength}
+\lambda_n=\frac{h}{\sqrt{2mE}}
+\eeq
+
+where \(h\) is the Planck constant and \(\sqrt{2mE}\) is the momentum of the neutron. There are generally four regions of unique behavior in the total scattering cross section for {\it light} nuclei, bounded by the approximate energy ranges:
+
+\begin{itemize}
+\item \(10^{-4}-10^{-2}\) eV - the neutron wavelength becomes on the order of the spacing between atoms, and a neutron interacts with groups of nuclei simultaneously. If the target material is organized in a lattice, the neutron is diffracted, and a sensitive energy dependence exists as the neutron energy approaches multiples of the interatomic spacing between different ``views'' of the lattice. Thresholds for this type of interaction typically occur at \(10^{-3}\) eV and above. Throughout this {\it entire} energy range, the neutron energy may be lower than the chemical binding energy of the material, in which case the neutron interacts with the material as an aggregate quantity. The neutron no longer interacts with a free atom, but rather may excite lattice vibrations or rotate atoms in a lattice. The thermal motion of the target nuclei is important; neutron energies comparable to the thermal energy of the material cannot be analyzed without considering the thermal motion of the target. In this energy range, the cross section has a \(1/\sqrt{E}\) dependence, with diffraction effects superimposed and leading to a rather large increase in the total cross section at around \(10^{-3}\) once the diffraction cutoff is reached.
+\item \(10^{-2}-10^6\) eV - the \(\sigma_s\) is dominated by potential scattering; because \(\sigma_p\) is approximately independent of energy, this gives a nearly constant \(\sigma_s\) 
+\item \(10^6-10^7\) eV - resonance region; large peaks are observed where \(E_c+E_b\) coincides with an excited state of the compound nucleus
+\item Above \(10^7\) eV - fast spectrum region, characterized by a rapid decrease in the total cross section as the neutron wavelength decreases according to Eq. \eqref{eq:NeutronWavelength} until it is sufficiently small that interaction with any nucleus becomes highly improbable.
+\end{itemize}
+
+For light nuclei, the lowest-lying resonance energy states are in the MeV range, while for heavy nuclei begin in the eV to keV range, and the resonance region extends down to a lower energy range.
+
+For light nuclei with \(A<25\), the epithermal and fast energy ranges are dominated by separated resonances; there is no \gls{urr} in light nuclei. Epithermal and low energies are dominated by potential scattering. For intermediate and heavy nuclei, high energies are characterized by inelastic scattering, overlapping resonances, and continuum resonances. Intermediate energies are characterized by radiative capture and elastic scattering, while low energies are dominated by potential scattering for intermediate nuclei and radiative capture for heavy nuclei.
+
+Resonance effects are most significant in heavy nuclides. At high energies, the energy states in heavy nuclides become closer and closer to one another, forming a very complicated resolved resonance structure that eventually overlaps so significantly to be considered the \gls{urr} with an onset typically in the range of 1 to 10 keV.
+
+%At thermal energies, carbon is nearly a pure scatterer - the scattering cross section is approximately three orders of magnitude larger than the absorption cross section, and will therefore undergo approximately \(10^3\) scattering reactions before being absorbed. For a scattering cross section of 4.8 barns, this gives a mean free path of thermal neutrons in graphite of approximately 2.6 cm.
+
+Cross section data, especially for resonances, tends to be stored as a function of several fitting parameters rather than cross sections tabulated at discrete energies in order to reduce the required storage. Processing codes such as NJOY then convert the cross section data to a useable form for computational activities. 
+
+\subsubsection{Radiative Capture}
+
+The radiative capture cross section \(\sigma_\gamma\) exhibits strong resonance structure, since absorption of a neutron leads to the formation of a compound nucleus that decays by transitioning between different energy states through the release of a cascade of photons. Radiative capture is an important interaction due to its removal of neutrons from the fission chain reaction. As temperatures increase, radiative capture resonances broaden, resulting in increased radiative capture reaction rates in nuclides such as U-238, which in most reactor designs leads to negative reactivity feedback. Radiative capture is also the primary mechanism by which U-238 is transmuted to Pu-239.
+
+U-238 has several low-lying resonances in the eV range, with the lowest resonance at 6.67 eV with a narrow width of 0.027 eV and a peak of \(7\times10^3\) barns that is about four orders of magnitude larger than the nearby cross section. For resonances that are widely separated from one another such as to not overlap, the energy dependence of \(\sigma_\gamma\) can be approximated using the Breit-Wigner single-level resonance formula:
+
+\beq
+\sigma_a(E_c)=\sigma_0\frac{\Gamma_\gamma}{\Gamma}\sqrt{\frac{E_0}{E_c}}\frac{1}{1+\left\lbrack\frac{1}{\Gamma}(E_c-E_0)\right\rbrack^2}
+\eeq
+
+where \(E_0\) is the energy on which the resonance is centered, \(\Gamma\) is the total line width of the resonance, which captures the width of the energy level at the \gls{fwhm}, and \(\Gamma_\gamma\) is the radiative line width that captures the probability that the compound nucleus decays via the emission of a photon. \(\sigma_0\) is the total cross section at \(E_0\) which scales as:
+
+\beq
+\sigma_0\propto\frac{(A+1)^2}{A^2E_0}\sqrt{E}
+\eeq
+
+but also depends on other factors such as spin. Because resonance effects are most significant in heavy nuclei, \(E_c\) is well-approximated by \(E\). Radiative capture cross sections tend to be largest at low energies, and generally decrease continuously with energy except for the presence of resonances. For low energies, \(\sigma_\gamma\propto1/\sqrt{E}\), while at higher energies falls off very quickly with energy as \(\sigma_\gamma\propto1/\sqrt{E^5}\).
+
+\subsubsection{Fission Reactions}
+
+Similar to radiative capture, fission is the result of compound nucleus formation, and therefore the fission resonance structure for fissile nuclides shares similarities with the radiative capture resonance structure. However, for nuclei that only undergo fast fission such as U-238 and Th-232, the fission cross section is essentially zero until reaching the MeV range, where cross sections become on the order of 1 barn.
+
+\subsubsection{Potential Scattering Reactions}
+\label{sec:PotentialScattering}
+
+In a potential scattering reaction, two colliding bodies interact as hard spheres without forming a compound nucleus. There is very weak energy dependence in potential scattering, and the cross section is often well-approximated by the cross-sectional area of the target nuclide nucleus for intermediate energies. The radius of a nucleus for a nuclide with mass number \(A\) can be approximated as:
+
+\beq
+R\ (\text{cm})\approx1.25\times10^{-13}A^{1/3}
+\eeq
+
+For U-235, \(\sigma_p\approx7.5 barns\).
+
+\subsubsection{Elastic Resonance Scattering Reactions}
+
+In an elastic scattering reaction, no energy is transferred to the target in the form of transitioning to an excited energy state, so the sum of the initial and final energies is the same. In an elastic scattering reaction, a compound nucleus forms whose disintegration produces a neutron and the same initial target nuclide in its initial energy state. While a resonance structure is present, the behavior is different from resonances observed in the radiative capture and fission cross sections - the cross section may decrease in the vicinity of a resonance because elastic resonance scattering may interfere in a quantum mechanical mechanism with potential scattering.
+
+
+
+\subsubsection{Inelastic Scattering Reactions}
+
+In an inelastic scattering reaction, a compound nucleus forms whose disintegration produces a neutron and a product nuclide in an excited state. Some of the incident neutron energy is transferred to the target nuclide, so inelastic scattering is in a sense equivalent to radiative capture, but with emission of a neutron instead of a photon such that the reaction may be considered a scattering reaction. Inelastic scattering is only significant at relatively high energies on the order of 10 keV. An energy threshold typically exists below which inelastic scattering does not occur because the sum of the energy in the \gls{cm} frame and the neutron \gls{be} is too low to leave the product nucleus in an excited state while producing a neutron with non-zero energy. Because a significant amount of energy is transferred to the product nuclide in the form of an excitation state, inelastic scattering is a very effective neutron slowing down mechanism.

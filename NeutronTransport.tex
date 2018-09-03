@@ -142,6 +142,9 @@ This document will cover the two main models for neutron populations, beginning 
 So, while diffusion theory represents a much simpler model of neutron populations, it is necessary to begin with a study neutron transport. The neutron transport equation is difficult to solve due to the high dimensionality of phase space and the integro-differential form of the equation. The neutron transport equation is the linear version of the general Boltzmann transport equation developed to describe gases. Despite this great reduction in complexity from the Boltzmann equation, the solution can only be obtained in the simplest of geometries. Initially, the people who worked with the Bolztmann transport equation were satisfied by only applying it in semi-infinite media, since it was used for atmospheric and stellar applications. Its application to more finite domains really began with the field of nuclear engineering. 
 
 \clearpage
+\input{cross-sections.tex}
+
+\clearpage
 \section{Important Definitions and Identities}
 
 This section provides important definitions that are used throughout the remainder of this document. All quantities in this section are fundamental to the understanding of the material, which is why for convenience they are all grouped together here to serve as a reference that should allow the student to reduce the amount of time needed searching for previously discussed formulas and definitions.
@@ -189,20 +192,6 @@ The reaction rate density for a given reaction and nuclide simply multiplies the
 
 where \(n\) is the volumetric neutron density (neutrons/cm\textsuperscript{3}). 
 
-\subsubsection{Flux}
-
-The reaction rate density definition leads to a convenient \textit{definition} for the angular flux - the angular flux is the proportionality between a reaction rate and the macroscopic cross section for that reaction rate.
-
-
-All angular quantities can be integrated over \(4\pi\) solid angle to give the corresponding ``scalar'' value. The scalar neutron flux is the angular flux with all angular dependence integrated out, also referred to as the zeroth angular moment of the angular flux.
-
-\beq
-\label{eq:ScalarFlux}
-\phi\spas = \int_{4\pi}^{} d\hO\psi\spa
-\eeq
-
-If the angular flux is isotropic, i.e. independent of angle, then the above integral would simply evaluate to \(\phi\spas=4\pi\psi\). However, the entire crux of neutron transport is that the angular flux usually has strong angular dependence, especially near boundaries or interfaces between regions with very different cross-sections, such as near vacuum boundaries or strong absorbers. 
-
 \subsubsection{Current}
 
 The angular current density has the same magnitude as the angular flux, except that it has direction - it denotes the current of neutrons moving in a certain angular direction \(\hO\):
@@ -237,46 +226,8 @@ The net current through a surface is then the sum of the two partial currents (n
 J \spas = J_+ - J_-
 \eeq
 
-\subsubsection{Pressure Tensor}
-
-While the current and scalar flux are the first and zeroth moments of the angular flux, respectively, we can also define a second moment of the angular flux as the pressure tensor:
-
-\beq
-\label{eq:PressureTensor}
-\bar{\bar{P}}(\vv{r},E,t)=\int_{4\pi}^{}d\hO  \hO  \hO  \psi\spa 
-\eeq
-
 \clearpage
 \input{transport-equation.tex}
-
-\subsection{The Neutron Continuity Equation}
-
-
-By integrating over angle, we introduced a new variable - \(J\). Unfortunately, \(J\) cannot be expressed in terms of \(\phi\) in an exact manner, but Eq. \ref{eq:NeutronContinuityEquation} does reduce to the diffusion equation if we make the approximation of Fick's law:
-
-\beq
-\vv{J}\spas\approx-D(\vv{r},E)\nabla\phi\spas
-\eeq
-
-If instead we multiplied Eq. \ref{eq:TE} by \(\hO\) and then integrated over angle, we can obtain another equivalent form of the transport equation that will primarily be in terms of current, rather than flux. All source terms (fission, delayed neutrons, and external source) are bundled into \(S\) for simplicity. 
-
-\beqa
-\label{eq:TEAngleAngleIntegrated}
-\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hO  \hO  \hO  \psi\spa  + 
- \Sigma_t\spas\vv{J}\spas = \\
- \int_{4\pi}^{} d\hO\int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \Sigma_s\spang\psi\spap + \int_{4\pi}^{} d\hO  \hO  S\spa\\
-\eeqa
-
-We can recognize the lumped source term as being equal to the first moment of the source, \(S_1\), similar to how scattering moments are defined in Eq. \ref{eq:ScatteringMomentsLegendre}. This first moment will be zero for isotropic sources because they have no dependence on angle. Then, we can rearrange the scattering term by multiplying it by \(\hO  \cdot\hO  \), since this is equivalent to multiplication by 1. 
-
-\beqa
-\label{eq:TEAngleAngleIntegrated}
-\frac{1}{v(E)} \frac{\partial\vv{J}\spas}{\partial t} +
- \nabla\cdot \int_{4\pi}^{} d\hO   \hO  \hO  \psi\spa  + 
- \Sigma_t\spas\vv{J}\spas = \\
- \int_{4\pi}^{} d\hO   \int_{0}^{\infty}dE' \int_{4\pi}^{ } d\hO  ' \hO  \cdot\hO   \hO  \Sigma_s\spang\psi\spap + S_1\spas\\
-\eeqa
 
 \begin{comment}
 To interpret this dot product in terms of moments such as in Eq. \ref{eq:ScatteringMomentsLegendre}, we can reduce the scattering term in the above equation to the one-dimensional form:
@@ -785,15 +736,6 @@ This represents the void form of the SAAF equation to be used in voids.
 
 
 NDA, also known as Coarse Mesh Finite Difference (CMFD), uses a two-equation system consisting of the transport equation and a transport-corrected diffusion equation to accelerate the solution of transport problems. As much as possible, the lower-order equation is solved, with periodic iterative corrections with transport updates, to reduce overall computation time had we only been solving the transport equation. Picard iterations (at a fixed point) are used to update the lower-order equation when necessary. 
-
-
-
-\clearpage
-\section{The Even and Odd Parity Transport Equations}
-
-The neutron transport equation can also be written in even and odd parity forms.
-
-
 
 
 \clearpage
