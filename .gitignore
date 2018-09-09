@@ -4,3 +4,6 @@
 *.out
 *.toc
 *.pdf
+*.glo
+*.acn
+*.ist
