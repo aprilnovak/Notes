@@ -14,7 +14,7 @@ where \(v\equiv\|\vv{v}\|_2\) is used throughout. Because neutron kinetic energi
 \hO\equiv \frac{\vv{v}}{v}
 \eeq
 
-The direction of motion of a {\it fluid} particle is typically expressed using ``velocity,'' with one vector component corresponding to each spatial dimension. However, this can equivalently be expressed for neutron transport in terms of two angles \(0\leq\phi\leq2\pi\) and \(0\leq\theta\leq\pi\), where \(\phi\) is the angle in the \(x\)-\(y\) plane from the positive \(x\)-axis and \(\theta\) is the angle between the flight direction and the \(z\)-axis. Like velocity, \(\hO\) has three components corresponding to the three spatial dimensions, where each component is only a function of the two angles \(\phi\) and \(\theta\).
+The direction of motion of a {\it fluid} particle is typically expressed using ``velocity,'' with one vector component corresponding to each spatial dimension. However, this can equivalently be expressed in terms of the kinetic energy \(E\) and two angles \(0\leq\phi\leq2\pi\) and \(0\leq\theta\leq\pi\), where \(\phi\) is the angle in the \(x\)-\(y\) plane from the positive \(x\)-axis and \(\theta\) is the angle between the flight direction and the \(z\)-axis. Like velocity, \(\hO\) has three components corresponding to the three spatial dimensions, where each component is only a function of the two angles \(\phi\) and \(\theta\). Note that using \(\hO\) instead of velocity does not reduce the number of unknowns - instead of working with three velocity components, we work with one energy component and two angular components. This decomposition is useful for tabulating scattering cross sections independently as a function of energy and incoming and outgoing directions, rather than jointly in terms of velocity.
 
 \begin{tcolorbox}[breakable]
 In Cartesian coordinates, \(\hO\) is given in terms of unit vectors \(\hat{i}\), \(\hat{j}\), and \(\hat{k}\) corresponding to the \(x\), \(y\), and \(z\) axes, respectively, as:
@@ -276,7 +276,9 @@ If both the prompt and delayed neutrons are assumed to be born isentropic, then 
 
 \subsection{The Inscattering Source Term}
 
-It is frequently assumed that the angular dependence of a collision is rotationally symmetric, meaning that scattering cross sections do not depend uniquely on both \(\hO\) and \(\hO'\), but only on the change between the incident and outgoing directions. Assuming rotational symmetry, \(\hO\rightarrow\hO'\) can be represented as the dot product between \(\hO\) and \(\hO'\), which by the definition of a dot product and the presence of two unit vectors is simply equal to \(\mu\), defined in Eq. \eqref{eq:muDef}:
+It is frequently assumed that the angular dependence of a collision is rotationally symmetric, meaning that scattering cross sections do not depend uniquely on both \(\hO\) and \(\hO'\), but only on the change between the incident and outgoing directions. It is extremely rare for the scattering cross section to depend on the incident neutron direction of motion unless the target nuclei are aligned such as in ferromagnetic materials. This rare case does not occur in most reactor analysis problems, and hence rotational symmetry is frequently implicitly assumed.
+
+Assuming rotational symmetry, \(\hO\rightarrow\hO'\) can be represented as the dot product between \(\hO\) and \(\hO'\), which by the definition of a dot product and the presence of two unit vectors is simply equal to \(\mu\), defined in Eq. \eqref{eq:muDef}:
 
 \beqa
 \label{eq:OmegaDotOmega}

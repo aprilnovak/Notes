@@ -170,14 +170,7 @@ In Cartesian coordinates, a neutron moves along constant \(\hO\) until suffering
 
 \subsubsection{Reaction Rates}
 
-The interaction rate of neutrons in material \(j\) is given in terms of an interaction frequency for reaction \(i\):
-
-\begin{equation}
-\label{eq:ReactionFrequency}
-\textrm{Reaction Rate Frequency}_{i, j} = v\Sigma_{i, j}
-\end{equation}
-
-where \(v\) is the neutron velocity and \(\Sigma_{i, j}\) is a macroscopic cross section for reaction \(i\) in material \(j\). Intuitively, \(v\) must be included in the interaction frequency, because if the velocity were zero, then even if there were many neutrons, none would interact because they would never collide with anything. The macroscopic cross section represents the probability per unit distance traveled by the neutron of undergoing reaction \(i\) in material \(j\). The macroscopic cross section can be computed by multiplying the microscopic cross section \(\sigma_{i,j}\) for the reaction \(i\) in material \(j\) by the number density of material \(j\):
+The macroscopic cross section represents the probability per unit distance traveled by the neutron of undergoing reaction \(i\) in material \(j\). The macroscopic cross section can be computed by multiplying the microscopic cross section \(\sigma_{i,j}\) for the reaction \(i\) in material \(j\) by the number density of material \(j\):
 
 \beq
 \Sigma_{i,j}\equiv\sigma_{i,j}N_j
@@ -736,15 +729,6 @@ This represents the void form of the SAAF equation to be used in voids.
 
 
 NDA, also known as Coarse Mesh Finite Difference (CMFD), uses a two-equation system consisting of the transport equation and a transport-corrected diffusion equation to accelerate the solution of transport problems. As much as possible, the lower-order equation is solved, with periodic iterative corrections with transport updates, to reduce overall computation time had we only been solving the transport equation. Picard iterations (at a fixed point) are used to update the lower-order equation when necessary. 
-
-
-
-\clearpage
-\section{The Even and Odd Parity Transport Equations}
-
-The neutron transport equation can also be written in even and odd parity forms.
-
-
 
 
 \clearpage
