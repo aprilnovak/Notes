@@ -1429,13 +1429,11 @@ where the removal cross section is defined to be the sum of the absorption cross
 \clearpage
 \section{Reactor Kinetics}
 
-This section discusses how the time-dependency of the neutron transport equation can be approximated. In general, the neutron transport equation can be solved in time, where some fraction of neutrons are born promptly with essentially no time delay, and some fraction born delayed according to a decay constant associated with a precursor nuclide. 
+This section discusses how the time-dependency of the neutron transport equation can be approximated. In general, the neutron transport equation can be solved in time, where some fraction of neutrons are born promptly with essentially no time delay, and some fraction born delayed according to a decay constant associated with a precursor nuclide. Section \ref{sec:Fission} introduced definitions used to describe the prompt and delayed neutrons.
 
-The delayed neutron fraction \(\beta\) represents the fraction of neutrons that are born delayed. Multiplying \(\beta\) by \(\nu\) gives the absolute number of neutrons produced per fission from delayed neutron precursors. This parameter is a function of the identity of the fissioning nuclide, as well as the incident neutron energy. Because \(\beta\) is a function of energy for each nuclide, and because the fission cross section is also a function of energy (so the makeup of the nuclides that undergo fission changes with incident neutron energy), \(\beta\) is also a function of the incident neutron energy. However, this dependence on neutron energy is small below 4 MeV, and can be neglected for thermal systems.
+The number density of these precursor nuclides is given as \(C\), where the density refers to the amount of precursor atoms that {\it always} decay by neutron emission. So, \(C\) is really some fraction of the total precursor concentration in order to reflect the fraction that on average undergoes delayed neutron emission. 
 
-\(1-\beta\) describes the fraction of neutrons that are born delayed; these delayed neutrons are born from decay of precursor atoms (i.e. fission products). The number density of these precursor nuclides is given as \(C\), where the density refers to the amount of precursor atoms that {\it always} decay by neutron emission. So, \(C\) is really some fraction of the total precursor concentration in order to reflect the fraction that on average undergoes delayed neutron emission. 
-
-Delayed neutrons are typically grouped into 6 groups based on the half life of their precursors. These 6 groups are relatively similar for thermal and fast spectra, though the value of \(\beta\) is very dependent on the fissioning nuclide. Something important to note about the values for \(\beta\) below is how the decay constants for each group are selected. On average, delayed neutrons are born about 12 seconds after fission. 
+Something important to note about the values for \(\beta\) below is how the decay constants for each group are selected. On average, delayed neutrons are born about 12 seconds after fission. 
 
 \begin{table}[h]
 \caption{Delayed Neutron Group Characteristics for U-235 (thermal) and Pu-239 (fast)} % title name of the table
@@ -1458,24 +1456,7 @@ Delayed neutrons are typically grouped into 6 groups based on the half life of t
 
 Neutron ``hold-up'' in a reflector due to scattering interactions (before returning to the core) can be represented by an artificial delayed neutron group, though this is better approximated by using a modified neutron lifetime. Table \ref{tab:PPer} shows values for \(\beta\) as a function of the fissioning nuclide and energy range.
 
-\begin{table}[H] 
-\caption{\(\beta\) and \(\nu\) for Various Isotopes} % title name of the table
-\centering % centering table
-\begin{tabular}{l l l} % creating 10 columns
-\hline\hline % inserting double-line
- Isotope & \(\beta\) & \(\nu\)
-\\ [0.5ex]
-\hline % inserts single-line
-Th-232 fast fission & 0.0227 & 2.34\\
-U-238 fast fission & 0.01560 & 2.77\\
-Pu-239 fast fission & 0.00206 & 2.93\\
-Pu-241 fast fission & 0.00530 & 2.95\\
-U-235 thermal fission & 0.00644 & 2.4\\
-U-233 thermal fission & 0.00264 & 2.5\\
-\hline % inserts single-line
-\end{tabular}
-\label{tab:PPer}
-\end{table}
+
 
 For fast reactors, \(\beta\) will be lower for heterogeneous designs; in homogeneous designs, a greater fraction of the fissions occur from U-238, and U-238 has a higher \(\beta\) than the fissile isotopes (actinides) used in fast reactors. In an LWR, \(\beta\) typically ranges from 0.007137 (more U-238) to 0.005465 (build-in of Pu-239) over a cycle. However, in fast reactors, \(\beta\) often increases over the core life as Pu-239 transmutes to Pu-241. Once averaged over the isotopes in a fast reactor, \(\beta\) is around 0.0036 for heterogeneous designs. For thermal reactors, natural-U fueled reactors (CANDU) have the highest \(\beta\), and are the furthest from criticality accidents. 
 

@@ -141,6 +141,26 @@ where \(E_0\) is the energy on which the resonance is centered, \(\Gamma\) is th
 
 but also depends on other factors such as spin. Because resonance effects are most significant in heavy nuclei, \(E_c\) is well-approximated by \(E\). Radiative capture cross sections tend to be largest at low energies, and generally decrease continuously with energy except for the presence of resonances. For low energies, \(\sigma_\gamma\propto1/\sqrt{E}\), while at higher energies falls off very quickly with energy as \(\sigma_\gamma\propto1/\sqrt{E^5}\).
 
+Radiative capture in U-238 and Th-232 produce fissile isotopes through the following decay chains:
+
+\beq
+U-238 + n\rightarrow U-239\rightarrow Np-239\rightarrow Pu-239
+\eeq
+
+\beq
+Th-232+n\rightarrow Th-233\rightarrow Pa-233\rightarrow U-233
+\eeq
+
+For such breeding isotopes to be possible, the number of neutrons produced per neutron absorbed by a material, defined as \(\eta\), must exceed unity. 
+
+\beqa
+\label{eq:Eta2Def}
+\eta\equiv&\frac{\text{average number of neutrons produced}}{\text{average number of neutrons absorbed}}\\
+\equiv&\frac{\sum_{i=1}^N\nu_i\Sigma_{f,i}}{\sum_{i=1}^N\Sigma_{a,i}}
+\eeqa
+
+where \(N\) is the total number of types of fissile isotopes present in the fuel mixture. \(\eta\) is slightly greater than two in the thermal and epithermal range, but dramatically increases above 10 keV where the capture-to-fission ratio dramatically decreases, indicating the onset of an energy range in which breeding is more easily achievable. In the fast energy range, \(\eta\) is largest for Pu-239 and Pu-241. Breeding in the thermal spectrum is only possible with U-233, which has an \(\eta\) of about 2.4. 
+
 \subsubsection{Fission Reactions}
 
 Similar to radiative capture, fission is the result of compound nucleus formation, and therefore the fission resonance structure for fissile nuclides shares similarities with the radiative capture resonance structure. However, for nuclei that only undergo fast fission such as U-238 and Th-232, the fission cross section is essentially zero until reaching the MeV range, where cross sections become on the order of 1 barn.
@@ -332,7 +352,117 @@ In an elastic scattering reaction, no energy is transferred to the target in the
 
 \subsubsection{Inelastic Scattering Reactions}
 
-In an inelastic scattering reaction, a compound nucleus forms whose disintegration produces a neutron and a product nuclide in an excited state. Some of the incident neutron energy is transferred to the target nuclide, so inelastic scattering is in a sense equivalent to radiative capture, but with emission of a neutron instead of a photon such that the reaction may be considered a scattering reaction. Inelastic scattering is only significant at relatively high energies on the order of 10 keV, but is an important mechanism in neutron slowing down in fast systems where potential scattering results in less energy loss per collision than in scattering off light nuclei. An energy threshold typically exists below which inelastic scattering does not occur because the sum of the energy in the \gls{cm} frame and the neutron \gls{be} is too low to leave the product nucleus in an excited state while producing a neutron with non-zero energy. Because a significant amount of energy is transferred to the product nuclide in the form of an excitation state, inelastic scattering is a very effective neutron slowing down mechanism.
+In an inelastic scattering reaction, a compound nucleus forms whose disintegration produces a neutron and a product nuclide in an excited state. Some of the incident neutron energy is transferred to the target nuclide, so inelastic scattering is in a sense equivalent to radiative capture, but with emission of a neutron instead of a photon such that the reaction may be considered a scattering reaction. Inelastic scattering is only significant at relatively high energies on the order of 10 keV, but is an important mechanism in neutron slowing down in fast systems where potential scattering results in less energy loss per collision than in scattering off light nuclei. An energy threshold typically exists below which inelastic scattering does not occur because the sum of the energy in the \gls{cm} frame and the neutron \gls{be} is too low to leave the product nucleus in an excited state while producing a neutron with non-zero energy. Because a significant amount of energy is transferred to the product nuclide in the form of an excitation state, inelastic scattering is a very effective neutron slowing down mechanism in the fast energy range. Effective neutron shields can be designed of a layer of high inelastic scattering material (high-\(A\)) which slows neutrons to the epithermal range, after which a low-\(A\) material can be used to effectively reduce energy through potential and elastic scattering. Heavy nuclei tend to have low-lying excited states, so inelastic scattering becomes probable for heavy nuclei at lower energies than would be possible for lighter nuclei. 
+
+\subsubsection{Fission}
+Fission is the splitting of a heavy nucleus into lighter fragments, releasing energy. Energy is released for fission of heavy nuclides because the maximum \gls{be} per nucleon of 8.7 MeV is observed at \(A=50\); the \gls{be} per nucleon decreases for heavier nuclides, so fissioning to produce lighter nuclei increases the \gls{be} per nucleon of the products. Spontaneous fission is relatively uncommon, despite the possibility of greatly increasing the stability of the product nuclides, because a 6-9 MeV fission barrier height exists for most heavy nuclei. This barrier height can be overcome with either the \gls{be} of a neutron (plus its kinetic energy) or the kinetic energy of a different particle such as a gamma ray. Such photon-induced fission is known as ``photofission.'' Spontaneous fission occurs through the barrier penetration mechanism of quantum mechanics, and hence is characterized by relatively low probabilities. 
+
+Nuclei with fission barriers that can be exceeded by neutrons of low energy are termed ``fissile,'' while heavy nuclei with slightly higher fission barriers that require high-energy neutrons to fission are termed ``fissionable.'' Fissionable nuclei cannot sustain a fission chain reaction on their own, and fast reactor designs must always include some fissile nuclides to sustain the chain reaction. % why?
+
+Because fission is a compound nucleus process, the fission cross section is characterized by resonance structures. For fissile nuclides, the fission cross section is on the order of several hundred barns in the thermal range, about two orders of magnitude higher than in the fast neutron range. For fissionable nuclides, the fission cross section tends to display a threshold energy below which the cross section is essentially zero due to the lack of energy needed to exceed the fission barrier. However, the fission cross section above this threshold tends to be rather small, on the order of several barns, similar to the high-energy behavior in fissile nuclides. The fast fission cross section is larger for Pu-242 and Pu-240, and much lower for Th-232 and U-238. The capture-to-fission ratio is defined as:
+
+\beq
+\alpha\equiv\frac{\sigma_\gamma}{\sigma_f}
+\eeq
+
+The capture-to-fission ratio is over almost all energies less than unity, indicating that the fission cross section is in most cases greater than the radiative capture cross section, except for a small range in U-235. At low energies, the capture-to-fission ratio is fairly high, about 0.2 for U-235, indicating a high degree of parasitic absorption. At higher energies, the capture-to-fission ratio dramatically drops above $10^5$ eV, indicating that the fission process is more ``efficient'' at high energies. However, due to the much lower cross sections involved, this lower rate of absorption must be compensated by much higher fuel densities to obtain the same fission reaction rates.
+
+Each fission produces fission products, neutrons, photons, beta particles, and neutrinos. As nuclides become heavier, it becomes more probable to have a greater number of neutrons than protons to reduce the repulsive effects in a very large nucleus. Therefore, after fission, each fission product tends to be rather neutron rich for its particular mass number, and tends to decay by beta decay, converting neutrons to protons plus electrons (\(\beta^-\) decay). Approximately 80\% of the total fission energy relase is manifested in the kinetic energy of fission fragments, which move on average only about 0.1 mm from the site of fission. The remaining 20\% of the energy is approximately evenly-distributed amongst neutrons, gamma energy, beta decay of fission products, neutrinos, and non-fission reactions due to neutron capture in non-fissionable materials. The gamma ray energy (in motion and capture) tends to be deposited up to about 1 m away from the site of fission, thus coupling relatively distant regions of the reactor.
+
+The neutrons born nearly instantaneously following fission from the fragmentation of the compound nucleus are considered ``prompt'' neutrons. Delayed by up to several hundred seconds is another source of neutrons from the decay of fission products. Rather than consider the build up and decay of fission products with the Batemann equations on time scales of seconds to capture this delayed source of neutrons, these ``delayed'' neutrons are treated as a time-lagged fission source of neutrons. While it is not possible to change the source of prompt neutrons by removing compound nuclei from the control volume before decay (such time scales are much smaller than nanoseconds), it is possible to remove the fission products whose decay produces neutrons. Distinguishing between these two types of neutrons permits flexibility in transient analysis of nuclear systems. The average total number of neutrons born in fission, including both prompt and delayed neutrons, is defined as \(\nu\):
+
+\beq
+\label{eq:NuDef}
+\nu(E)\equiv\text{average number of neutrons born in fission from incident neutron at energy \(E\)}
+\eeq
+
+\(\nu\) tends to increase linearly with incident neutron energy. For U-235, \(\nu\) can be approximated as:
+% does beta remain constant in energy, or does this statement simply indicate that the number of prompt neutrons increases with energy?
+\beq
+\label{eq:U235_nu}
+\nu(E)=\begin{cases}2.432+0.066\times10^{-6}E & E\leq 10^6\text{ eV}\\
+2.349 + 0.15\times10^{-6}E & E>10^6\text{ eV}
+\end{cases}
+\eeq
+
+For Pu-239, \(\nu\) can be approximated as:
+
+\beq
+\label{eq:Pu239_nu}
+\nu(E)=2.874+0.138\times10^{-6}E
+\eeq
+
+where \(E\) is given in eV in Eqs. \eqref{eq:U235_nu} and \eqref{eq:Pu239_nu}. For thermal fission in U-235 and Pu-239, \(\nu\) is approximately 2.43 and 2.87, respectively. 
+
+The energy and angle spectrum of the fission neutrons depends on the fissioning nuclide and incident neutron energy, though to a lesser degree on the incident neutron energy than \(\nu\). These spectrums differ for prompt and delayed neutrons, but both have very weak angular dependence such that isotropy is commonly assumed. The prompt fission neutron energy spectrum for U-235, with any angular dependence integrated out, can be approximated as:
+
+\beq
+\label{eq:U235_prompt}
+\chi_p(E)=0.453e^{-1.036\times10^{-6}E}\sinh{(\sqrt{2.29\times10^{-6}E})}
+\eeq
+
+where \(E\) is given in eV. The average prompt fission neutron energy predicted by Eq. \eqref{eq:U235_prompt} for U-235 is 1.98 MeV, while the most probable fission neutron energy is 0.72 MeV. The prompt fission neutron spectrum for Pu-239, with any angular dependence integrated out, can be approximated as:
+
+\beq
+\label{eq:Pu239_prompt}
+\chi_p(E)=0.6739\sqrt{E\times10^{-6}}e^{-E/1.41}
+\eeq
+
+where \(E\) is given in eV. The average prompt fission neutron energy predicted by Eq. \eqref{eq:Pu239_prompt} for Pu-239 is 2.12 MeV, while the most probable fission neutron energy is 0.71 MeV. U-235 therefore has a slightly lower-energy prompt fission neutron energy spectrum than Pu-239. While Eqs. \eqref{eq:U235_prompt} and \eqref{eq:Pu239_prompt} represent closed-form (approximate) prompt fission neutron energy distributions, the fission spectrum information is most frequently utilized in tabular form available with cross section data.
+
+In order to separate the total fission source into a prompt and delayed term for transient analyses, the fraction of neutrons born delayed is defined as \(\beta\):
+
+\beqa
+\label{eq:BetaDef}
+\beta\equiv&\ \frac{\text{fission neutrons born delayed}}{\text{fission neutrons born promptly and delayed}}\\
+\equiv& \sum_{j=1}^J\beta_j
+\eeqa
+
+where \(J\) is the total number of unique delayed neutron precursors, each of which is responsible for producing \(\beta_j\) fraction of the total number of neutrons. While \(\beta\) is a function of energy, the relationship is fairly weak below 4 MeV and is commonly neglected. Table \ref{table:beta} shows \(\beta\) for thermal and fast fission of various isotopes.
+
+\begin{table}[H] 
+\caption{\(\beta\) for common nuclides of interest.}
+\centering
+\begin{tabular}{c c c}
+\hline\hline
+Nuclide & Fission Energy & \(\beta\)\\
+\hline
+Th-232 & fast & 0.02270\\
+U-238 & fast  & 0.01560\\
+Pu-239 & fast & 0.00206\\
+Pu-241 & fast & 0.00530 \\
+U-235 & thermal & 0.00644 \\
+U-233 & thermal & 0.00264 \\
+\hline
+\end{tabular}
+\label{table:beta}
+\end{table}
+
+Approximately 45 different nuclides produced in the decay chain of the fission products decay by neutron decay, but \(J\) is typically approximated as a smaller number by grouping the precursors according to their half-lives for neutron decay. These half-lives are the half-lives characterizing the time to emit a neutron via neutron decay from the time of fission, and therefore include any intermediate decays that do not produce neutrons. The longest of these half-lives is approximately 55 seconds corresponding to Br-87.
+
+The delayed neutron group structure is dependent on the fissioning isotope, but relatively independent of the incident neutron energy, and hence these group structures can be used for both fast and thermal systems. The group structure for U-235 is shown in Table \ref{table:U235_delayed}.
+
+\begin{table}[H]
+\caption{Six-group delayed neutron precursor structure for U-235.}
+\centering
+\begin{tabular}{c c c}
+\hline\hline
+Group & Half-Life (s) & \(\beta_j/\beta\)\\ [0.5ex]
+\hline
+1 & 54.51 & 0.038 \(\pm\) 0.004\\
+2 & 21.84 & 0.213 \(\pm\) 0.007\\
+3 & 6.00 & 0.188 \(\pm\) 0.024\\
+4 & 2.23 & 0.407 \(\pm\) 0.010\\
+5 & 0.496 & 0.128 \(\pm\) 0.012\\
+6 & 0.179 & 0.026 \(\pm\) 0.004\\
+\hline
+\end{tabular}
+\label{table:U235_delayed}
+\end{table}
+
+The energy spectrum of the \(j\)-th group of delayed neutrons, \(\chi_{d,j}(E,\hO)\), is significantly lower than the energy spectrum of prompt neutrons. Typical delayed neutron energies are on the order of 0.5 MeV, rather than 2 MeV for prompt neutrons. While Eqs. \eqref{eq:U235_prompt} and \eqref{eq:Pu239_prompt} depict relatively smoothly-varying energy spectrums, the energy spectrum for delayed neutrons is not such a smooth distribution, and varies significantly with the group.
+
+Additional sources of delayed neutrons aside from fission product neutron decay include photoneutron interactions, which may be a significant source of neutrons in systems with significant deuterium and beryllium. These photoneutron reactions typically have very long half-lives, on the order of two hours, and can be approximated through the use of additional delayed neutron groups.
 
 \subsection{The Effects of Relative Motion}
 \label{sec:ThermalEffects}
@@ -387,3 +517,12 @@ While Eq. \eqref{eq:AnalyticDoppler} provides an analytic expression for the the
 For the Bethe-Placzek approximation, as temperature tends to infinity, the resonance approaches a Gaussian shape characterized by a width proportional to \(\sqrt{T}\); this is the origin of many of the square-root weightings used for the calculation of pseudo-material cross sections in multiphysics couplings. Regardless of the temperature, the area under the resonance remains constant in the Bethe-Placzek approximation - this result does {\it not} apply to the exact Doppler broadening integral in Eq. \eqref{eq:AnalyticDoppler}. Regardless, for the resonances and energy ranges of interest for nuclear engineering applications, the true areas under the resonances given by Eq. \eqref{eq:AnalyticDoppler} are nearly independent of temperature. 
 
 All of the cross sections appearing in the remainder of this document are assumed to be Doppler broadened to the material temperature such that the \(\bar{\sigma}(E,T)\) notation is replaced by \(\sigma(E,T)\). Doppler broadening is necessary so that the average thermal motion of the target nuclei are accounted for within the cross section to reflect the true dependence on relative energy, while writing the dependence with only the neutron energy.
+
+\subsubsection{Upscattering}
+
+Section \ref{sec:PotentialStationary} derived the energy dependence for isotropic scattering in the \gls{cm} frame of the differential scattering cross section. For non-zero target velocity, however, a neutron can gain energy during a potential scattering interaction, and the probability for upscattering becomes dependent on the temperature. For a non-stationary target nucleus, even if the scattering is isotropic in the \gls{cm} frame, the probability of scattering to an end energy \(E'\) is now no longer independent of \(E'\), and there is a nonzero probability of gaining energy in such a collision. Fig. \ref{fig:upscattering} shows \(P(E\rightarrow E')\) obtained by substituting \(\sigma_p(E)P(E\rightarrow E')\) into Eq. \eqref{eq:OneOverV} and using the Maxwell-Boltzmann distribution for \(\mathscr{M}\). The probability of upscattering to very high energies is substantially lower than the probability of upscattering to low energies, as expected. Upscattering is significant up to neutron energies of approximately 10kT. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{figures/upscattering.png}
+\end{figure}

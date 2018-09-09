@@ -119,21 +119,14 @@ The scattering of neutrons from other energies and angles to \(E\) and \(\hO\), 
 
 Note that Eq. \eqref{eq:ConservationInscatteringSource} includes ``sources'' of neutrons due to scattering from \(E\rightarrow E\) and \(\hO\rightarrow\hO\), which should not be represented as either a source or a loss. This double-counting will be cancelled later.
 
-The fission source is expressed as the sum of a prompt and delayed source of neutrons. The neutrons born nearly instantaneously following fission from the fragmentation of the compound nucleus are considered ``prompt'' neutrons. Delayed by up to several hundred seconds is another source of neutrons from the decay of fission products. Rather than consider the build up and decay of fission products with the Batemann equations on time scales of seconds to capture this delayed source of neutrons, these ``delayed'' neutrons are treated as a time-lagged fission source of neutrons. The fraction of fission neutrons born delayed is \(\beta\), the delayed neutron fraction:
-
-\beq
-\label{eq:BetaDef}
-\beta\equiv\frac{\text{fission neutrons born delayed}}{\text{fission neutrons born promptly and delayed}}
-\eeq
-
-While it is not possible to change the source of prompt neutrons by removing compound nuclei from the control volume before decay (such time scales are much smaller than nanoseconds), it is possible to remove the fission products whose decay produces neutrons. Writing the total fission source as the sum of a prompt and delayed source permits flexibility in transient analysis of nuclear systems. The prompt fission source is written as an integral over all neutron energies and angles of the fission reaction rate density:
+The fission source is expressed as the sum of a prompt and delayed source of neutrons. The prompt fission source is written as an integral over all neutron energies and angles of the fission reaction rate density:
 
 \beq
 \label{eq:ConservationFissionPrompt}
 \left\lbrack\int d\volume\promptfissionsource v(E')n\seatelse\right\rbrack dEd\hO
 \eeq
 
-where \(\chi_p(E,\hO)\) is the prompt fission neutron energy and angle spectrum and \(\nu\) is the average number of neutrons born in fission, considering both prompt and delayed neutrons. If prompt neutrons are born nearly isotropically (which is frequently a good approximation), angle integration of the prompt fission neutron energy and angle spectrum yields only an energy dependence:
+If prompt neutrons are born nearly isotropically (which is frequently a good approximation), angle integration of the prompt fission neutron energy and angle spectrum yields only an energy dependence:
 
 \beq
 \label{eq:prompt_isotropic}
@@ -147,7 +140,7 @@ where \(\chi_p(E,\hO)\) is the prompt fission neutron energy and angle spectrum 
 \left\lbrack\int d\volume \delayedfissionsource\right\rbrack dEd\hO  
 \eeq
 
-where \(\chi_d(E,\hO)\) is the delayed neutron energy and angle spectrum, \(C\) is the delayed neutron precursor concentration, and \(\lambda\) is the delayed neutron precursor decay constant. If \(J\) is taken equal to the total number of fission products whose decay results in a neutron, Eq. \eqref{eq:ConservationFissionDelayed} is exact. However, \(J\) is frequently approximated as 6. Similar to prompt fission neutrons, delayed neutrons are frequently approximated as being born isotropically, and angle integration of the delayed neutron energy and angled spectrum yields only an energy dependence:
+where \(C\) is the delayed neutron precursor concentration, and \(\lambda\) is the delayed neutron precursor decay constant. Similar to prompt fission neutrons, delayed neutrons are frequently approximated as being born isotropically, and angle integration of the delayed neutron energy and angled spectrum yields only an energy dependence:
 
 \beq
 \label{eq:delayed_isotropic}
