@@ -250,7 +250,7 @@ Several approximations exist in Eq. \eqref{eq:nte1} -
 
 The \gls{nte} is sometimes written in a form known as the ``eigenvalue'' form, in which there is no external source and all time dependence is removed. Using such a form to find an eigenvalue solution attempts to determine the largest eigenvalue of the system; this eigenvalue is defined as the largest of the eigenvalues \(1/k\) preceding the prompt and delayed fission source term, and hence \(k\) represents the ratio of fission sources to losses for a steady-state system with no external sources.
 
-The remainder of this section presents alternative forms of the \gls{nte}, and is organized according to each individual term appearing in Eq. \eqref{eq:nte1}.
+The remainder of this section presents alternative forms of the \gls{nte}, and is organized according to each individual term appearing in Eq. \eqref{eq:nte1} or to general rewritings such as eigenvalue form.
 
 \subsection{The Fission Source Term}
 
@@ -340,3 +340,27 @@ When Eq. \eqref{eq:ScatteringSH} is used in the \gls{nte}, the inscattering sour
 \eeq
 
  where the definition of the flux moments \(\phi_{lm}\) from Eq. \eqref{eq:SHGeneralMoments} has been used. Because the diffusion approximation is equivalent to assuming isotropic scattering, \(\phi_{00}\) is equivalent to the scalar flux.
+ 
+ \subsection{Eigenvalue Form}
+ 
+ Simple concepts are often introduced to predict how changes in system state affect the criticality by defining the following probabilities:
+ 
+ \beq
+ \label{eq:P_NL}
+ P_{NL}\equiv\text{probability neutron will {\it not} leak from system before absorption}
+ \eeq
+ 
+ \beqa
+ \label{eq:fDef}
+ f\equiv&\ \frac{\text{probability of absorption in fuel}}{\text{probability of absorption}}\\
+ =&\ \frac{\sum_{i=1}^F\Sigma_{a,i}}{\sum_{i=1}^N\Sigma_{a,i}}
+ \eeqa
+ 
+ where \(F\) is the total number of fuel isotopes and \(N\) is the total number of isotopes. \(f\) is also known as the ``thermal utilization factor,'' though evaluating the cross sections at fast energies could lend the name ``fast utilization factor.'' For a single energy group, the multiplication factor is simply the multiplication of the average number of neutrons produced per neutron absorbed in fuel (by definition, \(\eta\) from Eq. \eqref{eq:Eta2Def}) with that absorption will occur in fuel (by definition, \(f\) from Eq. \eqref{eq:fDef}), with the probability that absorption occurs within the system rather than leakage (by definition, \(P_{NL}\) from Eq. \eqref{eq:P_NL}):
+ 
+ \beq
+ \label{eq:k1}
+ k=\eta fP_{NL}
+ \eeq
+ 
+When considering multiple neutron energies, Eq. \eqref{eq:k1} can be made more detailed to reflect neutron movement between energy groups by scattering and fission. If the majority of fissions are caused by fast neutrons, \(\eta\) and \(f\) should be evaluated at thermal energies. 

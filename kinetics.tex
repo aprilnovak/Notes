@@ -1,0 +1,44 @@
+\section{Reactor Kinetics}
+\label{sec:Kinetics}
+
+The multiplication factor \(k\) is the ratio of the rate of neutron production to the rate of neutron loss:
+
+\beqa
+\label{eq:KDef}
+k\equiv&\frac{\text{rate of neutron production}}{\text{rate of neutron loss}}\\
+\equiv&\frac{P(t)}{L(t)}
+\eeqa
+
+where \(P\) is the rate at which neutrons are produced in the system and \(L\) is the rate at which neutrons are lost from the system by absorption and leakage. If the neutron lifetime were constant for all neutrons, i.e. ignoring that in some scenarios a neutron may induce fission as their first reaction after birth, but in others scatter 100 times until absorption in non-fissile material, then \(k\) could easily be defined as:
+
+\beq
+\label{eq:KDef2}
+k\equiv\frac{\text{number of neutrons in one generation}}{\text{number of neutrons in previous generation}}
+\eeq
+
+However, because the neutron lifetime \(l\) is not constant and identical for all neutrons, Eq. \eqref{eq:KDef} is a more useful operational definition for \(k\) than Eq. \eqref{eq:KDef2}. The neutron lifetime \(l\) may be defined based on the inversion of the loss rate:
+
+\beq
+\label{eq:NeutronLifetime}
+l\equiv\frac{N(t)}{L(t)}
+\eeq
+
+where \(N\) is the total number of neutrons in the system. Typical power reactors have a prompt lifetime of about \(10^{-4}\) seconds. 
+
+\subsection{No Delayed Neutrons}
+
+The total number of neutrons in the system may be expressed as a simple balance relation between the production and loss rates:
+
+\beqa
+\label{eq:NoDelayedN}
+\frac{dN(t)}{dt}=&\ P(t)-L(t)\\
+=&\ \frac{k-1}{l}N(t)
+\eeqa
+
+where Eq. \eqref{eq:KDef} and Eq. \eqref{eq:NeutronLifetime} have been inserted. Assuming \(k\) and \(l\) are time-independent, solution of Eq. \eqref{eq:NoDelayedN} predicts a neutron population that grows exponentially in time:
+
+\beq
+N(t)=N_0\exp{\left(\frac{k-1}{l}t\right)}
+\eeq
+
+with period \(l/(k-1)\). The period is the time over which the population increases by a factor of \(e\). As the reactor approaches critical, the period of the reactor approaches infinity, but for \(k\) slightly supercritical, taking \(l\) to represent the prompt neutron lifetime, the reactor power can change extremely rapidly, precluding any reasonable human control.

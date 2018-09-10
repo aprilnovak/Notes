@@ -1,15 +1,15 @@
 \section{The Multi-group Neutron Transport Equation}
 
-Section \ref{sec:CE_NTE} presented the derivation and equivalent forms of the \gls{ce} \gls{nte}. If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-3}-10^7\) eV is impractical. Therefore, some type of discretization is required for the energy dependence. While the dependence of the angular flux on angle is typically rather weak such that only a few terms in a function expansion could be used for representation, the dependence of angular flux on energy is a very complicated function of the energy range; at high energies, the energy dependence is dominated by the fission spectrum, while at intermediate energies by resonance absorption and at low energies by thermalization effects. A single set of functions to describe all of this behavior would require very many terms, so a discrete ordinates in energy approach is almost universally used. Deterministic transport solvers use a \gls{mg}-in-energy form of the \gls{nte} that is obtained by averaging the \gls{nte} over all energies. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of decreasing energy, equivalent to increasing lethargy. The greatest amount of simplification occurs when using a single energy group, which is equivalent to assuming that energy does not change in scattering collisions.
+Section \ref{sec:CE_NTE} presented the derivation and equivalent forms of the \gls{ce} \gls{nte}. If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-3}-10^7\) eV is impractical. Therefore, some type of discretization is required for the energy dependence. While the dependence of the angular flux on angle is typically rather weak such that only a few terms in a function expansion could be used for representation, the dependence of angular flux on energy is a very complicated function of the energy range; at high energies, the energy dependence is dominated by the fission spectrum, while at intermediate energies by resonance absorption and at low energies by thermalization effects. A single set of functions to describe all of this behavior would require very many terms, so a discrete ordinates in energy approach is almost universally used. Deterministic transport solvers use a \gls{mg}-in-energy form of the \gls{nte} that is obtained by averaging the \gls{nte} over all energies. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of decreasing energy, equivalent to increasing lethargy. This is convenient because energy sweeping methods also typically begin at the highest energies and sweep towards lower energies. The greatest amount of simplification occurs when using a single energy group, which is equivalent to assuming that energy does not change in scattering collisions.
 
-Several definitions are required for the derivation of the \gls{mg} \gls{nte}. The angular flux of group \(g\) is defined as the angular flux integrated over the energy bounds for group \(g\):
+Several definitions are required for the derivation of the \gls{mg} \gls{nte}. Rather than use a collocation-in-energy method where the angular flux is simply sampled at each mesh point \(g\), the angular flux of group \(g\) is defined as the angular flux integrated over the energy bounds for group \(g\):
 
 \beq
 \label{eq:GroupwiseQuantity}
 \psi_g(\vv{r},\hO,t)\equiv\int_{E_{g-1}}^{E_g}dE\psi\seat
 \eeq
 
-Groupwise cross sections for reaction \(i\) are defined in a similar manner based on the flux-weighted cross sections:
+In this way, all energies are considered in the discretization, and not simply the pointwise energies representing group boundaries, which permits the use of a relatively small number of energy groups to describe nine orders of magnitude in energy with very rapidly varying cross sections. Groupwise cross sections for reaction \(i\) are defined in a similar manner based on the flux-weighted cross sections:
 
 \beqa
 \label{eq:GroupwiseQuantityProduct}
@@ -17,7 +17,9 @@ Groupwise cross sections for reaction \(i\) are defined in a similar manner base
 =&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat}{\psi_g\sat}\\
 \eeqa
 
-where Eq. \eqref{eq:GroupwiseQuantity} has been inserted for the denominator. Using Eqs. \eqref{eq:GroupwiseQuantity} and \eqref{eq:GroupwiseQuantityProduct}, the \gls{mg} \gls{nte} can be derived for group \(g\) by simply integrating the \gls{nte} in Eq. \eqref{eq:nte1} over \(E_{g-1}\leq E\leq E_g\):
+where Eq. \eqref{eq:GroupwiseQuantity} has been inserted for the denominator. Note that these group cross sections are dependent on the angular flux, and thereby define an implicit scheme; the alternative, to use a collocation-in-energy method with pointwise cross sections, would require extremely fine energy discretization to obtain accurate results, and hence this implicit dependence is still preferable. 
+
+Using Eqs. \eqref{eq:GroupwiseQuantity} and \eqref{eq:GroupwiseQuantityProduct}, the \gls{mg} \gls{nte} can be derived for group \(g\) by simply integrating the \gls{nte} in Eq. \eqref{eq:nte1} over \(E_{g-1}\leq E\leq E_g\):
 
 \beqa
 \label{eq:mg_nte}

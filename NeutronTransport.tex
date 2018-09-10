@@ -168,23 +168,6 @@ This section defines the variables that appear in the neutron transport equation
 
 In Cartesian coordinates, a neutron moves along constant \(\hO\) until suffering a collision. This is {\it not} the case in curvilinear (cylindrical, spherical, or other) coordinates, however. In curvilinear coordinates, as a neutron streams, the angular coordinates are constantly changing. If this is not intuitive, think of a neutron traveling in a 2-D Cartesian coordinate system along the line \(x = 1\). This neutron moves along constant \(\hO\). However, the same neutron, described in a cylindrical system, is constantly changing its angle relative to the \(x\)-axis. This means that \(\hO\), in the cylindrical coordinate frame, also changes as the neutron moves, even if it hasn't collided with anything!
 
-\subsubsection{Reaction Rates}
-
-The macroscopic cross section represents the probability per unit distance traveled by the neutron of undergoing reaction \(i\) in material \(j\). The macroscopic cross section can be computed by multiplying the microscopic cross section \(\sigma_{i,j}\) for the reaction \(i\) in material \(j\) by the number density of material \(j\):
-
-\beq
-\Sigma_{i,j}\equiv\sigma_{i,j}N_j
-\eeq
-
-The reaction rate density for a given reaction and nuclide simply multiplies the interaction frequency \(v\Sigma_{i,j}\) with the density of neutrons:
-
-\beq
-\label{eq:ReactionRateDensity}
-\textrm{Reaction Rate Density}_{i,j} = v\Sigma_{i,j}n
-\eeq
-
-where \(n\) is the volumetric neutron density (neutrons/cm\textsuperscript{3}). 
-
 \subsubsection{Current}
 
 The angular current density has the same magnitude as the angular flux, except that it has direction - it denotes the current of neutrons moving in a certain angular direction \(\hO\):
@@ -1424,7 +1407,8 @@ where the removal cross section is defined to be the sum of the absorption cross
 
 
 
-
+\clearpage
+\input{kinetics.tex}
 
 \clearpage
 \section{Reactor Kinetics}
