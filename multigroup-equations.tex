@@ -1,6 +1,7 @@
 \section{The Multi-group Neutron Transport Equation}
+\label{sec:MGNTE}
 
-Section \ref{sec:CE_NTE} presented the derivation and equivalent forms of the \gls{ce} \gls{nte}. If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-3}-10^7\) eV is impractical. Therefore, some type of discretization is required for the energy dependence. While the dependence of the angular flux on angle is typically rather weak such that only a few terms in a function expansion could be used for representation, the dependence of angular flux on energy is a very complicated function of the energy range; at high energies, the energy dependence is dominated by the fission spectrum, while at intermediate energies by resonance absorption and at low energies by thermalization effects. A single set of functions to describe all of this behavior would require very many terms, so a discrete ordinates in energy approach is almost universally used. Deterministic transport solvers use a \gls{mg}-in-energy form of the \gls{nte} that is obtained by averaging the \gls{nte} over all energies. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of decreasing energy, equivalent to increasing lethargy. This is convenient because energy sweeping methods also typically begin at the highest energies and sweep towards lower energies. The greatest amount of simplification occurs when using a single energy group, which is equivalent to assuming that energy does not change in scattering collisions.
+Section \ref{sec:CE_NTE} presented the derivation and equivalent forms of the \gls{ce} \gls{nte}. If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-3}-10^7\) eV is impractical due to the very high degree of point sampling required. Therefore, some type of discretization is required for the energy dependence. While the dependence of the angular flux on angle is typically rather weak such that only a few terms in a function expansion could be used for representation, the dependence of angular flux on energy is a very complicated function of the energy range; at high energies, the energy dependence is dominated by the fission spectrum, while at intermediate energies by resonance absorption and at low energies by thermalization effects. A single set of functions to describe all of this behavior would require very many terms, so a discrete ordinates in energy approach is almost universally used. Deterministic transport solvers use a \gls{mg}-in-energy form of the \gls{nte} that is obtained by averaging the \gls{nte} over all energies. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of decreasing energy, equivalent to increasing lethargy. This is convenient because energy sweeping methods also typically begin at the highest energies and sweep towards lower energies. The greatest amount of simplification occurs when using a single energy group, which is equivalent to assuming that energy does not change in scattering collisions.
 
 Several definitions are required for the derivation of the \gls{mg} \gls{nte}. Rather than use a collocation-in-energy method where the angular flux is simply sampled at each mesh point \(g\), the angular flux of group \(g\) is defined as the angular flux integrated over the energy bounds for group \(g\):
 
@@ -23,13 +24,13 @@ Using Eqs. \eqref{eq:GroupwiseQuantity} and \eqref{eq:GroupwiseQuantityProduct},
 
 \beqa
 \label{eq:mg_nte}
-&\int_{E_{g-1}}^{E_g}dE\frac{\partial}{\partial t}\left(\frac{\psi\seat}{v(E)}\right)+\hO\cdot\nabla\psi_g\sat+\Sigma_{t,g} \psi\sat=\\
-&\hspace{1cm}\sum_{g'=1}^G\dhOprime\Sigma_s^{g'\rightarrow g}(\vv{r},\hO'\rightarrow\hO,t)\psi_{g'}(\vv{r},\hO',t)\ +\\
-&\hspace{2cm}\int_{E_{g-1}}^{E_g}dE\promptfissionsource\psi\seatprime +\\
+&\frac{\partial}{\partial t}\left(\frac{\psi_g(\vv{r},\hO,t)}{v_g}\right)+\hO\cdot\nabla\psi_g\sat+\Sigma_{t,g} \psi_g\sat=\\
+&\hspace{1cm}\sum_{g'=1}^G\int_{4\pi}d\hO^'\Sigma_s^{g'\rightarrow g}(\vv{r},\hO'\rightarrow\hO,t)\psi_{g'}(\vv{r},\hO',t)\ +\\
+&\hspace{2cm}\chi_{p,g}(\hO)\int_{4\pi}d\hO^'\left\lbrack1-\beta_{g'}\right\rbrack\nu_{g'}\Sigma_{f,g'}(\vv{r},\hO^',t)\psi_{g'}(\vv{r},\hO^',t) +\\
 &\hspace{3cm}\sum_{j=1}^J\chi_{d,j,g}\lambda_jC_j(\vv{r},t)+ S_g\sat
 \eeqa
 
-where \(\hO\cdot\nabla\) was brought outside the streaming term since this operators is not a function of energy.
+where the velocity was moved outside the time differentiation in the time term due to independence on time and \(\hO\cdot\nabla\) was brought outside the energy integral since this operator is not a function of energy. 
 
 The following sections describe the generation of group constants for energies in the fast and thermal ranges. These methods are based on approximations that neglect spatial dependence and use theory to predict the detailed energy spectrum over which the microscopic cross section data can be averaged.
 
