@@ -1,0 +1,53 @@
+\section{Reactivity Control}
+\label{sec:Reactivity}
+
+The ability to exercise control over the reactivity of a nuclear system is essential for safe operation of the system. 
+
+\subsection{Reactivity Coefficients}
+
+System changes resulting in changes in reactivity are often described using ``reactivity coefficients.'' A reactivity coefficient \(\alpha\) is defined based on the relative change in reactivity given a change in some input parameter \(x\):
+
+\beqa
+\alpha_x\equiv&\frac{\partial\rho}{\partial x}\\
+=&\frac{\partial}{\partial x}\left(\frac{k-1}{k}\right)\\
+=&\frac{1}{k^2}\frac{\partial k}{\partial x}
+\eeqa
+
+where the definition of reactivity has been inserted to show equivalent forms. The most important reactivity coefficients are the temperature, power, and void coefficients. The following sections describe each of these coefficients in more detail and describe typical values for common reactor systems.
+
+\subsubsection{Power Reactivity Coefficient}
+Of all the definitions for reactivity coefficients, the only coefficient that {\it must} be negative to ensure safe power operation is the power reactivity coefficient. If this coefficient were positive, then the slightest increase in power would result in a runaway power excursion. Despite the importance of this coefficient, because the power depends on thermal considerations such as the flowrate, determination of the power reactivity coefficient based solely on a neutronics calculation is nearly impossible. Therefore, other reactivity coefficients comprise the bulk of the reactivity control investigations performed.
+
+\subsubsection{Fuel Temperature Coefficient}
+The fuel temperature coefficient, also referred to as ``Doppler coefficient,'' has the smallest magnitude of the important reactivity feedback mechanisms in reactor systems. An increase in fuel temperature increases Doppler broadening, which reduces the effectiveness of self-shielding. If the energy spectrum in the system is relatively thermal such that the spectrum only spans capture resonances in fertile materials, a reduction in self-shielding results in a greater fraction of the fuel being exposed to epithermal neutrons, and hence an increase in parasitic absorption by fertile isotopes such as U-238 and Pu-240, yielding a negative fuel temperature coefficient. Some fission products are also resonant absorbers. 
+
+On the other hand, if the energy spectrum is relatively fast such that the spectrum spans capture resonances in both fertile and fissile materials, a reduction in self-shielding results in an increase in both parasitic capture in fertile materials and fission in fissile materials. For fast systems, the fuel temperature coefficient could therefore be positive. This increased fission rate is most prevalent in Pu-239, so the greater the concentration of Pu-239, the more positive the fuel temperature coefficient. In heterogeneous fast spectrum systems, the fertile material is typically located in the lower flux region to breed fissile material, and thus the flux experienced by the fissile material is higher than that experienced by the fertile material, producing a positive Doppler coefficient. Homogeneous systems more intimately mix the fissile and fertile materials, helping to achieve a negative Doppler coefficient by exposing both the fertile and fissile isotopes to nearly the same flux, allowing cancellation of positive and negative reactivity insertion associated with changes in fission and parasitic absorption rates. Such mixing can be effectively achieved using \gls{mox} fuels. Because larger reactors typically have more thermal spectra than small reactors due to the reduced leakage, the Doppler coefficient is typically more negative the larger the reactor.
+
+Because power changes typically result in fast changes in the fuel temperature, a negative fuel temperature coefficient is essential to safe reactor operation. This is especially true in fast spectrum systems where the prompt generation lifetime is smaller than in thermal systems, making fast negative feedback very important. For this reason, some fast reactor designs incorporate BeO moderator to soften the spectrum to avoid a positive fuel temperature coefficient. In addition, using \(B_4C\) rods instead of tantalum rods helps soften the spectrum to get a less positive Doppler coefficient, although this means that more control rod material must be used in the core to obtain the same worth. 
+
+The fuel temperature coefficient is sensitive to the fuel composition, and must be evaluated as a function of burnup. In low-enriched thermal systems, Pu-240 has a wider resonance than U-238, and despite depletion of U-238, the Doppler coefficient becomes more negative with burnup as build in of Pu-240 occurs. For all systems, the Doppler coefficient decreases with temperature as the material experiences increased lattice vibrations that reduces the possibility of achieving very large relative velocities between the neutron and the nucleus, essentially reducing the effective broadening experience by the neutron. The fuel temperature coefficient is also a function of other parameters affecting the system state, such as the moderator density, which influences the neutron \gls{mfp} which if increased reduces the effectiveness of self-shielding, making the Doppler coefficient more negative. The Doppler coefficient is insensitive to the control rod pattern in the core provided the control rods are designed to absorb neutrons in the thermal spectrum, as Doppler broadening impacts epithermal neutron absorption.
+
+Typical fuel temperature coefficients are on the order of -4 to -1 pcm/K for \glspl{lwr}, -7 pcm/K for \glspl{htgr}, and -2.5 to -0.6 pcm/K for \glspl{lmfbr} \cite{duderstadt}. The fuel temperature coefficient has been estimated at -3.8 pcm/K for the \gls{pbfhr} \cite{xin_wang_thesis}.
+
+\subsubsection{Moderator Temperature Coefficient}
+An increase in moderator temperature, neglecting the corresponding density change, results in spectrum hardening. For fast systems, an increase in the energy spectrum results in an increase in \(\eta\), though the effect is more complicated for thermal systems due to the resonant-like structure in the epithermal energy range. The spectrum change in thermal systems typically results in a decreased \(\eta\).
+
+Most thermal cross sections display a \(1/v\) dependence, and a hardened spectrum results in lower cross sections in fissile materials in the thermal energy range, which typically results in a decrease in reactivity. However, the sign of this effect depends on the fuel composition, since cross sections fall off fastest for U-235, then U-238, and then Pu-239. If the reactor contains a significant amount of Pu-239, a hardened spectrum results in a greater fraction of the fission occurring in Pu-239, which has a higher number of neutrons released per fission event, which can lead to a slightly positive moderator temperature coefficient in systems with significant quantities of Pu-239. 
+
+%The sign of the moderator temperature coefficient also depends on the size of the core; if the systems has significant leakage, a hardened spectrum may still produce a negative feedback, though this feedback could be positive for large cores.
+
+%In addition, cross sections for fertile materials often display thresholds that, with a hardened spectrum, may result in increased fertile absorption. 
+
+%For graphite-moderated systems, however, a hardened spectrum leads to a net increase in \(\eta\), producing a slightly positive moderator temperature coefficient. 
+
+
+Typical moderator temperature coefficients are on the order of -50 to -8 pcm/K for \glspl{lwr} and 1 pcm/K for \glspl{htgr} \cite{duderstadt}. 
+
+\subsubsection{Moderator Density Coefficient}
+The moderator density coefficient, also referred to as the moderator void coefficient, represents changes in reactivity due to reduced density of the moderator. The sign of the moderator density coefficient for thermal systems depends on whether the system is over- or under-moderated. For example, in a system containing only fuel, no moderation occurs such that \(p=0\), while in a system containing only moderator, the fuel utilization factor is zero such that no neutrons are absorbed in fuel. A reduction in coolant density in an under-moderated core results in a decrease in reactivity. Note that the definition of ``under-moderated'' does not strictly apply to the point at which \(N_{fuel}=N_{moderator}\); rather, the maximum in \(k_\infty\) occurs at approximately \(N_{moderator}/N_{fuel}\approx4\), so an under-moderated core should have a moderator concentration less than about four times the fuel concentration. 
+
+A reduction in density causes reduced moderator and reduced absorption; provided the absorption in the moderator is small and the system is under-moderated, the overall moderator density coefficient will be negative due to a reduction in the resonance escape probability. A desire to have a negative moderator density coefficient results in limits on the soluble boron concentration in \glspl{pwr} and the Li-6 concentration in the \gls{pbfhr}. 
+
+The sign of the void coefficient may depend on location within the system. For example, in the center of large \glspl{lmfbr}, the void coefficient may be positive in the center of the reactor as the spectrum hardens, but negative at the edge of the core where the leakage increases. The void coefficient is especially large in \glspl{bwr}, being on the order of -200 to -100 pcm/K \cite{duderstadt}. 
+
+As fuel depletes, the reactor becomes closer to an over-moderated core, so the magnitude of the moderator density coefficient typically decreases with burnup (provided the moderator to fuel ratio is not held constant through the process of online-refueling). Removing control rods increases the moderator to fuel ratio, decreasing the magnitude of the moderator density coefficient.

@@ -1710,7 +1710,8 @@ So, the SDM is directly related to how quickly the power will drop (instantaneou
 
 
 
-
+\clearpage
+\input{reactivity-control.tex}
 
 
 
@@ -1776,36 +1777,7 @@ A negative power coefficient is fundamentally the overall most important reactiv
 
 Eq. \ref{eq:PowerCoefficient} demonstrates that all reactivity coefficients are themselves functions of temperature. Power coefficients are typically on the order of 30-60 pcm/\% power.
 
-\subsection{Fuel Temperature Coefficient}
-
-The fuel temperature coefficient is itself comprised of two components - Doppler broadening and density changes. For thermal reactors, the Doppler broadening coefficient dominates the fuel temperature coefficient. (for fast?)
-
 \subsection{Doppler Broadening Coefficient}
-
-A change in temperature produces a change in resonance absorption due to the self-shielding effect. It should be noted that while most common treatments of Doppler broadening claim that the area under the resonance peak remains constant with temperature, this is \textit{only} due to the use of the older, less rigorous, Bethe-Placzek correlation to describe Doppler broadening. In reality, the area under the curve is temperature-dependent, but for common reactor materials and temperature ranges of interest, the area change can be neglected. The Doppler coefficient is the fastest-acting reactivity coefficient because it does not rely on transient conduction of heat to the coolant or other structural materials, and so its sign if of utmost importance to rapid reactivity control. However, if the reactor is not at power (i.e. in the cold state), then a reactivity insertion would not immediately produce a significant Doppler feedback in the fuel, so accidents can be more serious if induced in the cold state than the hot state. 
-
-In a purely homogeneous reactor, there would be a zero Doppler broadening reactivity coefficient. During normal operation, the center of a fuel pellet is shielded from resonance neutron energies because these neutrons are very likely to be absorbed in the rim structure (precisely because they're at resonance energies). As the fuel temperature increases, the centerline temperature increases at a faster rate than the outer temperature, so an off-resonance neutron can enter the pellet and seem more and more like a resonance neutron as it moves towards the centerline. This can be demonstrated from a simple cylindrical conduction heat transfer solution. The governing equation for steady-state conduction with a heat source \(q\) is:
-
-\begin{equation}
-\label{eq:ConductionHeatTransfer}
-0=\frac{1}{r}\frac{d}{dr}\left(r\frac{dT}{dr}\right) + q
-\end{equation}
-
-Solution of this equation for a specified surface temperature \(T_2\) and symmetry about the centerline gives:
-
-\begin{equation}
-\label{eq:ConductionHeatTransfer_GenSolution}
-T(r) = T(R) + \frac{qR^2}{4}(1-\frac{r^2}{R^2})
-\end{equation}
-
-Taking the derivative of this expression with respect to \(q\) will show how the temperature changes as a function of a change in the heat generation rate, which for this application is nuclear fission. If there is a change in reactivity, this heat rate will increase, which should cause a change of the rod temperature distribution. 
-
-\begin{equation}
-\label{eq:ConductionHeatTransfer_Derivative}
-\frac{\partial T}{\partial q} = \frac{R^2}{4}(1-\frac{r^2}{R^2})
-\end{equation}
-
-As can be seen, this derivative has a parabolic shape, with the rate of change of the temperature being the highest at the centerline. Hence, as neutrons move into a cylindrical rod, they appear more and more like resonance neutrons, and hence resonance absorption increases. A decrease in this self-shielding effect leads to an increase in resonance absorption, since then more of the fuel pellet ``sees'' resonance neutrons. This can also be stated in terms of the effective cross section of the material. If the material has a very high capture cross section, then the self-shielding effects are even stronger, so neutrons are absorbed in the rim structure, leading to overall lower absorption. 
 
 The Doppler effect primarily impacts the resonance escape probability \(p\), since this reflects the probability that neutrons reach thermal energies. If we assume that the Doppler coefficient impacts \(k\) only through \(p\), we can utilize the approximation in Eq. \ref{eq:ReactivityCoef_kExpansion} to give:
 
@@ -1813,32 +1785,6 @@ The Doppler effect primarily impacts the resonance escape probability \(p\), sin
 \label{eq:DopplerCoefficient_pExpansion}
 \alpha_D \approx \frac{1}{p}\frac{\partial p}{\partial T_{fuel}}
 \end{equation}
-
-Now, whether or not an increase in resonance absorption leads to an increase or decrease in reactivity depends on the reactor design, in particular the fuel material. U-238 has several large resonances (on the order of thousands of b) in the 20-100 eV range, which should be compared to cross sections of about 10 b elsewhere. Pu-240 and Th-232, other fertile materials, also have high resonance peaks. Some fission products are also resonant absorbers. So, the greater the concentration of the fertile materials Th-232, U-238, and Pu-240, the more negative the Doppler coefficient (absorption in these isotopes does not cause fission (which would increase reactivity), but instead leads to transmutation to fissile materials later). The neutrons are at too low of an energy to span the resonance regions of the fissile materials, so the Doppler coefficient acts to increase parasitic absorption. So, the Doppler coefficient is almost always negative for thermal reactors, since these resonances are in the thermal range. 
-
-However, in fast reactors, neutrons span the entire energy range, thus spanning the resonance absorption regions of both fertile (parasitic absorption, decrease in reactivity) \textit{and} fissile (fission, increase in reactivity) materials, leading to an increase in both \(\Sigma_a\phi\) and \(\Sigma_f\phi\). Which one of these effects prevails over the other determines the sign of the Doppler coefficient in fast reactors. Though actually, the sign is always negative - the increase in fission of isotopes such as Pu-239 almost exactly cancels the increase in absorption of those same isotopes, and in cases with high fractions of Pu-239, then the only Doppler coefficient comes from absorption in fertile materials, but if those fertile materials are far away, then the Doppler coefficient can become very small (negative). 
-
-The softer the spectrum, the more negative the Doppler coefficient, since then the neutrons don't span the resonance absorption ranges of the fissile materials. The higher the Pu-239 concentration, the more positive the coefficient. So, oxide-fueled fast reactors have more negative Doppler coefficients than metal-fueled fast reactors due to their softer neutron spectrum. To force the reactor to have a negative coefficient, some fast reactors include BeO moderator (non-voidable) material, which softens the spectrum while bringing an economic penalty. In addition, using \(B_4C\) rods instead of tantalum rods helps soften the spectrum to get a less positive Doppler coefficient, although this means that more control rod material must be used in the core to obtain the same worth. 
-
-In addition, mixing the Pu-239 closely with the U-238 allows the neutrons that would be absorbed by Pu-239 to have the option to be absorbed by U-238, giving the Doppler coefficient more of an opportunity to be negative. In fact, the coefficient may only give a prompt negative feedback if the fissile and fertile fuels are mixed intimately together - otherwise, you may have a positive Doppler coefficient in the fissile region and a negative coefficient in the fertile region. However, this difference between heterogeneous and homogeneous core designs is very small. By far the strongest Doppler contribution is in the inner core region (about 50\% of the response). This requires very intimate mixing, since the distance between fertile and fissile materials should be smaller than the slowing-down distance, on the order of 10 \(\mu\)m. This mixing is readily obtained by using MOX fuels. 
-
-\begin{table}[h]
-\caption{Typical Doppler Coefficients for Thermal and Fast Spectrum (Changes are of the Magnitude)}
-\centering
-\begin{tabular}{l c c c c}
-\hline\hline
- Spectrum & Coefficient & Changes with BU & Changes with T & Changes with Void Fraction
-\\ [0.5ex]
-\hline
-Thermal (\(UO_2\)) & -1 pcm/F & increases & decreases & increases\\
-Fast (oxide-fueled) & - & increases & decreases & \\
-Fast (metal-fueled) & - &  & decreases & \\
-\hline
-\end{tabular}
-\label{tab:PPer}
-\end{table}
-
-The Doppler broadening coefficient is the smallest of the three fundamental coefficients (Doppler, void, and moderator temperature) in LWRs. \(\alpha_D\) increases with burnup in thermal systems due to the build-in of Pu-240. Although there is simultaneous depletion of U-238, Pu-240 has a wider resonance than U-238, causing \(\alpha_D\) to become more negative with burnup. However, \(\alpha_D\) decreases with an increase in temperature in thermal systems. At high temperatures, lattice vibrations become increasingly restricted, hindering the ability to obtain large relative velocities between the neutrons and the lattice atoms. An increase in void fraction increases the neutron slowing down length, which reduces some of the self-shielding effect. For thermal reactors, because control rods are designed to absorb thermal neutrons, while Doppler broadening impacts epithermal neutrons, the control rod density has no impact on \(\alpha_D\). 
 
 For reactors with very soft spectra (thermal reactors), perturbation theory predicts that the Doppler coefficient varies as:
 
@@ -1880,24 +1826,9 @@ Increase core heterogeneity & decreases (small)\\
 \end{tabular}
 \end{center}
 
-Because smaller reactors have higher leakage, they also have harder spectra than correspondingly larger reactors, so Doppler feedback becomes more negative the larger the reactor. The Doppler coefficient is also influenced by other thermophysical properties such as the thermal conductivity, since this influences how high the temperature might reach.
+The Doppler coefficient is also influenced by other thermophysical properties such as the thermal conductivity, since this influences how high the temperature might reach.
 
 \subsection{Moderator Temperature Coefficient (MTC)}
-
-The MTC, like the fuel temperature coefficient, is also broken down into several competing components related to density changes and spectrum hardening.
-
-\begin{center}
-\begin{tabular}{c}
-density changes in the moderator\\
-lower absorption cross sections (for fissile)/increased leakage (longer mfp)\\
-higher fission cross sections (for fertile)/decreased leakage (smaller mfp)\\
-lower capture-to-fission ratio\\
-\end{tabular}
-\end{center}
-
-However, these effects are often combined together, and the combination determines the sign. If the moderator is a solid, then the density changes are usually negligible, but must be considered in liquid moderators. The primary way in which a moderator density change impacts reactivity is through \(p\), since decreased moderation decreases \(p\). 
-
-The spectrum hardening effect leads to lower fuel absorption cross sections, since cross sections typically display \(1/v\) dependence. The rate at which the cross sections for different materials decreases with energy, however, are not identical, and cross sections fall off fastest for U-235, followed by U-238, followed by Pu-239. So, in plutonium-dominated systems, the coefficient is usually positive, though small, while in U-235 dominated systems, is negative. Spectrum hardening also leads to lower capture-to-fission ratios, leading to enhanced fission, which represents positive reactivity for fast reactors, but negative reactivity for thermal reactors. 
 
 \begin{table}[h]
 \caption{Typical MTC for Thermal and Fast Spectrum (Changes are of the Magnitude)}
@@ -1918,13 +1849,9 @@ Fast (small cores) & - &  &  & \\
 
 In large fast reactors, the overall effect is to reduce moderation, leading to a harder spectrum, and therefore a reactivity insertion similar to that described in reference to the sodium void coefficient. For small fast reactors characterized by high leakage, however, increasing coolant temperatures leads to higher leakage, and hence a negative insertion.
 
-For thermal reactors, the magnitude of the MTC strongly depends on whether the core is over- or under-moderated. \(\alpha_{T, mod}\) is only negative for under-moderated cores. In a core consisting of purely fuel, \(f=1\), while \(p=0\). As the moderator-to-fuel ratio (usually expressed as atomic densities) tends to infinity, \(p\) asymptotically approaches 1, while \(f\) asymptotically approaches zero. At a moderator-to-fuel ratio of about 4, \(k\), approximated as the multiplication of \(p\) and \(f\), reaches a maximum, so cores are undermoderated for a moderator-to-fuel ratio of less than 4. As fuel is depleted, the moderator-to-fuel ratio increases, so the magnitude of the MTC decreases with burnup. By similar reasoning, withdrawal of control rods or decreases in void fraction lead to an increase in the moderator-to-fuel ratio, causing a decrease in the magnitude of \(\alpha_{T,mod}\). 
-
 Because in BWRs the coolant is primarily at saturated conditions, the MTC is relatively unimportant in normal operation, but has the greatest impact during startup and shutdown processes when there are no voids in the coolant. In normal operation, any power increases are curbed much more by the void coefficient, and hence in BWRs it is acceptable to have a positive MTC. The MTC may become more positive at EOL when there are more control rods withdrawn, as well, since this increases the moderator-to-fuel ratio). The MTC should not be too negative, however, since then if some undesired transient such as loss of FW heating were to occur, then the power increase could be too large to handle safely.
 
 \subsection{Void Coefficient}
-
-The void coefficient is an extension of the moderator density coefficient in that it expresses the impact of a change in density, except that it explicitly accounts for voids. The formation of voids is by far has the largest reactivity impact in BWRs, since voids are essentially holes lacking moderator, rather than a less-dense moderator as is characterized by the MTC. In essence, the MTC applies below saturation conditions when there are no voids, and the void coefficient applies at saturation conditions when there is no temperature change associated with added energy. 
 
 \begin{table}[h]
 \caption{Typical Void Coefficients for Thermal and Fast Spectrum (Changes are of the Magnitude)}
