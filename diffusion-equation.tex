@@ -320,8 +320,8 @@ where \(2\pi\pm\) has replaced integration over the entire solid angle \(4\pi\) 
 Additional corrections from transport theory suggest that the extrapolation distance of \(2D\) for plane geometries is better replaced by \(0.7104/\Sigma_{tr}\). 
 
 \subsubsection{One-Group Diffusion in Non-Multiplying Media}
-
-This section provides the derivation of several classical solutions to the one-group diffusion equation in non-multiplying media, i.e. media in which \(\Sigma_f=0\) and there are no delayed fission neutron sources. We will also assume that the problem can be well-approximated by a steady-state solution. 
+\label{sec:NonMultiplyingDiffusion}
+This section provides the derivation of several classical solutions to the one-group diffusion equation in non-multiplying media, i.e. media in which \(\Sigma_f=0\) and there are no delayed fission neutron sources. We will also assume that the problem can be well-approximated by a steady-state solution. For source problems, because the \gls{nte} is linear, the principle of superposition can be used given the analytic solution for a source to integrate over an arbitrary source distribution. This is especially simple in infinite geometries where the flux is only a function of the distance from the source; more general methods such as Green's functions are required for this process applied to finite domains.
 
 \subsubsubsection{Point Source in Infinite Spherical Coordinates}
 \label{sec:1GDEPtSrcSpherical}
@@ -445,3 +445,43 @@ where \(J_{out}\) and \(J_{in}\) are the partial currents crossing an interface,
 \eeq
 
 In the limit of the second region thickness tending to infinity, i.e. for an infinite reflecting region, the albedo approaches an asymptote of \((1-2D/L)/(1+2D/L)\). Note that a perfect reflector (100\% reflection of particles) only occurs for \(D/L\approx0\) (i.e. an insulator). In other words, \(\sqrt{\Sigma_aD}\approx0\), so an ideal reflector has both a small absorption cross section and a small diffusion coefficient. The asymptotic limits for common reflectors fall in the order \(\alpha_\text{D$_2$O}>\alpha_\text{graphite}>\alpha_\text{H$_2$O}\). Knowledge of the albedo can be used to replace a \gls{bc} on the edge of a domain through the use of partial current definitions and the definition of the albedo in Eq. \eqref{eq:AlbedoDef}.
+
+\subsubsection{The Eigenfunction Expansion Method}
+
+Section \ref{sec:NonMultiplyingDiffusion} provided several analytic solutions to the diffusion equation in non-multiplying media using the variation of constants technique. This section describes another solution technique known as the eigenfunction expansion method. This method is based on expanding the flux in an infinite series of the eigenfunctions of the homogeneous form of the differential equation. The homogeneous form of the one-group diffusion equation in non-multiplying media has eigenfunctions \(\psi_n\) and eigenvalues \(B_n^2\):
+
+\beq
+\label{eq:HomogEigen}
+\frac{\partial\psi_n^2}{\partial x^2}+B_n^2\psi_n=0
+\eeq
+
+For a finite slab with vacuum conditions at \(\pm \tilde{a}/2\), two possible solutions exist, excluding the trivial solution:
+
+\begin{subequations}
+\label{eq:Eigenfunction1DSlab}
+\begin{eqnarray}
+\psi_n(x)&=&A_n\cos{\left\frac{n\pi x}{\tilde{a}\right)}\\
+\psi_n(x)&=&A_n\sin{\left\frac{n\pi x}{\tilde{a}\right)}
+\end{eqnarray}
+\end{subequations}
+
+where Eq. \eqref{eq:Eigenfunction1DSlab} applies for odd \(n\) and Eq. \eqref{eq:Eigenfunction1DSlab}b for even \(n\). The eigenvalues corresponding to these eigenfunctions are:
+
+\beq
+B_n^2=\left(\frac{n\pi}{\tilde{a}}\right)^2
+\eeq
+
+Given the symmetry of the diffusion operator, the eigenfunctions of the Laplacian comprise a complete orthogonal basis set. Therefore, expand both the flux and source for a general non-multiplying fixed source problem, and insert into the governing equation to obtain an expression for the coefficients on the flux expansion:
+
+\beqa
+-\frac{1}{D}\sum_{n=1}^nS_n\psi_n=&\sum_{i=1}^nA_n\left(\frac{\partial^2\psi}{\partial x^2}-\frac{1}{L^2}\psi_n\right)\\
+=&-\sum_{i=1}^nA_n\left(B^2+\frac{1}{L^2}\psi_n\right)\\
+\eeqa
+
+where Eq. \eqref{eq:HomogEigen} was inserted to provide a relationship between \(\psi_n\) and \(B_n\). Therefore, the flux distribution for an arbitrary source distribution in a finite geometry can be determined by expanding both the flux and source as an infinite series of the eigenfunctions of the homogeneous operator:
+
+\beq
+\phi(x)=\sum_{i=1}^n\frac{S_n/\Sigma_a}{1+L^2B^2}\psi_n(x)
+\eeq
+
+where the coefficients \(S_n\) are determined by application of orthogonality to the known source distribution.

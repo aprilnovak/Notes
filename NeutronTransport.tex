@@ -122,7 +122,7 @@
 \setcounter{tocdepth}{4}
 
 \setacronymstyle{long-short}
-\loadglsentries{glossary}
+\loadglsentries{../../projects/pronghorn/doc/manual/manual_glossary}
 \makeglossaries
 
 \begin{document}
@@ -1726,14 +1726,7 @@ A reactivity coefficient \(\alpha\) is the partial derivative of the reactivity 
 \alpha_x = \frac{\partial\rho}{\partial x}
 \end{equation}
 
-Using the definition of reactivity from Eq. \ref{eq:Reactivity}, the derivative of \(\rho\) with respect to a variable \(x\) can be combined with the chain rule and inserted into Eq. \ref{eq:ReactivityCoef} to give:
-
-\begin{equation}
-\label{eq:ReactivityCoef_kExpansion}
-\alpha_x = \frac{1}{k^2}\frac{\partial k}{\partial x} \approx \frac{1}{k}\frac{\partial k}{\partial x}
-\end{equation}
-
-where it has been assumed that, because \(k\) is likely close to 1, that \(k^2\) differs little from \(k\). Overall, the system reactivity is the sum of external effects \(f(t)\), such as control systems, and inherent feedback effects:
+Overall, the system reactivity is the sum of external effects \(f(t)\), such as control systems, and inherent feedback effects:
 
 \begin{equation}
 \label{eq:OverallReactivity}
@@ -1766,17 +1759,6 @@ A temperature reactivity coefficient can be defined for each individual material
 
 Defining a temperature coefficient becomes difficult, however, when the heat generation in different core elements becomes characterized by very different time scales. For instance, in a typical LWR, there is an 8 second delay between heat generation in the fuel and heat transfer to the coolant.
 
-\subsection{Power Coefficient}
-
-A negative power coefficient is fundamentally the overall most important reactivity coefficient that must be negative, since it represents the overall reactor stability. The power coefficient, and in principle any other coefficient, can always be expressed in terms of the temperature coefficients using the chain rule:
-
-\begin{equation}
-\label{eq:PowerCoefficient}
-\alpha_P = \frac{\partial\rho}{\partial P} = \Sigma \frac{\partial\rho}{\partial T_j}\frac{\partial T_j}{\partial P} = \Sigma \alpha_{T_j}\frac{\partial T_j}{\partial P}
-\end{equation}
-
-Eq. \ref{eq:PowerCoefficient} demonstrates that all reactivity coefficients are themselves functions of temperature. Power coefficients are typically on the order of 30-60 pcm/\% power.
-
 \subsection{Doppler Broadening Coefficient}
 
 The Doppler effect primarily impacts the resonance escape probability \(p\), since this reflects the probability that neutrons reach thermal energies. If we assume that the Doppler coefficient impacts \(k\) only through \(p\), we can utilize the approximation in Eq. \ref{eq:ReactivityCoef_kExpansion} to give:
@@ -1784,13 +1766,6 @@ The Doppler effect primarily impacts the resonance escape probability \(p\), sin
 \begin{equation}
 \label{eq:DopplerCoefficient_pExpansion}
 \alpha_D \approx \frac{1}{p}\frac{\partial p}{\partial T_{fuel}}
-\end{equation}
-
-For reactors with very soft spectra (thermal reactors), perturbation theory predicts that the Doppler coefficient varies as:
-
-\begin{equation}
-\label{eq:DopplerCoefficient_Thermal}
-\alpha_D\propto \frac{1}{T^{1/2}}
 \end{equation}
 
 For oxide fuels, the Doppler coefficient varies almost exactly as:
@@ -1816,17 +1791,7 @@ Conversely, for metal fuels in fast reactors:
 \alpha_D\propto \frac{1}{T^{3/2}}
 \end{equation}
 
-The Doppler coefficient will also change with burnup, but for fast reactors, this direction of this change is difficult to assess due to a number of simultaneous effects: 1) removal of control rods hardens the spectrum, 2) production of fission products, and 3) small decrease in U-238. Whether or not the control rod withdrawal or the fission product production has the larger effect depends on the internal conversion ratio, since this determines how much of the control rods have to be withdrawn (how much excess reactivity you need to keep going). Because the internal conversion ratio depends on the size of the reactor, the Doppler coefficient change with burnup depends on the size of the reactor. A summary of the changes in Doppler coefficient magnitude with various core changes is included below. 
-
-\begin{center}
-\begin{tabular}{l l}
-Larger reactor size & increase\\
-Loss of sodium & decreases\\
-Increase core heterogeneity & decreases (small)\\
-\end{tabular}
-\end{center}
-
-The Doppler coefficient is also influenced by other thermophysical properties such as the thermal conductivity, since this influences how high the temperature might reach.
+The Doppler coefficient will also change with burnup, but for fast reactors, this direction of this change is difficult to assess due to a number of simultaneous effects: 1) removal of control rods hardens the spectrum, 2) production of fission products, and 3) small decrease in U-238. Whether or not the control rod withdrawal or the fission product production has the larger effect depends on the internal conversion ratio, since this determines how much of the control rods have to be withdrawn (how much excess reactivity you need to keep going). Because the internal conversion ratio depends on the size of the reactor, the Doppler coefficient change with burnup depends on the size of the reactor. 
 
 \subsection{Moderator Temperature Coefficient (MTC)}
 
@@ -1846,8 +1811,6 @@ Fast (small cores) & - &  &  & \\
 \end{tabular}
 \label{tab:PPer}
 \end{table}
-
-In large fast reactors, the overall effect is to reduce moderation, leading to a harder spectrum, and therefore a reactivity insertion similar to that described in reference to the sodium void coefficient. For small fast reactors characterized by high leakage, however, increasing coolant temperatures leads to higher leakage, and hence a negative insertion.
 
 Because in BWRs the coolant is primarily at saturated conditions, the MTC is relatively unimportant in normal operation, but has the greatest impact during startup and shutdown processes when there are no voids in the coolant. In normal operation, any power increases are curbed much more by the void coefficient, and hence in BWRs it is acceptable to have a positive MTC. The MTC may become more positive at EOL when there are more control rods withdrawn, as well, since this increases the moderator-to-fuel ratio). The MTC should not be too negative, however, since then if some undesired transient such as loss of FW heating were to occur, then the power increase could be too large to handle safely.
 
