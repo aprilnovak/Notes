@@ -418,3 +418,30 @@ The average of the square of the distance traveled from the source to a point \(
 
 Hence, the \gls{rms} distance traveled from the source to a point \(x\) is again proportional to \(L\).
 
+\subsubsubsection{Planar Source in Finite Cartesian Coordinates}
+
+For a planar source located at \(x=0\) surrounded by two layers of material combines the analysis performed for a slab in infinite geometry with interface conditions required between a region with different material properties:
+
+\begin{subequations}
+\begin{eqnarray}
+\lim_{x\rightarrow0}J_1(x)&=&\frac{S_0}{2}\\
+J_1(a/2)&=&J_2(a/2)\\
+\phi_1(a/2)&=&\phi_2(a/2)\\
+\phi_2(\tilde{a})=0
+\end{eqnarray}
+\end{subequations}
+
+In general, multi-region problems can be simplified through the use of tabulated albedo functions. The albedo \(\alpha\) is defined as:
+
+\beq
+\label{eq:AlbedoDef}
+\alpha\equiv\frac{J_{out}}{J_{in}}
+\eeq
+
+where \(J_{out}\) and \(J_{in}\) are the partial currents crossing an interface, corresponding respectively to different directions. Solution of a two-region one-group diffusion problem with the \glspl{bc} shown above gives the following expression for the albedo:
+
+\beq
+\alpha=\frac{1-\frac{2D}{L}\coth{\left(\frac{a}{L}\right)}}{1+\frac{2D}{L}\coth{\left(\frac{a}{L}\right)}}
+\eeq
+
+In the limit of the second region thickness tending to infinity, i.e. for an infinite reflecting region, the albedo approaches an asymptote of \((1-2D/L)/(1+2D/L)\). Note that a perfect reflector (100\% reflection of particles) only occurs for \(D/L\approx0\) (i.e. an insulator). In other words, \(\sqrt{\Sigma_aD}\approx0\), so an ideal reflector has both a small absorption cross section and a small diffusion coefficient. The asymptotic limits for common reflectors fall in the order \(\alpha_\text{D$_2$O}>\alpha_\text{graphite}>\alpha_\text{H$_2$O}\). Knowledge of the albedo can be used to replace a \gls{bc} on the edge of a domain through the use of partial current definitions and the definition of the albedo in Eq. \eqref{eq:AlbedoDef}.
