@@ -1,13 +1,14 @@
 \section{The Continuous-Energy Neutron Transport Equation}
 \label{sec:CE_NTE}
 
-The \gls{nte} is a statement of the conservation of neutron density \(n\seat\), the {\it expected} number of neutrons at a point in space per unit time \(t\), energy \(E\), and (unit) direction of motion \(\hO\). The {\it true} number of neutrons at a point in space cannot be known, since statistical processes govern the exact distribution of neutrons, and we will be limited to predicting mean or average neutron populations. The neutron density is a function of a seven-dimensional space - spatial (three), energy (one), direction of motion described as two angles within and relative to one coordinate plane, and time (one). The energy of the neutron correspond to the kinetic energy:
+The \gls{nte} is a statement of the conservation of neutron density \(n\seat\), the {\it expected} number of neutrons at a point in space per unit time \(t\), energy \(E\), and (unit) direction of motion \(\hO\). The {\it true} number of neutrons at a point in space cannot be known, since statistical processes govern the exact distribution of neutrons, and we will be limited to predicting mean or average neutron populations. The neutron density is a function of a seven-dimensional space - space (three), energy (one), direction of motion described as angles (two) within and relative to one coordinate plane, and time (one). The energy of the neutron refers to kinetic energy:
 
 \beq
+\label{eq:KineticEnergyDef}
 E\equiv\frac{1}{2}mv^2
 \eeq
 
-where \(v\equiv\|\vv{v}\|_2\) is used throughout. Because neutron kinetic energies are typically very high, units of electron volts for energy are assumed throughout, rather than the more conventional unit of Joules. The unit direction of motion \(\hO\) is a unit vector in the same direction as the neutron velocity \(\vv{v}\):
+where \(v\equiv\|\vv{v}\|_2\) is used throughout. Because neutron kinetic energies are typically very high, units of electron volts for energy are typically used, rather than the more conventional unit of Joules. The unit direction of motion \(\hO\) is a unit vector in the same direction as the neutron velocity \(\vv{v}\):
 
 \beq
 \label{eq:OmegaDef}
@@ -24,7 +25,7 @@ In Cartesian coordinates, \(\hO\) is given in terms of unit vectors \(\hat{i}\),
 \hO  = \sin{(\theta)}\cos{(\phi)}\hat{i} + \sin{(\theta)}\sin{(\phi)}\hat{j} + \cos{(\theta)}\hat{k}\\
 \eeqa
 
-Each of these components are often given their own names: 
+Each of these components are often given their own symbols: 
 
 \beq
 \label{eq:xiDef}
@@ -53,8 +54,8 @@ In a spherical coordinate system, an integral over the surface of the unit spher
 
 \beqa
 \label{eq:DifferentialOmega}
-d\hO  \equiv&\sin{(\theta)}d\theta d\phi\\
-\equiv&d\mu d\phi
+d\hO  \equiv&\ \sin{(\theta)}d\theta d\phi\\
+=&\ d\mu d\phi
 \eeqa
 
 From the definition of \(\mu\) in Eq. \eqref{eq:muDef}, \(d\mu=d(\cos{(\theta)})=\sin{(\theta)}d\theta\), giving the second equivalent form in Eq. \eqref{eq:DifferentialOmega}. An integral over solid angle is represented shorthand by \(\int_{4\pi}^{ } d\hO\), and is equivalent to the integral of Eq. \eqref{eq:DifferentialOmega}:
@@ -69,7 +70,7 @@ The integral of any single component of \(\hO\) defined in Eq. \eqref{eq:OmegaCa
 
 \beq
 \label{eq:OmegaCartesianIntegration}
-\int_{4\pi}d\hO\hO=0
+\int_{4\pi}d\hO\Omega_i=0
 \eeq
 
 The integral of any two components of \(\hO\) defined in Eq. \eqref{eq:OmegaCartesian} over solid angle gives the following orthogonality condition:
@@ -158,7 +159,7 @@ The scattering to other energy groups, referred to as ``out-scattering,'' is rep
 
 \beq
 \label{eq:ScatteringLoss}
-\left\lbrack\int d\volume \Sigma_s\seatout v(E)n\seat\right\rbrack dEd\hO
+\left\lbrack\int d\volume \Sigma_s(\vv{r},E\rightarrow E',\hO\rightarrow\hO',t) v(E)n\seat\right\rbrack dEd\hO
 \eeq
 
 Note that Eq. \eqref{eq:ScatteringLoss} includes scattering from \(E\rightarrow E\), which should not be represented as a loss term. This double-counting is balanced by the same double-counting in the in-scattering term in Eq. \eqref{eq:ConservationInscatteringSource}, giving the correct conservation statement. Eqs. \eqref{eq:AbsorptionLoss} and \eqref{eq:ScatteringLoss} are frequently combined by defining the total cross section \(\Sigma_t\) as:
@@ -183,7 +184,7 @@ All source and loss terms derived thus far have been represented as volume integ
 =&\left\lbrack\int d\volume\hO\cdot \nabla\left(v(E)n\seat\right)\right\rbrack dEd\hO
 \eeqa
 
-where \(\nabla\cdot\hO=0\) has been used because \(\hO\) is not a function of the spatial coordinate. Summing all of the source and loss terms in Eqs. \eqref{eq:ConservationExternalSource}, \eqref{eq:ConservationInscatteringSource}, \eqref{eq:ConservationFissionPrompt}, \eqref{eq:ConservationFissionDelayed}, \eqref{eq:AbsorptionLoss}, \eqref{eq:ScatteringLoss}, and \eqref{eq:streaming2} and inserting into Eq. \eqref{eq:neutron_conservation}, canceling the common \(dEd\hO\) differential, and recognizing that because the volume is arbitrary the integrand must be zero, gives:
+where \(\nabla\cdot\hO=0\) has been used because \(\hO\) is not a function of the spatial coordinate. Summing all of the source and loss terms in Eqs. \eqref{eq:ConservationExternalSource}, \eqref{eq:ConservationInscatteringSource}, \eqref{eq:ConservationFissionPrompt}, \eqref{eq:ConservationFissionDelayed}, \eqref{eq:AbsorptionLoss}, \eqref{eq:ScatteringLoss}, and \eqref{eq:streaming2} and inserting into Eq. \eqref{eq:neutron_conservation}, canceling the common \(dEd\hO\) differential, and recognizing that because the volume is arbitrary the integrand must be zero, gives the \gls{nte} in terms of neutron density:
 
 \beqa
 \label{eq:nte}
@@ -193,7 +194,7 @@ where \(\nabla\cdot\hO=0\) has been used because \(\hO\) is not a function of th
 &\hspace{3cm}\delayedfissionsource + \source
 \eeqa
 
-Eq. \eqref{eq:nte} is the \gls{nte} written in terms of neutron density. As can be seen, the product \(vn\) appears in almost every term, which suggests a convenient definition of the angular flux \(\psi\):
+The product \(vn\) appears in almost every term in Eq. \eqref{eq:nte}, which suggests a convenient definition of the angular flux \(\psi\):
 
 \beq
 \label{eq:AngularFlux}
@@ -238,17 +239,13 @@ At at interface \(\vv{r_s}\) of two differing cross sections \(1\) and \(2\), th
 \psi_1(\vv{r}_s,E,\hO,t)=\psi_2(\vv{r}_s,E,\hO,t)
 \eeq
 
-The scattering and fission terms couple all energies and angles together. Eq. \eqref{eq:nte1} can be solved analytically for general problems for purely absorbing media, but the presence of the integral forms for fissioning and scattering media greatly complicates analytic solution, and in most cases precludes it. 
-
-Several approximations exist in Eq. \eqref{eq:nte1} -
+The scattering and fission terms couple all energies and angles together. Eq. \eqref{eq:nte1} can be solved analytically for general problems for purely absorbing media, but the presence of the integral forms for fissioning and scattering media greatly complicates analytic solution, and in most cases precludes it. Several approximations exist in Eq. \eqref{eq:nte1} -
 
 \begin{itemize}
 \item Neutron-neutron interactions are negligible because the density of neutrons is much smaller than typical atomic densities. With this approximation, the \gls{nte} is equivalent to the linear Boltzmann equation.
 \item Neutron decay is negligible because the mean neutron lifetimes from birth to absorption are significantly smaller than neutron decay half lives on the order of 15 minutes.
 \item The neutron density is only a function of \(\vv{r}\), \(E\), \(\hO\), and \(t\) - other parameters such as neutron spin are neglected.
 \end{itemize}
-
-The \gls{nte} is sometimes written in a form known as the ``eigenvalue'' form, in which there is no external source and all time dependence is removed. Using such a form to find an eigenvalue solution attempts to determine the largest eigenvalue of the system; this eigenvalue is defined as the largest of the eigenvalues \(1/k\) preceding the prompt and delayed fission source term, and hence \(k\) represents the ratio of fission sources to losses for a steady-state system with no external sources.
 
 The remainder of this section presents alternative forms of the \gls{nte}, and is organized according to each individual term appearing in Eq. \eqref{eq:nte1} or to general rewritings such as eigenvalue form.
 
@@ -341,7 +338,84 @@ When Eq. \eqref{eq:ScatteringSH} is used in the \gls{nte}, the inscattering sour
 
  where the definition of the flux moments \(\phi_{lm}\) from Eq. \eqref{eq:SHGeneralMoments} has been used. Because the diffusion approximation is equivalent to assuming isotropic scattering, \(\phi_{00}\) is equivalent to the scalar flux.
  
- \subsection{Eigenvalue Form}
+\subsection{Eigenvalue Form}
+\label{sec:EigenvalueForm}
+By setting the external source to zero and neglecting time dependence, the \gls{nte} can be written in eigenvalue form as:
+
+\beqa
+\label{eq:EigenvalueNTE}
+\hO\cdot\nabla\psi(\vv{r},E,\hO)+\Sigma_t(\vv{r},E,\hO)\psi(\vv{r},E,\hO)=\hspace{2cm}\\
+\int_0^\infty dE'\int_{4\pi}d\hO'\Sigma_s(\vv{r},E'\rightarrow E,\hO'\rightarrow\hO)\psi(\vv{r},E',\hO')\ +\hspace{1cm}\\
+\frac{1}{k}\chi(E,\hO)\int_0^\infty dE'\int_{4\pi}d\hO'\nu(E')\Sigma_f(\vv{r},E'\hO')\psi(\vv{r},E',\hO')
+\eeqa
+
+where for simplicity the fission source has been written as the combined prompt and delayed source due to the assumption of time-independence. Note that Eq. \eqref{eq:EigenvalueNTE} is an eigenvalue equation because \(\psi\) appears in every term. The factor \(1/k\) is inserted as the eigenvalue. (Continuous) eigenvalue problems have an infinite number of solutions (eigenfunctions) corresponding to an infinite number of eigenvalues. The objective of solution of a discretized version of Eq. \eqref{eq:EigenvalueNTE} is to find the smallest eigenvalue \(1/k\) because this eigenvalue corresponds to the smallest geometric buckling, and hence the smallest leakage and longest steady time behavior. The goal of reactor design is to obtain systems that self-sustain the critical reaction in the absence of an external source.
+
+\begin{tcolorbox}[breakable]
+To illustrate the significance of finding the {\it smallest} eigenvalue \(1/k\) to search for the steady-state solution, consider the one-group diffusion equation in a homogeneous medium as an example:
+
+\beq
+\label{eq:1GDiff}
+\frac{1}{v}\frac{\partial\phi(\vv{r},t)}{\partial t}-D\nabla^2\phi(\vv{r},t)+\left(\Sigma_a-\nu\Sigma_f\right)\phi(\vv{r},t)=S(\vv{r},t)
+\eeq
+
+For a slab reactor in Cartesian coordinates with vacuum conditions at \(x=\pm\tilde{a}/2\) and a symmetric initial condition \(\phi(\vv{r},0)\) in the absence of an external source, a separation of variables technique can be used to seek a solution of the form \(\phi(x,t)=X(x)T(t)\). Inserting this assumed form into Eq. \eqref{eq:1GDiff} gives, after dividing through by \(X(x)T(t)\):
+
+\beq
+\underbrace{\frac{1}{T(t)}\frac{\partial T(t)}{\partial t}}_{-\lambda}+\underbrace{v\left\lbrack-\frac{D}{X(x)}\frac{\partial^2X(x)}{\partial x^2}-\left(\nu\Sigma_f-\Sigma_a\right)\right\rbrack}_{\lambda}=0
+\eeq
+
+Because the first term is only a function of time and the second only a function of space, yet the two are equal to one another, both must be equal to a constant \(\pm\lambda\). Therefore, separation of variables has produced two separable differential equations:
+
+\beq
+\frac{\partial T(t)}{\partial t}=-\lambda T(t)
+\eeq
+
+\beq
+\frac{\partial^2X(x)}{\partial x^2}+\underbrace{\left(\frac{\nu\Sigma_f-\Sigma_a+\lambda/v}{D}\right)}_{B^2}X(x)=0
+\eeq
+
+where \(B^2\) has been inserted for simplicity. Solution of these two equations subject to the boundary and initial conditions gives:
+
+\beq
+T(t)=T(0)e^{-\lambda t}
+\eeq
+
+\beq
+X(x)=C_n\cos{\left(\frac{n\pi}{\tilde{a}}x\right)}
+\eeq
+
+where an infinite number of non-trivial solutions are possible to the spatial Helmholtz-type problem for the discrete points:
+
+\beqa
+\label{eq:Eigens}
+B_n^2=&\ \frac{n\pi}{\tilde{a}}\\
+=&\ \frac{\nu\Sigma_f-\Sigma_a+\lambda_n/v}{D}
+\eeqa
+
+for odd \(n\), where \(\lambda\) is now written as \(\lambda_n\) to indicate the infinite number of possible values. Due to the linearity of the \gls{nte} which permits superposition of solutions, the solution can be written as:
+
+\beq
+\phi(x,t)=\sum_{n=1,\text{odd}}^\infty C_n(x,t)e^{-\lambda_nt}\cos{\left(\frac{n\pi}{\tilde{a}}x\right)}
+\eeq
+
+The coefficients \(C_n\) can be determined by application of the orthogonality condition using the initial condition. For \(\lambda_n>0\), the flux decays in time, while for \(\lambda_n<0\), the flux grows in time. Rearranging Eq. \eqref{eq:Eigens} for \(\lambda_n\) gives:
+
+\beq
+\lambda_n=v\left\lbrack D\left(\frac{n\pi}{\tilde{a}}\right)^2+\Sigma_a-\nu\Sigma_f\right\rbrack
+\eeq
+
+Note that for both \(\lambda_1>0\) and \(\lambda_1<0\), \(\lambda_{n+1}>\lambda_n\). Therefore, the higher the \(n\) value, the faster that modes decays away in time (for positive \(\lambda\)) or the slower that mode grows in time (for negative \(\lambda\)), so the higher the \(n\), the less presence of that mode for long times. For a sufficiently long time, only the \(n=1\) mode persists; this mode is therefore often referred to as the ``fundamental mode.'' While the separation of variables technique used here does not necessarily imply separability in space and time, for very long times the flux does become separable. An alternative solution technique would have been to expand the flux in the eigenfunctions of the homogeneous system and insert directly into the governing equation to apply orthogonality to obtain a relationship among the coefficients.\newline
+
+Hence, because \(\lambda_{n+1}>\lambda_n\), the objective for performing a criticality calculation is to determine the fundamental mode that remains after a sufficiently long time that the neutron population has reached a steady state. This fundamental mode corresponds to the smallest eigenvalue of the homogeneous problem, \(B_1^2\). The corresponding criticality problem for the general transport equation is to find the smallest eigenvalue \(1/k\). \(B_1^2\) is the smallest eigenvalue of the homogeneous (referring to the form of the differential equation) problem, and is often referred to as the ``geometric buckling.'' This term is proportional to the curvature of the spatial eigenfunction:
+
+\beq
+B_n^2=-\frac{1}{X_n(x)}\frac{\partial^2X_n(x)}{\partial x^2}
+\eeq
+\end{tcolorbox}
+
+While eigenvalue calculations imply an infinite number of solutions, to be considered a valid solution for neutron transport, the eigenfunctions must also be positive. For the one-group diffusion equation in a homogeneous slab, the only positive eigenfunction is the eigenfunction corresponding to \(n=1\), the fundamental mode. Hence, while an infinite number of solutions may in theory be possible, typically only one possible solution exists. The specified problem is likely not a perfectly critical system, hence the ``insertion'' (really, ``un-muting'') of the \(1/k\) factor to ensure a solution can be found. The objective is to solve the eigenvalue form of the \gls{nte} simultaneously for \(\psi\) and \(k\). Due to the placement of \(1/k\) within Eq. \eqref{eq:EigenvalueNTE}, it is clear that \(k\) represents the ratio of fission sources to losses. Section \ref{sec:EigenvalueCalculations} describes how Eq. \eqref{eq:EigenvalueNTE} is numerically solved to obtain the smallest \(1/k\) and the corresponding fundamental mode.
+
  
  Simple concepts are often introduced to predict how changes in system state affect the criticality by defining the following probabilities:
  

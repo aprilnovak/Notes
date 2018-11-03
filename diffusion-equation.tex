@@ -19,8 +19,8 @@ Our first attempt to obtain an equation solely in terms of \(\phi\) will be to i
 \label{eq:NeutronContinuityEquation}
 &\frac{\partial}{\partial t}\left(\frac{\phi\sset}{v(E)}\right)+\nabla\cdot\vv{J}\sset+\Sigma_t\sset\phi\sset=\\
 &\hspace{1cm}\int_{4\pi}d\hO\inscatteringsource\psi\seatelse+\\
-&\hspace{2cm}\int_{4\pi}d\hO\chi_p(E,\hO)\dEprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
-&\hspace{3cm}\int_{4\pi}d\hO\delayedfissionsource+S\sset
+&\hspace{2cm}\chi_p(E)\dEprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
+&\hspace{3cm}\sum_{j=1}^J\chi_{d,j}(E)\lambda_jC_j(\vv{r},t)+S\sset
 \eeqa
 
 The time term is obtained by expanding via the chain rule, integrating in angle (by noting that the time derivative in the \(\partial/\partial t\) operator can be brought outside the integral due to its lack of dependence on angle, and then brought back in after introducing \(\phi\)), and collapsing the chain rule. The streaming term was written as an area integral by reversing the divergence rule, and then re-applying the divergence rule after angle integration. The fission and total cross sections have been assumed independent of angle such that they could be brought outside the angle integration, as is commonplace. 
@@ -39,8 +39,8 @@ Switching the order of angle integrations in the in-scattering term and insertin
 \label{eq:NeutronContinuityEquation1}
 &\frac{\partial}{\partial t}\left(\frac{\phi\sset}{v(E)}\right)+\nabla\cdot\vv{J}\sset+\Sigma_t\sset\phi\sset=\\
 &\hspace{1cm}\dEprime\Sigma_s(\vv{r},E'\rightarrow E,t)\phi(\vv{r},E',t)+\\
-&\hspace{2cm}\int_{4\pi}d\hO\chi_p(E,\hO)\dEprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
-&\hspace{3cm}\int_{4\pi}d\hO\delayedfissionsource+S\sset
+&\hspace{2cm}\chi_p(E)\dEprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
+&\hspace{3cm}\sum_{j=1}^J\chi_{d,j}(E)\lambda_jC_j(\vv{r},t)+S\sset
 \eeqa
 
 Eq. \eqref{eq:NeutronContinuityEquation1} is sometimes referred to as the ``neutron continuity'' equation, since it represents an equivalent statement of neutron conservation, similar to mass conservation in fluid mechanics and the ``mass continuity'' equation. Note that attempting to integrate out all angular dependence has introduced \(\vv{J}\), which has no exact relationship with \(\phi\). We will seek a \gls{pde} that is a function of strictly \(\vv{J}\), rather than both \(\vv{J}\) and \(\phi\), by multiplying the \gls{nte} by \(\hO\) and then integrating in angle. Because \(\hO\) is a vector, this corresponds to the multiplication of the \gls{nte} by each component of \(\hO\) and summing. 
@@ -204,7 +204,7 @@ Insertion of Eq. \eqref{eq:FicksLaw} into the neutron continuity equation in Eq.
 &\hspace{3cm}\int_{4\pi}d\hO\delayedfissionsource+S\sset
 \eeqa
 
-Several assumptions were made in the mathematical derivation of the diffusion equation. These are summarized here as follows:
+where it has been assumed that Several assumptions were made in the mathematical derivation of the diffusion equation. These are summarized here as follows:
 
 \begin{enumerate}
 \item The angular flux is only linearly dependent on angle due to the use of the \(P_1\) approximation for the angular flux dependence. For this reason, the diffusion approximation is typically invalid near boundaries or regions with large variation in cross section that induce a stronger directional dependence in the angular flux.
@@ -228,25 +228,50 @@ The transport mean free path, or \(1/\Sigma_{tr}\), is essentially a corrected m
 
 \subsection{The Multigroup Diffusion Equation}
 
-The diffusion equation in Eq. \eqref{eq:DiffusionEquation} can be written in \gls{mg} form by integrating over energy group \(E_{g-1}\leq E\leq E_g\) as was performed in the derivation of the \gls{mg} transport equation in Section \ref{sec:MGNTE}. Similar to the definitions provided in Section \ref{sec:MGNTE} for groupwise fluxes and cross sections, the groupwise flux and cross sections are defined here as:
+The diffusion equation in Eq. \eqref{eq:DiffusionEquation} can be written in \gls{mg} form by integrating over energy group \(E_{g}\leq E\leq E_{g-1}\) as was performed in the derivation of the \gls{mg} transport equation in Section \ref{sec:MGNTE}. Similar to the definitions provided in Section \ref{sec:MGNTE} for groupwise fluxes and cross sections, the groupwise flux and cross sections are defined here as:
 
 \beq
-\phi_g(\vv{r},t)\equiv\int_{E_{g-1}}^{E_g}dE\phi(\vv{r},E,t)
+\label{eq:FluxGroup}
+\phi_g(\vv{r},t)\equiv\int_{E_{g}}^{E_{g-1}}dE\phi(\vv{r},E,t)
 \eeq
 
-\beqa
-\Sigma_{i,g}(\vv{r},t)\equiv&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_f(\vv{r},E,t)\phi(\vv{r},E,t)}{\int_{E_{g-1}}^{E_g}dE\phi(\vv{r},E,t)}\\
-=&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_f(\vv{r},E,t)\phi(\vv{r},E,t)}{\phi_g(\vv{r},t)}\\
-\eeqa
+\beq
+\label{eq:SigmaGroup}
+\Sigma_{i,g}(\vv{r},t)\equiv\frac{1}{\phi_g(\vv{r},t)}\int_{E_{g}}^{E_{g-1}}dE\Sigma_i(\vv{r},E,t)\phi(\vv{r},E,t)
+\eeq
+
+\beq
+\label{eq:ScatGroup}
+\Sigma_{s,g'\rightarrow g}(\vv{r},t)\equiv\frac{1}{\phi_g(\vv{r},t)}\int_{E_g}^{E_{g-1}}dE\int_{E_{g'}}^{E_{g'-1}}dE'\Sigma_s(\vv{r},E'\rightarrow E,t)\phi(\vv{r},E',t)
+\eeq
+
+\beq
+\nu_g\Sigma_{f,g}\equiv\frac{1}{\phi_g(\vv{r},t)}\int_{E_g}^{E_{g-1}}dE\nu(E)\Sigma_f(\vv{r},E,t)\phi(\vv{r},E,t)
+\eeq
+
+\beq
+\label{eq:DGroup}
+D_g(\vv{r},t)\equiv\frac{\int_{E_g}^{E_{g-1}}dE D\nabla\phi(\vv{r},E,t)}{\int_{E_g}^{E_{g-1}}dE\phi(\vv{r},E,t)}
+\eeq
+
+\beq
+\label{eq:VGroup}
+\frac{1}{v_g}\equiv\frac{1}{\phi_g(\vv{r},t)}\int_{E_g}^{E_{g-1}}dE\frac{\phi(\vv{r},E,t)}{v(E)}
+\eeq
 
 Integrating the diffusion equation in Eq. \eqref{eq:DiffusionEquation} over a single energy group and applying these definitions gives the \gls{mg} diffusion equation:
 
 \beqa
 \label{eq:MGDiffusionEquation}
-\frac{\partial}{\partial t}\left(\frac{\phi_g(\vv{r},t)}{v_g}\right) %TODO
+\frac{\partial}{\partial t}\left(\frac{\phi_g(\vv{r},t)}{v_g}\right)-\nabla\cdot\left\lbrack D_g(\vv{r},t)\nabla\phi_g(\vv{r},t)\right\rbrack+\Sigma_{t,g}(\vv{r},t)\phi_g(\vv{r},t)=\hspace{2cm}\\
+\sum_{g'=1}^G\Sigma_{s,g'\rightarrow g}(\vv{r},t)\phi_{g'}(\vv{r},t)+\chi_{p,g}\sum_{g'=1}^G\left(1-\beta_{g'}\right)\nu\Sigma_{f,g'}(\vv{r},t)\phi_{g'}(\vv{r},t)+\sum_{j=1}^J\chi_{d,j,g}\lambda_jC_j(\vv{r},t)
 \eeqa
 
-where the time derivative was brought outside the integration since this operator does not depend on energy. 
+where the time derivative and gradient were brought outside the energy integration since these operators do not depend on energy. This integration also itself motivates the definition of the energy-integrated parameters in Eqs. \eqref{eq:FluxGroup}-\eqref{eq:VGroup}. The scattering and fission terms are obtained by breaking up the integrals over \(dE'\) into a finite series over the energy groups.
+
+The multigroup constants defined in Eqs. \eqref{eq:FluxGroup}-\eqref{eq:VGroup} depend on both space and time, and they will be constant only in the case when the scalar flux is separable as a function of energy as \(\phi(\vv{r},E,t)=f(\vv{r},t)h(E)\). In general, the scalar flux is not separable in energy and space-time, so the group constants will also be a function of position, and not just spectrum. The approximation of the multigroup constants, without the use of stochastic methods that simply defined tallies for the integral quantities, requires methods for approximating the scalar fluxes that appear in their definitions. This can usually be done by performing fairly simple calculations, in some cases possibly neglecting spatial dependence altogether.
+
+The finer the group structure, the more crude the approximations to the energy-dependent scalar flux may be. For example, a rather crude approximation of \(\phi(E)\propto1/E\) is reasonable for the \(1 \text{ eV }\le E\le 10^5 \text{ eV}\) range, but such a crude approximation requires the use of a relatively fine group structure to capture the complicated resonance structures that a better flux representation would be able to capture with a coarser group structure.
 
 \subsection{The One-Group Diffusion Equation}
 For a single energy group, Eq. \eqref{eq:MGDiffusionEquation} simplifies to:
@@ -444,7 +469,7 @@ where \(J_{out}\) and \(J_{in}\) are the partial currents crossing an interface,
 \alpha=\frac{1-\frac{2D}{L}\coth{\left(\frac{a}{L}\right)}}{1+\frac{2D}{L}\coth{\left(\frac{a}{L}\right)}}
 \eeq
 
-In the limit of the second region thickness tending to infinity, i.e. for an infinite reflecting region, the albedo approaches an asymptote of \((1-2D/L)/(1+2D/L)\). Note that a perfect reflector (100\% reflection of particles) only occurs for \(D/L\approx0\) (i.e. an insulator). In other words, \(\sqrt{\Sigma_aD}\approx0\), so an ideal reflector has both a small absorption cross section and a small diffusion coefficient. The asymptotic limits for common reflectors fall in the order \(\alpha_\text{D$_2$O}>\alpha_\text{graphite}>\alpha_\text{H$_2$O}\). Knowledge of the albedo can be used to replace a \gls{bc} on the edge of a domain through the use of partial current definitions and the definition of the albedo in Eq. \eqref{eq:AlbedoDef}.
+In the limit of the second region thickness tending to infinity, i.e. for an infinite reflecting region, the albedo approaches an asymptote of \((1-2D/L)/(1+2D/L)\). Note that a perfect reflector (100\% reflection of particles) only occurs for \(D/L\approx0\) (i.e. an insulator). In other words, \(\sqrt{\Sigma_aD}\approx0\), so an ideal reflector has both a small absorption cross section and a small diffusion coefficient. The asymptotic limits for common reflectors fall in the order \(\alpha_{\text{D$_2$O}}>\alpha_{\text{graphite}}>\alpha_{\text{H$_2$O}}\). Knowledge of the albedo can be used to replace a \gls{bc} on the edge of a domain through the use of partial current definitions and the definition of the albedo in Eq. \eqref{eq:AlbedoDef}.
 
 \subsubsection{The Eigenfunction Expansion Method}
 
@@ -460,8 +485,8 @@ For a finite slab with vacuum conditions at \(\pm \tilde{a}/2\), two possible so
 \begin{subequations}
 \label{eq:Eigenfunction1DSlab}
 \begin{eqnarray}
-\psi_n(x)&=&A_n\cos{\left\frac{n\pi x}{\tilde{a}\right)}\\
-\psi_n(x)&=&A_n\sin{\left\frac{n\pi x}{\tilde{a}\right)}
+\psi_n(x)&=&A_n\cos{\left(\frac{n\pi x}{\tilde{a}}\right)}\\
+\psi_n(x)&=&A_n\sin{\left(\frac{n\pi x}{\tilde{a}}\right)}
 \end{eqnarray}
 \end{subequations}
 
