@@ -1,6 +1,149 @@
 \section{Reactor Kinetics}
 \label{sec:Kinetics}
 
+This section describes how time-dependent solutions to the \gls{nte}, or to simplifications of the \gls{nte}, are performed. The neutrons born from fission are either born promptly almost immediately following fission, while a small fraction are born delayed from beta decay of fission products. Rather than use one group for each of the delayed neutron precursors in Eq. \eqref{eq:nte1}, it is customary to use a smaller number of groups, typically six. Each group is characterized by a decay constant \(\lambda_i\) and delayed neutron fraction \(\beta_i\) representing the fraction of total neutrons born delayed into group \(i\). The \(\beta_i\) are defined such that they sum to unity:
+
+\beq
+\label{eq:TotalBetaDef}
+\beta\equiv\sum_{j=1}^J\beta_j
+\eeq
+
+Table \ref{table:U235_kinetcs} provides the half lives (equal to \(\ln{2}/\lambda_i\)) and delayed neutron fractions for the standard six-group approximation for thermal fission in U-235. Eq. \eqref{eq:TotalBetaDef} shows that \(\beta\) equals 640 pcm for this system. U-238 and Pu-241 have a slightly higher \(\beta\), while U-233 and Pu-239 have a slightly lower \(\beta\), than U-235, and the isotopic-averaged \(\beta\) will generally decrease over an \gls{lwr} cycle length due to U-235 and U-238 depletion and accumulation of Pu-239. A typical range in \(\beta\) for \glspl{lwr} is from 0.007 to 0.005; in CANDU reactors where the uranium is at natural enrichment levels, the greater \(\beta\) due to U-238 dominates, giving one of the largest \(\beta\) for modern reactor designs.
+
+Due to the greater fraction of Pu-239 in fast systems, typical \(\beta\) values are on the order of 0.0036 for heterogeneous designs, approximately half that in \glspl{lwr}. In heterogeneous designs where U-238 is placed in a lower-flux region for transmutation to Pu-239, the effective \(\beta\) is somewhat lower than in homogeneous designs due to the lower importance of U-238, a high-\(\beta\) nuclide. In systems where transmutation of Pu-239 to Pu-241 occurs over core life, \(\beta\) tends to increase with burnup, though this can be overcompensated by the buildup of U-233.
+
+\begin{table}[h]
+\caption{Delayed neutron group characteristics for U-235 \cite{duderstadt}}
+\centering
+\begin{tabular}{c |c c}
+\hline\hline
+ Group & Half-Life (s) & \(\beta_i\) \\ [0.5ex]
+\hline 
+1 & 55.6 & 0.0002 \\
+2 & 22.0 & 0.0014 \\
+3 & 6.2  & 0.0012 \\
+4 & 2.3  & 0.0026 \\
+5 & 0.6  & 0.0007 \\
+6 & 0.23 & 0.0003 \\
+\hline
+\end{tabular}
+\label{tab:U235_kinetics}
+\end{table}
+
+Delayed neutrons are born at significantly lower energies than prompt neutrons (about 0.5 MeV instead of 2 MeV), and are approximately 20\% more likely to cause fission than prompt neutrons in thermal systems (while the reverse holds for fast systems). \(\beta\) only represents the fraction of neutrons born delayed - instead, a better understanding of the time response of systems can be determined by computing a weighted \(\beta\) that accounts for the relative importance of delayed neutrons to reactivity. For small thermal systems, where prompt neutrons are more likely to leak out of the system than delayed neutrons, the effective delayed neutron fraction may be 20-30\% larger than \(\beta\) \cite{duderstadt}. Therefore, \(\beta\) generally improves for thermal reactor as the leakage increases. However, in fast systems, delayed neutrons are less likely to cause fission, so reactors with lower leakage have larger \(\beta\) than high leakage designs. 
+
+If the reactor is critical, this criticality is sustained by both prompt and delayed neutrons. If the reactivity exceeds the delayed neutron fraction \(\beta\), criticality can be sustained by prompt neutrons alone, effectively decreasing the system time constant to the time constant characterizing the prompt neutrons. Because this time constant is much smaller than the time constant characterizing both prompt and delayed neutrons, this situation is often referred to as ``prompt criticality,'' and will generally lead to very rapid increases in power unless there are sufficiently negative, fast-acting, feedback mechanisms. 
+
+The reactivity is the fractional change in the neutron population relative to the current generation:
+
+\beq
+\label{eq:Reactivity}
+\rho=\frac{n_ok-n_o}{n_ok}=\frac{k-1}{k}
+\eeq
+
+The analysis of reactor kinetics is typically simplified so that \(\rho\) is a known quantity, though in reality there is a strong interrelationship with operating conditions such as temperature and density. The remainder of this section presents various approximate schemes for accounting for the transient behavior in Eq. \eqref{eq:nte1}.
+
+\subsection{Time Eigenfunction Approximation}
+
+For the one-group diffusion approximation, an eigenfunction analysis using separation of variables for a bare reactor provided the solution in Eq. \eqref{eq:FluxEigenfunctionExp}. One technique for approximating the time dependence of the one-group diffusion equation is to assume the flux can be given simply by the leading \(n=1\) term. From Eq. \eqref{eq:lambda_n}, \(\lambda_{n+1}\) is given in terms of \(\lambda_n\) as:
+
+\beq
+\lambda_{n+1}=\lambda_n+2vD(n+1)\left(\frac{\pi}{\tilde{a}}\right)^2
+\eeq
+
+For typical values characterizing thermal systems, \(\lambda_{n}\), \(n\neq1\) are several orders of magnitude larger than \(\lambda_1\), and decay away very quickly in time. Therefore, a reasonable approximation for the time dependence is the use of only the leading \(n=1\) term in Eq. \eqref{eq:FluxEigenfunctionExp};
+
+\beq
+\phi(x,t)=C_1(x,t)e^{-\lambda_1t}\cos{\left(\frac{\pi}{\tilde{a}}x\right)}
+\eeq
+
+where \(\lambda_1\) can be written in terms of \(k=pfP_{NL}\) as:
+
+\beqa
+\lambda_1=&\ v\left\lbrack D\left(\frac{\pi}{\tilde{a}}\right)^2+\Sigma_a-\nu\Sigma_f\right\rbrack\\
+=&\ \frac{k-1}{l}
+\eeqa
+
+where \(l\) is the prompt neutron lifetime in a finite reactor accounting for leakage:
+
+\beq
+l\equiv l_\infty P_{NL}
+\eeq
+
+where \(l_\infty\) is the prompt neutron lifetime in an infinite reactor, simply taken as the mean lifetime from birth to absorption:
+
+\beq
+l_\infty\equiv\frac{1}{v\Sigma_a}
+\eeq
+
+\(l\) is on the order of 10$^-4$ seconds for typical thermal reactors, and 10$^-7$ seconds for typical fast reactors. This simple eigenfunction analysis of the time dependence predicts a time dependence of the neutron population as:
+
+\beq
+\label{eq:EigenfunctionNt}
+n(t)=n_0\exp{\left(\frac{k-1}{l}t\right)}
+\eeq
+
+The reactor period in this case is extremely small, and precludes any realistic reactor control. Because \(l\leq l_\infty\), the reactor period will be smaller in systems with significant leakage. Eq. \eqref{eq:EigenfunctionNt} can be slightly improved in accuracy by replacing \(l\) by an ad hoc weighted \(l\) that accounts for the effects of both prompt and delayed neutrons:
+
+\beq
+\label{eq:AverageL}
+\langle l\rangle\equiv(1-\beta)l+\sum_{j=1}^J\beta_j\left(l+\frac{1}{\lambda_j}\right)
+\eeq
+
+\(\langle l\rangle\) is on the order of 10^{-1} seconds for thermal systems, approximately three orders of magnitude larger than the prompt neutron lifetime \(l\). However, this simple approximation applies a single time constant to describe the neutron population, when in reality a complicated interrelationship between time constants characterizing the prompt neutrons and each of the \(J\) delayed neutron groups exists. Eq. \eqref{eq:EigenfunctionNt} with \(l\) given by Eq. \eqref{eq:AverageL} should only be used for very small reactivity changes. Section \ref{sec:PKE} describes an improvement to this model.
+
+\subsection{The Point Reactor Kinetics Equations}
+\label{sec:PKE}
+
+The \gls{pke} are an approximation to the time dependence in Eq. \eqref{eq:nte1} that assume 1)~a one-group diffusion theory model, and 2)~a scalar flux that is separable in space and time. This approximation therefore implies that the flux profile is independent of time, and during a transient only changes by multiplication by a constant, clearly an oversimplification of very spatially-dependent events such as withdrawal of a control rod. The assumption of no energy dependence neglects the fact that delayed neutrons are born at considerably lower energies than prompt neutrons. When these factors are combined, it is clear that a more sophisticated analysis would use different spatial distributions to describe the group fluxes since they have considerably different spatial dependence in thermal reactors. The tighter neutron transport coupling in fast reactors results in the \gls{pke} being a better approximation than in loosely-coupled thermal systems.
+
+The concentration of delayed neutron precursors of the \(i\)-th kind, \(C_i\), represents the number of precursors per unit volume that always decay by \(\beta\) decay. Therefore, this concentration is some percentage of the actual precursor concentration, since beta decay does not necessarily constitute 100\% of the total decay path. The time rate of change of delayed neutrons is given as a balance between production from fission and beta decay, assuming no movement from the site of fission by diffusion or convection:
+
+\beq
+\label{eq:Precursor1}
+\frac{\partial C_i(\vv{r},t)}{\partial t}=\beta_i\nu\Sigma_f\phi(\vv{r},t)-\lambda_iC_i(\vv{r},t)
+\eeq
+
+The neutron concentration is described by the one-group diffusion equation, with a clear distinction between prompt and delayed neutrons:
+
+\beq
+\label{eq:Power1}
+\frac{\partial n(\vv{r}t)}{\partial t}-\nabla\cdot\left\lbrack D\nabla\phi(\vv{r},t)\right\rbrack+\Sigma_a\phi(\vv{r},t)=(1-\beta)\nu\Sigma_f\phi(\vv{r},t)+\sum_{j=1}^J\lambda_jC_j(\vv{r},t)
+\eeq
+
+Assuming both the neutron and precursor concentrations are separable in space and time and that both are described by the fundamental mode obtained from a solution to the homogeneous Helmholtz problem, insert the following assumed forms into Eqs. \eqref{eq:Precursor1} and \eqref{eq:Power1}:
+
+\beq
+C_j(\vv{r},t)=C_j(t)\psi(\vv{r})
+\eeq
+
+\beq
+\phi(\vv{r}t)=vn(t)\psi(\vv{r})
+\eeq
+
+which gives:
+
+\begin{subequations}
+\label{eq:PKE}
+\begin{eqnarray}
+\frac{\partial n(t)}{\partial t}&=&\frac{\rho(t)-\beta}{\Lambda}n(t)+\sum_{j=1}^J\lambda_jC_j(t)\\
+\frac{\partial C_j(t)}{\partial t}&=&\frac{\beta_j}{\Lambda}n(t)-\lambda_jC_j(t)
+\end{eqnarray}
+\end{subequations}
+
+where Eq. \eqref{eq:Helmholtz} was used to relate \(\nabla^2\psi(\vv{r})\) to \(B_n^2\psi(\vv{r})\). Note that the assumption of the same spatial dependence for \(\phi\) and \(C_i\) does not capture the fact that \(C_i\) is actually proportional to \(\Sigma_f\phi\), and could be characterized by a very different profile from the scalar flux. In addition, the use of the fundamental mode implies that the system is in the critical state, which does not apply for the time-dependent investigations that are the subject of this section. So, the \gls{pke} are only valid for systems slightly perturbed from the critical state.
+
+Eq. \eqref{eq:PKE} are known as the \gls{pke}, and are commonly written in terms of power, rather than neutron concentration, by multiplying both equations by \(w_f\Sigma_f\), which is typically bundled into the \(C_j(t)\). This substitution neglects any delay between the fission rate and thermal power production due to conduction through the fuel and cladding. \(\Lambda\) is defined as the mean neutron lifetime from birth in fission to absorption in thermal fission:
+
+\beqa
+\Lambda\equiv&\frac{l}{k}\\
+=&\frac{1}{v\nu\Sigma_f}
+\eeqa
+
+If \(k>1\), \(\Lambda<l\), indicating that the lifetime is shortened by enhanced absorption fission rates. When the major assumptions involved in the derivation of the \gls{pke} are violated, a time-dependent solution of the \gls{nte} must be performed, with cross sections prescribed dependencies on the solution variables to account for feedback effects. The \gls{pke} can be derived with the one-group and space-time separability assumptions relaxed, which gives the same set of equations in Eq. \eqref{eq:PKE} with slightly different selections for \(\rho\), \(\beta\), and \(\Lambda\) \cite{duderstadt}. Alternatively, if the transient is sufficiently slow to evolve, a series of pseudo steady-state eigenvalue calculations can be used to compute approximate \(\psi(\vv{r},t)\) in an approximation known as the ``adiabatic approximation.''
+
+Eq. \eqref{eq:PKE} are a system of coupled \glspl{ode} that are generally very stiff due to the wide range in time scales, from \(l\) to the longest-lived delayed neutron precursor group, which may have a half life on the order of 80 seconds. If \(\rho(t)\) is a prescribed function of time, the \gls{pke} are a coupled set of linear equations. However, in general \(\rho\) also depends on the neutron concentration, yielding a coupled set of nonlinear equations. Only for bare reactor systems modeled by the one-group diffusion equation with homogeneous properties can \(\rho\) be {\it computed} based on a change in material properties and/or composition. The remainder of this section describes several simplifications to Eq. \eqref{eq:PKE} that allow more physical intuition when \(\rho\) is a known function of time.
+
 The multiplication factor \(k\) is the ratio of the rate of neutron production to the rate of neutron loss:
 
 \beqa
@@ -23,22 +166,97 @@ However, because the neutron lifetime \(l\) is not constant and identical for al
 l\equiv\frac{N(t)}{L(t)}
 \eeq
 
-where \(N\) is the total number of neutrons in the system. Typical power reactors have a prompt lifetime of about \(10^{-4}\) seconds. 
+where \(N\) is the total number of neutrons in the system.
 
-\subsection{No Delayed Neutrons}
-
-The total number of neutrons in the system may be expressed as a simple balance relation between the production and loss rates:
-
-\beqa
-\label{eq:NoDelayedN}
-\frac{dN(t)}{dt}=&\ P(t)-L(t)\\
-=&\ \frac{k-1}{l}N(t)
-\eeqa
-
-where Eq. \eqref{eq:KDef} and Eq. \eqref{eq:NeutronLifetime} have been inserted. Assuming \(k\) and \(l\) are time-independent, solution of Eq. \eqref{eq:NoDelayedN} predicts a neutron population that grows exponentially in time:
+\subsubsection{One Delayed Neutron Group}
+A common simplification to Eq. \eqref{eq:PKE} is the assumption of a single delayed neutron group. In this case, the single group is characterized by the total \(\beta\) defined in Eq. \eqref{eq:TotalBetaDef} and a weighted delayed neutron decay constant based on a simplification to Eq. \eqref{eq:AverageL}:
 
 \beq
-N(t)=N_0\exp{\left(\frac{k-1}{l}t\right)}
+\langle\lambda\rangle=\left(\frac{1}{\beta}\sum_{j=1}^J\frac{\beta_j}{\lambda_j}\right)^{-1}
 \eeq
 
-with period \(l/(k-1)\). The period is the time over which the population increases by a factor of \(e\). As the reactor approaches critical, the period of the reactor approaches infinity, but for \(k\) slightly supercritical, taking \(l\) to represent the prompt neutron lifetime, the reactor power can change extremely rapidly, precluding any reasonable human control.
+Eq. \eqref{eq:PKE} then simplify to the following:
+
+\begin{subequations}
+\label{eq:PKE2}
+\begin{eqnarray}
+\frac{\partial n(t)}{\partial t}&=&\frac{\rho(t)-\beta}{\Lambda}n(t)+\langle\lambda\rangle C(t)\\
+\frac{\partial C(t)}{\partial t}&=&\frac{\beta}{\Lambda}n(t)-\langle\lambda\rangle C(t)
+\end{eqnarray}
+\end{subequations}
+
+If the reactivity is assumed to be a constant \(\rho_0\) independent of time, a solution to Eq. \eqref{eq:PKE2} exists of the form:
+
+\beq
+\label{eq:n1}
+n(t)=n_0e^{\omega t}
+\eeq
+
+\beq
+\label{eq:C1}
+C(t)=C_0e^{\omega t}
+\eeq
+
+Inserting these assumptions into Eq. \eqref{eq:PKE2} provides a quadratic for \(\omega\) that must be satisfied to obtain a non-trivial solution. Solution of this quadratic gives two possible values for \(\omega\):
+
+\beq
+\omega=\frac{-(\lambda\Lambda+\beta-\rho_0)\pm\sqrt{(\lambda\Lambda+\beta-\rho_0)^2+4\Lambda\lambda\rho_0}}{2\Lambda}
+\eeq
+
+These two possible solutions requires modification of Eqs. \eqref{eq:n1} and \eqref{eq:C1} to the following general solutions:
+
+\beq
+\label{eq:n2}
+n(t)=n_1e^{\omega_1t}+n_2e^{\omega_2t}
+\eeq
+
+\beq
+\label{eq:C2}
+C(t)=C_1e^{\omega_1t}+C_2e^{\omega_2t}
+\eeq
+
+Therefore, inserting the assumed solutions in Eqs. \eqref{eq:n2} and \eqref{eq:C2} into Eq. \eqref{eq:PKE2},
+
+\begin{subequations}
+\label{eq:PKE3}
+\begin{eqnarray}
+n_1\omega_1e^{\omega_1t}+n_2\omega_2e^{\omega_2t}&=&\frac{\rho(t)-\beta}{\Lambda}\left(n_1e^{\omega_1t}+n_2e^{\omega_2t}\right)+\langle\lambda\rangle \left(C_1e^{\omega_1t}+C_2e^{\omega_2t}\right)\\
+C_1\omega_1e^{\omega_1t}+C_2\omega_2e^{\omega_2t}&=&\frac{\beta}{\Lambda}\left(n_1e^{\omega_1t}+n_2e^{\omega_2t}\right)-\langle\lambda\rangle \left(C_1e^{\omega_1t}+C_2e^{\omega_2t}\right)
+\end{eqnarray}
+\end{subequations}
+
+and application of initial conditions under the assumption of zero time rate of change at \(t=0\) (i.e. the system is initially in steady state), 
+
+\beq
+n_0=n_1+n_2
+\eeq
+
+\beq
+\frac{\beta}{\Lambda\langle\lambda\rangle}n_0=C_0+C_1
+\eeq
+
+gives four conditions for the solution of \(n_1\), \(n_2\), \(C_1\), and \(C_2\). This solution is not shown here; in the limit that \((\Lambda\lambda+\beta-\rho_0)^2 \gg 4\Lambda\lambda\rho_0\) and \(\abs{\rho_0}\ll\beta\) (i.e. a small reactivity insertion), the roots are approximately given as:
+
+\beqa
+\label{eq:omegaPKE2}
+\omega_1\approx&\frac{\langle\lambda\rangle\rho_0}{\beta-\rho_0}\\
+\omega_2\approx&-\frac{\beta-\rho_0}{\Lambda}\\
+\eeqa 
+
+and the neutron population is given as:
+
+\begin{equation}
+\label{eq:PowerPKE2}
+n(t)=n_0\left\lbrack\frac{\beta}{\beta-\rho_0}e^{\omega_1t} - \frac{\rho_0}{\beta-\rho_0}e^{\omega_2t}\right\rbrack
+\end{equation}
+
+The transient behavior will now be investigated for example reactivity insertions of \(\rho_0=\pm0.001\) for \(\beta=0.006\), \(\Lambda=10^{-4}\) seconds, and \(\langle\lambda\rangle=0.08\) 1/seconds. For a positive and negative reactivity insertion, Eq. \eqref{eq:PowerPKE2} becomes:
+
+\beq
+n(t)=\begin{cases}n_0\left\lbrack1.20e^{0.016t}-0.20e^{-5t}\right\rbrack & \rho_0>0\\
+n_0\left\lbrack0.85e^{-0.011t}+0.14e^{-7t}\right\rbrack & \rho_0<0\end{cases}
+\eeq
+
+Provided \(\rho_0<\beta\), \(\omega_2\) is always negative, while \(\omega_1\) is positive for positive insertions and negative for negative insertions. For a reactivity change of less than one dollar, a prompt positive/negative jump in response to a positive/negative insertions, occurs due to nearly instantaneous changes in multiplication of the prompt neutrons.This prompt jump is governed by \(\omega_2\). The long-term response is governed by multiplication of the delayed neutrons, and hence is governed by \(\omega_1\). Both the short-term and long-term response are exponential. Because \(l\) only appears in \(\omega_2\), the long-term behavior of thermal and fast system is approximately the same for sufficiently small reactivity insertions.
+
+The reactor response is undefined for \(\rho_0=\beta\). For \(|\rho_0|>\beta\), very different behavior exists depending on whether the insertion is positive or negative. In the limit of an infinitely large negative insertion, \(\omega_1=-\langle\lambda\rangle\) and \(\omega_2\rightarrow-\infty\) such that the long-term reactor period is simply equal to \(1/\langle\lambda\rangle\). Therefore, no matter how negative an insertion, the time rate of change of the neutron population is limited by the delayed neutron time constant because some time must be allowed to permit delayed neutron precursors to decay. In the limit of an infinitely large positive insertion, \(\omega_1=-\langle\lambda\rangle\) and \(\omega_2\rightarrow\infty\), leading to an infinitely fast rate of increase in the power. For negative insertions, the rate of change is limited by the delayed neutron precursors, but no such limit holds for positive insertions.

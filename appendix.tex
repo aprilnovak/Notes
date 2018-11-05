@@ -395,5 +395,19 @@ The Maxwell-Boltzmann distribution is a velocity probability distribution charac
 
 \beq
 \label{eq:MB}
-M(\vv{V},T)=\left(\frac{M}{2\pi kT}\right)^{3/2}e^{-MV^2/2kT}
+M(V,T)=\left(\frac{m}{2\pi kT}\right)^{3/2}e^{-mV^2/2kT}
 \eeq
+
+The energy spectrum of thermal neutrons are typically described using the Maxwell-Boltzmann distribution, which essentially assumes the neutrons have slowed to a point where their energy spectrum is independent of the source distribution spectrum and no large resonances exist in cross sections that would result in energy self-shielding effects. The most probable velocity can be determined by taking the partial derivative of Eq. \eqref{eq:MB} with respect to velocity at a constant temperature and equating to zero, giving:
+
+\beqa
+\frac{\partial M(V_{\text{most probable}},T)}{\partial V}&=0\\
+V_{\text{most probable}}&=\sqrt{\frac{2kT}{m}}
+\eeqa
+
+And the expectation value of the velocity is:
+
+\beqa
+\langle V\rangle\equiv&\frac{\int_{0}^\infty dV VM(V,T)}{\int_{0}^\infty dV M(V,T)}\\
+=&\sqrt{\frac{8kT}{m\pi}}
+\eeqa

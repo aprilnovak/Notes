@@ -359,7 +359,7 @@ To illustrate the significance of finding the {\it smallest} eigenvalue \(1/k\) 
 \frac{1}{v}\frac{\partial\phi(\vv{r},t)}{\partial t}-D\nabla^2\phi(\vv{r},t)+\left(\Sigma_a-\nu\Sigma_f\right)\phi(\vv{r},t)=S(\vv{r},t)
 \eeq
 
-For a slab reactor in Cartesian coordinates with vacuum conditions at \(x=\pm\tilde{a}/2\) and a symmetric initial condition \(\phi(\vv{r},0)\) in the absence of an external source, a separation of variables technique can be used to seek a solution of the form \(\phi(x,t)=X(x)T(t)\). Inserting this assumed form into Eq. \eqref{eq:1GDiff} gives, after dividing through by \(X(x)T(t)\):
+For a slab reactor in Cartesian coordinates with vacuum conditions at \(x=\pm\tilde{a}/2\) and a symmetric initial condition \(\phi(\vv{r},0)\) in the absence of an external source, a separation of variables technique can be used to seek a solution of the form \(\phi(x,t)=X(x)T(t)\). Separation of variables can in general only be applied to homogeneous problems. Inserting this assumed form into Eq. \eqref{eq:1GDiff} gives, after dividing through by \(X(x)T(t)\):
 
 \beq
 \underbrace{\frac{1}{T(t)}\frac{\partial T(t)}{\partial t}}_{-\lambda}+\underbrace{v\left\lbrack-\frac{D}{X(x)}\frac{\partial^2X(x)}{\partial x^2}-\left(\nu\Sigma_f-\Sigma_a\right)\right\rbrack}_{\lambda}=0
@@ -372,10 +372,11 @@ Because the first term is only a function of time and the second only a function
 \eeq
 
 \beq
+\label{eq:Helmholtz}
 \frac{\partial^2X(x)}{\partial x^2}+\underbrace{\left(\frac{\nu\Sigma_f-\Sigma_a+\lambda/v}{D}\right)}_{B^2}X(x)=0
 \eeq
 
-where \(B^2\) has been inserted for simplicity. Solution of these two equations subject to the boundary and initial conditions gives:
+where \(B^2\), for the time being an arbitrary constant, has been inserted for simplicity of notation. Solution of these two equations subject to the boundary and initial conditions gives:
 
 \beq
 T(t)=T(0)e^{-\lambda t}
@@ -396,22 +397,33 @@ B_n^2=&\ \frac{n\pi}{\tilde{a}}\\
 for odd \(n\), where \(\lambda\) is now written as \(\lambda_n\) to indicate the infinite number of possible values. Due to the linearity of the \gls{nte} which permits superposition of solutions, the solution can be written as:
 
 \beq
+\label{eq:FluxEigenfunctionExp}
 \phi(x,t)=\sum_{n=1,\text{odd}}^\infty C_n(x,t)e^{-\lambda_nt}\cos{\left(\frac{n\pi}{\tilde{a}}x\right)}
 \eeq
 
 The coefficients \(C_n\) can be determined by application of the orthogonality condition using the initial condition. For \(\lambda_n>0\), the flux decays in time, while for \(\lambda_n<0\), the flux grows in time. Rearranging Eq. \eqref{eq:Eigens} for \(\lambda_n\) gives:
 
 \beq
+\label{eq:lambda_n}
 \lambda_n=v\left\lbrack D\left(\frac{n\pi}{\tilde{a}}\right)^2+\Sigma_a-\nu\Sigma_f\right\rbrack
 \eeq
 
-Note that for both \(\lambda_1>0\) and \(\lambda_1<0\), \(\lambda_{n+1}>\lambda_n\). Therefore, the higher the \(n\) value, the faster that modes decays away in time (for positive \(\lambda\)) or the slower that mode grows in time (for negative \(\lambda\)), so the higher the \(n\), the less presence of that mode for long times. For a sufficiently long time, only the \(n=1\) mode persists; this mode is therefore often referred to as the ``fundamental mode.'' While the separation of variables technique used here does not necessarily imply separability in space and time, for very long times the flux does become separable. An alternative solution technique would have been to expand the flux in the eigenfunctions of the homogeneous system and insert directly into the governing equation to apply orthogonality to obtain a relationship among the coefficients.\newline
+Note that for both \(\lambda_1>0\) and \(\lambda_1<0\), \(\lambda_{n+1}>\lambda_n\). Therefore, the higher the \(n\) value, the faster that modes decays away in time (for positive \(\lambda\)) or the slower that mode grows in time (for negative \(\lambda\)), so the higher the \(n\), the less presence of that mode for long times. For a sufficiently long time, only the \(n=1\) mode persists; this mode is therefore often referred to as the ``fundamental mode.'' Such a steady-state solution in the absence of an external source represents a critical system. While the separation of variables technique used here does not necessarily imply separability in space and time, for very long times the flux does become separable. An alternative solution technique would have been to expand the flux in the eigenfunctions of the homogeneous system and insert directly into the governing equation to apply orthogonality to obtain a relationship among the coefficients.\newline
 
 Hence, because \(\lambda_{n+1}>\lambda_n\), the objective for performing a criticality calculation is to determine the fundamental mode that remains after a sufficiently long time that the neutron population has reached a steady state. This fundamental mode corresponds to the smallest eigenvalue of the homogeneous problem, \(B_1^2\). The corresponding criticality problem for the general transport equation is to find the smallest eigenvalue \(1/k\). \(B_1^2\) is the smallest eigenvalue of the homogeneous (referring to the form of the differential equation) problem, and is often referred to as the ``geometric buckling.'' This term is proportional to the curvature of the spatial eigenfunction:
 
 \beq
 B_n^2=-\frac{1}{X_n(x)}\frac{\partial^2X_n(x)}{\partial x^2}
 \eeq
+
+Criticality is therefore obtained for \(lambda_1=0\) in Eq. \eqref{eq:lambda_n}, since all of the higher modes decay the fastest in time. By setting \(\lambda_1=0\), a steady-state solution is obtained:
+
+\beq
+B_1^2=\underbrace{\frac{\nu\Sigma_f-\Sigma_a}{D}}_{B_m^2}
+\eeq
+
+where \(B_m^2\) is referred to as the ``material buckling.'' If \(\lambda_1>0\), the geometric buckling exceeds the material buckling, giving a subcritical system, while if \(\lambda_1<0\), the material buckling exceeds the geometric buckling, giving a supercritical system. Clearly, criticality is determined by both the system material properties and the geometry.
+
 \end{tcolorbox}
 
 While eigenvalue calculations imply an infinite number of solutions, to be considered a valid solution for neutron transport, the eigenfunctions must also be positive. For the one-group diffusion equation in a homogeneous slab, the only positive eigenfunction is the eigenfunction corresponding to \(n=1\), the fundamental mode. Hence, while an infinite number of solutions may in theory be possible, typically only one possible solution exists. The specified problem is likely not a perfectly critical system, hence the ``insertion'' (really, ``un-muting'') of the \(1/k\) factor to ensure a solution can be found. The objective is to solve the eigenvalue form of the \gls{nte} simultaneously for \(\psi\) and \(k\). Due to the placement of \(1/k\) within Eq. \eqref{eq:EigenvalueNTE}, it is clear that \(k\) represents the ratio of fission sources to losses. Section \ref{sec:EigenvalueCalculations} describes how Eq. \eqref{eq:EigenvalueNTE} is numerically solved to obtain the smallest \(1/k\) and the corresponding fundamental mode.
@@ -477,9 +489,9 @@ The following sections describe the generation of group constants for energies i
 
 \subsubsection{Selection of Group Boundaries}
 
-The selection of energy boundaries for the energy group structure is not a simple task. Numerical solution of the coupled group equations is greatly simplified if the groups are selected to be sufficiently far separated that scattering out of energy group \(g\) to another energy group is only possible for \(g\rightarrow g-1\) and \(g\rightarrow g+1\). This group structure design is known as a ``directly coupled'' structure. With heavy moderators such that a very large amount of energy cannot be lost in a single collision, this definition is simpler. However, for light moderators such as hydrogen, neutrons can lose up to all of their energy in an elastic scattering collision, and a directly-coupled group structure can no longer be defined. However, such a structure can usually be approximated by choosing \(E_{g-1}/E_g>150\). \(E_{g-1}/E_g\) is also typically selected as constant for other purposes.
+The selection of energy boundaries for the energy group structure is not a simple task. Numerical solution of the coupled group equations is greatly simplified if the groups are selected to be sufficiently far separated that scattering out of energy group \(g\) to another energy group is only possible for \(g\rightarrow g-1\) and \(g\rightarrow g+1\). This group structure design is known as a ``directly coupled'' structure, in which case the matrix problem becomes bidiagonal. With heavy moderators such that a very large amount of energy cannot be lost in a single collision, this definition is simpler. However, for light moderators such as hydrogen, neutrons can lose up to all of their energy in an elastic scattering collision, and a directly-coupled group structure can no longer be defined. However, such a structure can usually be approximated by choosing \(E_{g-1}/E_g>150\), which results in less than 1\% of neutrons skipping energy groups in scattering reactions. \(E_{g-1}/E_g\) is also typically selected as constant for other purposes.
 
-In addition, if the thermal groups are selected as sufficiently wide, upscattering can be neglected. This results in a lower triangular matrix structure that permits successive solution of the faster energy groups followed by the more thermal energy groups, as the source in group \(g\) is a linear combination of the fission rate caused by groups \(g-1\leq g\leq 1\). Upscattering can be neglected in \glspl{lwr} and \glspl{htgr} by selecting about 1 and 3 eV, respectively, as the upper boundary of the thermal group \cite{duderstadt}.
+In addition, if the thermal groups are selected as sufficiently wide, upscattering can be neglected. This results in a lower triangular matrix structure that permits successive solution of the faster energy groups followed by the more thermal energy groups, as the source in group \(g\) is a linear combination of the fission rate caused by groups \(g-1\leq g\leq 1\). Or, for a very thermal problem, the thermal flux can be described with a Maxwellian distribution. Upscattering can be neglected in \glspl{lwr} and \glspl{htgr} by selecting about 1 and 3 eV, respectively, as the upper boundary of the thermal group \cite{duderstadt}.
 
 \subsubsection{Thermal Spectrum Group Constants}
 This section describes the theory behind the generation of group parameters for energies in the thermal range. The generation of thermal group constants is complicated by the complex neutron scattering process at low energies, where the thermal motion of the nuclei cannot be neglected, and neutron energies are typically on the order of binding energies of the nuclei such that interaction tends to occur between a neutron and a group of nuclei simultaneously. Scattering cross sections are strongly dependent on both energy and angle. Further, unlike fast energy cross sections that tend to only depend on the identity of the interacting media, thermal cross sections depend strongly on the state of matter and temperature of the interacting medium.
