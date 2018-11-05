@@ -1348,46 +1348,9 @@ where \(\Gamma\) is the solution, which has the form:
 \clearpage
 \input{kinetics.tex}
 
-\clearpage
-\section{Reactor Kinetics}
-
-Something important to note about the values for \(\beta\) below is how the decay constants for each group are selected. On average, delayed neutrons are born about 12 seconds after fission. 
-
-
-
-Neutron ``hold-up'' in a reflector due to scattering interactions (before returning to the core) can be represented by an artificial delayed neutron group, though this is better approximated by using a modified neutron lifetime. 
-
-As shown in the table, \(\nu\) is also strongly a function of the fissioning nuclide. U-235 has one of the lowest \(\nu\), while the plutonium isotopes are all on the order of \(\nu=3\). As U-238 transmutes to Pu-239, the average \(\nu\) increases, increasing reactivity.
+\(\nu\) is also strongly a function of the fissioning nuclide. U-235 has one of the lowest \(\nu\), while the plutonium isotopes are all on the order of \(\nu=3\). As U-238 transmutes to Pu-239, the average \(\nu\) increases, increasing reactivity.
 
 Delayed neutrons have higher \(p\) and \(P_{NL}^{fast}\), but lower \(\epsilon\). 
-
-\subsection{The Prompt Jump Approximation}
-
-Because the initial response to small reactivity changes, less that \$0.90, is dominated by the prompt neutron lifetime, while longer-term response is governed by the delayed neutron lifetime (for systems below prompt critical), we can make the assumption that the power change is sufficiently slow compared to the other two terms in Eq. \ref{eq:PointKineticsNeutrons3} that we can neglect \(dP/dt\). Then, Eq. \ref{eq:PointKineticsNeutrons3} reduces to:
-
-\begin{equation}
-\label{eq:PromptJump1}
-0=\left(\frac{\rho(t)-\beta}{\Lambda}\right)n(t)+\sum_{i=1}^{6}\lambda_iC_i(t)
-\end{equation} 
-
-Before the reactivity change, the precursor concentration is assumed to be in steady state, so if we applied Eq. \ref{eq:PromptJump1} at two points in time, one immediately before and one immediately after, a reactivity change, then we would be able to state that \(C_i(t)\) is independent if time, such that it could be used to set the results of applying Eq. \ref{eq:PromptJump1} at two points in time \textit{equal} to each other. This gives the prompt jump approximation.
-
-\begin{equation}
-\label{eq:PromptJump2}
-\frac{P_2}{P_1}\approx\frac{\beta-\rho_1}{\beta-\rho_2}
-\end{equation} 
-
-This gives the power immediately following the prompt jump. After this jump, you have a smooth, exponential increase/decrease in power governed by the period associated with the first term in Eq. \ref{eq:PowerPKE2}. For a small insertion of 10 pcm, this gives a 1.5\% increase (assuming no stabilizing feedback effects). This approximation is valid to within about 1\% for small reactivity insertions. Given that the shutdown margin (SDM) is the negative reactivity inserted into the reactor with the highest worth control rod fully ejected, Eq. \ref{eq:PromptJump2} becomes:
-
-\begin{equation}
-\label{eq:PromptJumpSDM}
-\frac{P_2}{P_1}\approx\frac{\beta}{\beta+\rho_{sdm}}
-\end{equation} 
-
-So, the SDM is directly related to how quickly the power will drop (instantaneously) following a scram.
-
-
-
 
 
 \clearpage
