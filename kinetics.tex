@@ -1,7 +1,9 @@
-\section{Reactor Kinetics}
+\section{Time-Dependent Numerical Solutions}
 \label{sec:Kinetics}
 
-This section describes how time-dependent solutions to the \gls{nte}, or to simplifications of the \gls{nte}, are performed. The neutrons born from fission are either born promptly almost immediately following fission, while a small fraction are born delayed from beta decay of fission products. Rather than use one group for each of the delayed neutron precursors in Eq. \eqref{eq:nte1}, it is customary to use a smaller number of groups, typically six. Each group is characterized by a decay constant \(\lambda_i\) and delayed neutron fraction \(\beta_i\) representing the fraction of total neutrons born delayed into group \(i\). The \(\beta_i\) are defined such that they sum to unity:
+This section describes how time-dependent solutions to the \gls{nte}, or to simplifications of the \gls{nte}, are performed. These solutions can either be obtained through solution of the time-dependent \gls{nte} or through successions of pseudo steady-state analyses of eigenvalue calculations coupled with a simple kinetics model to provide the reactor power response in the next pseudo-steady time step. The first of these methods, sometimes referred to as the ``brute force'' method, is described in Section \ref{sec:TimeDependence}, while the second is described in Section \ref{sec:PseudoSteadyState}. Both methods typically use an \gls{ic} determined from a steady state eigenvalue calculation that corresponds to the initial steady state of the system. Both methods also rely on several kinetics parameters described in this section.
+
+The neutrons born from fission are either born promptly almost immediately following fission, while a small fraction are born delayed from beta decay of fission products. Rather than use one group for each of the delayed neutron precursors in Eq. \eqref{eq:nte1}, it is customary to use a smaller number of groups, typically six. Each group is characterized by a decay constant \(\lambda_i\) and delayed neutron fraction \(\beta_i\) representing the fraction of total neutrons born delayed into group \(i\). The \(\beta_i\) are defined such that they sum to unity:
 
 \beq
 \label{eq:TotalBetaDef}
@@ -44,6 +46,28 @@ The reactivity is the fractional change in the neutron population relative to th
 \eeq
 
 The analysis of reactor kinetics is typically simplified so that \(\rho\) is a known quantity, though in reality there is a strong interrelationship with operating conditions such as temperature and density. The remainder of this section presents various approximate schemes for accounting for the transient behavior in Eq. \eqref{eq:nte1}.
+
+\subsection{Time-Dependent Transport Calculations}
+\label{sec:TimeDependence}
+
+A direct time-dependent solution of Eq. \eqref{eq:nte1} can be performed by discretization of the time derivative. Using an implicit Euler discretization for both Eq. \eqref{eq:nte1} and the coupled delayed neutron precursor concentration equations, and subsequent rearrangement, shows that the solution for each time step is equivalent to a steady-state fixed-source problem with slightly modified fission and external source terms \cite{pautz}. Therefore, adaptation of a steady-state fixed source solver, which does not need the \(1/k\) eigenvalue if the system itself is subcritical, can be easily performed.
+
+% TODO: show
+
+During the linear system solution, it is customary to use the solution from the previous time step as the initial guess for the iterative solver. This can be even further improved by extrapolating the solution from the previous time step using computed reactor periods based on the ratio in the flux between the previous two time steps \cite{pautz}:
+
+\beq
+\psi^{(n+1,0)}=\psi^{n}\exp{\left\lbrack\frac{1}{\Delta t_n}\ln{\left(\frac{\psi^{(n)}}{\psi^{(n-1)}}\right)}\Delta t_{n=1}\right\rbrack}
+\eeq
+
+\subsection{Pseudo Steady-State Calculations}
+\label{sec:PseudoSteadyState}
+
+A pseudo steady-state transient can be analyzed using a succession of criticality calculations coupled with a simple model for reactor kinetics such as the \gls{pke} in Eq. \eqref{eq:PKE}. These approximations assume that the flux spatial distribution varies slowly in time. For example, at time step \(i\), a criticality calculation is performed using the eigenvalue form of the \gls{nte} in Eq. \eqref{eq:EigenvalueNTE} with coupling to a \gls{th} module via Picard iteration based on the power at time step \(i\). This calculation computes the fundamental mode flux and the corresponding eigenvalue. This eigenvalue is then used in a simple model for reactor kinetics, such as the \gls{pke}, which requires as input the reactivity defined in Eq. \eqref{eq:Reactivity}. The result of the simple kinetics model is to predict the power change over time step \(i\) by evolving the \gls{pke} solution from time \(i\) to \(i+1\). The power at step \(i+1\) is then used as an input to the \gls{th} module to compute a new flux distribution, and the iterative process is repeated until the end of the transient.
+
+Alternatively, the simplest method only uses a simple kinetics approximation to advance an initial fundamental spatial mode in time. Feedback may be included through the use of lumped \gls{th} models. 
+
+These methods permit the flux spatial distribution to vary in time, but because the simpler kinetics methods are commonly based on diffusion theory, there are many layers of approximation present. 
 
 \subsection{Time Eigenfunction Approximation}
 
