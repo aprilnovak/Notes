@@ -5,7 +5,7 @@ The ability to exercise control over the reactivity of a nuclear system is essen
 
 \subsection{Reactivity Coefficients}
 
-System changes resulting in changes in reactivity are often described using ``reactivity coefficients.'' A reactivity coefficient \(\alpha\) is defined based on the relative change in reactivity given a change in some input parameter \(x\):
+System changes resulting in changes in reactivity are often described using ``reactivity coefficients.'' Reactivity changes are the sum of external actions, such as movement of a control rod, and inherent feedbacks that are characterized according to ``reactivity coefficients.'' A reactivity coefficient \(\alpha\) is defined based on the relative change in reactivity given a change in some input parameter \(x\):
 
 \beqa
 \alpha_x\equiv&\frac{\partial\rho}{\partial x}\\
@@ -19,7 +19,9 @@ where the definition of reactivity has been inserted to show equivalent forms. B
 \alpha_x=\sum_i\frac{\partial\rho}{\partial T_i}\frac{\partial T_i}{\partial x}
 \eeq
 
-where \(i\) is the number of regions considered in the definition of the power coefficient (usually all of the regions comprising the system). The most important reactivity coefficients are the temperature, power, and void coefficients. The following sections describe each of these coefficients in more detail and describe typical values for common reactor systems.
+where \(i\) is the number of regions considered in the definition of the power coefficient (usually all of the regions comprising the system). The most important reactivity coefficients are the temperature, power, and void coefficients. A reactivity ``defect'' is the cumulative reactivity required to move between some initial state and some final state, and essentially accounts for the fact that the reactivity coefficients are not constant. The required excess reactivity is frequently defined in terms of the power defect needed to bring the core from cold zero power to hot full power and also sustain a significant drop in power, which would initially reduce burnout of Xe-135 to the point that some excess positive reactivity is required \cite{fratoni}. Power defects are on the order of 1000-3000 pcm in \glspl{lwr} \cite{duderstadt}.
+
+It is generally desirable to have entirely negative reactivity coefficients, but it may not be conservative to have extremely negative coefficients. For example, if the coolant reactivity coefficients are very negative, then an overcooling transient could induce a very rapid increase in power. The following sections describe each of these reactivity coefficients in more detail and describe typical values for common reactor systems.
 
 \subsubsection{Power Reactivity Coefficient}
 Of all the definitions for reactivity coefficients, the only coefficient that {\it must} be negative to ensure safe power operation is the power reactivity coefficient. If this coefficient were positive, then the slightest increase in power would result in a runaway power excursion. Despite the importance of this coefficient, because the power depends on thermal considerations such as the flowrate, determination of the power reactivity coefficient based solely on a neutronics calculation is nearly impossible. Therefore, other reactivity coefficients comprise the bulk of the reactivity control investigations performed. Power coefficients are typically on the order of 30-60 pcm/\% power.
@@ -51,7 +53,7 @@ The fuel temperature coefficient is sensitive to the fuel composition, and must 
 Typical fuel temperature coefficients are on the order of -4 to -1 pcm/K for \glspl{lwr}, -7 pcm/K for \glspl{htgr}, and -2.5 to -0.6 pcm/K for \glspl{lmfbr} \cite{duderstadt}. The fuel temperature coefficient has been estimated at -3.8 pcm/K for the \gls{pbfhr} \cite{xin_wang_thesis}.
 
 \subsubsection{Moderator Temperature Coefficient}
-An increase in moderator temperature, neglecting the corresponding density change, results in spectrum hardening. For fast systems, an increase in the energy spectrum results in an increase in \(\eta\) and a positive coefficient, though the effect is more complicated for thermal systems due to the resonant-like structure in the epithermal energy range. The spectrum change in thermal systems typically results in a decreased \(\eta\).
+An increase in moderator temperature, neglecting the corresponding density change, results in spectrum hardening. For fast systems, an increase in the energy spectrum results in an increase in \(\eta\) and a positive coefficient, though the effect is more complicated for thermal systems due to the resonant-like structure in the epithermal energy range. The spectrum change in thermal systems typically results in a decreased \(\eta\) due to increased absorption in low-lying resonances.
 
 Most thermal cross sections display a \(1/v\) dependence, and a hardened spectrum results in lower cross sections in fissile materials in the thermal energy range, which typically results in a decrease in reactivity. However, the sign of this effect depends on the fuel composition, since cross sections fall off fastest for U-235, then U-238, and then Pu-239. If the reactor contains a significant amount of Pu-239, a hardened spectrum results in a greater fraction of the fission occurring in Pu-239, which has a higher number of neutrons released per fission event, which can lead to a slightly positive moderator temperature coefficient in systems with significant quantities of Pu-239. 
 

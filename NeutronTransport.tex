@@ -1361,38 +1361,6 @@ Delayed neutrons have higher \(p\) and \(P_{NL}^{fast}\), but lower \(\epsilon\)
 
 \section{Reactivity Coefficients and Defects}
 
-Reactivity coefficients are important to the understanding of the inherent safety of a reactor. Below are included some of the most important reactivity coefficients, with representative values given for thermal and fast reactors. Reactivity coefficients are complex, bceause they themselves are functions of both temperature and burnup, as well as the variable to which \(\rho\) is responding. In addition, for reactors with high leakage (such as most fast reactor designs), because there is such a strong gradient in flux at the core periphery, the overall reactivity response is highly sensitive to core geometry.
-
-A reactivity coefficient \(\alpha\) is the partial derivative of the reactivity \(\rho\) with respect to some parameter, such as temperature or power.
-
-\begin{equation}
-\label{eq:ReactivityCoef}
-\alpha_x = \frac{\partial\rho}{\partial x}
-\end{equation}
-
-Overall, the system reactivity is the sum of external effects \(f(t)\), such as control systems, and inherent feedback effects:
-
-\begin{equation}
-\label{eq:OverallReactivity}
-\delta k(t) = f(t) + \sum_{i}^{}\alpha_i\delta T_i(t)
-\end{equation}
-
-In going from zero power to full power, because the reactor heats up, additional excess reactivity in the cold shutdown state is needed to overcome the reduction in reactivity. This needed reactivity is termed a ``defect.'' All reactors must contain some excess reactivity to compensate for the power and temperature reactivity defects. The power defect is the excess reactivity needed in the cold subcritical state to remain critical at full power. Power defects are on the order of 0.1 \(\delta k/k\). 
-
-\begin{equation}
-\label{eq:PowerDefect}
-\delta\rho_{Power}=\int_{0}^{Full Power} \frac{\partial\rho}{\partial P}dP
-\end{equation}
-
-A temperature defect is similarly defined:
-
-\begin{equation}
-\label{eq:TemperatureDefect}
-\delta\rho_{Temp}=\int_{ambient}^{operating} \frac{\partial\rho}{\partial T}dT
-\end{equation}
-
-Temperature defects for a typical SFR are on the order of 1\$.
-
 \textbf{Temperature Coefficient}
 A temperature reactivity coefficient can be defined for each individual material in a reactor, since inherently they will be at different temperatures. However, the overall temperature reactivity coefficient is usually taken as the sum of the temperature coefficients of each specific component, where the temperature in a single component is averaged in some way. The representative temperature is usually a flux-weighted temperature. 
 
@@ -1456,7 +1424,7 @@ Fast (small cores) & - &  &  & \\
 \label{tab:PPer}
 \end{table}
 
-Because in BWRs the coolant is primarily at saturated conditions, the MTC is relatively unimportant in normal operation, but has the greatest impact during startup and shutdown processes when there are no voids in the coolant. In normal operation, any power increases are curbed much more by the void coefficient, and hence in BWRs it is acceptable to have a positive MTC. The MTC may become more positive at EOL when there are more control rods withdrawn, as well, since this increases the moderator-to-fuel ratio). The MTC should not be too negative, however, since then if some undesired transient such as loss of FW heating were to occur, then the power increase could be too large to handle safely.
+Because in BWRs the coolant is primarily at saturated conditions, the MTC is relatively unimportant in normal operation, but has the greatest impact during startup and shutdown processes when there are no voids in the coolant. In normal operation, any power increases are curbed much more by the void coefficient, and hence in BWRs it is acceptable to have a positive MTC. The MTC may become more positive at EOL when there are more control rods withdrawn, as well, since this increases the moderator-to-fuel ratio). 
 
 \subsection{Void Coefficient}
 
@@ -1521,10 +1489,6 @@ Expansion of Control Rod Drivelines (CRDL) due to an increase in core outlet tem
 \subsection{Boron Coefficient}
 
 The boron coefficient becomes less negative with an increase in boron concentration due to self-shielding of the boron atoms (a higher effective cross section leads to an increase in the self-shielding effect, which decreases overall absorption). Also, as the moderator temperature increases, the magnitude of the coefficient also decreases, since the density of the absorber therefore also decreases. It is for this reason that the boric acid concentration in the primary loop of PWRs is limited to a maximum of about 1100 ppm, because above this, the MTC becomes positive.
-
-\subsection{Pressure Coefficient}
-
-Pressure coefficients in thermal reactors are relatively small because the reactors are operated at high pressure. Pressure coefficients are typically positive, since they increase the moderator-to-fuel ratio, which increases at a faster rate than the decrease in , leading to a net reactivity increase.
 
 \subsection{Fuel Depletion Effects}
 

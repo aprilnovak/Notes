@@ -50,9 +50,17 @@ The analysis of reactor kinetics is typically simplified so that \(\rho\) is a k
 \subsection{Time-Dependent Transport Calculations}
 \label{sec:TimeDependence}
 
-A direct time-dependent solution of Eq. \eqref{eq:nte1} can be performed by discretization of the time derivative. Using an implicit Euler discretization for both Eq. \eqref{eq:nte1} and the coupled delayed neutron precursor concentration equations, and subsequent rearrangement, shows that the solution for each time step is equivalent to a steady-state fixed-source problem with slightly modified fission and external source terms \cite{pautz}. Therefore, adaptation of a steady-state fixed source solver, which does not need the \(1/k\) eigenvalue if the system itself is subcritical, can be easily performed.
+A direct time-dependent solution of Eq. \eqref{eq:nte1} can be performed by discretization of the time derivative. Using an implicit Euler discretization for both Eq. \eqref{eq:nte1} and the coupled delayed neutron precursor concentration equations, and subsequent rearrangement, shows that the solution for each time step is equivalent to a steady-state fixed-source problem with slightly modified fission and external source terms \cite{pautz}. Therefore, adaptation of a steady-state fixed source solver, which does not need the \(1/k\) eigenvalue if the system itself is subcritical, can be easily performed. For example, implicit Euler discretization of both Eqs. \eqref{eq:nte1} and \eqref{eq:DelayedNeutrons}, and substitution of Eq. \eqref{eq:DelayedNeutrons} into Eq. \eqref{eq:nte1} for \(C_j\) at the current time step gives:
 
-% TODO: show
+\beqa
+\label{eq:TimeNTE}
+\hO\cdot\psi^{(n+1)}(\vv{r},E,\hO)+\left(\Sigma_t^{(n+1)}(\vv{r},E,\hO)+\frac{1}{v(E)\Delta t}\right)\psi^{(n+1)}(\vv{r},E,\hO)=\hspace{2cm}\\
+\int_0^\infty dE'\int_{4\pi}d\hO\Sigma_s^{(n+1)}(\vv{r},E'\rightarrow E,\hO)\psi^{(n+1)}(\vv{r},E',\hO')+\hspace{1cm}\\
+\left\lbrack\chi_p(E,\hO)\left(1-\beta\right)+\sum_{j=1}^J\frac{\chi_{d,j}(E,\hO)\lambda_j\beta_j}{1+\Delta t\lambda_j}\right\rbrack\int_0^\infty dE'\int_{4\pi}d\hO'\nu(E')\Sigma_f^{(n+1)}(\vv{r},E',\hO')\psi^{(n+1)}(\vv{r},E,\hO)+\\
+\sum_{j=1}^J\frac{\chi_{d,j}(E,\hO)\lambda_j}{1+\Delta t\lambda_j}C_j^{(n)}(\vv{r})
+\eeqa
+
+where \((n+1)\) and \((n)\) superscripts indicate values at the \(n+1\) and \(n\) time steps and \(\Delta t\) is the time step size. \(\beta\) has been assumed independent of energy in order to remove it from the fission rate integral in order to illustrate the clear relationship between Eq. \eqref{eq:TimeNTE} and the steady-state fixed source form of the \gls{nte}. 
 
 During the linear system solution, it is customary to use the solution from the previous time step as the initial guess for the iterative solver. This can be even further improved by extrapolating the solution from the previous time step using computed reactor periods based on the ratio in the flux between the previous two time steps \cite{pautz}:
 

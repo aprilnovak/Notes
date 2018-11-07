@@ -211,6 +211,13 @@ The angular flux is the number of neutrons per unit area and time with energy \(
 &\hspace{3cm}\delayedfissionsource + \source
 \eeqa
 
+The \gls{nte} is coupled to \(J\) delayed neutron precursor concentration equations; sources of delayed neutrons occur due to fission at all energies, since \(\beta_j\) represents the average fraction of neutrons born into delayed group \(j\):
+
+\beq
+\label{eq:DelayedNeutrons}
+\frac{\partial C_j(\vv{r},t)}{\partial t}=\beta_j\int_{0}^\infty dE'\int_{4\pi}\nu(E')\Sigma_f(E')\psi(\vv{r},E',\hO',t)-\lambda_jC_j(\vv{r},t)
+\eeq
+
 The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because it contains both integrals and derivatives. The initial condition requires specification of the initial angular flux:
 
 \beq
