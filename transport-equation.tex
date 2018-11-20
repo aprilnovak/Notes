@@ -1,7 +1,7 @@
 \section{The Continuous-Energy Neutron Transport Equation}
 \label{sec:CE_NTE}
 
-The \gls{nte} is a statement of the conservation of neutron density \(n\seat\), the {\it expected} number of neutrons at a point in space per unit time \(t\), energy \(E\), and (unit) direction of motion \(\hO\). The {\it true} number of neutrons at a point in space cannot be known, since statistical processes govern the exact distribution of neutrons, and we will be limited to predicting mean or average neutron populations. The neutron density is a function of a seven-dimensional space - space (three), energy (one), direction of motion described as angles (two) within and relative to one coordinate plane, and time (one). The energy of the neutron refers to kinetic energy:
+The \gls{nte} is a statement of the conservation of neutron density \(n\seat\), the {\it expected} number of neutrons at a point in space per unit time \(t\), energy \(E\), and (unit) direction of motion \(\hO\). The {\it true} number of neutrons at a point in space cannot be known, since statistical processes govern the exact distribution of neutrons, and we will be limited to predicting mean or average neutron populations. The neutron density is a function of a seven-dimensional space - space (three), energy (one), direction of motion as angles (two) within and relative to one coordinate plane, and time (one). The energy of the neutron refers to kinetic energy:
 
 \beq
 \label{eq:KineticEnergyDef}
@@ -15,17 +15,18 @@ where \(v\equiv\|\vv{v}\|_2\) is used throughout. Because neutron kinetic energi
 \hO\equiv \frac{\vv{v}}{v}
 \eeq
 
-The direction of motion of a {\it fluid} particle is typically expressed using ``velocity,'' with one vector component corresponding to each spatial dimension. However, this can equivalently be expressed in terms of the kinetic energy \(E\) and two angles \(0\leq\phi\leq2\pi\) and \(0\leq\theta\leq\pi\), where \(\phi\) is the angle in the \(x\)-\(y\) plane from the positive \(x\)-axis and \(\theta\) is the angle between the flight direction and the \(z\)-axis. Like velocity, \(\hO\) has three components corresponding to the three spatial dimensions, where each component is only a function of the two angles \(\phi\) and \(\theta\). Note that using \(\hO\) instead of velocity does not reduce the number of unknowns - instead of working with three velocity components, we work with one energy component and two angular components. This decomposition is useful for tabulating scattering cross sections independently as a function of energy and incoming and outgoing directions, rather than jointly in terms of velocity.
+The direction of motion of a {\it fluid} particle is typically expressed using ``velocity,'' with one vector component corresponding to each spatial dimension. However, this can equivalently be expressed in terms of the kinetic energy \(E\) and two angles \(0\leq\phi\leq2\pi\) and \(0\leq\theta\leq\pi\), where \(\phi\) is the angle in the \(x\)-\(y\) plane from the positive \(x\)-axis and \(\theta\) is the angle between the flight direction and the \(z\)-axis. Like velocity, \(\hO\) has three components corresponding to the three spatial dimensions, where each component is only a function of the angles \(\phi\) and \(\theta\). Using \(\hO\) instead of velocity does not reduce the number of unknowns - instead of working with three velocity components, we work with one energy component and two angular components. However, this decomposition is useful for tabulating scattering cross sections independently as a function of energy and incoming and outgoing directions, rather than jointly in terms of velocity.
 
 \begin{tcolorbox}[breakable]
 In Cartesian coordinates, \(\hO\) is given in terms of unit vectors \(\hat{i}\), \(\hat{j}\), and \(\hat{k}\) corresponding to the \(x\), \(y\), and \(z\) axes, respectively, as:
 
 \beqa
 \label{eq:OmegaCartesian}
-\hO  = \sin{(\theta)}\cos{(\phi)}\hat{i} + \sin{(\theta)}\sin{(\phi)}\hat{j} + \cos{(\theta)}\hat{k}\\
+\hO  =& \sin{(\theta)}\cos{(\phi)}\hat{i} + \sin{(\theta)}\sin{(\phi)}\hat{j} + \cos{(\theta)}\hat{k}\\
+=&\ \xi\ \hat{i}+\eta\ \hat{j}+\mu\ \hat{k}
 \eeqa
 
-Each of these components are often given their own symbols: 
+where each of these components have been given their own symbols: 
 
 \beq
 \label{eq:xiDef}
@@ -45,7 +46,7 @@ Each of these components are often given their own symbols:
  Using the \(\sin^2{(\theta)} + \cos^2{(\theta)} = 1\) identity, Eq. \eqref{eq:OmegaCartesian} can also be written as:
  
 \beq
-\hO=\sqrt{1-\mu^2}\textrm{cos}(\phi)\hat{i} + \sqrt{1-\mu^2}\textrm{sin}(\phi)\hat{j} + \mu\hat{k}\\
+\hO=\sqrt{1-\mu^2}\textrm{cos}(\phi)\hat{i} + \sqrt{1-\mu^2}\textrm{sin}(\phi)\hat{j} + \mu\ \hat{k}\\
 \eeq
  
 Due to the very simple form of the component of \(\hO\) along the \(z\)-axis, one-dimensional Cartesian problems are frequently reoriented such that \(z\) is the independent variable.\newline
@@ -55,10 +56,10 @@ In a spherical coordinate system, an integral over the surface of the unit spher
 \beqa
 \label{eq:DifferentialOmega}
 d\hO  \equiv&\ \sin{(\theta)}d\theta d\phi\\
-=&\ d\mu d\phi
+=&\ d\mu\ d\phi
 \eeqa
 
-From the definition of \(\mu\) in Eq. \eqref{eq:muDef}, \(d\mu=d(\cos{(\theta)})=\sin{(\theta)}d\theta\), giving the second equivalent form in Eq. \eqref{eq:DifferentialOmega}. An integral over solid angle is represented shorthand by \(\int_{4\pi}^{ } d\hO\), and is equivalent to the integral of Eq. \eqref{eq:DifferentialOmega}:
+where Eq. \eqref{eq:muDef} was used to express \(\sin{(\theta)}d\theta\) in terms of \(\mu\). An integral over solid angle is represented shorthand by \(\int_{4\pi}^{ } d\hO\), and is equivalent to:
 
 \beqa
 \label{eq:SolidAngleIntegration}
@@ -66,39 +67,35 @@ From the definition of \(\mu\) in Eq. \eqref{eq:muDef}, \(d\mu=d(\cos{(\theta)})
 =&\ 4\pi
 \eeqa
 
-The integral of any single component of \(\hO\) defined in Eq. \eqref{eq:OmegaCartesian} over solid angle is zero:
+The integral of any odd number of components of \(\hO\) over solid angle is zero, such as for one and three components:
 
 \beq
 \label{eq:OmegaCartesianIntegration}
 \int_{4\pi}d\hO\Omega_i=0
 \eeq
 
-The integral of any two components of \(\hO\) defined in Eq. \eqref{eq:OmegaCartesian} over solid angle gives the following orthogonality condition:
+\beq
+\label{eq:4PiOmegaOmegaOmega}
+\int_{4\pi}d\hO \Om_i\Om_j\Om_k=0
+\eeq
+
+The integral of any two components of \(\hO\) over solid angle gives the following orthogonality condition:
 
 \beq
 \label{eq:4PiOmegaOmega}
 \int_{4\pi}^{ } d\hO\ \Om_i\Om_j = \frac{4\pi}{3}\delta_{ij}
 \eeq
 
-The integral of any three components of \(\hO\) defined in Eq. \eqref{eq:OmegaCartesian} over solid angle is zero:
-
-\beq
-\label{eq:4PiOmegaOmegaOmega}
-\int_{4\pi}d\hO \Om_i\Om_j\Om_k=0
-\eeq
- 
 \end{tcolorbox}
 
- Because the neutron population is conserved, the rate of change of the neutron population within an arbitrary convex control volume \(\volume(t)\) consisting must equal the sum of any gains and losses of neutrons:
+ Because the neutron population is conserved, the rate of change of the neutron population within an arbitrary convex control volume \(\volume(t)\) must equal the sum of any gains and losses of neutrons:
 
 \beq
 \label{eq:neutron_conservation}
 \left\lbrack\frac{\partial}{\partial t}\int d\volume n\seat\right\rbrack dEd\hO=\text{gains}-\text{losses}
 \eeq
 
-For those familiar with fluid mechanics, this derivation immediately begins from the control volume perspective, rather than the system perspective, eliminating the need to use the Reynolds Transport Theorem to convert a system perspective to a control volume perspective. 
-
-The volume must be convex to eliminate any boundary sources of neutrons that arise due to leakage from one portion of the volume to another across the boundary. Because the neutron density is in general a function of \(E\) and \(\hO\), a correct statement of conservation requires all volume integrals to be multiplied by the differential \(dEd\hO\) to represent integration over all energies and angles (though integration will not be shown, but implicitly assumed to simplify notation). If the volume is assumed to be independent of time, the time integration can be brought inside the integral such that the time rate of change term becomes:
+For those familiar with fluid mechanics, this derivation immediately begins from the control volume perspective, rather than the system perspective, eliminating the need to use the \gls{rtt} to convert a system perspective to a control volume perspective. The volume must be convex to eliminate any boundary sources of neutrons that arise due to leakage from one portion of the volume to another across the boundary. Because the neutron density is in general a function of \(E\) and \(\hO\), a correct statement of conservation requires all volume integrals to be multiplied by the differential \(dEd\hO\) to represent integration over all energies and angles (integration will not be shown, but implicitly assumed). If the volume is assumed to be independent of time, the time integration can be brought inside the integral such that the time rate of change term becomes:
 
 \beq
 \left\lbrack\int d\volume \frac{\partial n\seat}{\partial t}\right\rbrack dEd\hO
@@ -120,7 +117,7 @@ The scattering of neutrons from other energies and angles to \(E\) and \(\hO\), 
 
 Note that Eq. \eqref{eq:ConservationInscatteringSource} includes ``sources'' of neutrons due to scattering from \(E\rightarrow E\) and \(\hO\rightarrow\hO\), which should not be represented as either a source or a loss. This double-counting will be cancelled later.
 
-The fission source is expressed as the sum of a prompt and delayed source of neutrons. The prompt fission source is written as an integral over all neutron energies and angles of the fission reaction rate density:
+The fission source is expressed as the sum of a prompt and delayed source of neutrons. It is assumed that the delayed neutron fraction is independent of energy to simplify notation - a good approximation below 4 MeV. The prompt fission source is written as an integral over all neutron energies and angles of the fission reaction rate density:
 
 \beq
 \label{eq:ConservationFissionPrompt}
@@ -162,7 +159,7 @@ The scattering to other energy groups, referred to as ``out-scattering,'' is rep
 \left\lbrack\int d\volume \Sigma_s(\vv{r},E\rightarrow E',\hO\rightarrow\hO',t) v(E)n\seat\right\rbrack dEd\hO
 \eeq
 
-Note that Eq. \eqref{eq:ScatteringLoss} includes scattering from \(E\rightarrow E\), which should not be represented as a loss term. This double-counting is balanced by the same double-counting in the in-scattering term in Eq. \eqref{eq:ConservationInscatteringSource}, giving the correct conservation statement. Eqs. \eqref{eq:AbsorptionLoss} and \eqref{eq:ScatteringLoss} are frequently combined by defining the total cross section \(\Sigma_t\) as:
+Note that Eq. \eqref{eq:ScatteringLoss} includes scattering from \(E\rightarrow E\) and \(\hO\rightarrow\hO\), cancelling the double-counting in the in-scattering term in Eq. \eqref{eq:ConservationInscatteringSource}. Eqs. \eqref{eq:AbsorptionLoss} and \eqref{eq:ScatteringLoss} are frequently combined by defining the total cross section \(\Sigma_t\) as:
 
 \beq
 \label{eq:TotalSigmaDef}
@@ -180,21 +177,21 @@ All source and loss terms derived thus far have been represented as volume integ
 
 \beqa
 \label{eq:streaming2}
-\left\lbrack\int dS n\seat v(E)\hO\cdot\hat{n}\right\rbrack dEd\hO\equiv&\left\lbrack\int d\volume\nabla\cdot\left(n\seat v(E)\hO\right)\right\rbrack dEd\hO\\
-=&\left\lbrack\int d\volume\hO\cdot \nabla\left(v(E)n\seat\right)\right\rbrack dEd\hO
+\left\lbrack\int dS n\seat v(E)\hO\cdot\hat{n}\right\rbrack dEd\hO\equiv&\left\{\int d\volume\nabla\cdot\left\lbrack n\seat v(E)\hO\right\rbrack\right\} dEd\hO\\
+=&\left\{\int d\volume\hO\cdot \nabla\left\lbrack v(E)n\seat\right\rbrack\right\} dEd\hO
 \eeqa
 
 where \(\nabla\cdot\hO=0\) has been used because \(\hO\) is not a function of the spatial coordinate. Summing all of the source and loss terms in Eqs. \eqref{eq:ConservationExternalSource}, \eqref{eq:ConservationInscatteringSource}, \eqref{eq:ConservationFissionPrompt}, \eqref{eq:ConservationFissionDelayed}, \eqref{eq:AbsorptionLoss}, \eqref{eq:ScatteringLoss}, and \eqref{eq:streaming2} and inserting into Eq. \eqref{eq:neutron_conservation}, canceling the common \(dEd\hO\) differential, and recognizing that because the volume is arbitrary the integrand must be zero, gives the \gls{nte} in terms of neutron density:
 
 \beqa
 \label{eq:nte}
-&\frac{\partial n\seat}{\partial t}+\hO\cdot\nabla(v(E)n\seat)+\Sigma_t\seat v(E)n\seat=\\
+&\frac{\partial n\seat}{\partial t}+\hO\cdot\nabla\left\lbrack v(E)n\seat\right\rbrack+\Sigma_t\seat v(E)n\seat=\\
 &\hspace{1cm}\inscatteringsource v(E')n\seatprime \ +\\
 &\hspace{2cm}\promptfissionsource v(E')n\seat \ +\\
 &\hspace{3cm}\delayedfissionsource + \source
 \eeqa
 
-The product \(vn\) appears in almost every term in Eq. \eqref{eq:nte}, which suggests a convenient definition of the angular flux \(\psi\):
+The scattering and fission terms couple all energies and angles together. The product \(vn\) appears in almost every term in Eq. \eqref{eq:nte}, which suggests a convenient definition of the angular flux \(\psi\):
 
 \beq
 \label{eq:AngularFlux}
@@ -215,10 +212,10 @@ The \gls{nte} is coupled to \(J\) delayed neutron precursor concentration equati
 
 \beq
 \label{eq:DelayedNeutrons}
-\frac{\partial C_j(\vv{r},t)}{\partial t}=\beta_j\int_{0}^\infty dE'\int_{4\pi}\nu(E')\Sigma_f(E')\psi(\vv{r},E',\hO',t)-\lambda_jC_j(\vv{r},t)
+\frac{\partial C_j(\vv{r},t)}{\partial t}=\beta_j\int_{0}^\infty dE'\int_{4\pi}\nu(E')\Sigma_f(E')\psi(\vv{r},E',\hO',t)-\lambda_jC_j(\vv{r},t)\hspace{1cm}\text{for \(j=1,\cdots,J\)}
 \eeq
 
-The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because it contains both integrals and derivatives. The initial condition requires specification of the initial angular flux:
+The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because it contains both integrals and derivatives. The \gls{ic} requires specification of the initial angular flux:
 
 \beq
 \psi(\vv{r},E,\hO,0)\equiv\psi_0(\vv{r},E,\hO)
@@ -246,22 +243,24 @@ At at interface \(\vv{r_s}\) of two differing cross sections \(1\) and \(2\), th
 \psi_1(\vv{r}_s,E,\hO,t)=\psi_2(\vv{r}_s,E,\hO,t)
 \eeq
 
-The scattering and fission terms couple all energies and angles together. Eq. \eqref{eq:nte1} can be solved analytically for general problems for purely absorbing media, but the presence of the integral forms for fissioning and scattering media greatly complicates analytic solution, and in most cases precludes it. Several approximations exist in Eq. \eqref{eq:nte1} -
+Eq. \eqref{eq:nte1} can be solved analytically for general problems for purely absorbing media, but the presence of the integral forms for fissioning and scattering media greatly complicates analytic solution, and in most cases precludes it. Several approximations exist in Eq. \eqref{eq:nte1} -
 
 \begin{itemize}
-\item Neutron-neutron interactions are negligible because the density of neutrons is much smaller than typical atomic densities. With this approximation, the \gls{nte} is equivalent to the linear Boltzmann equation.
+\item Neutron-neutron interactions are negligible because the density of neutrons is much smaller than typical atomic densities. With this approximation, the \gls{nte} is equivalent to the \gls{lbe}.
 \item Neutron decay is negligible because the mean neutron lifetimes from birth to absorption are significantly smaller than neutron decay half lives on the order of 15 minutes.
 \item The neutron density is only a function of \(\vv{r}\), \(E\), \(\hO\), and \(t\) - other parameters such as neutron spin are neglected.
+\item Neutrons travel in straight lines between collisions, i.e. gravitational forces are neglected.
 \end{itemize}
 
 The remainder of this section presents alternative forms of the \gls{nte}, and is organized according to each individual term appearing in Eq. \eqref{eq:nte1} or to general rewritings such as eigenvalue form.
 
 \subsection{The Fission Source Term}
 
-For steady-state calculations, the time delay of the delayed neutrons becomes unimportant, and it is common to combine the prompt and delayed fission source terms into a single term with combined energy and angle spectrum \(\chi(E,\hO)\):
+For steady-state calculations, the time delay of the delayed neutrons becomes unimportant, and the prompt and delayed fission source terms can be combined into a single term with combined energy and angle spectrum \(\chi(E,\hO)\):
 
 \beqa
-\promptfissionsource\psi\seatprime+\delayedfissionsource\rightarrow\\
+\label{eq:LumpedFission}
+\promptfissionsource\psi\seatprime+\delayedfissionsource\rightarrow\hspace{0.5cm}\\
 \totalfissionsource\psi\seatprime
 \eeqa
 
@@ -273,17 +272,19 @@ If both the prompt and delayed neutrons are assumed to be born isentropic, then 
 
 \subsection{The Inscattering Source Term}
 
-It is frequently assumed that the angular dependence of a collision is rotationally symmetric, meaning that scattering cross sections do not depend uniquely on both \(\hO\) and \(\hO'\), but only on the change between the incident and outgoing directions. It is extremely rare for the scattering cross section to depend on the incident neutron direction of motion unless the target nuclei are aligned such as in ferromagnetic materials. This rare case does not occur in most reactor analysis problems, and hence rotational symmetry is frequently implicitly assumed.
+It is extremely rare for the scattering cross section to depend on the incident neutron direction of motion unless the target nuclei are aligned such as in ferromagnetic materials. This rarely occurs in reactor analysis problems, allowing the assumption of rotational symmetry in the scattering cross section such that scattering cross sections no longer depend uniquely on both \(\hO\) and \(\hO'\), but only on the change between the incident and outgoing directions. 
 
-Assuming rotational symmetry, \(\hO\rightarrow\hO'\) can be represented as the dot product between \(\hO\) and \(\hO'\), which by the definition of a dot product and the presence of two unit vectors is simply equal to \(\mu\), defined in Eq. \eqref{eq:muDef}:
+With this assumption, \(\hO\rightarrow\hO'\) can be represented as the dot product between \(\hO\) and \(\hO'\), which by the definition of a dot product and the presence of two unit vectors is simply equal to \(\mu\), defined in Eq. \eqref{eq:muDef}:
 
 \beqa
 \label{eq:OmegaDotOmega}
-\hO  \cdot\hO  ' \equiv& |\hO  ||\hO  '| \cos{(\theta)} \\
+\hO  \cdot\hO  ' \equiv& \left\Vert\hO\right\Vert \left\Vert\hO  '\right\Vert \cos{(\theta)} \\
 =&\ \mu
 \eeqa
 
-Rotational symmetry implies that we are ignoring any type of anisotropic grain structure, which is sufficient since on a macroscopic scale, grains are sufficiently randomly oriented. Because the scattering cross sections can now easily be expressed as a function of \(\mu\) instead of \(\hO\) and \(\hO'\), the scattering cross section can be expanded in a series of orthogonal polynomials, where only the coefficients of the expansion need to be stored. Orthogonal polynomials commonly selected for this purpose are the Legendre polynomials and the spherical harmonics functions. The remainder of this section describes two such orthogonal functions that are commonly used to rewrite the scattering term. If the scattering is assumed isotropic, then a significant simplification is possible:
+Because the scattering cross sections can now easily be expressed as a function of \(\mu\) instead of \(\hO\) and \(\hO'\), the scattering cross section can be expanded in a series of orthogonal polynomials, where only the coefficients of the expansion need to be stored. Orthogonal polynomials commonly selected for this purpose are the Legendre polynomials and the spherical harmonics. The remainder of this section describes two such orthogonal functions that are commonly used to rewrite the scattering term. 
+
+Note that rotational symmetry does not imply isotropy. If the scattering is assumed isotropic, a significant simplification is possible:
 
 \beq
 \frac{\Sigma_s(\vv{r},E'\rightarrow E,t)}{4\pi}=\int_{4\pi}d\hO\Sigma_s\seatout
@@ -303,12 +304,12 @@ The scattering cross section can be expanded as a sum of Legendre polynomials mu
 
 \(L\) is the order of scattering anisotropy. If \(L\) is infinite, the above expansion is exact; however, in practice a finite sum is used, where \(L\) is typically chosen to match the order of the angular approximation made in the flux. For neutron and photon transport, using only a few terms is typically sufficient, though this is not the case for electron scattering. When \(L=0\), the angular dependence of a cross section is entirely neglected, which therefore represents isotropic scattering. \(L=1\) is often referred to being ``linearly anisotropic,'' since the functional form of the series expansion is \(C_0+C_1\mu\).
 
-The factor of \((2l+1)/4\pi\) appears to obtain the desired normalization of \(2\pi\) in the definition of the scattering moment to account for integration over \(0\leq\phi\leq2\pi\). Multiplying both sides by \(P_{l'}(\mu)\), integrating over \(\mu\), and using the orthogonality property of Legendre polynomials in Eq. \eqref{eqn:LegendrePolynomialsOrthogonality} gives the following definition for the scattering moments:
+The factor of \((2l+1)/4\pi\) appears to obtain the desired normalization of \(2\pi\) in the definition of the scattering moment to account for integration over \(0\leq\phi\leq2\pi\). Multiplying both sides of Eq. \eqref{eq:ScatteringLegendre} by \(P_{l'}(\mu)\), integrating over \(\mu\), and using the orthogonality property of Legendre polynomials in Eq. \eqref{eqn:LegendrePolynomialsOrthogonality} gives the following definition for the scattering moments:
 
 \beqa
 \label{eq:ScatteringMomentsLegendre}
-\int_{-1}^1d\mu\Sigma_s\seatout P_{l'}(\mu)=&\int_{-1}^1d\mu\Sigma_{s,l}(\vv{r},E'\rightarrow E,t)P_l(\mu)P_{l'}(\mu)\\
-2\pi\int_{-1}^1d\mu\Sigma_s\seatout P_{l}(\mu)=&\Sigma_{s,l}(\vv{r},E'\rightarrow E,t)\\
+\int_{-1}^1d\mu\Sigma_s\seatout P_{l'}(\mu)=&\ \int_{-1}^1d\mu\Sigma_{s,l}(\vv{r},E'\rightarrow E,t)P_l(\mu)P_{l'}(\mu)\\
+2\pi\int_{-1}^1d\mu\Sigma_s\seatout P_{l}(\mu)=&\ \Sigma_{s,l}(\vv{r},E'\rightarrow E,t)\\
 \eeqa
 
 Expanding the scattering cross section in Legendre polynomials is known as the \(P_L\) approximation. Legendre polynomials are also frequently used to express the angular dependence of the angular flux in one-dimensional problems where \(\hO=\cos{(\theta)}\hat{z}\) has a single independent variable \(\mu\) given by Eq. \eqref{eq:muDef}.
@@ -356,17 +357,42 @@ By setting the external source to zero and neglecting time dependence, the \gls{
 \frac{1}{k}\chi(E,\hO)\int_0^\infty dE'\int_{4\pi}d\hO'\nu(E')\Sigma_f(\vv{r},E'\hO')\psi(\vv{r},E',\hO')
 \eeqa
 
-where for simplicity the fission source has been written as the combined prompt and delayed source due to the assumption of time-independence. Note that Eq. \eqref{eq:EigenvalueNTE} is an eigenvalue equation because \(\psi\) appears in every term. The factor \(1/k\) is inserted as the eigenvalue. (Continuous) eigenvalue problems have an infinite number of solutions (eigenfunctions) corresponding to an infinite number of eigenvalues. The objective of solution of a discretized version of Eq. \eqref{eq:EigenvalueNTE} is to find the smallest eigenvalue \(1/k\) because this eigenvalue corresponds to the smallest geometric buckling, and hence the smallest leakage and longest steady time behavior. The goal of reactor design is to obtain systems that self-sustain the critical reaction in the absence of an external source.
+where the fission source has been written as the combined prompt and delayed source according to Eq. \eqref{eq:LumpedFission} due to the assumption of time-independence. Eq. \eqref{eq:EigenvalueNTE} is an eigenvalue equation because \(\psi\) appears in every term; the factor \(1/k\) is inserted as the eigenvalue. (Continuous) eigenvalue problems have an infinite number of solutions (eigenfunctions) corresponding to an infinite number of eigenvalues. The smallest eigenvalue \(1/k\) because this eigenvalue corresponds to the smallest geometric buckling, and hence the smallest leakage and longest steady time behavior. 
+
+\(k\), also known as the multiplication factor, is often described heuristically through the ``six-factor'' formula, which describes six major effects on criticality:
+
+\beq
+\label{eq:SixFactor}
+k=\epsilon p\eta fP_{NL,f}P_{NL,th}
+\eeq
+
+where \(P_{NL,f}\) and \(P_{NL,th}\) are the probability of fast and thermal neutrons to {\it not} leak from the domain, respectively; \(\epsilon\) is the fraction of total fission that occur in the fast spectrum; \(\eta\) is the number of neutrons produced from fission per neutron absorbed in the fuel, defined in Eq. \eqref{eq:etaDef}; \(p\) is the probability of thermal neutrons escaping resonance capture; and \(f\) is the utilization factor, the probability of neutron absorption in the fuel to absorption in any material:
+
+ \beqa
+ \label{eq:fDef}
+ f\equiv&\ \frac{\text{probability of absorption in fuel}}{\text{probability of absorption}}\\
+ =&\ \frac{\sum_{i=1}^F\Sigma_{a,i}}{\sum_{i=1}^N\Sigma_{a,i}}
+ \eeqa
+ 
+\(F\) is the total number of fuel isotopes and \(N\) is the total number of isotopes. When the cross sections in Eq. \eqref{eq:fDef} are evaluated at thermal energies, \(f\) is referred to as the ``thermal'' utilization factor, while when evaluated at fast energies \(f\) is referred to as the ``fast'' utilization factor. For a single energy group, \(\epsilon=1\) and \(p=1\), in which case in an infinite medium, Eq. \eqref{eq:SixFactor} simplifies to:
+
+\beqa
+\label{eq:InfKOneGroup}
+k_\infty=&\ \eta f\\
+=&\ \frac{\nu\Sigma_f}{\Sigma_a}
+\eeqa
+ 
+%When considering multiple neutron energies, Eq. \eqref{eq:k1} can be made more detailed to reflect neutron movement between energy groups by scattering and fission. 
 
 \begin{tcolorbox}[breakable]
 To illustrate the significance of finding the {\it smallest} eigenvalue \(1/k\) to search for the steady-state solution, consider the one-group diffusion equation in a homogeneous medium as an example:
 
 \beq
 \label{eq:1GDiff}
-\frac{1}{v}\frac{\partial\phi(\vv{r},t)}{\partial t}-D\nabla^2\phi(\vv{r},t)+\left(\Sigma_a-\nu\Sigma_f\right)\phi(\vv{r},t)=S(\vv{r},t)
+\frac{1}{v}\frac{\partial\phi(\vv{r},t)}{\partial t}-D\nabla^2\phi(\vv{r},t)+\left(\Sigma_a-\nu\Sigma_f\right)\phi(\vv{r},t)=0
 \eeq
 
-For a slab reactor in Cartesian coordinates with vacuum conditions at \(x=\pm\tilde{a}/2\) and a symmetric initial condition \(\phi(\vv{r},0)\) in the absence of an external source, a separation of variables technique can be used to seek a solution of the form \(\phi(x,t)=X(x)T(t)\). Separation of variables can in general only be applied to homogeneous problems. Inserting this assumed form into Eq. \eqref{eq:1GDiff} gives, after dividing through by \(X(x)T(t)\):
+where the external source is set to zero to approximate the eigenvalue form. For a slab reactor in Cartesian coordinates with vacuum conditions at \(x=\pm\tilde{a}/2\) and a symmetric initial condition \(\phi(\vv{r},0)\), a separation of variables technique can be used to seek a solution of the form \(\phi(x,t)=X(x)T(t)\). Separation of variables can in general only be applied to homogeneous problems. Inserting this assumed form into Eq. \eqref{eq:1GDiff} gives, after dividing through by \(X(x)T(t)\):
 
 \beq
 \underbrace{\frac{1}{T(t)}\frac{\partial T(t)}{\partial t}}_{-\lambda}+\underbrace{v\left\lbrack-\frac{D}{X(x)}\frac{\partial^2X(x)}{\partial x^2}-\left(\nu\Sigma_f-\Sigma_a\right)\right\rbrack}_{\lambda}=0
@@ -410,62 +436,52 @@ for odd \(n\), where \(\lambda\) is now written as \(\lambda_n\) to indicate the
 
 The coefficients \(C_n\) can be determined by application of the orthogonality condition using the initial condition. For \(\lambda_n>0\), the flux decays in time, while for \(\lambda_n<0\), the flux grows in time. Rearranging Eq. \eqref{eq:Eigens} for \(\lambda_n\) gives:
 
-\beq
+\beqa
 \label{eq:lambda_n}
-\lambda_n=v\left\lbrack D\left(\frac{n\pi}{\tilde{a}}\right)^2+\Sigma_a-\nu\Sigma_f\right\rbrack
-\eeq
+\lambda_n=&\ vD\left\lbrack \left(\frac{n\pi}{\tilde{a}}\right)^2+\frac{\Sigma_a-\nu\Sigma_f}{D}\right\rbrack\\
+=&\ v\Sigma_a\left(1+L^2B_n^2\right)\left(1-\frac{k_\infty}{1+L^2B_n^2}\right)
+\eeqa
 
-Note that for both \(\lambda_1>0\) and \(\lambda_1<0\), \(\lambda_{n+1}>\lambda_n\). Therefore, the higher the \(n\) value, the faster that modes decays away in time (for positive \(\lambda\)) or the slower that mode grows in time (for negative \(\lambda\)), so the higher the \(n\), the less presence of that mode for long times. For a sufficiently long time, only the \(n=1\) mode persists; this mode is therefore often referred to as the ``fundamental mode.'' Such a steady-state solution in the absence of an external source represents a critical system. While the separation of variables technique used here does not necessarily imply separability in space and time, for very long times the flux does become separable. An alternative solution technique would have been to expand the flux in the eigenfunctions of the homogeneous system and insert directly into the governing equation to apply orthogonality to obtain a relationship among the coefficients.\newline
-
-Hence, because \(\lambda_{n+1}>\lambda_n\), the objective for performing a criticality calculation is to determine the fundamental mode that remains after a sufficiently long time that the neutron population has reached a steady state. This fundamental mode corresponds to the smallest eigenvalue of the homogeneous problem, \(B_1^2\). The corresponding criticality problem for the general transport equation is to find the smallest eigenvalue \(1/k\). \(B_1^2\) is the smallest eigenvalue of the homogeneous (referring to the form of the differential equation) problem, and is often referred to as the ``geometric buckling.'' This term is proportional to the curvature of the spatial eigenfunction:
+where the definition for \(k_\infty\) for the one-group approximation in Eq. \eqref{eq:InfKOneGroup} has been inserted. A definition for \(k\) for a one-group system is evident from Eq. \eqref{eq:lambda_n} and the Eqs. \eqref{eq:SixFactor} and \eqref{eq:InfKOneGroup}:
 
 \beq
-B_n^2=-\frac{1}{X_n(x)}\frac{\partial^2X_n(x)}{\partial x^2}
+k=\frac{k_\infty}{1+L^2B_n^2}
 \eeq
 
-Criticality is therefore obtained for \(lambda_1=0\) in Eq. \eqref{eq:lambda_n}, since all of the higher modes decay the fastest in time. By setting \(\lambda_1=0\), a steady-state solution is obtained:
+where the nonleakage probability is defined as:
+
+\beq
+\label{eq:PNLDef}
+P_{NL}=\frac{1}{1+L^2B_n^2}
+\eeq
+
+Note that for both \(\lambda_1>0\) and \(\lambda_1<0\), \(\lambda_{n+1}>\lambda_n\). Therefore, the higher the \(n\) value, the faster that modes decays away in time (for positive \(\lambda\)) or the slower that mode grows in time (for negative \(\lambda\)), so the higher the \(n\), the less presence of that mode for long times. For a sufficiently long time, only the \(n=1\) mode persists; this mode is therefore often referred to as the ``fundamental mode.'' The objective of a steady-state solution is to determine this fundamental mode, as in the absence of an external source, this represents the critical state. Note that while the separation of variables technique used here does not necessarily imply separability in space and time, for very long times the flux does become separable. An alternative solution technique would have been to expand the flux in the eigenfunctions of the homogeneous system and insert directly into the governing equation to apply orthogonality to obtain a relationship among the coefficients.\newline
+
+Criticality is obtained for \(\lambda_1=0\) in Eq. \eqref{eq:lambda_n}, since all of the higher modes decay the fastest in time. By setting \(\lambda_1=0\), a steady-state solution is obtained:
 
 \beq
 B_1^2=\underbrace{\frac{\nu\Sigma_f-\Sigma_a}{D}}_{B_m^2}
 \eeq
 
-where \(B_m^2\) is referred to as the ``material buckling.'' If \(\lambda_1>0\), the geometric buckling exceeds the material buckling, giving a subcritical system, while if \(\lambda_1<0\), the material buckling exceeds the geometric buckling, giving a supercritical system. Clearly, criticality is determined by both the system material properties and the geometry.
+where \(B_m^2\) is referred to as the ``material buckling.'' If \(\lambda_1>0\), the geometric buckling exceeds the material buckling, giving a subcritical system, while if \(\lambda_1<0\), the material buckling exceeds the geometric buckling, giving a supercritical system. Clearly, criticality is determined by both the system material properties and the geometry. \(B_1^2\) is often referred to as the ``geometric buckling.'' This term is proportional to the curvature of the spatial eigenfunction:
 
+\beq
+B_n^2=-\frac{1}{X_n(x)}\frac{\partial^2X_n(x)}{\partial x^2}
+\eeq
+
+From Eq. \eqref{eq:lambda_n}, the smallest \(\lambda_n\), which corresponds to the fundamental mode, is seeks the largest \(k\), equivalent to seeking the smallest \(1/k\). This indicates the significance in eigenvalue calculations of solving for the {\it smallest} \(1/k\).
 \end{tcolorbox}
 
 The eigenvalue form is often referred to as the steady-state form of the \gls{nte} because a steady state only exists if the system is critical or if there is an external source in a subcritical system (in which case the \(1/k\) eigenvalue is removed from the steady-state form) \cite{tyobeka}.
 
-While eigenvalue calculations imply an infinite number of solutions, to be considered a valid solution for neutron transport, the eigenfunctions must also be positive. For the one-group diffusion equation in a homogeneous slab, the only positive eigenfunction is the eigenfunction corresponding to \(n=1\), the fundamental mode. Hence, while an infinite number of solutions may in theory be possible, typically only one possible solution exists. The specified problem is likely not a perfectly critical system, hence the ``insertion'' (really, ``un-muting'') of the \(1/k\) factor to ensure a solution can be found. The objective is to solve the eigenvalue form of the \gls{nte} simultaneously for \(\psi\) and \(k\). Due to the placement of \(1/k\) within Eq. \eqref{eq:EigenvalueNTE}, it is clear that \(k\) represents the ratio of fission sources to losses. Section \ref{sec:EigenvalueCalculations} describes how Eq. \eqref{eq:EigenvalueNTE} is numerically solved to obtain the smallest \(1/k\) and the corresponding fundamental mode.
-
- 
- Simple concepts are often introduced to predict how changes in system state affect the criticality by defining the following probabilities:
- 
- \beq
- \label{eq:P_NL}
- P_{NL}\equiv\text{probability neutron will {\it not} leak from system before absorption}
- \eeq
- 
- \beqa
- \label{eq:fDef}
- f\equiv&\ \frac{\text{probability of absorption in fuel}}{\text{probability of absorption}}\\
- =&\ \frac{\sum_{i=1}^F\Sigma_{a,i}}{\sum_{i=1}^N\Sigma_{a,i}}
- \eeqa
- 
- where \(F\) is the total number of fuel isotopes and \(N\) is the total number of isotopes. \(f\) is also known as the ``thermal utilization factor,'' though evaluating the cross sections at fast energies could lend the name ``fast utilization factor.'' For a single energy group, the multiplication factor is simply the multiplication of the average number of neutrons produced per neutron absorbed in fuel (by definition, \(\eta\) from Eq. \eqref{eq:Eta2Def}) with that absorption will occur in fuel (by definition, \(f\) from Eq. \eqref{eq:fDef}), with the probability that absorption occurs within the system rather than leakage (by definition, \(P_{NL}\) from Eq. \eqref{eq:P_NL}):
- 
- \beq
- \label{eq:k1}
- k=\eta fP_{NL}
- \eeq
- 
-When considering multiple neutron energies, Eq. \eqref{eq:k1} can be made more detailed to reflect neutron movement between energy groups by scattering and fission. If the majority of fissions are caused by fast neutrons, \(\eta\) and \(f\) should be evaluated at thermal energies. 
+While eigenvalue calculations imply an infinite number of solutions, to be considered a valid solution for neutron transport, the eigenfunctions must also be positive. For the one-group diffusion equation in a homogeneous slab, the only positive eigenfunction is the eigenfunction corresponding to \(n=1\), the fundamental mode. Hence, while an infinite number of solutions may in theory be possible, typically only one solution exists. The specified problem is likely not a perfectly critical system, hence the ``insertion'' (really, ``un-muting'') of the \(1/k\) factor to ensure a solution can be found. The objective is to solve the eigenvalue form of the \gls{nte} simultaneously for \(\psi\) and \(k\). Due to the placement of \(1/k\) within Eq. \eqref{eq:EigenvalueNTE}, it is clear that \(k\) represents the ratio of fission sources to losses. Section \ref{sec:EigenvalueCalculations} describes how Eq. \eqref{eq:EigenvalueNTE} is numerically solved to obtain the smallest \(1/k\) and the corresponding fundamental mode.
 
 \subsection{The Multigroup Neutron Transport Equation}
 \label{sec:MGNTE}
 
-If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-3}-10^7\) eV is impractical due to the very high degree of point sampling required. Therefore, some type of discretization is required for the energy dependence. While the dependence of the angular flux on angle is typically rather weak such that only a few terms in a function expansion could be used for representation, the dependence of angular flux on energy is a very complicated function of the energy range; at high energies, the energy dependence is dominated by the fission spectrum, while at intermediate energies by resonance absorption and at low energies by thermalization effects. A single set of functions to describe all of this behavior would require very many terms, so a discrete ordinates in energy approach is almost universally used. Deterministic transport solvers use a \gls{mg}-in-energy form of the \gls{nte} that is obtained by averaging the \gls{nte} over all energies. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of decreasing energy, equivalent to increasing lethargy. This is convenient because energy sweeping methods also typically begin at the highest energies and sweep towards lower energies. The greatest amount of simplification occurs when using a single energy group, which is equivalent to assuming that energy does not change in scattering collisions.
+If using a deterministic tool to solve the \gls{nte}, using \gls{ce} cross sections over typical energy ranges of \(10^{-3}-10^7\) eV is impractical due to the very high degree of point sampling required to capture the very strong energy dependence in the material data. Therefore, some type of discretization is required for the energy dependence. While the dependence of the angular flux on angle is typically rather weak such that only a few terms in a function expansion could be used for representation, the dependence of angular flux on energy is a very complicated function of the energy range; at high energies, the energy dependence is dominated by the fission spectrum, while at intermediate energies by resonance absorption and at low energies by thermalization effects. A single set of functions to describe all of this behavior would require very many terms, so a discrete ordinates in energy approach is almost universally used. However, this discrete ordinates energy approach is not obtained simply by sampling data at discrete points - the\gls{mg}-in-energy form of the \gls{nte} is obtained by {\it averaging} the \gls{nte} over energy. For \(G\) energy groups, this produces \(G\) coupled equations, each a function of space, time, and angle, for \(G\) fluxes. Energy group \(g\) is defined over \(E_{g-1}\) to \(E_{g}\), with \(1\leq g\leq G\). Groups are ordered in order of decreasing energy, equivalent to increasing lethargy. This is convenient because energy sweeping methods also typically begin at the highest energies and sweep towards lower energies. The greatest amount of simplification occurs when using a single energy group, which is equivalent to assuming that energy does not change in scattering collisions.
 
-Several definitions are required for the derivation of the \gls{mg} \gls{nte}. Rather than use a collocation-in-energy method where the angular flux is simply sampled at each mesh point \(g\), the angular flux of group \(g\) is defined as the angular flux integrated over the energy bounds for group \(g\):
+Several definitions are required for the derivation of the \gls{mg} \gls{nte}. The angular flux of group \(g\) is defined as the angular flux integrated over the energy bounds for group \(g\):
 
 \beq
 \label{eq:GroupwiseQuantity}
@@ -476,31 +492,51 @@ In this way, all energies are considered in the discretization, and not simply t
 
 \beqa
 \label{eq:GroupwiseQuantityProduct}
-\Sigma_{i,g}(\vv{r},\hO,t)\equiv&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat}{\int_{E_{g-1}}^{E_g}dE\psi\seat}\\
-=&\frac{\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat}{\psi_g\sat}\\
+\Sigma_{i,g}(\vv{r},\hO,t)\equiv\frac{1}{\psi_g\sat}\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat\psi\seat\\
 \eeqa
 
-where Eq. \eqref{eq:GroupwiseQuantity} has been inserted for the denominator. Note that these group cross sections are dependent on the angular flux, and thereby define an implicit scheme; the alternative, to use a collocation-in-energy method with pointwise cross sections, would require extremely fine energy discretization to obtain accurate results, and hence this implicit dependence is still preferable. 
+Note that these group cross sections are dependent on the angular flux, and thereby define an implicit scheme. If the flux is separable in space and energy,
 
-Using Eqs. \eqref{eq:GroupwiseQuantity} and \eqref{eq:GroupwiseQuantityProduct}, the \gls{mg} \gls{nte} can be derived for group \(g\) by simply integrating the \gls{nte} in Eq. \eqref{eq:nte1} over \(E_{g-1}\leq E\leq E_g\):
+\begin{equation}
+\label{eq:MultiGroupSeparate}
+\psi\spa= f(E)\psi(\vv{r}, \hO  ,t)
+\end{equation}
+
+where \(f(E)\) is an energy probability distribution,
+
+\begin{equation}
+\label{eq:f_E_normalized}
+\int_{g} dEf(E) = 1
+\end{equation}
+
+then the \gls{mg} fluxes and cross sections defined in Eqs. \eqref{eq:GroupwiseQuantity} and \eqref{eq:GroupwiseQuantityProduct} represent averages of the \gls{ce} data over energy, weighted with the flux energy spectrum:
+
+\beq
+\label{eq:GroupwiseQuantity2}
+\psi_g(\vv{r},\hO,t)=\psi(\vv{r}, \hO,t)\int_{E_{g-1}}^{E_g}dEf(E)
+\eeq
+
+\beqa
+\label{eq:GroupwiseQuantityProduct2}
+\Sigma_{i,g}(\vv{r},\hO,t)=\int_{E_{g-1}}^{E_g}dE\Sigma_{i}\seat f(E)
+\eeqa
+
+\(f(E)\) depends on the characteristics of the system, and a more general derivation not assuming separability is also possible. For very fine groups, \(f(E)\) can be approximated as constant over each energy group, though this is only appropriate far from resonances.
+
+Using Eqs. \eqref{eq:GroupwiseQuantity} and \eqref{eq:GroupwiseQuantityProduct}, the \gls{mg} \gls{nte} can be derived for group \(g\) by integrating the \gls{nte} in Eq. \eqref{eq:nte1} over \(E_{g-1}\leq E\leq E_g\):
 
 \beqa
 \label{eq:mg_nte}
-&\frac{\partial}{\partial t}\left(\frac{\psi_g(\vv{r},\hO,t)}{v_g}\right)+\hO\cdot\nabla\psi_g\sat+\Sigma_{t,g} \psi_g\sat=\\
+&\frac{1}{v_g}\frac{\partial\psi_g(\vv{r},\hO,t)}{\partial t}+\hO\cdot\nabla\psi_g\sat+\Sigma_{t,g} \psi_g\sat=\\
 &\hspace{1cm}\sum_{g'=1}^G\int_{4\pi}d\hO^'\Sigma_s^{g'\rightarrow g}(\vv{r},\hO'\rightarrow\hO,t)\psi_{g'}(\vv{r},\hO',t)\ +\\
-&\hspace{2cm}\chi_{p,g}(\hO)\int_{4\pi}d\hO^'\left\lbrack1-\beta_{g'}\right\rbrack\nu_{g'}\Sigma_{f,g'}(\vv{r},\hO^',t)\psi_{g'}(\vv{r},\hO^',t) +\\
-&\hspace{3cm}\sum_{j=1}^J\chi_{d,j,g}\lambda_jC_j(\vv{r},t)+ S_g\sat
+&\hspace{2cm}\chi_{p,g}(\hO)\left(1-\beta\right)\int_{4\pi}d\hO^'\nu_{g'}\Sigma_{f,g'}(\vv{r},\hO^',t)\psi_{g'}(\vv{r},\hO^',t) +\\
+&\hspace{3cm}\sum_{j=1}^J\chi_{d,j,g}(\hO)\lambda_jC_j(\vv{r},t)+ S_g\sat
 \eeqa
 
-where the velocity was moved outside the time differentiation in the time term due to independence on time and \(\hO\cdot\nabla\) was brought outside the energy integral since this operator is not a function of energy. 
-
-The following sections describe the generation of group constants for energies in the fast and thermal ranges. These methods are based on approximations that neglect spatial dependence and use theory to predict the detailed energy spectrum over which the microscopic cross section data can be averaged.
+where the velocity was moved outside the time differentiation in the time term due to independence on time and \(\hO\cdot\nabla\) was brought outside the energy integral since this operator is not a function of energy. The group velocity is also brought outside the time differentiation because the group bounds are assumed constant. The generation of the \gls{mg} constants is usually based on approximations that simplify the spatial dependence and use theoretical estimates for the energy-dependent flux.
 
 \subsubsection{Selection of Group Boundaries}
 
 The selection of energy boundaries for the energy group structure is not a simple task. Numerical solution of the coupled group equations is greatly simplified if the groups are selected to be sufficiently far separated that scattering out of energy group \(g\) to another energy group is only possible for \(g\rightarrow g-1\) and \(g\rightarrow g+1\). This group structure design is known as a ``directly coupled'' structure, in which case the matrix problem becomes bidiagonal. With heavy moderators such that a very large amount of energy cannot be lost in a single collision, this definition is simpler. However, for light moderators such as hydrogen, neutrons can lose up to all of their energy in an elastic scattering collision, and a directly-coupled group structure can no longer be defined. However, such a structure can usually be approximated by choosing \(E_{g-1}/E_g>150\), which results in less than 1\% of neutrons skipping energy groups in scattering reactions. \(E_{g-1}/E_g\) is also typically selected as constant for other purposes.
 
-In addition, if the thermal groups are selected as sufficiently wide, upscattering can be neglected. This results in a lower triangular matrix structure that permits successive solution of the faster energy groups followed by the more thermal energy groups, as the source in group \(g\) is a linear combination of the fission rate caused by groups \(g-1\leq g\leq 1\). Or, for a very thermal problem, the thermal flux can be described with a Maxwellian distribution. Upscattering can be neglected in \glspl{lwr} and \glspl{htgr} by selecting about 1 and 3 eV, respectively, as the upper boundary of the thermal group \cite{duderstadt}.
-
-\subsubsection{Thermal Spectrum Group Constants}
-This section describes the theory behind the generation of group parameters for energies in the thermal range. The generation of thermal group constants is complicated by the complex neutron scattering process at low energies, where the thermal motion of the nuclei cannot be neglected, and neutron energies are typically on the order of binding energies of the nuclei such that interaction tends to occur between a neutron and a group of nuclei simultaneously. Scattering cross sections are strongly dependent on both energy and angle. Further, unlike fast energy cross sections that tend to only depend on the identity of the interacting media, thermal cross sections depend strongly on the state of matter and temperature of the interacting medium.
+In addition, if the thermal groups are selected as sufficiently wide, upscattering can be neglected. This results in a lower triangular matrix structure that permits successive solution of the faster energy groups followed by the more thermal energy groups, as the source in group \(g\) is a fraction of the total fission source plus scattering from group \(g-1\). Upscattering can be neglected in \glspl{lwr} and \glspl{htgr} by selecting about 1 and 3 eV, respectively, as the upper boundary of the thermal group \cite{duderstadt}.

@@ -73,7 +73,7 @@
 \newcommand{\dhOprime}{\int_{4\pi}d\hO'}
 
 % integrand (minus the flux) of the prompt fission source
-\newcommand{\promptfissionsource}{\chi_p(E,\hO)\dEprime\dhOprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f\seatprime}
+\newcommand{\promptfissionsource}{\chi_p(E,\hO)\left(1-\beta\right)\dEprime\dhOprime\nu(E')\Sigma_f\seatprime}
 
 % summation form of the delayed neutron source
 \newcommand{\delayedfissionsource}{\sum_{j=1}^J\chi_{d,j}(E,\hO)\lambda_jC_j(\vv{r},t)}
@@ -215,6 +215,7 @@ Then, we can integrate out the angular dependence of the scattering term by reco
 \eeqa
 \end{comment}
 
+\begin{comment}
 \subsection{Cartesian Coordinates}
 
 \subsubsection{Integration Over Angle}
@@ -242,49 +243,10 @@ Eq. \eqref{eq:TE_Cartesian_1D_2} can further be integrated over energy to give:
  2\pi\int_{-1}^{1} d\mu' \Sigma_s(z, \mu')\psi(z,\mu',t) + S(z, \mu, t)+\frac{\nu\Sigma_f(z)}{2}\int_{-1}^{1} d\mu'\psi(z, \mu',t)\\
 \end{aligned}
 \end{equation}
+\end{comment}
 
-\clearpage
-\section{The Multigroup Transport Equation}
-
-The multigroup transport equation can be derived by two separate means - the first involves separating all quantities into separate functions of energy and space:
-
-\begin{equation}
-\label{eq:MultiGroupSeparate}
-\psi\spa  \approx f(E)\psi(\vv{r}, \hO  ,t)
-\end{equation}
-
-where
-
-\begin{equation}
-\label{eq:f_E_normalized}
-\int_{g} dEf(E) = 1
-\end{equation}
-
-The second approach assumes nothing about energy-space separability by using the Legendre moments of the flux. Substituting in the approximation given by Eq. \ref{eq:MultiGroupSeparate} to the transport equation given by Eq. \ref{eq:TE} and integrating over an arbitrary energy group will lead to cross sections that depend on the function \(f(E)\), since the approximation of Eq. \ref{eq:MultiGroupSeparate} causes \(\psi\) to become independent of energy, and hence it can move outside the energy integral.
-
-\begin{equation}
-\label{eq:multigroupTE1}
-\begin{aligned}
-\frac{1}{v_g}\frac{\partial \psi_g(\vv{r}, \hO  , t)}{\partial t} + \hO  \cdot\nabla\psi_g(\vv{r}, \hO  , t) + \Sigma_{tg}(\vv{r})\psi_g(\vv{r}, \hO  , t) =\\
-\sum_{g'=1}^{G} \int_{4\pi}^{} d\hO  ' \Sigma_{s, g'\rightarrow g}(\vv{r}, \hO  ' \rightarrow\hO  )\psi_{g'}(\vv{r}, \hO  , t) + \chi_g \sum_{g'=1}^{G}\int_{4\pi}^{} d\hO  ' \nu_{g'}\Sigma_{f,g'}(\vv{r})\psi_g(\vv{r}, \hO  ', t)
-\end{aligned}
-\end{equation}
-
-The group constants depend directly on \(f(E)\). For instance, the group total cross section is
-
-\begin{equation}
-\label{eq:multigroupTE1_constants1}
-\Sigma_{tg}(\vv{r}) = \int_{g} dE \Sigma_t(\vv{r}, E) f(E)
-\end{equation}
-
-This is not a very elegant way to derive the multigroup transport equation, because \(f(E)\) depends on the characteristics of the system, and will require a fine-group calculation to be collapsed to a coarse-group structure, and will require some approximation to \(f(E)\). For very fine energy groups, the simplest approximation would be to take \(f(E)\) as a constant over each energy group.
-
-\begin{equation}
-\label{eq:FineGroupf_E}
-f(E) = \frac{1}{\Delta E_g}
-\end{equation}
-
-However, this is really only acceptable at lower neutron energies where the cross sections do not display large resonances and there is a relatively smooth \(1/v\) dependence. Integrating Eq. \ref{eq:multigroupTE1} over angle gives another form of the multigroup transport equation.
+\begin{comment}
+Integrating Eq. \ref{eq:multigroupTE1} over angle gives another form of the multigroup transport equation.
 
 \begin{equation}
 \label{eq:multigroupTE2}
@@ -293,6 +255,7 @@ However, this is really only acceptable at lower neutron energies where the cros
 \sum_{g'=1}^{G} \Sigma_{s, g'\rightarrow g}(\vv{r})\phi_{g'}(\vv{r}, t) + \chi_g \sum_{g'=1}^{G} \nu_{g'}\Sigma_{f,g'}(\vv{r})\phi_{g'}(\vv{r}, t)
 \end{aligned}
 \end{equation}
+\end{comment}
 
 \clearpage
 \input{eigenvalue.tex}
