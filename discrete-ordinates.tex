@@ -1,29 +1,23 @@
 \section{The Discrete Ordinates Method}
 \label{sec:SN}
 
-The discrete ordinates method is an approach for discretization of the angular dependence of \(\psi\) that is equivalent to a collocation method in angle; the angular dependence of \(\psi\) is represented by the angular dependence at a series of discrete directions \(\hO_n\) for \(n=1,\cdots,N\):
+The discrete ordinates method is an approach for discretization of the angular dependence of \(\psi\); the angular variable is allowed to obtain a discrete set of values (ordinates) such that the angular flux corresponding to each discrete direction \(\hO_n\) is:
 
 \beq
 \psi_n(\vv{r},E,t)\equiv\psi(\vv{r},E,\hO_n,t)
 \eeq
 
-The discrete ordinates method is essentially a \gls{fd} method in angle. The \gls{nte} can then be written for each discrete direction \(\hO_n\), with solution variable \(\psi_n\):
+for \(n=1,\cdots,N\). The \gls{nte} can then be written for each discrete direction \(\hO_n\) by approximating the scattering and fission angular integrals using a quadrature rule with quadrature points set equal to the angular ordinates:
 
 \beqa
-\frac{\partial}{\partial t}\left(\frac{\psi_n(\vv{r},E,t)}{v(E)}\right)+\hO_n\cdot\nabla\psi_n(\vv{r},E,t)+\Sigma_{t,n}(\vv{r},E,t)\psi_n(\vv{r},E,t)=\\
-\sum_{n'=1}^Nw_{n'}\dEprime \Sigma_s(\vv{r},E'\rightarrow E',\hO_{n'}\rightarrow\hO_n,t)\psi_{n'}(\vv{r},E',t)+\\
-\chi_{p,n}(E)\sum_{n'=1}^Nw_{n'}\dEprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_{f,n
-'}(\vv{r},E',t)\psi_n(\vv{r},E,t)+\\
+\frac{\partial}{\partial t}\left(\frac{\psi_n(\vv{r},E,t)}{v(E)}\right)+\hO_n\cdot\nabla\psi_n(\vv{r},E,t)+\Sigma_{t,n}(\vv{r},E,t)\psi_n(\vv{r},E,t)=\hspace{3cm}\\
+\sum_{n'=1}^Nw_{n'}\dEprime \Sigma_s(\vv{r},E'\rightarrow E',\hO_{n'}\rightarrow\hO_n,t)\psi_{n'}(\vv{r},E',t)+\hspace{2cm}\\
+\chi_{p,n}(E)\left(1-\beta\right)\sum_{n'=1}^Nw_{n'}\dEprime\nu(E')\Sigma_{f,n
+'}(\vv{r},E',t)\psi_n(\vv{r},E,t)+\hspace{1cm}\\
 \sum_{j=1}^J\chi_{d,j,n}(E)\lambda_jC_j(\vv{r},t)+S_n(\vv{r},E,t)
 \eeqa
 
-where the angular integrals have been replaced by quadrature formulas with points selected to match the discrete directions \(\hO_n\). For example, the integral of an arbitrary quantity \(f\) is replaced by the following quadrature rule:
-
-\beq
-\dEprime\dhOprime f\seatelse=\sum_{n'=1}^Nw_{n'}\dEprime f_{n'}(\vv{r},E',t)\psi_{n'}(\vv{r},E',t)
-\eeq
-
-The \(S_N\) method is named after the early one-dimensional treatments that used the trapezoidal quadrature set, which is equivalent to treating the angular dependence as \(N\) straight line segments. The \(S_N\) method is the primary way in which the transport equation is discretized in angle, since it has a simple derivation, closely resembles the Boltzmann transport equation, and does not have to deal with as many strange math properties as the \(P_N\) method. In 1-D, \(S_N\) is equivalent to Legendre expansions. 
+This discrete ordinates method is often referred to as the ``S$_{\text{N}}$'' method. The S$_{\text{N}}$ method is named after the early one-dimensional treatments that used the trapezoidal quadrature set, which is equivalent to treating the angular dependence as \(N\) straight line segments. The S$_{\text{N}}$  method is the primary way in which the transport equation is discretized in angle, since it 1)~has a simple derivation, 2)~closely resembles the Boltzmann transport equation, and 3)~does not have to deal with as many strange math properties as the P$_{\text{N}}$  method described in Section \ref{sec:PN}. In 1-D, S$_{\text{N}}$  is equivalent to Legendre expansions of the angular dependence.
 
 To begin, the scattering and external source are expanded into spherical harmonics. Assuming azimuthal symmetry, the scattering cross section can be expanded as in Eq. \eqref{eq:ScatteringLegendre2}. Beginning with the fixed-source problem in Eq. \eqref{eq:TE_fixedsource}, repeated here for reference:
 
@@ -116,20 +110,7 @@ The external source expansion in Eq. \eqref{eq:ExternalSourceSNSimple}, and the 
 \end{aligned}
 \end{equation}
 
-where the infinite sums in \(l\) have been truncated to \(N\) terms. For \(N\), \((N+1)^2\) moments must be computed. The \(S_N\) method is a collocation method in angle, which means that the solution is sought for fixed, discrete values in angle. Integrals over angle are replaced by quadrature rules
-
-\begin{equation}
-\label{eq:multigroupTE2}
-\int_{4\pi}^{} f(\hO  )d\hO   = \sum_{n=1}^{N} w_n f(\hO  _n)
-\end{equation}
-
-where \(N\) is the order, or the amount of directions modeled. These weights are normalized such that an integral over the unit sphere still provides the correct numerical result:
-
-\begin{equation}
-\label{eq:QuadratureNormalization}
-\int_{4\pi}^{}d\hO  =\sum_{n=1}^{N} w_n =4\pi
-\end{equation}
-
+where the infinite sums in \(l\) have been truncated to \(N\) terms. For \(N\), \((N+1)^2\) moments must be computed. 
 We replace each occurrence of \(\hO  \) in Eq. \eqref{eq:SnGeneral} by \(\hO  _a\) to indicate a particular direction. Then, Eq. \eqref{eq:SnGeneral} applies for each direction. All other terms in the equation are then integrated using quadrature rules. 
 
 \begin{equation}
@@ -154,16 +135,24 @@ The order of the \(S_N\) method and the order of the \(P_L\) expansion discussed
 
 The \(S_N\) method will converge to the true solution provided the quadrature rule accurately integrates the spherical harmonics. An important phenomena that sometimes arises with the \(S_N\) method is ray effects. Because we constrain the flux to travel only along discrete directions, nothing can be said about the accuracy not along those angles. Non-physical ``crown-like'' patterns can result, but this can be fixed by computing a first-collided source as the actual source to be used in the computation, providing a diffuse starting source without significantly reducing accuracy. 
 
-\subsubsection{Quadrature}
+\subsection{Quadrature}
 
-\subsubsubsection{Level-Symmetric Quadrature}
-While there are many options for quadrature sets, the Level-Symmetric quadrature set is the set most often associated with the \(S_N\) method. With this set, there are \(N(N+2)\) angular directions per spatial location (N(N+2)/8 per octant). The Level-Symmetric quadrature set uses the same set of \(N/2\) positive values of direction cosines for each of the components of \(\hO  \). Because this quadrature set is symmetric, no direction gets preferential treatment. Different quadrature sets could be used for different computations where it is expected for streaming to occur preferentially in some directions over others. 
+This section describes the various quadrature sets typically used with the discrete ordinates method. The level-symmetric quadrature set described in Section \ref{sec:LevelSymmetric} is the quadrature set most often associated with the discrete ordinates method. The quadrature set must be normalized such that integration over the unit sphere of a constant equals \(4\pi\):
 
-Because of the symmetry constraints, not all of the choices for the quadrature points are independent, and in fact there is only one degree of freedom for each choice of quadrature set. A second constraint given by Eq. \eqref{eq:QuadratureNormalization} then narrows down the options for the quadrature set. With these two constraints, \(S_2\) quadrature is fixed, but for higher orders, there are several options remaining for the quadrature points. 
+\begin{equation}
+\label{eq:QuadratureNormalization}
+\int_{4\pi}^{}d\hO  =\sum_{n=1}^{N} w_n =4\pi
+\end{equation}
 
-\subsubsubsection{\(LQ_N\) Quadrature}
+Quadrature sets may be symmetric or non-symmetric, a construction that may be useful if streaming is expected to occur preferentially in some directions.
 
-With the same symmetry and normalization constraints as the Level-Symmetric quadrature set, the \(LQ_N\) quadrature set imposes the additional requirement that the quadrature set should correctly integrate as many Legendre polynomials as possible. 
+\subsubsection{Level-Symmetric Quadrature}
+\label{sec:LevelSymmetric}
+The level-symmetric quadrature set uses \(N(N+2)\) symmetric angular directions per spatial location. Due to the symmetry constraint, not all of the choices for the quadrature points are independent; there is only one degree of freedom for each choice of quadrature set. A second constraint given by Eq. \eqref{eq:QuadratureNormalization} then narrows down the options for the quadrature set. With these two constraints, the S$_2$ quadrature is fixed, but several options remain for higher order sets. 
+
+\subsubsubsection{LQ$_{\text{N}}$ Quadrature}
+
+With the same symmetry and normalization constraints as the level-symmetric quadrature set described in Section \ref{sec:LevelSymmetric}, the LQ$_{\text{N}}$ set imposes the additional requirement that the quadrature should correctly integrate as many Legendre polynomials as possible. 
 
 \subsubsection{Spatial Discretization}
 
