@@ -60,13 +60,16 @@ A direct time-dependent solution of Eq. \eqref{eq:nte1} can be performed by disc
 \sum_{j=1}^J\frac{\chi_{d,j}(E,\hO)\lambda_j}{1+\Delta t\lambda_j}C_j^{(n)}(\vv{r})
 \eeqa
 
-where \((n+1)\) and \((n)\) superscripts indicate values at the \(n+1\) and \(n\) time steps and \(\Delta t\) is the time step size. \(\beta\) has been assumed independent of energy in order to remove it from the fission rate integral in order to illustrate the clear relationship between Eq. \eqref{eq:TimeNTE} and the steady-state fixed source form of the \gls{nte}. 
+where \((n+1)\) and \((n)\) superscripts indicate values at the \(n+1\) and \(n\) time steps and \(\Delta t\) is the time step size. \(\beta\) has been assumed independent of energy in order to remove it from the fission rate integral in order to illustrate the clear relationship between Eq. \eqref{eq:TimeNTE} and the steady-state fixed source form of the \gls{nte}. A smaller time step is frequently used to ensure that Eq. \eqref{eq:TimeNTE} is more diagonally-dominant, improving convergence \cite{tyobeka}.
 
 During the linear system solution, it is customary to use the solution from the previous time step as the initial guess for the iterative solver. This can be even further improved by extrapolating the solution from the previous time step using computed reactor periods based on the ratio in the flux between the previous two time steps \cite{pautz}:
 
 \beq
+\label{eq:FluxExtrapolation}
 \psi^{(n+1,0)}=\psi^{n}\exp{\left\lbrack\frac{1}{\Delta t_n}\ln{\left(\frac{\psi^{(n)}}{\psi^{(n-1)}}\right)}\Delta t_{n=1}\right\rbrack}
 \eeq
+
+Eq. \eqref{eq:FluxExtrapolation}, though simple in concept, has shown excellent accelerating capabilities \cite{tyobeka}.
 
 \subsection{Pseudo Steady-State Calculations}
 \label{sec:PseudoSteadyState}
@@ -129,7 +132,7 @@ The reactor period in this case is extremely small, and precludes any realistic 
 \subsection{The Point Reactor Kinetics Equations}
 \label{sec:PKE}
 
-The \gls{pke} are an approximation to the time dependence in Eq. \eqref{eq:nte1} that assume 1)~a one-group diffusion theory model, and 2)~a scalar flux that is separable in space and time. This approximation therefore implies that the flux profile is independent of time, and during a transient only changes by multiplication by a constant, clearly an oversimplification of very spatially-dependent events such as withdrawal of a control rod. However, the \gls{pke} will be more valid when applied sufficiently long after an initial transient to permit the effects to permeate through the entire system such that the system responds with the same time response in all locations.
+The \gls{pke} are an approximation to the time dependence in Eq. \eqref{eq:nte1} that assume 1)~a one-group diffusion theory model, and 2)~a scalar flux that is separable in space and time. This approximation therefore implies that the flux profile is independent of time, and during a transient only changes by multiplication by a constant, clearly an oversimplification of very spatially-dependent events such as withdrawal of a control rod. For a transient initiated by only a small change in a control rod position, the use of the \gls{pke} showed an excellent agreement with both diffusion theory and S$_N$ for the \gls{pbmr} \cite{tyobeka}. In addition, the \gls{pke} will be more valid when applied sufficiently long after an initial transient to permit the effects to permeate through the entire system such that the system responds with the same time response in all locations.
 
 The assumption of no energy dependence neglects the fact that delayed neutrons are born at considerably lower energies than prompt neutrons. When these factors are combined, it is clear that a more sophisticated analysis would use different spatial distributions to describe the group fluxes since they have considerably different spatial dependence in thermal reactors. The tighter neutron transport coupling in fast reactors results in the \gls{pke} being a better approximation than in loosely-coupled thermal systems.
 
@@ -180,6 +183,8 @@ Eq. \eqref{eq:PKE} are known as the \gls{pke}, and are commonly written in terms
 If \(k>1\), \(\Lambda<l\), indicating that the lifetime is shortened by enhanced absorption fission rates. When the major assumptions involved in the derivation of the \gls{pke} are violated, a time-dependent solution of the \gls{nte} must be performed, with cross sections prescribed dependencies on the solution variables to account for feedback effects. The \gls{pke} can be derived with the one-group and space-time separability assumptions relaxed, which gives the same set of equations in Eq. \eqref{eq:PKE} with slightly different selections for \(\rho\), \(\beta\), and \(\Lambda\) \cite{duderstadt}. Alternatively, if the transient is sufficiently slow to evolve, a series of pseudo steady-state eigenvalue calculations can be used to compute approximate \(\psi(\vv{r},t)\) in an approximation known as the ``adiabatic approximation.''
 
 Eq. \eqref{eq:PKE} are a system of coupled \glspl{ode} that are generally very stiff due to the wide range in time scales, from \(l\) to the longest-lived delayed neutron precursor group, which may have a half life on the order of 80 seconds. If \(\rho(t)\) is a prescribed function of time, the \gls{pke} are a coupled set of linear equations. However, in general \(\rho\) also depends on the neutron concentration, yielding a coupled set of nonlinear equations. Only for bare reactor systems modeled by the one-group diffusion equation with homogeneous properties can \(\rho\) be {\it computed} based on a change in material properties and/or composition. The remainder of this section describes several simplifications to Eq. \eqref{eq:PKE} that allow more physical intuition when \(\rho\) is a known function of time. However, because many reactor period measurements are taken at close to zero power, feedback models are typically not required for their analysis, and the \gls{pke} with a constant \(\rho_0\) can often be applied.
+
+The \gls{pke} rely on the calculation of the \(\beta\) and \(\Lambda\) kinetics parameters. These are typically calculated by performing adjoint calculations and weighting against the adjoint flux \cite{tyobeka}.
 
 The multiplication factor \(k\) is the ratio of the rate of neutron production to the rate of neutron loss:
 

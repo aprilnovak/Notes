@@ -137,7 +137,7 @@
 \section{Introduction}
 \begin{flushleft}\justify
 
-This document will cover the two main models for neutron populations, beginning with transport theory, and then moving to a simplification known as diffusion theory. While diffusion theory is a very accurate approximation to heat conduction or gaseous diffusion where ``random-walk'' physical processes occur frequently, it is less accurate for describing neutron populations. Due to the uncharged nature of neutrons and their sometimes fairly low interaction probabilities with the material in which they are traveling, neutrons can travel long distances without any interaction, which degrades a ``random-walk'' assumption. The interaction of a neutron population with a domain is governed by interaction probabilities. Naturally, these probabilities are functions of neutron energy, space (if the domain is heterogeneous), and time (if the domain is time-dependent). In addition, because neutrons are particles, their direction of travel also has an impact on their likelihood to undergo certain interactions in heterogeneous geometries. A neutron may be very close to a highly interacting region, but if the neutron is not moving towards that region, its probability of interaction will be entirely different. So, for heterogeneous media, the breakdown in diffusion theory is most apparent near boundaries in the geometry where there are moderate to large changes in interaction probabilities within a few mean free paths. 
+This document will cover the two main deterministic models for neutron populations, beginning with transport theory, and then moving to a simplification known as diffusion theory. While diffusion theory is a very accurate approximation to heat conduction or gaseous diffusion where ``random-walk'' physical processes occur frequently, it is less accurate for describing neutron populations. Due to the uncharged nature of neutrons and their sometimes fairly low interaction probabilities with the material in which they are traveling, neutrons can travel long distances without any interaction, which degrades a ``random-walk'' assumption. The interaction of a neutron population with a domain is governed by interaction probabilities. Naturally, these probabilities are functions of neutron energy, space (if the domain is heterogeneous), and time (if the domain is time-dependent). In addition, because neutrons are particles, their direction of travel also has an impact on their likelihood to undergo certain interactions in heterogeneous geometries. A neutron may be very close to a highly interacting region, but if the neutron is not moving towards that region, its probability of interaction will be entirely different. So, for heterogeneous media, the breakdown in diffusion theory is most apparent near boundaries in the geometry where there are moderate to large changes in interaction probabilities within a few mean free paths. 
 
 So, while diffusion theory represents a much simpler model of neutron populations, it is necessary to begin with a study neutron transport. The neutron transport equation is difficult to solve due to the high dimensionality of phase space and the integro-differential form of the equation. The neutron transport equation is the linear version of the general Boltzmann transport equation developed to describe gases. Despite this great reduction in complexity from the Boltzmann equation, the solution can only be obtained in the simplest of geometries. Initially, the people who worked with the Bolztmann transport equation were satisfied by only applying it in semi-infinite media, since it was used for atmospheric and stellar applications. Its application to more finite domains really began with the field of nuclear engineering. 
 
@@ -146,20 +146,6 @@ So, while diffusion theory represents a much simpler model of neutron population
 
 \clearpage
 \section{Important Definitions and Identities}
-
-This section provides important definitions that are used throughout the remainder of this document. All quantities in this section are fundamental to the understanding of the material, which is why for convenience they are all grouped together here to serve as a reference that should allow the student to reduce the amount of time needed searching for previously discussed formulas and definitions.
-
-\subsection{General Math Definitions}
-This section presents basic math definitions and syntax used.
-
-\subsubsection{Inner Products}
-
-An inner product is an integral over all of phase space of two quantities. For instance, the inner product of \(x\) and \(y\) over a volume \(\volume\) is, in inner product notation:
-
-\beq
-\label{eq:innerproduct}
-< x, y > = \int d\volume xy
-\eeq
 
 \subsection{Quantities in the Transport Equation}
 This section defines the variables that appear in the neutron transport equation.
@@ -690,20 +676,6 @@ Although \(\Sigma_a\) is also zero in a void, we have not set it equal to zero a
 \end{equation}
 
 This represents the void form of the SAAF equation to be used in voids.
-
-
-
-\clearpage
-\section{Nonlinear Diffusion Acceleration (NDA)}
-
-
-NDA, also known as Coarse Mesh Finite Difference (CMFD), uses a two-equation system consisting of the transport equation and a transport-corrected diffusion equation to accelerate the solution of transport problems. As much as possible, the lower-order equation is solved, with periodic iterative corrections with transport updates, to reduce overall computation time had we only been solving the transport equation. Picard iterations (at a fixed point) are used to update the lower-order equation when necessary. 
-
-
-\clearpage
-\section{Collocation Angular Methods}
-
-For all collocation in angle methods, the scattering and source terms (the only two sources that depend on angle, since the fission source is normally taken as isotropic), as well as the angular flux, are expanded in spherical harmonics. 
 
 \clearpage
 \input{discrete-ordinates.tex}

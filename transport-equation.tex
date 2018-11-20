@@ -433,6 +433,8 @@ where \(B_m^2\) is referred to as the ``material buckling.'' If \(\lambda_1>0\),
 
 \end{tcolorbox}
 
+The eigenvalue form is often referred to as the steady-state form of the \gls{nte} because a steady state only exists if the system is critical or if there is an external source in a subcritical system (in which case the \(1/k\) eigenvalue is removed from the steady-state form) \cite{tyobeka}.
+
 While eigenvalue calculations imply an infinite number of solutions, to be considered a valid solution for neutron transport, the eigenfunctions must also be positive. For the one-group diffusion equation in a homogeneous slab, the only positive eigenfunction is the eigenfunction corresponding to \(n=1\), the fundamental mode. Hence, while an infinite number of solutions may in theory be possible, typically only one possible solution exists. The specified problem is likely not a perfectly critical system, hence the ``insertion'' (really, ``un-muting'') of the \(1/k\) factor to ensure a solution can be found. The objective is to solve the eigenvalue form of the \gls{nte} simultaneously for \(\psi\) and \(k\). Due to the placement of \(1/k\) within Eq. \eqref{eq:EigenvalueNTE}, it is clear that \(k\) represents the ratio of fission sources to losses. Section \ref{sec:EigenvalueCalculations} describes how Eq. \eqref{eq:EigenvalueNTE} is numerically solved to obtain the smallest \(1/k\) and the corresponding fundamental mode.
 
  

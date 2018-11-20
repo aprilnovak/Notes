@@ -37,3 +37,5 @@ k^{(n)}=k^{(n-1)}\frac{\int \textbf{F}\psi^{(n)}d\volume}{\int \textbf{F}\psi^{(
 \eeq
 
 Eq. \eqref{eq:EquivEigen}a shows that the eigenvalue solution scheme is equivalent to a power iteration that finds the largest eigenvalue \(1/k\). However, the fundamental mode corresponds to the {\it smallest} of the \(1/k\), and inversion of the problem to the form in Eq. \eqref{eq:EquivEigen}b is equivalent to inverse power iteration to find the smallest \(1/k\), or the largest \(k\). So, power iteration is performed on Eq. \eqref{eq:EquivEigen}b, which through rearrangement is equivalent to a shifted inverse iteration of Eq. \eqref{eq:EquivEigen}a, which obtains the desired {\it smallest} \(1/k\).
+
+If the error in the eigenvalue iterations decays asymptotically, an estimate of the dominance ratio can be obtained, enabling a shift to accelerate the eigenvalue iterations \cite{tyobeka}.
