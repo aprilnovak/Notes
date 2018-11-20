@@ -1,41 +1,37 @@
 \section{Eigenvalue Solutions}
 \label{sec:EigenvalueCalculations}
 
-This section describes how numerical solutions are obtained to Eq. \eqref{eq:EigenvalueNTE} in Section \ref{sec:EigenvalueForm}. The modeled system is very likely not perfectly critical, so a factor \(1/k\) was inserted to permit a solution to be obtained for a non-critical system. Rewrite Eq. \eqref{eq:EigenvalueNTE} in the general operator notation:
+This section describes how numerical solutions are obtained to Eq. \eqref{eq:EigenvalueNTE}, which can be written in the general operator notation:
 
 \beq
 \label{eq:OperatorEigenvalueNTE}
-\mathscr{M}(\psi)=\frac{1}{k}\mathscr{F}(\psi)
+\textbf{M}\psi=\frac{1}{k}\textbf{F}\psi
 \eeq
 
-where \(\mathscr{M}\) represents the destruction operator and \(\mathscr{F}\) the (fission) production operator. The most common approach for solving Eq. \eqref{eq:OperatorEigenvalueNTE} is with the use of power iteration. Given an initial guess for the fundamental mode, \(\psi^{(0)}\), and a guess for the corresponding eigenvalue, \(k^{(0)}\), each iteration proceeds by solving a fixed-source, steady-state non-multiplying problem for an updated \(\psi\) and \(k\). In the \(n\)-th iteration, the algorithm updates the fundamental mode estimate by performing a steady-state fixed-source problem and \(k\) using its heuristic definition as the ratio of the fission source to the losses, where the losses are equated to the previous iteration fission source according to Eq. \eqref{eq:OperatorEigenvalueNTE}:
+where \(\textbf{M}\) represents the destruction operator and \(\textbf{F}\) the production operator. The most common approach for solving Eq. \eqref{eq:OperatorEigenvalueNTE} is power iteration. Given an initial guess for the fundamental mode \(\psi^{(0)}\) and the corresponding eigenvalue \(1/k^{(0)}\), each iteration proceeds by solving a fixed-source, steady-state non-multiplying problem for an updated \(\psi\) and \(k\). In the \(n\)-th iteration, the algorithm updates the fundamental mode estimate by performing a steady-state fixed-source problem and \(k\) using its heuristic definition as the ratio of the fission source to the losses, where the losses are equated to the previous iteration fission source according to Eq. \eqref{eq:OperatorEigenvalueNTE}:
 
 \beq
 \label{eq:NonlinearEigen}
-\mathscr{M}\left(\psi^{(n)}\right)=\frac{1}{k^{(n-1)}}\mathscr{F}\left(\psi^{(n-1)}\right)
+\textbf{M}\psi^{(n+1)}=\frac{1}{k^{(n)}}\textbf{F}\psi^{(n)}
 \eeq
 
 \beq
 \label{eq:k_update}
-k^{(n)}=k^{(n-1)}\frac{\int \mathscr{F}\left(\psi^{(n)}\right)d\volume}{\int \mathscr{F}\left(\psi^{(n-1)}\right)d\volume}
+k^{(n+1)}=k^{(n)}\frac{\int d\volume \textbf{F}\psi^{(n+1)}}{\int d\volume\textbf{F}\psi^{(n)}}
 \eeq
 
 Iteration proceeds until convergence of both \(k\) and \(\psi\), measured in some norm relative to the previous iterate. This algorithm, often referred to as ``source iteration,'' is used in RATTLESNAKE, where the nonlinear construction in Eq. \eqref{eq:NonlinearEigen} is amenable to solution using the \gls{jfnk} scheme. For each iteration, a full Newton solve is typically not performed in solution of Eq. \eqref{eq:NonlinearEigen} - rather, a single iteration is usually sufficient. The eigenvalue is not a part of the solution vector, but rather within each power iteration, a few iterations of a Newton method are performed to solve Eq. \eqref{eq:NonlinearEigen} with an update to \(k\) according to Eq. \eqref{eq:k_update}. To ensure convergence of the \gls{jfnk} method, the initial guess for \(\psi\) has to be sufficiently close to the fundamental mode, and several free inverse power iterations are typically performed before solution using \gls{jfnk}. When applied to the \gls{mg} equations, the update for \(k\) in Eq. \eqref{eq:k_update} is typically based on the fission sources in all energy groups.
 
-Writing Eqs. \eqref{eq:NonlinearEigen} and \eqref{eq:k_update} in linear form (which can be performed because the \gls{nte} is linear) gives an equivalent interpretation of eigenvalue methods that will illustrate why the algorithm in Eqs. \eqref{eq:NonlinearEigen} and \eqref{eq:k_update} is equivalent to inverse iteration, finding the largest eigenvalue (\(k\) when inverted) via power iteration to obtain the desired smallest non-inverted eigenvalue \(1/k\).
+The algorithm in Eqs. \eqref{eq:NonlinearEigen} and \eqref{eq:k_update} is equivalent to inverse iteration, finding the largest eigenvalue (\(k\) when inverted) via power iteration to obtain the desired smallest non-inverted eigenvalue \(1/k\). Rearranging Eq. \eqref{eq:NonlinearEigen} gives:
 
 \begin{subequations}
 \label{eq:EquivEigen}
 \begin{eqnarray}
-\textbf{M}\psi^{(n)}&=&\frac{1}{k^{(n-1)}}\textbf{F}\psi^{(n-1)}\\
-\psi^{(n)}k^{(n-1)}&=&\textbf{M}^{-1}\textbf{F}\psi^{(n-1)}
+\textbf{M}\psi^{(n+1)}&=&\frac{1}{k^{(n)}}\textbf{F}\psi^{(n)}\\
+\psi^{(n+1)}k^{(n)}&=&\textbf{M}^{-1}\textbf{F}\psi^{(n)}
 \end{eqnarray}
 \end{subequations}
 
-\beq
-k^{(n)}=k^{(n-1)}\frac{\int \textbf{F}\psi^{(n)}d\volume}{\int \textbf{F}\psi^{(n-1)}d\volume}
-\eeq
+Eq. \eqref{eq:EquivEigen}a shows that the eigenvalue solution scheme is equivalent to a power iteration that finds the largest eigenvalue \(k\), since solution of the steady-state, fixed source problem in a nonmultiplying medium is equivalent to inversion of the destruction operator. So, power iteration is performed on Eq. \eqref{eq:EquivEigen}b, which through rearrangement is equivalent to a shifted inverse iteration of Eq. \eqref{eq:EquivEigen}a, which obtains the desired {\it smallest} \(1/k\).
 
-Eq. \eqref{eq:EquivEigen}a shows that the eigenvalue solution scheme is equivalent to a power iteration that finds the largest eigenvalue \(1/k\). However, the fundamental mode corresponds to the {\it smallest} of the \(1/k\), and inversion of the problem to the form in Eq. \eqref{eq:EquivEigen}b is equivalent to inverse power iteration to find the smallest \(1/k\), or the largest \(k\). So, power iteration is performed on Eq. \eqref{eq:EquivEigen}b, which through rearrangement is equivalent to a shifted inverse iteration of Eq. \eqref{eq:EquivEigen}a, which obtains the desired {\it smallest} \(1/k\).
-
-If the error in the eigenvalue iterations decays asymptotically, an estimate of the dominance ratio can be obtained, enabling a shift to accelerate the eigenvalue iterations \cite{tyobeka}.
+%If the error in the eigenvalue iterations decays asymptotically, an estimate of the dominance ratio can be obtained, enabling a shift to accelerate the eigenvalue iterations \cite{tyobeka}.

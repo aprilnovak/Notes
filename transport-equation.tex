@@ -1,4 +1,4 @@
-\section{The Continuous-Energy Neutron Transport Equation}
+\section{The Neutron Transport Equation}
 \label{sec:CE_NTE}
 
 The \gls{nte} is a statement of the conservation of neutron density \(n\seat\), the {\it expected} number of neutrons at a point in space per unit time \(t\), energy \(E\), and (unit) direction of motion \(\hO\). The {\it true} number of neutrons at a point in space cannot be known, since statistical processes govern the exact distribution of neutrons, and we will be limited to predicting mean or average neutron populations. The neutron density is a function of a seven-dimensional space - space (three), energy (one), direction of motion as angles (two) within and relative to one coordinate plane, and time (one). The energy of the neutron refers to kinetic energy:
@@ -16,6 +16,8 @@ where \(v\equiv\|\vv{v}\|_2\) is used throughout. Because neutron kinetic energi
 \eeq
 
 The direction of motion of a {\it fluid} particle is typically expressed using ``velocity,'' with one vector component corresponding to each spatial dimension. However, this can equivalently be expressed in terms of the kinetic energy \(E\) and two angles \(0\leq\phi\leq2\pi\) and \(0\leq\theta\leq\pi\), where \(\phi\) is the angle in the \(x\)-\(y\) plane from the positive \(x\)-axis and \(\theta\) is the angle between the flight direction and the \(z\)-axis. Like velocity, \(\hO\) has three components corresponding to the three spatial dimensions, where each component is only a function of the angles \(\phi\) and \(\theta\). Using \(\hO\) instead of velocity does not reduce the number of unknowns - instead of working with three velocity components, we work with one energy component and two angular components. However, this decomposition is useful for tabulating scattering cross sections independently as a function of energy and incoming and outgoing directions, rather than jointly in terms of velocity.
+
+In Cartesian coordinates, a neutron moves along constant \(\hO\) until suffering a collision. However, in curvilinear coordinates (cylindrical and spherical), as a neutron streams, the angular coordinates are constantly changing.
 
 \begin{tcolorbox}[breakable]
 In Cartesian coordinates, \(\hO\) is given in terms of unit vectors \(\hat{i}\), \(\hat{j}\), and \(\hat{k}\) corresponding to the \(x\), \(y\), and \(z\) axes, respectively, as:
