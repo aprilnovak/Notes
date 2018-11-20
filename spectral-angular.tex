@@ -1,7 +1,199 @@
 \section{The Spectral Angular Method}
 \label{sec:PN}
 
-An alternative angular discretization strategy to the discrete ordinates equations described in Section \ref{sec:SN} is to expand the angular dependence of the angular flux in a finite series of orthogonal functions. In general 3-D geometries, these functions are typically selected as the spherical harmonics functions described in Section \ref{sec:SH}. The spherical harmonics functions reduce to the Legendre polynomials in 1-D, so for 1-D geometries, these functions are typically selected as the Legendre polynomials described in Section \ref{sec:LegendrePolynomials}. After the flux has been expanded as a finite sum of functions and inserted into the \gls{nte}, the entire equation is multiplied by a function of different order and properties of orthogonality used to derived a set of coupled equations for the coefficients of the expansion. While the discrete ordinates method requires interpolation between the allowable directions of motion \(\hO_n\), the \(P_N\) method yields a continuous angular dependence.
+An alternative angular discretization strategy to the discrete ordinates method described in Section \ref{sec:SN} is to expand the angular dependence of the angular flux in a finite series of orthogonal functions. In general 3-D geometries, these functions are typically selected as the spherical harmonics functions described in Section \ref{sec:SH}. The spherical harmonics functions reduce to the Legendre polynomials in 1-D, so for 1-D geometries, these functions are typically selected as the Legendre polynomials described in Section \ref{sec:LegendrePolynomials}. After the flux has been expanded as a finite sum of functions and inserted into the \gls{nte}, the entire equation is multiplied by an orthogonal function of different order and properties of orthogonality used to derived a set of coupled equations for the coefficients of the expansion. This method is referred to as the ``P$_{\text{N}}$'' method. While the discrete ordinates method requires interpolation between the allowable directions of motion \(\hO_n\), the P$_{\text{N}}$ method yields a continuous angular dependence. The P$_{\text{N}}$ method provides reasonably-correct spatial solutions, but errors are often present in magnitude that can be difficult to detect.
 
-Expanding the angular flux as a finite series of orthogonal functions is known as the \(P_N\) method. This method provides reasonably-correct spatial solutions, but errors are often present in magnitude that can be difficult to detect.
+\subsection{1-D Cartesian Derivation}
 
+Due to the added complexity associated with higher dimensions, the P$_{\text{N}}$ equations are derived here for the time-independent form of the 1-D, monoenergetic transport equation in Cartesian geometries given by Eq. \eqref{eq:TE_Cartesian_1D_2_noenergy}, repeated here for reference, where the external and fission source are bundled together into \(S\), which is assumed isotropic:
+
+\begin{equation*}
+\mu \frac{\partial \psi(z, \mu)}{\partial z} +
+ \Sigma_t(z)\psi(z, \mu) =\int_{4\pi}^{} d\hO  ' \Sigma_s(z, \hO  \cdot\hO  ')\psi(z,\hO  ') + \frac{S(z)}{4\pi}
+ \end{equation*}
+
+The \(P_N\) approximation is made by expanding both the flux and scattering cross section in Legendre polynomials in a similar fashion to the scattering cross section as shown in Eq. \eqref{eq:ScatteringLegendre}. We use Legendre polynomials here because we're in 1-D Cartesian geometry; in higher dimensions or in non-Cartesian frames, the spherical harmonics would be needed.
+
+\begin{equation}
+\label{eq:AngularFluxPN}
+\psi(z,\mu)=\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu)
+\end{equation}
+
+\begin{equation}
+\label{eq:PNScatteringCrossSectionExpansion}
+\Sigma_s(z,\hO  \cdot\hO  ')=\sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\hO  \cdot\hO  ')\rightarrow\sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')
+\end{equation}
+
+where \(n\) is used in the expansion of the flux to differentiate it from \(l\) used in expanding the scattering cross section. From the 1-D form of the addition theorem for spherical harmonics given in Eq. \eqref{eq:AddSpherical1D}, the scattering cross section expansion has been simplified. Now, inserting Eqs. \eqref{eq:AngularFluxPN} and \eqref{eq:AngularFluxPN} into the 1-D transport equation listed in the beginning of this section:
+
+\begin{equation}
+\begin{aligned}
+\mu \frac{\partial}{\partial z}\left(\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu)\right) + \Sigma_t(z)\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) =\quad\quad\\
+\int_{4\pi}^{} d\hO  ' \sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) + \frac{S(z)}{4\pi}
+ \end{aligned}
+ \end{equation}
+
+Because no quantities depend on \(\hO  \), the scattering integral can be integrated over \(0\leq\phi\leq2\pi\) so that the integral becomes a function of only \(\mu\) and space.
+
+\begin{equation}
+\label{eq:PNStep1}
+\begin{aligned}
+\mu \frac{\partial}{\partial z}\left(\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu)\right) + \Sigma_t(z)\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) =\quad\quad\\
+2\pi\int_{-1}^{1} d\mu' \sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) + \frac{S(z)}{4\pi}
+ \end{aligned}
+ \end{equation}
+ 
+The orthogonality property of Legendre polynomials given in Eq. \eqref{eqn:LegendrePolynomialsOrthogonality} does not permit any extra terms (that depend on \(\mu\)) to be present in the integrand. Hence, the first term in Eq. \eqref{eq:PNStep1} must be rewritten using the recursive property of Legendre polynomials given in Eq. \eqref{eqn:LegendrePolynomialRecursion1}:
+
+ \begin{equation}
+\label{eq:PNStep2}
+\begin{aligned}
+\frac{\partial}{\partial z}\left(\sum_{n=0}^{\infty}\frac{\cancel{2n+1}}{4\pi}\phi_n(z)\frac{1}{\cancel{2n+1}} \left\lbrack(n+1)P_{n+1}(\mu) + n P_{n-1}(\mu)\right\rbrack\right) + \Sigma_t(z)\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) =\quad\quad\\
+2\pi\int_{-1}^{1} d\mu' \sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu) + \frac{S(z)}{4\pi}
+ \end{aligned}
+ \end{equation}
+ 
+ Multiplying Eq. \eqref{eq:PNStep2} by \(P_n(\mu)\) and then integrating over \(-1\leq\mu\leq1\) gives, after canceling the \(1/4\pi\) from each term:
+ 
+  \begin{equation}
+\label{eq:PNStep3}
+\begin{aligned}
+\frac{\partial}{\partial z}\left(\sum_{n=0}^{\infty}\left\lbrack\int_{-1}^{1}d\mu\phi_n(z)(n+1)P_{n+1}(\mu)P_n(\mu) + \int_{-1}^{1}d\mu\phi_n(z)n P_{n-1}(\mu)P_n(\mu)\right\rbrack\right) + \quad\quad\\
+\Sigma_t(z)\sum_{n=0}^{\infty}(2n+1)\int_{-1}^{1}d\mu\phi_n(z)P_n(\mu)P_n(\mu) =\quad\quad\\
+\int_{-1}^{1}d\mu P_n(\mu)2\pi\int_{-1}^{1} d\mu' \sum_{l=0}^{\infty}\frac{2l+1}{4\pi}\Sigma_{sl}(z)P_l(\mu)P_l(\mu')\sum_{n=0}^{\infty}(2n+1)\phi_n(z)P_n(\mu)P_n(\mu) + \int_{-1}^{1}d\mu S(z)P_n(\mu)
+ \end{aligned}
+ \end{equation}
+
+Then, applying the orthogonality property of Legendre polynomials from Eq. \eqref{eqn:LegendrePolynomialsOrthogonality} gives:
+
+  \begin{equation}
+\label{eq:PNStep4}
+\begin{aligned}
+\frac{\partial}{\partial z}\left(\sum_{n=0}^{\infty}\left\lbrack\frac{2(n+1)}{2n+1}\phi_{n+1}(z) +\frac{2n}{2n+1} \phi_{n-1}(z)\right\rbrack\right) + \Sigma_t(z)\sum_{n=0}^{\infty}2\phi_n(z) =\quad\quad\\
+2\sum_{l=0}^{\infty}\Sigma_{sl}(z)\sum_{n=0}^{\infty}\phi_n(z) + \int_{-1}^{1}d\mu S(z)P_n(\mu)
+ \end{aligned}
+ \end{equation}
+
+where orthogonality was applied twice to the scattering term. Dividing through by 2 then gives the \(P_N\) equations for 1-D Cartesian geometries:
+
+\begin{equation}
+\label{eq:PNStep5}
+\begin{aligned}
+\frac{\partial}{\partial z}\left(\sum_{n=0}^{\infty}\left\lbrack\frac{n+1}{2n+1}\phi_{n+1}(z) +\frac{n}{2n+1} \phi_{n-1}(z)\right\rbrack\right) + \Sigma_t(z)\sum_{n=0}^{\infty}\phi_n(z) =\quad\quad\\
+\sum_{l=0}^{\infty}\Sigma_{sl}(z)\sum_{n=0}^{\infty}\phi_n(z) + \delta_{n,even}\frac{1}{2}\int_{-1}^{1}d\mu S(z)P_n(\mu)
+ \end{aligned}
+ \end{equation}
+
+Because \(S(z)\) is not a function of \(\mu\), then the integral of a Legendre polynomial over its basis will give zero if that Legendre polynomial is an odd function, and will be nonzero otherwise. Hence, the source term is only present for even \(n\), based on the first few Legendre polynomials shown in Eq. \eqref{eqn:LegendrePolynomials_P0P1P2}. Now, in order to make this solution method tractable, the infinite sums have to be truncated at some point. It is also customary to set \(l=n\) such that the above reduce to:
+
+\begin{equation}
+\label{eq:PNStep6}
+\begin{aligned}
+\frac{\partial}{\partial z}\left(\sum_{n=0}^{N}\left\lbrack\frac{n+1}{2n+1}\phi_{n+1}(z) +\frac{n}{2n+1} \phi_{n-1}(z)\right\rbrack\right) + \Sigma_t(z)\sum_{n=0}^{N}\phi_n(z) =\quad\quad\\
+\sum_{n=0}^{N}\Sigma_{sn}(z)\phi_n(z) +  \delta_{n,even}\frac{1}{2}\int_{-1}^{1}d\mu S(z)P_n(\mu)
+ \end{aligned}
+ \end{equation}
+
+We can require Eq. \eqref{eq:PNStep6} to hold for all \(N\) at once, but we can also require it to hold for each \(N\). This stricter requirement returns the requirement stated in Eq. \eqref{eq:PNStep6}, and hence the \(P_N\) equations in practice produce \(N\) coupled ODEs:
+
+\begin{equation}
+\label{eq:PNEquations}
+\begin{aligned}
+\frac{\partial}{\partial z}\left\lbrack\frac{n+1}{2n+1}\phi_{n+1}(z) +\frac{n}{2n+1} \phi_{n-1}(z)\right\rbrack + \Sigma_t(z)\phi_n(z) =
+\Sigma_{sn}(z)\phi_n(z) +  \delta_{n,even}\frac{1}{2}\int_{-1}^{1}d\mu S(z)P_n(\mu)
+ \end{aligned}
+ \end{equation}
+
+This gives \(N+1\) coupled equations. For example, some of the first \(P_N\) equations are:
+ 
+ \begin{equation}
+ \begin{aligned}
+\frac{\partial\phi_{1}(z)}{\partial z} + \Sigma_t(z)\phi_0(z)=\Sigma_{s0}\phi_0(z)+ S_0(z)\quad\quad n=0\\
+\frac{2}{3}\frac{\partial\phi_{2}(z)}{\partial z}+\frac{1}{3}\frac{\partial\phi_{0}(z)}{\partial z} + \Sigma_t(z)\phi_1(z)=\Sigma_{s1}\phi_1(z)\quad\quad n=1\\
+\frac{3}{5}\frac{\partial\phi_{3}(z)}{\partial z}+\frac{2}{5}\frac{\partial\phi_{1}(z)}{\partial z} + \Sigma_t(z)\phi_2(z)=\Sigma_{s2}\phi_2(z)+ S_2(z)\quad\quad n=2\\
+\end{aligned}
+\end{equation}
+
+In order to truncate the infinite series to \(N\) unknowns, \(\phi_{-1}=0\) is often set, and either \(\phi_{N+1}=0\) or \(\partial\phi_{N+1}/\partial z=0\) is set as the other condition, where both give equivalent results. \(N\) is usually selected to be odd. If \(N\) were even, then artificial symmetry would be introduced into the problem through application of boundary conditions. In addition, for even \(N\), you do not obtain any additional information (non-linearly independent) from the \(P_N\) equations. 
+
+\subsubsubsection{Boundary Conditions}
+Marshak boundary conditions require continuity in the odd flux moments at boundaries. 
+
+\begin{equation}
+2\pi\int_{\hO  \cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi(\mu)=2\mu\int_{\hO  \cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi_b(\mu)\quad\quad l=1, 3, 5\cdots N
+\end{equation}
+
+where \(\psi_b(\mu)\) is the incoming flux. Expanding flux according to Eq. \eqref{eq:AngularFluxPN} gives:
+
+\begin{equation}
+2\pi\int_{\hO  \cdot\hat{n}<0}^{}d\mu P_l(\mu)\sum_{n=0}^{\infty}\frac{2n+1}{4\pi}\phi_n(z)P_n(\mu)=2\mu\int_{\hO  \cdot\hat{n}<0}^{}d\mu P_l(\mu)\psi_b(\mu)\quad\quad l=1, 3, 5\cdots N
+\end{equation}
+
+This gives \((N+1)/2\) boundary conditions. For an isotropic boundary:
+
+\begin{equation}
+\psi_b(\mu)=\frac{\phi_b}{4\pi}
+\end{equation}
+
+For a reflecting boundary, the net current at that boundary is zero. From the form of Eq. \eqref{eq:ScatteringMomentsLegendre}, it can be seen that the flux moments are given by:
+
+\begin{equation}
+\phi_l(z)=2\pi\int_{-1}^{1}d\mu\psi(\mu)P_l(\mu)
+\end{equation}
+
+For \(l=1\), we see that \(\phi_1\) represents the current. Hence, reflecting boundary conditions extend this argument to require that on vacuum boundaries:
+
+\begin{equation}
+\phi_l=0\quad\quad l=1, 3, 5, \cdots, N
+\end{equation}
+
+\subsection{Simplified Spherical Harmonics \(SP_N\)}
+\label{sec:SPN}
+
+The \(SP_N\), or Simplified \(P_N\), method was developed by Ely Gelbard in the early 1960s as an extension of the 1-D Cartesian \(P_N\) equations to higher dimensions. The \(SP_N\) method represents a``middle-ground'' between the full transport equation and diffusion theory. Gelbard ``derived'' the \(SP_N\) equations by extending the 1-D \(P_N\) equations to 3-D, with relatively little mathematical basis. The \(SP_N\) equations are equivalent to the \(P_N\) equations in slab geometries and in other limited cases, and it is only the relatively good numerical results that justified the use of the method initially, since it was not derived in a particularly rigorous manner. It was not until the 1990s that several mathematicians demonstrated that the \(SP_N\) method does have mathematical foundation, and it was shown that the \(SP_N\) equations are an asymptotic approximation to the transport equation. 
+
+The \(SP_N\) method does not always give superior results to diffusion theory, and if the system is not diffusive or not locally 1-D, then the method gives poorer answers than diffusion theory. Away from the asymptotic limit to the transport equation, the \(SP_N\) equations break down. 
+
+However, the \(SP_N\) equations contain more transport physics than the diffusion equation, and hence can be used to capture boundary layers that would be missed by diffusion theory. With the \(P_N\) equations, in the limit of \(N\rightarrow\infty\), the \(P_N\) solutions converge to the true solution, while this is not necessarily the case with the \(SP_N\) equations. Because the \(SP_N\) equations require higher computational cost, the best intermediate choice is to use the \(SP_3\) equations, since these offer much better solutions than the diffusion equation, without exceptionally higher cost.
+
+A heuristic derivation of the \(SP_N\) equations can be performed using simple arguments regarding the form of the 1-D \(P_N\) equations in Eq. \eqref{eq:PNEquations}. The key to deriving the \(SP_N\) equations is to transform Eq. \eqref{eq:PNEquations} such that the derivative in the even-\(n\) equations is replaced by a divergence, while the derivative in the odd-\(n\) equations is replaced by a gradient. The \(SP_N\) equations therefore are:
+
+\begin{equation}
+\label{eq:SPNEquations}
+\begin{aligned}
+\frac{n+1}{2n+1}\nabla\cdot\vv{\phi}_{n+1}(z)+\frac{n}{2n+1}\nabla\cdot\vv{\phi}_{n-1}(z)+ \Sigma_t(z)\phi_n(z)=\Sigma_{sn}\phi_n(z)+ S_n(z)\quad \textrm{even - } n\\
+\frac{n+1}{2n+1}\nabla\phi_{n+1}(z)+\frac{n}{2n+1}\nabla\phi_{n-1}(z)+ \Sigma_t(z)\vv{\phi}_n(z)=\Sigma_{sn}\vv{\phi}_n(z)\quad \textrm{odd - } n\\
+\end{aligned}
+ \end{equation}
+
+This first-order form gives \(N+1\) equations. The \(SP_N\) equations can also be written in second-order form by solving for the odd moments in the odd-\(n\) equations, and then substituting this into the even moment equations. From the odd-\(n\) equation in Eq. \eqref{eq:SPNEquations}, we obtain:
+
+\begin{equation}
+\vv{\phi}_n(z)=\frac{1}{\Sigma_t(z)-\Sigma_{sn}(z)}\left(\frac{n+1}{2n+1}\nabla\phi_{n+1}(z)+\frac{n}{2n+1}\nabla\phi_{n-1}(z)\right)
+\end{equation}
+
+because \(\phi_{n+1}\) and \(\phi_n-1\) appear in the \(SP_N\) equations, the above can be used to determine the following additional relationships:
+
+\begin{equation}
+\begin{aligned}
+\vv{\phi}_{n-1}(z)=\frac{1}{\Sigma_t(z)-\Sigma_{s,n-1}(z)}\left(\frac{n}{2n-1}\nabla\phi_{n}(z)+\frac{n-1}{2n-1}\nabla\phi_{n-2}(z)\right)\\
+\vv{\phi}_{n+1}(z)=\frac{1}{\Sigma_t(z)-\Sigma_{s,n+1}(z)}\left(\frac{n+2}{2n+3}\nabla\phi_{n+2}(z)+\frac{n+1}{2n+3}\nabla\phi_{n}(z)\right)\\
+\end{aligned}
+\end{equation}
+
+Inserting these expressions into the first-order form of the \(SP_N\) equations Eq. \eqref{eq:SPNEquations} then gives the second-order form, which holds for even \(n\):
+
+\begin{equation}
+\label{eq:SPNEquations}
+\begin{aligned}
+\frac{n+1}{2n+1}\nabla\cdot\left\lbrack\frac{1}{\Sigma_t(z)-\Sigma_{s,n+1}(z)}\left(\frac{n+2}{2n+3}\nabla\phi_{n+2}(z)+\frac{n+1}{2n+3}\nabla\phi_{n}(z)\right)\right\rbrack+\quad\quad\\
+\frac{n}{2n+1}\nabla\cdot\left\lbrack\frac{1}{\Sigma_t(z)-\Sigma_{s,n-1}(z)}\left(\frac{n}{2n-1}\nabla\phi_{n}(z)+\frac{n-1}{2n-1}\nabla\phi_{n-2}(z)\right)\right\rbrack+\quad\quad\\
+ (\Sigma_t(z)-\Sigma_{sn})\phi_n(z)= S_n(z)\\
+\end{aligned}
+ \end{equation}
+
+The second-order form of the \(SP_N\) equations results in the need to solve half as many equations as the first-order form. In addition, the diffusive behavior of the \(SP_N\) equations makes them much more amenable to solution than the hyperbolic \(P_N\) equations. 
+
+\subsubsection{Boundary Conditions}
+
+Heuristic arguments can be used to determine how the 1-D boundary conditions for the \(P_N\) method can be extended to the \(SP_N\) method. All derivatives are transformed according to \(\partial(.)/\partial x\rightarrow\hat{n}\cdot\nabla(.)\).

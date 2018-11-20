@@ -13,17 +13,24 @@ The diffusion equation is derived from the \gls{nte} by making some simplifying 
 \vv{J}(\vv{r},E,t)\equiv\int_{4\pi}^{}d\hO  \vv{j}\seat
 \eeq
 
+where \(\vv{j}\) is the angular current:
+
+\beq
+\label{eq:AngularCurrent}
+\vv{j}\spa = \psi\spa\hO  
+\eeq
+
 Our first attempt to obtain an equation solely in terms of \(\phi\) will be to integrate the \gls{nte} in Eq. \eqref{eq:nte1} over angle, using the definitions of scalar flux and current in Eqs. \eqref{eq:ScalarFluxDef} and \eqref{eq:Current}:
 
 \beqa
 \label{eq:NeutronContinuityEquation}
 &\frac{\partial}{\partial t}\left(\frac{\phi\sset}{v(E)}\right)+\nabla\cdot\vv{J}\sset+\Sigma_t\sset\phi\sset=\\
 &\hspace{1cm}\int_{4\pi}d\hO\inscatteringsource\psi\seatelse+\\
-&\hspace{2cm}\chi_p(E)\dEprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
+&\hspace{2cm}\chi_p(E)\left(1-\beta\right)\dEprime\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
 &\hspace{3cm}\sum_{j=1}^J\chi_{d,j}(E)\lambda_jC_j(\vv{r},t)+S\sset
 \eeqa
 
-The time term is obtained by expanding via the chain rule, integrating in angle (by noting that the time derivative in the \(\partial/\partial t\) operator can be brought outside the integral due to its lack of dependence on angle, and then brought back in after introducing \(\phi\)), and collapsing the chain rule. The streaming term was written as an area integral by reversing the divergence rule, and then re-applying the divergence rule after angle integration. The fission and total cross sections have been assumed independent of angle such that they could be brought outside the angle integration, as is commonplace. 
+The time term is obtained by expanding via the chain rule, integrating in angle (by noting that the time derivative can be brought outside the integral due to its lack of dependence on angle, and then brought back in after introducing \(\phi\)), and collapsing the chain rule. The streaming term is written as an area integral by reversing the divergence rule, and then re-applying the divergence rule after angle integration. The fission and total cross sections have been assumed independent of angle such that they could be brought outside the angle integration, as is commonplace. 
 
 The inscattering source term requires additional effort to switch the order of integration of \(\hO'\) and \(\hO\). By assuming rotational symmetry such that Eq. \eqref{eq:OmegaDotOmega} holds, the single differential scattering cross section is defined by integrating over \(\hO\):
 
@@ -39,7 +46,7 @@ Switching the order of angle integrations in the in-scattering term and insertin
 \label{eq:NeutronContinuityEquation1}
 &\frac{\partial}{\partial t}\left(\frac{\phi\sset}{v(E)}\right)+\nabla\cdot\vv{J}\sset+\Sigma_t\sset\phi\sset=\\
 &\hspace{1cm}\dEprime\Sigma_s(\vv{r},E'\rightarrow E,t)\phi(\vv{r},E',t)+\\
-&\hspace{2cm}\chi_p(E)\dEprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
+&\hspace{2cm}\chi_p(E)\left(1-\beta\right)\dEprime\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
 &\hspace{3cm}\sum_{j=1}^J\chi_{d,j}(E)\lambda_jC_j(\vv{r},t)+S\sset
 \eeqa
 
@@ -49,11 +56,11 @@ Eq. \eqref{eq:NeutronContinuityEquation1} is sometimes referred to as the ``neut
 \label{eq:TEAngleAngleIntegrated2}
 &\frac{\partial}{\partial t}\left(\frac{\vv{J}\sset}{v(E)}\right)+\nabla\cdot\int_{4\pi}d\hO\psi\seat\hO\hO+\Sigma_t\sset\vv{J}\sset=\\
 &\hspace{1cm}\int_{4\pi}d\hO\inscatteringsource\psi(\vv{r},E',\hO',t)\hO\ +\\
-&\hspace{2cm}\int_{4\pi}d\hO\chi_p(E,\hO)\hO\dEprime \left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)\ +\\
+&\hspace{2cm}\left(1-\beta\right)\int_{4\pi}d\hO\chi_p(E,\hO)\hO\dEprime\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)\ +\\
 &\hspace{3cm}\int_{4\pi}d\hO\hO\delayedfissionsource+\int_{4\pi}d\hO S\seat\hO
 \eeqa
 
-The time term is obtained by expanding via the chain rule, integrating in angle (by noting that the time derivative in the \(\partial/\partial t\) operator can be brought outside the integral due to its lack of dependence on angle, and then brought back in after introducing \(\phi\)), and collapsing the chain rule. The gradient is brought outside the angular integral in the streaming term because the operator is independent of angle. Again, the total and fission cross sections are assumed independent of angle such that they can be brought outside the angle integration, with the definition of scalar flux in Eq. \eqref{eq:ScalarFluxDef} used in the fission source term. If the prompt and/or delayed fission spectra are isotropic, then the first moments of \(\chi_p\) and \(\chi_d\) are zero, and the fission source terms are zero. Likewise, the external source integral represents the first moment of the external source, which will be zero if the external source is isotropic.
+The time term is obtained by expanding via the chain rule, integrating in angle (by noting that the time derivative can be brought outside the integral due to its lack of dependence on angle, and then brought back in after introducing \(\phi\)), and collapsing the chain rule. The gradient in the streaming term is brought outside the angular integral because the operator is independent of angle. Again, the total and fission cross sections are assumed independent of angle such that they can be brought outside the angle integration, with the definition of scalar flux in Eq. \eqref{eq:ScalarFluxDef} used in the fission source term. If the prompt and/or delayed fission spectra are isotropic, then the first moments of \(\chi_p\) and \(\chi_d\) are zero, and the fission source terms are zero. Likewise, the external source integral represents the first moment of the external source, which will be zero if the external source is isotropic.
 
 The inscattering source term again requires some additional effort and tracking of the multiplication by each component of \(\hO\). The \(x\)-component multiplication, with the angle order of integration swapped, reads as:
 
@@ -76,32 +83,24 @@ Assuming rotational symmetry such that \(\Sigma_s\) depends on \(\hO\cdot\hO'\) 
 3\int_{4\pi}d\hO'\dEprime \int_{4\pi}d\hO\Sigma_s(\vv{r},E'\rightarrow E,\hO'\cdot\hO,t)\psi\seatelse\Omega_x\Omega'_x\Omega'_x
 \eeq
 
-Now, by recognizing that the dot product between directions of motion can be reversed from \(\hO'\cdot\hO'\) to \(\hO'\cdot\hO\) gives the following:
+Now, by recognizing that the dot product between directions of motion can be reversed from \(\hO\cdot\hO'\) to \(\hO'\cdot\hO\) gives the following:
 
 \beq
 \label{eq:Inscat2}
 \dEprime \Sigma_{s,1}(\vv{r},E'\rightarrow E,t)\vv{J}(\vv{r},E',t)
 \eeq
 
-where the definition of current from Eq. \eqref{eq:Current} has been used and the first moment of the scattering cross section is defined as:
-
-\beq
-\Sigma_{s,1}(\vv{r},E'\rightarrow E,t)\equiv 2\pi\int_{-1}^1d\mu\Sigma_s(\vv{r},E'\rightarrow E,\mu,t)\mu 
-\eeq
-
-Combining Eq. \eqref{eq:TEAngleAngleIntegrated2} with the form of the in-scattering source in Eq. \eqref{eq:Inscat2} gives:
+where the definition of current from Eq. \eqref{eq:Current} has been used and the first moment of the scattering cross section is defined in Eq. \eqref{eq:ScatteringMomentsLegendre} with \(l=1\). Combining Eq. \eqref{eq:TEAngleAngleIntegrated2} with the form of the in-scattering source in Eq. \eqref{eq:Inscat2} gives:
 
 \beqa
 \label{eq:TEAngleAngleIntegrated2v2}
 &\frac{\partial}{\partial t}\left(\frac{\vv{J}\sset}{v(E)}\right)+\nabla\cdot\int_{4\pi}d\hO\psi\seat\hO\hO+\Sigma_t\sset\vv{J}\sset=\\
 &\hspace{1cm}\dEprime \Sigma_{s,1}(\vv{r},E'\rightarrow E,t)\vv{J}(\vv{r},E',t)+\\
-&\hspace{2cm}\int_{4\pi}d\hO\chi_p(E,\hO)\hO\dEprime \left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
+&\hspace{2cm}\left(1-\beta\right)\int_{4\pi}d\hO\chi_p(E,\hO)\hO\dEprime\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
 &\hspace{3cm}\int_{4\pi}d\hO\hO\delayedfissionsource+\int_{4\pi}d\hO S\seat\hO
 \eeqa
 
-As can be seen in Eq. \eqref{eq:TEAngleAngleIntegrated2v2}, attempting to obtain an equation solely in terms of \(\vv{J}\) has been unsuccessful due to the streaming term. Because the streaming term is the only term that contains a factor of \(\hO\), each multiplication by \(\hO\) and integration over angle will introduce a new term that we cannot express analytically in terms of \(\vv{J}\) or \(\phi\). So, the diffusion equation cannot be derived by simply integrating angular dependence from the \gls{nte} or by performing other tricks like first multiplying by \(\hO\) and then integrating over angle. 
-
-At this point, it is clear that a simpler version of the \gls{nte} in terms of solely \(\phi\) or \(\vv{J}\) cannot be derived, and a more explicit assumption regarding the angular dependence of the angular flux must be made. The diffusion equation is derived from the angle-integrated \gls{nte} in Eq. \eqref{eq:NeutronContinuityEquation1} by assuming a \(P_1\) expansion for the angular dependence of the angular flux according to the form in Eq. \eqref{eq:ScatteringLegendre}:
+Attempting to obtain an equation solely in terms of \(\vv{J}\) has been unsuccessful due to the streaming term. Because the streaming term is the only term that contains a factor of \(\hO\), each multiplication by \(\hO\) and integration over angle will introduce a new term that cannot be expressed analytically in terms of \(\vv{J}\) or \(\phi\). So, an equation in terms of \(\vv{J}\) or \(\phi\) alone cannot be derived by simply integrating angular dependence from the \gls{nte} or by performing other tricks like first multiplying by \(\hO\) and then integrating over angle. An explicit assumption regarding the angular dependence of the angular flux must be made. The diffusion equation is derived from the angle-integrated \gls{nte} in Eq. \eqref{eq:NeutronContinuityEquation1} by assuming a P$_{1}$ expansion for the angular dependence of the angular flux according to the form in Eq. \eqref{eq:ScatteringLegendre}:
 
 \beqa
 \label{eq:FluxLegendreP1}
@@ -110,7 +109,7 @@ At this point, it is clear that a simpler version of the \gls{nte} in terms of s
 \eeqa
 %\frac{1}{4\pi}\phi\sset+\frac{3}{4\pi}\vv{J}\sset\hO
 
-where \(\psi_l\) is the \(l\)-th moment of the angular flux. Based on the definitions of the first few Legendre polynomials in Eq. \eqref{eqn:LegendrePolynomials_P0P1P2}, a \(P_1\) approximation is equivalent to assuming linear anisotropy in the angular flux. Using a linear approximation for anisotropy is reasonably accurate if the angular flux is only weakly dependent on angle. To interpret the physical meaning of the flux moments \(\psi_0\) and \(\psi_1\), integrate Eq. \eqref{eq:FluxLegendreP1} over angle:
+where \(\psi_l\) is the \(l\)-th moment of the angular flux. Based on the definitions of the first few Legendre polynomials in Eq. \eqref{eqn:LegendrePolynomials_P0P1P2}, a P$_1$ approximation is equivalent to assuming linear anisotropy in the angular flux, which is reasonably accurate if the angular flux is only weakly dependent on angle. To interpret the physical meaning of the flux moments \(\psi_0\) and \(\psi_1\), integrate Eq. \eqref{eq:FluxLegendreP1} over angle:
 
 \beqa
 \label{eq:FluxLegendreP1_AngleIntegration}
@@ -119,7 +118,7 @@ where \(\psi_l\) is the \(l\)-th moment of the angular flux. Based on the defini
    = &\ \psi_0
 \eeqa
 
-where Eqs. \eqref{eq:SolidAngleIntegration} and \eqref{eq:OmegaCartesianIntegration} have been used. Eq. \eqref{eq:FluxLegendreP1_AngleIntegration}  shows that the zero-th moment of the angular flux is equivalent to the scalar flux. In other words, the scalar flux represents the angular flux with all angular dependence ``averaged out.'' To interpret \(\psi_1\), multiply Eq. \eqref{eq:FluxLegendreP1} by \(\hO\) and then integrate over solid angle:
+where Eqs. \eqref{eq:SolidAngleIntegration} and \eqref{eq:OmegaCartesianIntegration} have been used. Eq. \eqref{eq:FluxLegendreP1_AngleIntegration}  shows that the zero-th moment of the angular flux is equivalent to the scalar flux. In other words, the scalar flux represents the angular flux with all angular dependence ``averaged out.'' This is also self-evident from the definition of the scalar flux in Eq. \eqref{eq:ScalarFluxDef}. To interpret \(\psi_1\), multiply Eq. \eqref{eq:FluxLegendreP1} by \(\hO\) and then integrate over solid angle:
 
 \beqa
 \label{eq:FluxLegendreP1_AngleIntegration2}
@@ -127,20 +126,22 @@ where Eqs. \eqref{eq:SolidAngleIntegration} and \eqref{eq:OmegaCartesianIntegrat
 \vv{J}\sset = &\ \psi_1\sset\\
 \eeqa
 
-where Eqs. \eqref{eq:OmegaCartesianIntegration} and \eqref{eq:4PiOmegaOmega} have been used. Eq. \eqref{eq:FluxLegendreP1_AngleIntegration2} shows that the first moment of the angular flux is equivalent to the current. Eqs. \eqref{eq:FluxLegendreP1_AngleIntegration} and \eqref{eq:FluxLegendreP1_AngleIntegration2} are also obvious simply from their definitions in Eqs. \eqref{eq:ScalarFluxDef} and \eqref{eq:Current}. Inserting the expansion in Eq. \eqref{eq:FluxLegendreP1} into Eq. \eqref{eq:TEAngleAngleIntegrated2v2} for \(\psi\) gives:
+where Eqs. \eqref{eq:OmegaCartesianIntegration} and \eqref{eq:4PiOmegaOmega} have been used. Eq. \eqref{eq:FluxLegendreP1_AngleIntegration2} shows that the first moment of the angular flux is equivalent to the current. This is also self-evident from the definition of the scalar current in Eq. \eqref{eq:Current}. Inserting the expansion in Eq. \eqref{eq:FluxLegendreP1} into Eq. \eqref{eq:TEAngleAngleIntegrated2v2} for \(\psi\) gives:
 
 \beqa
 \label{eq:P1a}
 &\frac{\partial}{\partial t}\left(\frac{\vv{J}\sset}{v(E)}\right)+\frac{1}{3}\nabla\phi(\vv{r},E,t)+\Sigma_t\sset\vv{J}\sset=\\
 &\hspace{1cm}\dEprime \Sigma_{s,1}(\vv{r},E'\rightarrow E,t)\vv{J}(\vv{r},E',t)+\\
-&\hspace{2cm}\int_{4\pi}d\hO\chi_p(E,\hO)\hO\dEprime \left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
+&\hspace{2cm}\left(1-\beta\right)\int_{4\pi}d\hO\chi_p(E,\hO)\hO\dEprime\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
 &\hspace{3cm}\int_{4\pi}d\hO\hO\delayedfissionsource+\int_{4\pi}d\hO S\seat\hO
 \eeqa
 
-where Eqs. \eqref{eq:4PiOmegaOmega} and \eqref{eq:4PiOmegaOmegaOmega} have been used to simplify the streaming term. When combined with the neutron continuity equation in Eq. \eqref{eq:NeutronContinuityEquation1} (which makes no assumptions regarding expansion of the angular dependence of the angular flux), Eqs. \eqref{eq:P1a} and \eqref{eq:NeutronContinuityEquation1} are equivalent to the \(P_1\) equations, since the approximation of linearly anisotropic angular dependence in the angular flux is equivalent to a first-order expansion in Legendre polynomials in the one-dimensional space \(\hO=\mu\hat{k}\). Rather than solve Eqs. \eqref{eq:NeutronContinuityEquation1} and \eqref{eq:P1a} in a coupled sense for four unknowns (\(\phi\) and three components of \(\vv{J}\)), two additional simplifications will yield a single equation in terms of \(\phi\) alone, known as the diffusion equation. To obtain the diffusion equation, we assume that the fission and external sources are isotropic such that the first moments of the fission and external sources that appear in Eq. \eqref{eq:P1a} are zero. We also assume that the time rate of change of the current relative to the total interaction rate is negligible such that the time-dependent term in Eq. \eqref{eq:P1a} can be neglected:
+where Eqs. \eqref{eq:4PiOmegaOmega} and \eqref{eq:4PiOmegaOmegaOmega} have been used to simplify the streaming term. When combined with the neutron continuity equation in Eq. \eqref{eq:NeutronContinuityEquation1} (which makes no assumptions regarding expansion of the angular dependence of the angular flux), Eqs. \eqref{eq:P1a} and \eqref{eq:NeutronContinuityEquation1} are equivalent to the P$_{1}$ equations, since the approximation of linearly anisotropic angular dependence in the angular flux is equivalent to a first-order expansion in Legendre polynomials in the one-dimensional space \(\hO=\mu\hat{k}\). 
+
+Rather than solve Eqs. \eqref{eq:NeutronContinuityEquation1} and \eqref{eq:P1a} in a coupled sense for four unknowns (\(\phi\) and three components of \(\vv{J}\)), two additional simplifications will yield a single equation in terms of \(\phi\) alone, known as the diffusion equation. To obtain the diffusion equation, we assume that the prompt fission neutron, delayed neutron, and external sources are isotropic such that the first moments of the fission and external sources that appear in Eq. \eqref{eq:P1a} are zero. We also assume that the time rate of change of the current relative to the total interaction rate is negligible such that the time-dependent term in Eq. \eqref{eq:P1a} can be neglected:
 
 \beq
-\frac{\partial}{\partial t}\left(\frac{\vv{J}}{v}\right)\ll\Sigma_t\vv{J}
+\frac{\partial}{\partial t}\left(\frac{\vv{J}(\vv{r},E,t)}{v(E)}\right)\ll\Sigma_t(\vv{r},E,t)\vv{J}(\vv{r},E,t)
 \eeq
 
 Combining these two assumptions simplifies Eq. \eqref{eq:P1a} to:
@@ -164,9 +165,7 @@ which gives the diffusion-like relationship between flux and current:
 \vv{J}=-D\nabla\phi
 \eeq
 
-Relationships of the type shown in Eq. \eqref{eq:FicksLaw} are often referred to as ``Fick's law.'' No exact relationship exists between \(\vv{J}\) and \(\phi\) - the relationships shown in Eqs. \eqref{eq:DiffusionCoeff} and \eqref{eq:FicksLaw} arise from the \(P_1\) equations (which assumes a certain level of angular anisotropy) with the additional assumption of isotropic sources and small time rate of change of the current. 
-
-The definition of the diffusion coefficient in Eq. \eqref{eq:DiffusionCoeff} is not particularly useful, since its definition depends on the current, which is unknown. A simpler expression for the diffusion coefficient can be obtained by assuming that the contribution to the energy transfer in a scattering collision is purely isotropic, that is:
+No exact relationship exists between \(\vv{J}\) and \(\phi\) - the relationships shown in Eqs. \eqref{eq:DiffusionCoeff} and \eqref{eq:FicksLaw} arise from the P$_{1}$ equations (which assumes a certain level of angular anisotropy) with the additional assumption of isotropic sources and small time rate of change of the current. The definition of the diffusion coefficient in Eq. \eqref{eq:DiffusionCoeff} is not particularly useful, since its definition depends on the current, which is unknown. A simpler expression can be obtained by assuming that the contribution to the energy transfer in a scattering collision is purely isotropic, that is:
 
 \beq
 \label{eq:IsotropicEnergyTransfer}
@@ -185,37 +184,31 @@ where \(\bar{\mu}\) is the average of the cosine of the scattering angle weighte
 
 \beqa
 \label{eq:AverageMuDef}
-\bar{\mu}\equiv&\langle\hO\cdot\hO'\rangle\\
-=&\frac{\int_{4\pi}d\hO\Sigma_s(\vv{r},E,\hO\cdot\hO',t)\hO\cdot\hO'}{\int_{4\pi}d\hO\Sigma_s(\vv{r},E,\hO\cdot\hO',t)}\\
+\bar{\mu}\equiv&\langle\mu\rangle\\
+=&\frac{\int_{-1}^1d\mu\ \Sigma_s(\vv{r},E,\mu,t)\mu}{\int_{-1}^1d\mu\ \Sigma_s(\vv{r},E,\mu,t)}\\
 =&\frac{\Sigma_{s,1}(\vv{r},E,t)}{\Sigma_s(\vv{r},E,t)}
 \eeqa
 
-Eq. \eqref{eq:OmegaDotOmega} is used to provide the interpretation of \(\bar{\mu}\) representing the average of the cosine of the angle between the incoming and outgoing scattering directions of motion. Nuclides with more significant forward scattering, such as the lighter elements, will have larger diffusion coefficients. % TODO: Eqatuions 4-127 through 4-129 after reading earlier chapters
-
-Additional motivation for the use of Eq. \eqref{eq:DiffusionCoeff} as a definition for the diffusion coefficient require knowledge of the neutron slowing down process. Alternatively, corrections may be made to the simpler diffusion coefficient in Eq. \eqref{eq:DiffusionCoeff2} to better account for anisotropic energy transfer in scattering.
-
-Insertion of Eq. \eqref{eq:FicksLaw} into the neutron continuity equation in Eq. \eqref{eq:NeutronContinuityEquation1} gives the diffusion equation:
+% TODO: Eqatuions 4-127 through 4-129 after reading earlier chapters
+Nuclides with more significant forward scattering, such as the lighter elements, will have larger diffusion coefficients. Corrections may be made to the simpler diffusion coefficient in Eq. \eqref{eq:DiffusionCoeff2} to better account for anisotropic energy transfer in scattering. Inserting Eq. \eqref{eq:FicksLaw} into Eq. \eqref{eq:NeutronContinuityEquation1} gives the diffusion equation:
 
 \beqa
 \label{eq:DiffusionEquation}
-&\frac{\partial}{\partial t}\left(\frac{\phi(\vv{r},E,t)}{v(E)}\right)-\nabla\cdot\left\lbrack D\nabla\phi(\vv{r},E,t)\right\rbrack+\Sigma_t\sset\phi\sset=\\
+&\frac{\partial}{\partial t}\left(\frac{\phi(\vv{r},E,t)}{v(E)}\right)-\nabla\cdot\left\lbrack D(\vv{r},E,t)\nabla\phi(\vv{r},E,t)\right\rbrack+\Sigma_t\sset\phi\sset=\\
 &\hspace{1cm}\dEprime\Sigma_s(\vv{r},E'\rightarrow E,t)\phi(\vv{r},E',t)+\\
-&\hspace{2cm}\int_{4\pi}d\hO\chi_p(E,\hO)\dEprime\left\lbrack1-\beta(E')\right\rbrack\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
-&\hspace{3cm}\int_{4\pi}d\hO\delayedfissionsource+S\sset
+&\hspace{2cm}\left(1-\beta\right)\chi_p(E)\dEprime\nu(E')\Sigma_f(\vv{r},E',t)\phi(\vv{r},E',t)+\\
+&\hspace{3cm}\sum_{j=1}^J\chi_{d,j}(E)\lambda_jC_j(\vv{r},t)+S\sset
 \eeqa
 
-where it has been assumed that Several assumptions were made in the mathematical derivation of the diffusion equation. These are summarized here as follows:
+Several assumptions were made in the mathematical derivation of the diffusion equation. These are summarized here as follows:
 
 \begin{enumerate}
-\item The angular flux is only linearly dependent on angle due to the use of the \(P_1\) approximation for the angular flux dependence. For this reason, the diffusion approximation is typically invalid near boundaries or regions with large variation in cross section that induce a stronger directional dependence in the angular flux.
-\item The rate of change of the current is much smaller than the characteristic time scale of nuclear interactions
+\item The angular flux is only linearly dependent on angle due to the use of the P$_{1}$ approximation for the angular flux dependence. For this reason, the diffusion approximation is typically invalid near boundaries or regions with large variation in cross section that induce a stronger directional dependence in the angular flux.
+\item The rate of change of the current is much smaller than the characteristic time scale of nuclear interactions.
+\item Highly anisotropic fission neutron and external sources.
 \end{enumerate}
 
-A separate set of assumptions are implicitly present when the diffusion equation is used as a model for neutron transport. These assumptions are summarized here as follows:
-
-\begin{enumerate}
-\item Neutron collisions occur very frequently and result in neutron travel being well-approximated as a ``random-walk'' process. This may be a good approximation for very homogeneous media, but for heterogeneous media where the neutron mean free path is of the same order as important geometrical features, neutrons may stream large distances relative to the characteristic dimensions of the problem, invalidating the random-walk assumption. For this reason, the diffusion approximation is typically invalid when the neutron mean free path is larger than the characteristic dimensions of the system % TODO: put in approximate values for mfp's for fast and thermal neutrons 
-\end{enumerate}
+The use of a Fick's law approximation implies that neutron collisions occur sufficiently frequently that they are well-approximated as a diffusive process. For very heterogeneous media, where the \gls{mfp} is on the same scale as important geometrical features, neutrons may stream large distances relative to the characteristic dimensions of the problem. For this reason, the diffusion approximation is typically invalid when the neutron \gls{mfp} is larger than the characteristic dimensions of the system.
 
 A transport cross section is commonly defined as:
 
