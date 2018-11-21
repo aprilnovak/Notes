@@ -35,3 +35,108 @@ The algorithm in Eqs. \eqref{eq:NonlinearEigen} and \eqref{eq:k_update} is equiv
 Eq. \eqref{eq:EquivEigen}a shows that the eigenvalue solution scheme is equivalent to a power iteration that finds the largest eigenvalue \(k\), since solution of the steady-state, fixed source problem in a nonmultiplying medium is equivalent to inversion of the destruction operator. So, power iteration is performed on Eq. \eqref{eq:EquivEigen}b, which through rearrangement is equivalent to a shifted inverse iteration of Eq. \eqref{eq:EquivEigen}a, which obtains the desired {\it smallest} \(1/k\).
 
 %If the error in the eigenvalue iterations decays asymptotically, an estimate of the dominance ratio can be obtained, enabling a shift to accelerate the eigenvalue iterations \cite{tyobeka}.
+
+\subsection{Power Iteration}
+
+Provided \(\textbf{A}\) has a full set of eigenvectors that span \(\mathbb{R}^m\), and vector can be expressed as a linear combination of those eigenvectors: 
+
+\beq
+\vv{x}=\sum_{i=0}^mC_i\vv{v}_i
+\eeq
+
+Repeated application of \(\textbf{A}\) to that initial vector will eventually stretch and rotate the vector in the direction of the eigenvector corresponding to the largest eigenvalue:
+
+\beqa
+\textbf{A}^k\vv{x}=&\ \sum_{i=0}^mC_i\lambda_i^k\vv{v}_i\\
+=&\ C_1\lambda_1^k\vv{v}_1+\sum_{i=1}^mC_i\left(\frac{\lambda_i}{\lambda_1}\right)^k\vv{v}_i
+\eeqa
+
+Provided the initial vector \(\vv{x}\) has a nonzero component in the direction of every eigenvector, power iteration converges \(\vv{x}\) to the eigenvector corresponding to the largest eigenvalue according to the dominance ratio to the \(k\)-th power:
+
+\beq
+\left\Vert\vv{x}_k-\pm\vv{v}_1\right\Vert=\mathscr{O}\left\lbrack\left(\frac{\lambda_2}{\lambda_1}\right)^k\right\rbrack
+\eeq
+
+where the dominance ratio is \(\lambda_2/\lambda_1\). In numerical implementation, power iteration begins with some (usually selected as random) vector \(\vv{x}\), and the following is repeated until convergence of the eigenvector and eigenvalue:
+
+\beqa
+\label{eq:PowerIteration}
+\vv{x}_{i+1}=\frac{\textbf{A}\vv{x}_i}{\|\textbf{A}\vv{x}_i\|}
+\eeqa
+
+where the eigenvalue given an eigenvector iterate is the Rayleigh quotient:
+
+\beq
+\lambda_{i+1}=\vv{x}_{i+1}^T\textbf{A}\vv{x}_{i+1}
+\eeq
+
+where the normalization in Eq. \eqref{eq:PowerIteration} ensures that the eigenvalue does not grow to infinity. The Rayleigh quotient in general is defined as:
+
+\beq
+r(\vv{x})\equiv\frac{\vv{x}^T\textbf{A}\vv{x}}{\vv{x}^T\vv{x}}
+\eeq
+
+and can be interpreted as the ``eigenvalue'' corresponding to an ``eigenvector'' \(\vv{x}\). If \(\vv{x}\) is an eigenvector, the Rayleigh quotient is the corresponding eigenvalue. The Rayleigh quotient is a quadratically-accurate estimate of an eigenvalue given a vector \(\vv{x}\). This can be shown by computing the gradient of the Rayleigh quotient:
+
+\beqa
+\label{eq:GradientRayleigh}
+\frac{\partial r(\vv{x})}{\partial \vv{x}}=&\frac{\vv{x}^T\vv{x}\left(\vv{x}^T\textbf{A}+\textbf{A}\vv{x}\right)-\vv{x}^T\textbf{A}\vv{x}2\vv{x}}{\left(\vv{x}^T\vv{x}\right)^2}\\
+=&\frac{2}{\vv{x}^T\vv{x}}\left\lbrack\textbf{A}\vv{x}-\vv{x}r(\vv{x})\right\rbrack\hspace{2cm}\text{(symmetric \textbf{A})}
+\eeqa
+
+Exactly at an eigenvector, the gradient of the Rayleigh quotient with respect to the eigenvector is zero. The Rayleigh quotient corresponding to some vector \(\vv{x}\) can be written as a Taylor series expansion of the Rayleigh quotient evaluated at some nearby eigenvector \(\vv{q}\):
+
+\beq
+r(\vv{x})=r(\vv{q})+\underbrace{\frac{\partial r(\vv{q})}{\partial\vv{x}}\|\vv{x}-\vv{q}\|}_{=\ 0}+\frac{\partial ^2r(\vv{q})}{\partial\vv{x}^2}\|\vv{x}-\vv{q}\|^2+\mathscr{O}\left(\|\vv{x}-\vv{q}\|^3\right)
+\eeq
+
+where the fact that the gradient of the Rayleigh quotient is zero at eigenvectors shown in Eq. \eqref{eq:GradientRayleigh} has been used. Therefore, because the Rayleigh quotient is used to compute the eigenvalue estimate in power iteration, power iteration converges the eigenvalue quadratically:
+
+\beq
+|\lambda_k-\lambda_1|=\mathscr{O}\left\lbrack\left(\frac{\lambda_2}{\lambda_1}\right)^{2k}\right\rbrack
+\eeq
+
+\subsection{Inverse Iteration}
+\label{sec:InverseIteration}
+
+Inverse iteration is a variant of power iteration based on the recognition that the the eigenvalues of \(\textbf{A}\) are simply the inverses of the eigenvalues of \(\textbf{A}^{-1}\):
+
+\begin{subequations}
+\label{eq:InverseIteration}
+\begin{eqnarray}
+\textbf{A}\vv{x}&=&\lambda\vv{x}\\
+\textbf{A}^{-1}\vv{v}&=&\mu\vv{v}
+\end{eqnarray}
+\end{subequations}
+
+where \(\vv{x}\) and \(\lambda\) are an eigenvector and corresponding eigenvalue for \(\textbf{A}\), while \(\vv{v}\) and \(\mu\) are an eigenvector and corresponding eigenvalue for \(\textbf{A}^{-1}\). Combining these two equations by first taking the inverse of the Eq. \eqref{eq:InverseIteration} gives:
+
+\beqa
+\vv{x}^{-1}\textbf{A}^{-1}=&\vv{x}^{-1}\lambda^{-1}\\
+\vv{x}^{-1}\textbf{A}^{-1}\vv{v}=&\vv{x}^{-1}\lambda^{-1}\vv{v}\\
+\vv{x}^{-1}\vv{v}\mu=&\vv{x}^{-1}\vv{v}\lambda^{-1}\\
+\eeqa
+
+Inverse iteration is based on this concept, where power iteration is performed on the following equation to find the {\it smallest} eigenvalue of \(\textbf{A}\):
+
+\beq
+\textbf{A}^{-1}\vv{x}=\frac{1}{\lambda}\vv{x}
+\eeq
+
+where \(\lambda\) are the eigenvalues of \(\textbf{A}\).
+
+\subsection{Shifted Iteration}
+\label{sec:ShiftedIteration}
+
+Shifted iteration is a second variant of power iteration based on the recognition that the eigenvalues of \(\textbf{A}-\mu\textbf{I}\) are equal to the eigenvalues of \(\textbf{A}\) minus \(\mu\). This occurs because all vectors are eigenvectors of the identity matrix. Therefore, shifted iteration is based on finding the largest \(\lambda-\mu\), where \(\mu\) can be selected to find the eigenvalue furthest from this value:
+
+\beq
+\left(\textbf{A}-\mu\textbf{I}\right)\vv{x}=\left(\lambda-\mu\right)\vv{x}
+\eeq 
+
+\subsection{Shifted Inverse Iteration}
+While finding the smallest eigenvalue has many applications, it is uncommon to want to find the eigenvalue {\it furthest} from a given value \(\mu\). Shifted inverse iteration combines the strategies in Sections \ref{sec:InverseIteration} and \ref{sec:ShiftedIteration} to find the eigenvalue closest to \(\mu\):
+
+\beq
+\left(\textbf{A}-\mu\textbf{I}\right)^{-1}\vv{x}=\frac{1}{\lambda-\mu}\vv{x}
+\eeq
