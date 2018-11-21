@@ -923,8 +923,6 @@ where \(\Gamma\) is the solution, which has the form:
 \clearpage
 \input{kinetics.tex}
 
-\(\nu\) is also strongly a function of the fissioning nuclide. U-235 has one of the lowest \(\nu\), while the plutonium isotopes are all on the order of \(\nu=3\). As U-238 transmutes to Pu-239, the average \(\nu\) increases, increasing reactivity.
-
 Delayed neutrons have higher \(p\) and \(P_{NL}^{fast}\), but lower \(\epsilon\). 
 
 \clearpage
@@ -944,9 +942,9 @@ A temperature reactivity coefficient can be defined for each individual material
 
 Defining a temperature coefficient becomes difficult, however, when the heat generation in different core elements becomes characterized by very different time scales. For instance, in a typical LWR, there is an 8 second delay between heat generation in the fuel and heat transfer to the coolant.
 
+\begin{comment}
 \subsection{Doppler Broadening Coefficient}
-
-The Doppler effect primarily impacts the resonance escape probability \(p\), since this reflects the probability that neutrons reach thermal energies. If we assume that the Doppler coefficient impacts \(k\) only through \(p\), we can utilize the approximation in Eq. \ref{eq:ReactivityCoef_kExpansion} to give:
+If we assume that the Doppler coefficient impacts \(k\) only through \(p\), we can utilize the approximation in Eq. \ref{eq:ReactivityCoef_kExpansion} to give:
 
 \begin{equation}
 \label{eq:DopplerCoefficient_pExpansion}
@@ -960,14 +958,12 @@ For oxide fuels, the Doppler coefficient varies almost exactly as:
 \frac{dk}{dT}=\frac{K_D}{T}
 \end{equation}
 
-where \(K_D\) is called the ``Doppler coefficient,'' even though this is, confusingly, the same name that is given simply to \(dk/dT\). \(K_D\) is basically independent of whether or not there is sodium coolant in the core, and is of order -0.006 to -0.008 for various fast reactor designs. Hence, at lower temperatures, the Doppler coefficient becomes more negative, and so test reactors that have the option to operate at lower temperatures may choose to do so to obtain a favorable Doppler coefficient. For a uniform change in fuel temperature, Eq. \ref{eq:DopplerCoefficient_OxideFuels} may be used to calculate the reactivity feedback from:
+where \(K_D\) is called the ``Doppler coefficient,'' even though this is, confusingly, the same name that is given simply to \(dk/dT\). \(K_D\) is basically independent of whether or not there is sodium coolant in the core, and is of order -0.006 to -0.008 for various fast reactor designs. For a uniform change in fuel temperature, Eq. \ref{eq:DopplerCoefficient_OxideFuels} may be used to calculate the reactivity feedback from:
 
 \begin{equation}
 \label{eq:DopplerCoefficient_OxideFuels2}
 \rho=\int_{T_1}^{T_2}\frac{dk}{dT}dT=K_D ln\left(\frac{T_2}{T_1}\right)
 \end{equation}
-
-Using the correct temperatures in the above equation is crucial to obtaining the correct Doppler coefficient. From experience, the actual reactivity increase is about 10\% higher in magnitude than it would have been if we simply used average temperatures for \(T_2\) and \(T_1\) in Eq. \ref{eq:DopplerCoefficient_OxideFuels2}. 
 
 Conversely, for metal fuels in fast reactors:
 
@@ -977,6 +973,7 @@ Conversely, for metal fuels in fast reactors:
 \end{equation}
 
 The Doppler coefficient will also change with burnup, but for fast reactors, this direction of this change is difficult to assess due to a number of simultaneous effects: 1) removal of control rods hardens the spectrum, 2) production of fission products, and 3) small decrease in U-238. Whether or not the control rod withdrawal or the fission product production has the larger effect depends on the internal conversion ratio, since this determines how much of the control rods have to be withdrawn (how much excess reactivity you need to keep going). Because the internal conversion ratio depends on the size of the reactor, the Doppler coefficient change with burnup depends on the size of the reactor. 
+\end{comment}
 
 \subsection{Moderator Temperature Coefficient (MTC)}
 
@@ -997,8 +994,6 @@ Fast (small cores) & - &  &  & \\
 \label{tab:PPer}
 \end{table}
 
-Because in BWRs the coolant is primarily at saturated conditions, the MTC is relatively unimportant in normal operation, but has the greatest impact during startup and shutdown processes when there are no voids in the coolant. In normal operation, any power increases are curbed much more by the void coefficient, and hence in BWRs it is acceptable to have a positive MTC. The MTC may become more positive at EOL when there are more control rods withdrawn, as well, since this increases the moderator-to-fuel ratio). 
-
 \subsection{Void Coefficient}
 
 \begin{table}[h]
@@ -1018,8 +1013,6 @@ Fast (metal-fueled) &  &  & \\
 \end{table}
 
 Because water density decreases at faster rates with increasing temperature, the volumetric expansion in voids also increases at a faster rate the higher the temperature, and hence the void coefficient in water systems increases in magnitude with higher temperatures. At higher burnup, less control rods are present in the core (BWRs), so voids are more distributed. If there are many control rods inserted, then to maintain the power rating, several assemblies must generate significant power, leading to local voids that have a greater negative reactivity impact than if the voids were more evenly distributed. 
-
-For thermal reactors, it’s actually possible to see a net power decrease when a shallow rod is fully withdrawn, since then voids are allowed to form lower in the core. These voids travel upwards to high power regions, introducing negative reactivity that may be enough to offset the positive reactivity associated with removing a control rod. 
 
 The void coefficient in fast reactors is the combination of four competing effects. It should be noted that a MTC is rarely defined for fast reactors - only the void coefficient is considered, and its definition is relaxed to include density changes that don't necessarily lead to boiling. For an increase in void fraction, or a decrease in coolant density:
 

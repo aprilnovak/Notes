@@ -140,7 +140,7 @@ If prompt neutrons are born nearly isotropically (which is frequently a good app
 \left\lbrack\int d\volume \delayedfissionsource\right\rbrack dEd\hO  
 \eeq
 
-where \(C\) is the delayed neutron precursor concentration, and \(\lambda\) is the delayed neutron precursor decay constant. Similar to prompt fission neutrons, delayed neutrons are frequently approximated as being born isotropically, and angle integration of the delayed neutron energy and angled spectrum yields only an energy dependence:
+where \(C_j\) is the delayed neutron precursor concentration of the \(j\)-th kind that {\it always} decays by \(\beta\) decay, and is hence some fraction of the actual precursor concentration; and \(\lambda\) is the delayed neutron precursor decay constant. Similar to prompt fission neutrons, delayed neutrons are frequently approximated as being born isotropically, and angle integration of the delayed neutron energy and angled spectrum yields only an energy dependence:
 
 \beq
 \label{eq:delayed_isotropic}
@@ -214,7 +214,7 @@ The \gls{nte} is coupled to \(J\) delayed neutron precursor concentration equati
 
 \beq
 \label{eq:DelayedNeutrons}
-\frac{\partial C_j(\vv{r},t)}{\partial t}=\beta_j\int_{0}^\infty dE'\int_{4\pi}\nu(E')\Sigma_f(E')\psi(\vv{r},E',\hO',t)-\lambda_jC_j(\vv{r},t)\hspace{1cm}\text{for \(j=1,\cdots,J\)}
+\frac{\partial C_j(\vv{r},t)}{\partial t}=\beta_j\int_{0}^\infty dE'\int_{4\pi}\hO'\nu(E')\Sigma_f(E')\psi(\vv{r},E',\hO',t)-\lambda_jC_j(\vv{r},t)\hspace{1cm}\text{for \(j=1,\cdots,J\)}
 \eeq
 
 The \gls{nte} in Eq. \eqref{eq:nte1} is an integro-differential equation because it contains both integrals and derivatives. The \gls{ic} requires specification of the initial angular flux:

@@ -196,7 +196,7 @@ For Pu-239, \(\nu\) can be approximated as:
 \nu(E)=2.874+0.138\times10^{-6}E
 \eeq
 
-where \(E\) is given in eV in Eqs. \eqref{eq:U235_nu} and \eqref{eq:Pu239_nu}. For thermal fission in U-235 and Pu-239, \(\nu\) is approximately 2.43 and 2.87, respectively. 
+where \(E\) is given in eV in Eqs. \eqref{eq:U235_nu} and \eqref{eq:Pu239_nu}. For thermal fission in U-235 and Pu-239, \(\nu\) is approximately 2.43 and 2.87, respectively. In thermal systems, as U-238 transmutes to PU-239 such that a greater fraction of fission occurs in Pu-239, the average \(\nu\) increases.
 
 The energy and angle spectrum of the fission neutrons depends on the fissioning nuclide and incident neutron energy, though to a lesser degree on the incident neutron energy than \(\nu\). These spectrums differ for prompt and delayed neutrons, but both have very weak angular dependence such that isotropy is commonly assumed. The prompt fission neutron energy spectrum for U-235 with angular dependence integrated out can be approximated as:
 
@@ -214,8 +214,6 @@ where \(E\) is given in eV. The average prompt fission neutron energy predicted 
 
 where \(E\) is given in eV. The average prompt fission neutron energy predicted by Eq. \eqref{eq:Pu239_prompt} for Pu-239 is 2.12 MeV, while the most probable fission neutron energy is 0.71 MeV. U-235 therefore has a slightly lower-energy prompt fission neutron energy spectrum than Pu-239. While Eqs. \eqref{eq:U235_prompt} and \eqref{eq:Pu239_prompt} represent closed-form (approximate) prompt fission neutron energy distributions, the fission spectrum information is most frequently utilized in tabular form available with cross section data.
 
-The fraction of neutrons born delayed, \(\beta\), is defined as the sum of the fraction of neutrons produced from delayed decay of fission products in \(J\) delayed neutron precursor groups,
-
 In order to separate the total fission source into a prompt and delayed term for transient analyses, the fraction of neutrons born delayed is defined as \(\beta\):
 
 \beq
@@ -223,7 +221,7 @@ In order to separate the total fission source into a prompt and delayed term for
 \beta\equiv\ \sum_{j=1}^J\beta_j
 \eeq
 
-Approximately 45 different nuclides produced in the decay chain of the fission products decay by neutron decay, but \(J\) is typically approximated as a smaller number by grouping the precursors according to their half-lives for neutron decay. These half-lives are the half-lives characterizing the time to emit a neutron via neutron decay from the time of fission, and therefore include any intermediate decays that do not produce neutrons. The longest of these half-lives is approximately 55 seconds corresponding to Br-87. While \(\beta\) is a function of energy, the relationship is fairly weak below 4 MeV and is commonly neglected. Table \ref{table:beta} shows \(\beta\) for thermal and fast fission of various isotopes.
+where \(J\) indicates the total number of delayed neutron precursors. Approximately 45 different nuclides produced in the decay chain of the fission products decay by neutron decay, but \(J\) is typically approximated as a smaller number by grouping the precursors according to their half-lives for neutron decay. These half-lives are the half-lives characterizing the time to emit a neutron via neutron decay from the time of fission, and therefore include any intermediate decays that do not produce neutrons. The longest of these half-lives is approximately 55 seconds corresponding to Br-87. While \(\beta\) is a function of energy, the relationship is fairly weak below 4 MeV and is commonly neglected. Table \ref{table:beta} shows \(\beta\) for thermal and fast fission of various isotopes. 
 
 \begin{table}[H] 
 \caption{\(\beta\) for common nuclides of interest.}
@@ -243,7 +241,7 @@ U-233 & thermal & 0.00264 \\
 \label{table:beta}
 \end{table}
 
-The delayed neutron group structure is dependent on the fissioning isotope, but relatively independent of the incident neutron energy, and hence these group structures can be used for both fast and thermal systems. The group structure for U-235 is shown in Table \ref{table:U235_delayed}.
+The delayed neutron group structure is dependent on the fissioning isotope, but relatively independent of the incident neutron energy, and hence these group structures can be used for both fast and thermal systems. The group structure for U-235 is shown in Table \ref{table:U235_delayed}. On average, delayed neutrons are born about 12 seconds after fission. 
 
 \begin{table}[H]
 \caption{Six-group delayed neutron precursor structure for U-235.}
@@ -263,7 +261,9 @@ Group & Half-Life (s) & \(\beta_j/\beta\)\\ [0.5ex]
 \label{table:U235_delayed}
 \end{table}
 
-The energy spectrum of the \(j\)-th group of delayed neutrons, \(\chi_{d,j}(E,\hO)\), is significantly lower than the energy spectrum of prompt neutrons. Typical delayed neutron energies are on the order of 0.5 MeV, rather than 2 MeV for prompt neutrons. While Eqs. \eqref{eq:U235_prompt} and \eqref{eq:Pu239_prompt} depict relatively smoothly-varying energy spectrums, the energy spectrum for delayed neutrons is not such a smooth distribution, and varies significantly with the group.
+The energy spectrum of the \(j\)-th group of delayed neutrons, \(\chi_{d,j}(E,\hO)\), is significantly lower than the energy spectrum of prompt neutrons. Typical delayed neutron energies are on the order of 0.5 MeV, rather than 2 MeV for prompt neutrons. Therefore, delayed neutrons are more likely to initiate fission than prompt neutrons in thermal systems, while the reverse holds for fast spectrum systems. When \(\beta\) is computed as a weighting with importance, the effective \(\beta\) in thermal systems with high leakage (large loss of fast neutrons) is in some cases 20-30\% higher than a non-weighted \(\beta\) \cite{duderstadt}. Therefore, thermal systems with higher leakage will have an {\it effectively} higher \(\beta\). However, {\it lower} leakage in fast systems hardens the spectrum to result in effectively higher \(\beta\).
+
+While Eqs. \eqref{eq:U235_prompt} and \eqref{eq:Pu239_prompt} depict relatively smoothly-varying energy spectrums, the energy spectrum for delayed neutrons is not such a smooth distribution, and varies significantly with the group.
 
 Additional sources of delayed neutrons aside from fission product neutron decay include photoneutron interactions, which may be a significant source of neutrons in systems with deuterium and beryllium. These photoneutron reactions typically have very long half-lives, on the order of two hours, and can be approximated through the use of additional delayed neutron groups.
 

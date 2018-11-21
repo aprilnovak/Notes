@@ -221,7 +221,7 @@ The transport mean free path, or \(1/\Sigma_{tr}\), is essentially a corrected m
 
 \subsection{Boundary Conditions}
 
-The \glspl{bc} for the diffusion equation will be derived from those for the \gls{nte} shown in Eq. \eqref{eq:NTEBCs}. At interfaces of two different cross sections \(1\) and \(2\), continuity of the angular flux cannot be exactly satisfied. However, integration of Eq. \eqref{eq:NTE_interface} with respect to solid angle, and multiplication by \(\hO\) and integration with respect to solid angle, shows that at a minimum diffusion theory can require the first two moments of the angular flux to be continuous at interfaces:
+The \glspl{bc} for the diffusion equation will be derived from those for the \gls{nte} shown in Eq. \eqref{eq:NTEBCs}. At interfaces of two different cross sections \(1\) and \(2\), continuity of the angular flux cannot be exactly satisfied. However, integration of Eq. \eqref{eq:NTE_interface} with respect to solid angle, and multiplication by \(\hO\) and integration with respect to solid angle, shows that, at a minimum, diffusion theory can require the first two moments of the angular flux to be continuous at interfaces:
 
 \beq
 \phi_1(\vv{r}_s,E,t)=\phi_2(\vv{r}_s,E,t)
@@ -232,7 +232,11 @@ The \glspl{bc} for the diffusion equation will be derived from those for the \gl
 \vv{J}_1(\vv{r}_s,E,t)=\vv{J}_2(\vv{r}_s,E,t)
 \eeq
 
-If a thin source of neutrons is present at an interface boundary, Eq. \eqref{eq:ContinuityCurrent} is modified so that the dot product of the different in the currents equals the magnitude of the source.
+If a thin source of neutrons is present at an interface boundary, Eq. \eqref{eq:ContinuityCurrent} is modified so that the dot product of the difference in the currents equals the magnitude of the source:
+
+\beq
+\left\lbrack\vv{J}_1(\vv{r}_s,E,t)-\vv{J}_2(\vv{r}_s,E,t)\right\rbrack\cdot\hat{n}=S(\vv{r}_s,E,t)
+\eeq
 
 At vacuum boundaries, transport theory requires \(\psi_{inc}=0\) for \(\hO\cdot\hat{n}<0\). Similar to continuity of the scalar flux and current, diffusion theory can only satisfy this \gls{bc} in an average sense:
 
@@ -257,7 +261,7 @@ The diffusion theory equivalent of the transport vacuum \gls{bc} of zero incomin
 \beqa
 \label{eq:PartialCurrent_BC1}
 \vv{J}_\pm\sset=&\int_{2\pi\pm}d\hO\left\lbrack\frac{1}{4\pi}\phi\sset-\frac{3}{4\pi}D\nabla\phi\sset\hO\right\rbrack\hO\cdot\hat{n}\\
-=&\frac{1}{4\pi}\phi\sset\mp\frac{1}{2}D\nabla\phi\sset\cdot\hat{n}
+=&\frac{1}{4}\phi\sset\mp\frac{1}{2}D\nabla\phi\sset\cdot\hat{n}
 \eeqa
 
 where \(2\pi\pm\) has replaced integration over the entire solid angle \(4\pi\) because the outgoing or incoming directions each correspond to half of the \(\theta\) direction. Inserting the diffusion approximation in Eq. \eqref{eq:FicksLaw} and recognizing that integration over half the solid angle results in Eqs. \eqref{eq:SolidAngleIntegration} and \eqref{eq:OmegaDotOmega} being halved gives the final simple form in terms of \(\phi\) alone. Eq. \eqref{eq:PartialCurrent_BC1} implies that if we linearly extrapolated the flux from the surface based on the value of the gradient at the surface, the flux is zero at a distance \(2D\) along the normal from the surface. Therefore, Eq. \eqref{eq:PartialCurrent_BC1} is frequently used in a simpler form as a Dirichlet \gls{bc}:
@@ -305,11 +309,11 @@ Integrating the diffusion equation in Eq. \eqref{eq:DiffusionEquation} over a si
 
 \beqa
 \label{eq:MGDiffusionEquation}
-\frac{\partial}{\partial t}\left(\frac{\phi_g(\vv{r},t)}{v_g}\right)-\nabla\cdot\left\lbrack D_g(\vv{r},t)\nabla\phi_g(\vv{r},t)\right\rbrack+\Sigma_{t,g}(\vv{r},t)\phi_g(\vv{r},t)=\hspace{2cm}\\
-\sum_{g'=1}^G\Sigma_{s,g'\rightarrow g}(\vv{r},t)\phi_{g'}(\vv{r},t)+\chi_{p,g}\sum_{g'=1}^G\left(1-\beta_{g'}\right)\nu\Sigma_{f,g'}(\vv{r},t)\phi_{g'}(\vv{r},t)+\sum_{j=1}^J\chi_{d,j,g}\lambda_jC_j(\vv{r},t)
+\frac{1}{v_g}\frac{\partial\phi_g(\vv{r},t)}{\partial t}-\nabla\cdot\left\lbrack D_g(\vv{r},t)\nabla\phi_g(\vv{r},t)\right\rbrack+\Sigma_{t,g}(\vv{r},t)\phi_g(\vv{r},t)=\hspace{2cm}\\
+\sum_{g'=1}^G\Sigma_{s,g'\rightarrow g}(\vv{r},t)\phi_{g'}(\vv{r},t)+\left(1-\beta\right)\chi_{p,g}\sum_{g'=1}^G\nu\Sigma_{f,g'}(\vv{r},t)\phi_{g'}(\vv{r},t)+\sum_{j=1}^J\chi_{d,j,g}\lambda_jC_j(\vv{r},t)
 \eeqa
 
-where the time derivative and gradient were brought outside the energy integration since these operators do not depend on energy. This integration also itself motivates the definition of the energy-integrated parameters in Eqs. \eqref{eq:FluxGroup}-\eqref{eq:VGroup}. The scattering and fission terms are obtained by breaking up the integrals over \(dE'\) into a finite series over the energy groups. A removal cross section is defined as:
+where the time derivative and gradient were brought outside the energy integration since these operators do not depend on energy. The velocity is also brought outside the time derivative assuming the group structure is constant in time. The scattering and fission terms are obtained by breaking up the integrals over \(dE'\) into a finite series over the energy groups. A removal cross section is defined as all possible loss mechanisms from the energy group:
 
 \beq
 \label{eq:RemovalSigma}
@@ -320,29 +324,29 @@ and inserted into Eq. \eqref{eq:MGDiffusionEquation} to give a second equivalent
 
 \beqa
 \label{eq:MGDiffusionEquation2}
-\frac{\partial}{\partial t}\left(\frac{\phi_g(\vv{r},t)}{v_g}\right)-\nabla\cdot\left\lbrack D_g(\vv{r},t)\nabla\phi_g(\vv{r},t)\right\rbrack+\Sigma_{R,g}(\vv{r},t)\phi_g(\vv{r},t)=\hspace{2cm}\\
-\sum_{g'=1,g'\neq g}^G\Sigma_{s,g'\rightarrow g}(\vv{r},t)\phi_{g'}(\vv{r},t)+\chi_{p,g}\sum_{g'=1}^G\left(1-\beta_{g'}\right)\nu\Sigma_{f,g'}(\vv{r},t)\phi_{g'}(\vv{r},t)+\sum_{j=1}^J\chi_{d,j,g}\lambda_jC_j(\vv{r},t)
+\frac{1}{v_g}\frac{\partial\phi_g(\vv{r},t)}{\partial t}-\nabla\cdot\left\lbrack D_g(\vv{r},t)\nabla\phi_g(\vv{r},t)\right\rbrack+\Sigma_{R,g}(\vv{r},t)\phi_g(\vv{r},t)=\hspace{2cm}\\
+\sum_{g'=1,g'\neq g}^G\Sigma_{s,g'\rightarrow g}(\vv{r},t)\phi_{g'}(\vv{r},t)+\left(1-\beta\right)\chi_{p,g}\sum_{g'=1}^G\nu\Sigma_{f,g'}(\vv{r},t)\phi_{g'}(\vv{r},t)+\sum_{j=1}^J\chi_{d,j,g}\lambda_jC_j(\vv{r},t)
 \eeqa
 
-The \gls{mg} constants defined in Eqs. \eqref{eq:FluxGroup}-\eqref{eq:VGroup} depend on both space and time, and they will be constant only in the case when the scalar flux is separable as a function of energy as \(\phi(\vv{r},E,t)=f(\vv{r},t)h(E)\). In general, the scalar flux is not separable in energy and space-time, so the group constants will also be a function of position, and not just spectrum. The approximation of the \gls{mg} constants, without the use of stochastic methods that simply define tallies for the integral quantities, requires methods for approximating the scalar fluxes that appear in their definitions. This can usually be done by performing fairly simple calculations with a larger number of energy groups and computing constants for a coarser group structure by evaluating the integrals in Eqs. \eqref{eq:FluxGroup}-\eqref{eq:VGroup}. This process is known as a ``fine-group'' calculation followed by ``group collapsing.'' The larger the number of fine groups, the more crude the approximations to the energy-dependent scalar flux may be. For example, a rather crude approximation of \(\phi(E)\propto1/E\) is reasonable for the \(1 \text{ eV }\le E\le 10^5 \text{ eV}\) range, but such a crude approximation requires the use of a relatively fine group structure to capture the complicated resonance structures that a better flux representation would be able to capture with a coarser group structure. This process therefore first crudely treats the spatial dependence to obtain few-group constants that are then used to crudely treat the energy dependence in a more realistic spatially-dependent problem.
+The \gls{mg} constants defined in Eqs. \eqref{eq:FluxGroup}-\eqref{eq:VGroup} depend on both space and time, and they will be constant only in the case when the scalar flux is separable as a function of energy. In general, the scalar flux is not separable in energy and space-time, so the group constants will also be a function of position, and not just spectrum. The approximation of the \gls{mg} constants, without the use of stochastic methods that simply define tallies for the integral quantities, requires methods for approximating the scalar fluxes that appear in their definitions. This can usually be done by performing fairly simple calculations with a larger number of energy groups and computing constants for a coarser group structure by evaluating the integrals in Eqs. \eqref{eq:FluxGroup}-\eqref{eq:VGroup}. This process is known as a ``fine-group'' calculation followed by ``group collapsing.'' The larger the number of fine groups, the more crude the approximations to the energy-dependent scalar flux may be. For example, a rather crude approximation of \(\phi(E)\propto1/E\) is reasonable for the \(1 \text{ eV }\le E\le 10^5 \text{ eV}\) range, but such a crude approximation requires the use of a relatively fine group structure to capture the complicated resonance structures that a better flux representation would be able to capture with a coarser group structure. This process therefore first crudely treats the spatial dependence to obtain few-group constants that are then used to crudely treat the energy dependence in a more realistic spatially-dependent problem.
 
-Most \gls{lwr} calculations use four energy groups - three in the fast range and a single thermal group. This permits the neglect of upscattering, simplifying numerical solution of the coupled equations. Gas-cooled reactors typically use between seven and nine groups due to the slightly harder spectrum, while fast reactors require 20+ groups due to the significant flux presence in the resonance range \cite{duderstadt}.
+Most \gls{lwr} calculations use four energy groups - three in the fast range and a single thermal group. Gas-cooled reactors typically use between seven and nine groups due to the slightly harder spectrum, while fast reactors require 20+ groups due to the significant flux in the resonance range \cite{duderstadt}.
 
 \subsubsection{Two-Group Diffusion Theory}
 \label{sec:TwoGroupDT}
 
-This section provides an example application of a two-group diffusion model to a bare reactor. The coupled two-group equations are:
+This section provides an example application of a two-group diffusion model. The coupled two-group equations are:
 
 \begin{subequations}
 \label{eq:MGFlux}
 \begin{eqnarray}
-\frac{1}{v_1}\frac{\partial\phi_1(\vv{r},t)}{\partial t}-\nabla\cdot\left\lbrack D_1\nabla\phi_1(\vv{r},t)\right\rbrack+\Sigma_{R,1}\phi_1(\vv{r},t)&=&
-\nu\Sigma_{f,1}\phi_1(\vv{r},t)+\nu\Sigma_{f,2}\phi_2(\vv{r},t)+S_1(\vv{r},t)\hspace{0.5cm}\\
-\frac{1}{v_2}\frac{\partial\phi_2(\vv{r},t)}{\partial t}-\nabla\cdot\left\lbrack D_2\nabla\phi_2(\vv{r},t)\right\rbrack+\Sigma_{a,2}\phi_2(\vv{r},t)&=&\Sigma_{s,1\rightarrow2}\phi_1(\vv{r},t)+S_2(\vv{r},t)
+\frac{1}{v_1}\frac{\partial\phi_1(\vv{r},t)}{\partial t}-\nabla\cdot\left\lbrack D_1(\vv{r},t)\nabla\phi_1(\vv{r},t)\right\rbrack+\Sigma_{R,1}(\vv{r},t)\phi_1(\vv{r},t)&=&
+\nu\Sigma_{f,1}\phi_1(\vv{r},t)+\nu\Sigma_{f,2}\phi_2(\vv{r},t)\hspace{0.5cm}\\
+\frac{1}{v_2}\frac{\partial\phi_2(\vv{r},t)}{\partial t}-\nabla\cdot\left\lbrack D_2(\vv{r},t)\nabla\phi_2(\vv{r},t)\right\rbrack+\Sigma_{a,2}(\vv{r},t)\phi_2(\vv{r},t)&=&\Sigma_{s,1\rightarrow2}\phi_1(\vv{r},t)
 \end{eqnarray}
 \end{subequations}
 
-where it has been assumed that no upscattering from the thermal to the fast group occurs and all fission neutrons are born in the fast group. The definition of the removal cross section in Eq. \eqref{eq:RemovalSigma} has been used in Eq. \eqref{eq:MGFlux}a. Some simplified analysis of criticality for these coupled equations can be performed for a bare reactor, in which case the time dependence and external source are neglected and the criticality eigenvalue \(1/k\) is inserted into Eq. \eqref{eq:MGFlux} to give:
+where it has been assumed that no upscattering from the thermal to the fast group occurs and all fission neutrons are born in the fast group. The external sources are assumed zero. Some simplified analysis of criticality for these coupled equations can be performed for a bare reactor, in which case the time dependence is neglected and the criticality eigenvalue \(1/k\) is inserted into Eq. \eqref{eq:MGFlux} to give:
 
 \begin{subequations}
 \label{eq:MGFluxCriticality}
@@ -375,7 +379,7 @@ P_{NL,f}&=&\frac{1}{1+L_1^2B^2}
 \end{eqnarray}
 \end{subequations}
 
-Rearranging Eq. \eqref{eq:k1k2} to obtain the traditional six-factor formula \(k=\epsilon pf\eta P_{NL,th}P_{NL,f}\) requires definition of the fast fission factor as:
+Rearranging Eq. \eqref{eq:k1k2} to obtain the traditional six-factor formula in Eq. \eqref{eq:SixFactor} requires definition of the fast fission factor as:
 
 \beq
 \epsilon=\frac{k_1+k_2}{k_2}\ ,
@@ -406,7 +410,7 @@ For a single energy group, Eq. \eqref{eq:MGDiffusionEquation} simplifies to:
 \beqa
 \label{eq:1GDiffusionEquation}
 &\frac{1}{v}\frac{\partial\phi(\vv{r},t)}{\partial t}-\nabla\cdot\left\lbrack D\nabla\phi(\vv{r},t)\right\rbrack+\Sigma_a(\vv{r},t)\phi(\vv{r},t)=\\
-&\hspace{1cm}\int_{4\pi}d\hO(1-\beta)\nu\Sigma_f(\vv{r},t)\phi(\vv{r},\hO,t)+\int_{4\pi}d\hO\sum_{j=1}^J\chi_{d,j}(\hO)\lambda_jC_j(\vv{r},t)+S(\vv{r},t)
+&\hspace{1cm}(1-\beta)\int_{4\pi}d\hO\nu\Sigma_f(\vv{r},t)\phi(\vv{r},\hO,t)+\int_{4\pi}d\hO\sum_{j=1}^J\chi_{d,j}(\hO)\lambda_jC_j(\vv{r},t)+S(\vv{r},t)
 \eeqa
 
 The one-group diffusion equation is parabolic, and if the time derivative is neglected, has the form of a Helmholtz equation. The one-group diffusion equation provides a convenient simplification to develop a better understanding of neutron transport by investigating simple problems with analytic solutions. This will be the goal of this section. 
