@@ -1,0 +1,967 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{color, colortbl}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage[font=small,labelfont=bf,labelsep=period]{caption}
+\usepackage[english]{babel}
+\usepackage{indentfirst}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{arydshln}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{xfrac}
+\usepackage{etoolbox}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{dcolumn}
+\usepackage{hyperref}
+\usepackage{courier}
+\usepackage{url}
+\usepackage{esvect}
+\usepackage{commath}
+\usepackage{verbatim} % for block comments
+\usepackage{enumitem}
+\usepackage{hyperref} % for clickable table of contents
+\usepackage{braket}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{gensymb}
+\usepackage{longtable}
+\usepackage{soul} % for striking out text
+\usepackage{rotating} % for sideways tables
+\usepackage{glossaries}
+\usepackage{tcolorbox} % for colored boxes
+\tcbuselibrary{breakable} % to allow colored boxed to extend over multiple pages
+\usepackage[makeroom]{cancel} % to put diagonal lines over equation terms
+\usepackage[mathscr]{euscript} % for script letters
+\usepackage{wasysym}  % for checkboxes
+\usepackage{bm} % for bolding math symbols
+\setcounter{MaxMatrixCols}{20} % sets max matrix length as 20 columns
+\usepackage{amssymb} % for R
+
+\input{../manual/custom_commands.tex}
+
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+% define new command for triple sub sections
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\numberwithin{equation}{section} % for equation numbering
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\begin{document}
+
+\title{Pronghorn Validation with Rayleigh-B\'enard Convection}
+\author{A.J. Novak}
+\maketitle
+
+\tableofcontents
+
+\clearpage
+
+\section{Introduction}
+
+Rayleigh-B\'enard convection is a description of the thermally-driven motion of a fluid confined between two high-conductivity (isothermal) plates, with one plate heated from below. Due to thermal expansion of the fluid, the adverse temperature gradient initiates buoyancy forces. If the strength of diffusive effects is low, these buoyancy forces will destabilize the system, initiating macroscopic motion and generally ordered convection structures.
+
+Thermal convection is the macroscopic motion of fluid due to temperature gradients. The first experiments on thermal convection were performed by H. B\'enard in a container with an upper free surface. The temperature dependence of surface tension resulted in ``ripples'' forming on the fluid surface in an ordered structure, a phenomenon which today is known as B\'enard-Marangoni convection. Lord Rayleigh investigated thermal convection in a closed container such that buoyancy forces are dominant, and hence the problems investigated here are known as Rayleigh-B\'enard convection.
+
+\clearpage
+\section{A Physical Understanding}
+This section describes the phenomenon of Rayleigh-B\'enard convection from a physical point of view, leaving most discussion of governing differential equations to Section \ref{sec:Equations}. The purpose of this section is to motivate why Rayleigh-B\'enard convection manifests as a type of phase transition phenomenon, characterized by competition between diffusive and buoyancy-driven convection effects \cite{berge}. Generally, competition between two competing effects is a requirement for an instability-type phenomenon, and indeed Rayleigh-B\'enard convection can be described through the lens of a stability analysis in the space of several important dimensionless numbers - below the critical point, the system is unstable and motionless. 
+
+Consider an initially isothermal, stationary fluid positioned between two plates at equal temperature. If one plate is suddenly heated, a thermal boundary layer forms on that plate, and the temperature diffuses into the initially isothermal fluid. The diffusion of this boundary layer is governed by a diffusion equation with diffusion coefficient \(k/\rho C_p\). Alternatively, if one of the plates is suddenly sheared, a momentum boundary layer forms on that plate, and the vorticity diffuses into the initially irrotational fluid. The diffusion of this boundary layer is also governed by a diffusion equation, but with diffusion coefficient \(\mu/\rho\). For a domain of depth \(H\), the characteristic times \(\tau_{th}\) and \(\tau_v\) for the thermal and momentum boundary layers, respectively, to diffuse through the entire domain are:
+
+\beq
+\tau_{th}\propto\frac{H^2}{k/\rho C_p}
+\eeq
+
+\beq
+\tau_v\propto\frac{H^2}{\mu/\rho}
+\eeq
+
+And the ratio of these two time scales is the Prandtl number:
+
+\beq
+Pr\equiv\frac{\tau_{th}}{\tau_v}=\frac{\mu C_p}{\rho}
+\eeq
+
+Therefore, the Prandtl number denotes the ratio of the thermal boundary layer relaxation time to the momentum boundary layer relaxation time. If the Prandtl number is large, then the vorticity diffuses much faster than the temperature. Velocity perturbations follow any temperature perturbations without delay - viscous effects are dominant. If the Prandtl number is small, the temperature diffuses much faster than the vorticity. Velocity perturbations can persist for long times after the disappearance of an initiating temperature perturbation - inertial effects are dominant.
+
+For a stationary fluid heated from below, macroscopic motion does not begin until the diffusive effects are too small to arrest the buoyant forces. A stationary fluid particle is not subjected to {\it any} buoyant forces until that fluid particle is slightly perturbed from its initial position to a new position where it is surrounded by fluid particles of a different temperature. The requirement to sustain this motion is that the thermal relaxation time be much smaller than the advection time, since in this case a temperature difference will be sustained, generating a buoyancy force.
+
+Consider a spherical particle of radius \(R\) moving with velocity \(V\). The buoyancy force \(F_{buoyant}\) on the particle scales as the gravitational acceleration \(g\) multiplying the density \(\beta\rho_0\Delta T\) and volume \(R^3\), while the viscous force \(F_{viscous}\) is given by Stokes flow:
+
+\beq
+F_{buoyant}\propto g\beta\rho_0\Delta TR^3
+\eeq
+
+\beq
+F_{viscous}\propto 6\pi \mu RV
+\eeq
+
+Motion is initiated when the buoyant force is greater than the viscous force. The critical point at the onset of motion can be determined by equating the buoyant and viscous forces to determine the advection velocity \(V\):
+
+\beq
+V\propto\frac{g\beta\rho_0\Delta TR^2}{6\pi \mu}
+\eeq
+
+The advection time \(\tau_{adv}\) can then be estimated as:
+
+\beq
+\tau_{adv}\propto\frac{H\mu}{g\beta\rho_0\Delta TR^2}
+\eeq
+
+The requirement for instability is \(\tau_{th}>\tau_{adv}\). The larger the fluid element, the greater the advection velocity, since thermal diffusion is slowed by the smaller surface area to volume ratio. Taking the size of the domain to be the maximum size of a fluid particle, i.e. \(R\approx H\), the instability condition \(\tau_{th}>\tau_{adv}\) becomes:
+
+\begin{subequations}
+\begin{eqnarray}
+\frac{g\beta\rho_0\Delta TH^3}{\nu \kappa}&>&C_0\\
+Ra&>&C_0
+\end{eqnarray}
+\end{subequations}
+
+where \(C_0\) is a constant and \(\nu\equiv\mu/\rho\) and \(\kappa\equiv k/\rho C_p\). The dimensionless number on the left hand side is known as the Rayleigh number, and denotes the ratio of buoyancy effects to viscous effects:
+
+\beq
+Ra\equiv\frac{g\beta\rho_0\Delta TH^3}{\nu \kappa}
+\eeq
+
+The Rayleigh number therefore determines the stability of the fluid layer to a vertical adverse temperature gradient. Therefore, due to the competition between buoyant and diffusive effects, a critical dimensionless number characterizes the onset of instabilities. The higher the Prandtl number, the lower the temperature difference required to initiate motion. For plates of uniform temperature and infinite extent, the critical Rayleigh number \(Ra_c\) can be shown to be 1707 \cite{berge,sandberg}. For finite domains, with widths on the order of several times the height, \(Ra_c\) can be substantially larger due to the stabilizing effects of the lateral boundaries.
+
+\subsection{Additional Stabilizing Effects}
+
+The previous section considered the stabilizing effects of axial diffusion of temperature and vorticity in a laterally infinite domain. This section considers several additional stabilizing effects. Provided thermal properties (aside from density) are nearly independent of temperature, at any point in the fluid with a vertical temperature gradient, there is an equal probability of upward motion of less dense fluid and downward motion of more dense fluid. This state bifurcation is symmetric in perfect experiments and numerical computations. In reality, slight asymmetries will be present that enforce a preferred direction, removing the degeneracy. The remainder of this section discusses two types of asymmetries that are commonly present.
+
+For a horizontal temperature gradient, rather than a vertical temperature gradient, a stationary configuration is immediately unstable, since any shift in the less dense fluid results in a higher density and downward motion, regardless of the magnitude of the shift. Therefore, there is no threshold for the onset of motion due to horizontal temperature gradients. In experiments, the lateral boundaries are generally constructed of material with higher thermal diffusivity than the fluid. If the vertical temperature gradient is obtained by heating the bottom plate, the heat diffuses in the lateral boundaries faster than in the fluid, causing the boundaries to be (temporarily) warmed than the fluid. This enforces an upwards motion, breaking symmetry. Similarly, cooling the top plate enforces a downwards motion. These effects are only present at the onset of convection. If these effects were more permanent, being induced by better coupling of the bottom plate to the lateral walls, or of the top plate to the lateral walls, then convective motion will always be present at the lateral boundaries, even for \(Ra<Ra_c\). This may be sufficient to inhibit the characteristic Rayleigh-B\'enard convective structure from forming at all.
+
+Assuming perfect lateral symmetry of the domain, significant variation in thermal properties (aside from density) with temperature can disrupt a symmetric bifurcation. For example, suppose the viscosity decreases strongly with temperature. At the bottom plate, the lower viscosity fluid results in a higher Rayleigh number, which if \(Ra>Ra_c\), will initiate upward convective motion that is stronger than the downward convective motion of a higher-viscosity, lower-Rayleigh number fluid. In this case, upward motion is favored, with downward streams existing simply to ensure conservation of flux. Roll-like structures transition to hexagonal cells, with upward motion in the center of the cell and six streams of downward motion (each of smaller velocity than the upward stream due to preferred upward motion) at the corners. Hexagonal cell structures no longer represent a normal bifurcation. For the case where viscosity increases with temperature, the preferred motion is downward, and inverted hexagonal cell structures form. Hexagonal cell structures are also observed in B\'enard-Maragoni convection, since surface tension effects are only significant in one region of the domain.
+
+\subsection{Convection Structures}
+This section describes several typical temperature and velocity structures for Rayleigh-B\'enard convection in a domain that has a lateral extent much larger than its depth. After an initial transient period, which may be very long, a stationary roll pattern tends to form, with axes of the rolls perpendicular to the lateral wall. For a rectangular domain, the rolls form with axes perpendicular to the larger-extent wall. Relatively far from the boundaries, the rolls are locally parallel. Near the onset of convection, fluid motion is nearly two-dimensional. 
+
+Local thermal constraints, such as heating by a light beam, can be used to stabilize and enforce certain structures by locally causing \(Ra\) to exceed \(Ra_c\), inducing a preferred convective motion. 
+
+If Rayleigh-B\'enard convection is induced in a moving fluid, the roll axes tend to orient themselves parallel to the external flow direction. For horizontal flow, roll structures are stable, but for vertical flows, roll structures are only stable for low flowrates, yielding to hexagonal structures at higher flowrates.
+
+\subsubsection{Velocity Profiles}
+\label{sec:Rolls}
+For rectangular domains (at sufficiently low Rayleigh numbers such that the flow isn't extremely turbulent), roll structures form. These rolls, near the onset of convection (\(Ra<5\times10^3\), are effectively two-dimensional and steady in time. For higher Rayleigh numbers in the range \(5\times10^3\leq Ra\leq10^4\), unsteady rolls, with 3-D structure, form. Eventually, for \(Ra\approx2\times10^4\), the simulation is initially chaotic and random, but converges on rolls with 3-D character \cite{sandberg}. Higher values of Rayleigh number generally display turbulence, and rapid transitions between roll states. The higher the Rayleigh number, the thinner the thermal plumes between rolls, and the faster the velocity. Simulation at \(Ra=4\times10^3\) and \(Ra=10^4\) showed the same roll structure, but different velocity magnitudes, suggesting that the aspect ratio along determines the allowable roll states, while the Rayleigh number may be responsible for the transitions between roll states \cite{sandberg}.
+
+These rolls are often described in the literature for 2-D simulations in terms of the number of rolls in the horizontal direction \(m\) and the number of rolls in the vertical direction \(n\) in \((m, n)\) notation. The roll structure is similar in lateral extent, which justifies the use of periodic velocity boundary conditions to approximate an infinite domain \cite{berge}.
+
+\begin{comment}
+The lateral velocity \(V_x\) and the axial velocity \(V_z\) essentially behave as a fundamental sinusoidal mode, varying as:
+
+\beq
+V_x(x,z)=\tilde{V}_x(z)\sin{(ax+\phi)}
+\eeq
+
+\beq
+V_z(x,z)=\tilde{V}_z(z)\cos{(ax+\phi)}
+\eeq
+
+where \(a\) is the wavenumber,
+
+\beq
+a\equiv\frac{2\pi H}{\lambda}
+\eeq
+
+\(\lambda\) is the wavelength, or the distance between identical crests in the sinusoid, and \(\phi\) is the phase shift that defines the position of the rolls in the domain. Substituting these assumed forms into the continuity equation shows that the two velocity components are phase shifted from one another by \(\pi/2\) \cite{berge}. 
+\end{comment}
+
+For a given set of boundary conditions, more than one roll structure may exist as a solution to the governing equations. For low Rayleigh numbers, a single, large roll (the \((1,1)\) roll) exists. For an aspect ratio of unity, this single roll persists up until \(Ra\approx10^5\) \cite{chandra}. For higher Rayleigh numbers, more complicated roll structures exist. For unity aspect ratio, these roll structures include the \((2,1)\) roll observed for \(10^5\leq Ra\leq 10^7\) and the \((2,2)\) roll observed for \(Ra>10^7\) \cite{chandra}. The \((2,2)\) roll structure is frequently referred to as the ``corner roll.''
+
+When a new roll structure becomes a possible solution for the flow, all of the previous allowable roll structures still exist, and the flow rapidly shifts between possible roll states. That is, the velocity components are no longer composed of a single fundamental spatial mode, but rather the second, third, and higher harmonic modes, as the nonlinear terms become increasingly significant \cite{berge}. Some of these roll states may be very long-lived, but eventually disappear, making prediction of the eventual time-periodic steady state difficult \cite{poel}. The coexistence of different turbulent states is believed by many researchers to be the explanation for the deviation between prediction and experiment for \(Ra>10^{11}\) \cite{poel}.
+
+Rapid transitions between roll states, due to the nonlinear interactions between the roll states, at high Rayleigh numbers often results in macroscopic reversals of the flow. During a reversal, the odd modes generally change sign, while the even modes do not \cite{verma,chandra}. Very large fluctuations in the Nusselt number tend to occur during these flow reversals. The choice of boundary condition along the solid walls, either slip or no-slip, has an important impact on the dynamics and causes of these flow reversals; this is discussed in Sections \ref{sec:NoSlipBC} and \ref{sec:SlipBC} \cite{verma}. 
+
+\subsubsubsection{No-Slip Boundary Conditions}
+\label{sec:NoSlipBC}
+
+When no-slip boundary conditions are used on all walls, the \((2,2)\) roll state has an important impact on the existence of flow reversals. For no-slip boundary conditions, rapid state transitions can be attributed to vortex reconnections of two attracting corner rolls of the same sign of vorticity \cite{chandra}. Vortices of the same sign attract one-another, and eventually join, forming a single large roll (the \((1,1)\) roll state) with opposite sign of vorticity as the previous single roll state. The amplitude of the \((2,2)\) mode is always positive, leading the hot and cold plumes to move along the outer boundaries of the domain, rather than through the center. Flow reversals via vortex reconnections depend on the strength of the \((2,2)\) roll state relative to the \((1,1)\) roll state. The strength of the \((2,2)\) roll relative to the \((1,1)\) roll is about 0.45 at \(Ra=10^7\), but drops to 0.1 at \(Ra=10^9\) \cite{chandra}. So, once formed, the corner roll mode weakens as the Rayleigh number increases. For this reason, flow reversals are only observed in a relatively narrow range of Rayleigh number about \(Ra=2\times10^7\). The higher the Prandtl number, the wider range (extending to lower Rayleigh number) of Rayleigh numbers over which vortex reconnection-induced flow reversals are observed.
+
+The flow reversals in a unity aspect ratio domain for \(Pr=1\) and \(10^4\leq Ra\leq10^9\) complete in about \(0.01\tau_{th}\) time units, with consecutive reversals occurring every \(0.6\tau_{th}\) time units \cite{chandra}. A Poissonian distribution for the time interval between reversals is expected. During the flow reversal, the Nusselt number shows substantial variation, and can even be negative along horizontal planes in the bulk \cite{chandra}.
+
+\subsubsubsection{Slip Boundary Conditions}
+\label{sec:SlipBC}
+
+When slip boundary conditions are used on all walls, the corner rolls and vortex reconstruction present for the no-slip boundary condition flow reversal described in Section \ref{sec:NoSlipBC} are absent \cite{verma}. Flow reversal still occurs due to the nonlinear interaction between roll states, but generally not via vortex reconnection.
+
+\subsubsection{Temperature Profiles}
+Similar to the velocity components, near the onset of convection, the temperature variation in the lateral direction is sinusoidal about the mean temperature at that elevation \cite{berge}. Isotherms tend to be very closely spaced near the plates, since convective heat transfer becomes negligible near the boundaries due to the no-penetration condition, and conductive heat transfer is much less effective than convective heat transfer. The convective fluid motion increases the vertical heat flux from the bottom plate to the top plate. The Nusselt number is the ratio of the convection heat flux \(h\Delta T\) (technically conduction and advection) to the conduction heat flux \(k\Delta T/d\). For \(Ra\ge Ra_c\), the Nusselt number increases from its minimum value of unity as advective heat transfer becomes more significant. \(Nu\) appears to obey a \(\sqrt{Ra/Ra_c}\)-type relationship for \(Ra/Ra_c>1\) \cite{berge}.
+
+\subsubsection{The Influence of Aspect Ratio}
+
+As discussed in Section \ref{sec:Grid}, to reduce mesh requirements, it would be advantageous to use as small a domain as possible to accurately predict global parameters such as the Nusselt number and Rayleigh number. However, several authors have demonstrated a strong dependence on such results for small to moderate aspect ratios \(\Gamma\), defined as:
+
+\beq
+\Gamma\equiv\frac{W}{H}
+\eeq
+
+where \(W\) is the width of the domain and \(H\) the height. As \(\Gamma\rightarrow\infty\), the influence of the aspect ratio becomes weaker and weaker, but from a computational point of view, an extremely large domain is undesirable. As discussed in Section \ref{sec:Rolls}, for moderate Rayleigh numbers (before fully turbulent and chaotic motion occurs), several different roll states may persist for very long periods of time. These multiple roll states persist for increasingly long times when the aspect ratio is close to a value at which a completely new roll state would emerge \cite{poel}. Small changes in the aspect ratio have resulted in states persisting for three orders of magnitude longer \cite{poel}. The aspect ratio has a strong impact on the possible roll states - for example, for very small aspect ratios, it is far more likely to observe vertically stacked rolls of type \((m, 1)\) than horizontally stacked rolls of type \((1, n)\).
+
+For small aspect ratios such that vertical roll stacking is the preferred roll structure, as the Rayleigh number varies, a significant, rather sharp (over one order of magnitude of \(Ra\)), flow transition occurs. This transition becomes more significant for smaller aspect ratios, and generally results in a sudden increase in the Nusselt number \cite{poel}. This flow transition corresponds to the breakdown of a vertically-stacked roll structure, destroyed by plumes moving upward through the domain due to the much higher buoyancy forces. These plumes result in a much greater vertical velocity component, increasing the Nusselt number. This type of branching has also been observed in 3-D simulations, and is therefore likely not an artifact of geometrical constraints \cite{poel}.
+
+For 2-D simulations, the number of rolls \(N\) relative to the aspect ratio appears to approach a constant value of 0.8 for large aspect ratios. At a minimum, there is one large-scale roll \cite{poel}. As the aspect ratio is increased, the number of horizontal rolls becomes stretched, resulting in a monotonic decrease in the Nusselt number (since the number of rolls scales with the number of plumes) until suddenly a larger number of rolls permits the Nusselt number to jump up again to a high value. The jump in the Nusselt number between successive roll states decreases as \(1/\Gamma\), which suggests a definition for a ``sufficiently large'' aspect ratio as \(\Gamma=26\pm1\), according to when the jump in Nusselt number between successive states is less than 1\% of the absolute value. Similarly, as the aspect ratio increases, the Reynolds number approaches an asymptotic value, which suggests a different definition for a ``sufficiently large'' aspect ratio as \(\Gamma=22\pm1\), according to a Reynolds number being 99\% of the infinite-domain value \cite{poel}.
+
+\subsubsection{The Influence of Dimension}
+
+Many simulations of Rayleigh-B\'enard convection are performed in 2-D, though all experiments are obviously conducted in 3-D.  Direct numerical simulation in 3-D is generally limited to Rayleigh numbers less than about \(10^7\), which motivates many to use 2-D models as surrogates to permit higher Rayleigh numbers more representative of those observed in the atmosphere and oceans \cite{schmalzl}. Therefore, there is interest in understanding how 2-D simulations may differ from 3-D simulations to ensure that 2-D models can be used to accurately predict 3-D results.
+
+For sufficiently large aspect ratios and \(Pr\geq1\), 2-D simulations generally predict global quantities like the Nusselt and Reynolds numbers, in addition to local properties like the thermal and momentum boundary layer structure, fairly well relative to reference 3-D simulations and experiments \cite{poel,schmalzl}. For small Prandtl numbers, there are substantial differences in the temperature profiles, Nusselt and Reynolds numbers, and boundary layer structures between 2-D and 3-D simulations. Generally, 2-D simulations show results that would suggest higher Prandtl numbers than being modeled \cite{schmalzl}. For example, the following is observed for \(Pr=0.025\) in 2-D simulations:
+
+\begin{itemize}
+\item Plume-like temperature profile and small-scale flows similar to high Prandtl simulations, rather than the fairly diffusive temperature profile and large-scale flow (because this flow is thermally driven) suggested by low Prandtl numbers. At small Prandtl number, the cellular structure of the temperature is slightly more diffusive than at high Prandtl numbers, but shows an overwhelming difference from 3-D simulations.
+\item The Nusselt and Reynolds numbers are underpredicted, and 2-D simulations show very little dependence of Nusselt number on Prandtl number. The Nusselt number increases with Prandtl number, eventually reaching a plateau around \(Pr=1\), while the Reynolds number steadily decreases with Prandtl number. Theoretically, the Nusselt number becomes independent of Prandtl number as \(Pr\rightarrow\infty\).
+\item The thermal boundary layer is much thinner and sharper than 3-D simulations, and the thickness of the thermal boundary layer seems insensitive to the Prandtl number for 2-D simulations, which agrees with the Nusselt number being independent of Prandtl number for 2-D simulations. The momentum boundary layer is more diffuse than the 3-D simulations, and shows worse agreement than the thermal boundary layer.
+\end{itemize}
+
+The differences between 2-D and 3-D simulations may be due to the fact that 2-D simulations cannot account for all components of the vorticity. Incompressible flow fields can be decomposed into two separate velocity components - a toroidal and a poloidal field. 2-D simulations cannot simulate the toroidal field. In the limit \(Pr\rightarrow\infty\), the toroidal component vanishes, in which case the impact of not being able to simulate a toroidal field becomes increasingly negligible \cite{schmalzl}. 
+
+
+\subsection{Phase Transition}
+
+The spatial convection structure depends on \(Ra\), \(Pr\), and other parameters. The possible solution modes are not unique, but in general a preferred mode exists, and stability analysis can be used to determine the stability of a given state. Consider a velocity perturbation \(\hat{V}\) given in terms of a single Fourier mode:
+
+\beq
+\hat{V}=V_o\exp{(\sigma t)}\cos{(a\frac{x}{H})}
+\eeq
+
+where \(\sigma\) is the rate of growth or decay. The system is unstable if \(\sigma>0\) for one or more values of \(a\), is stable if \(\sigma<0\), and is marginally stable for \(\sigma=0\). Performing {\it linear} stability analysis of the governing equations provides the marginal stability curve corresponding to \(\sigma=0\) as a function of \(a\) and \(Ra\). The minimum \(Ra_c\) below the system is stable for all values of \(a\) is 1707 \cite{berge}. Exactly at \(Ra_c\), the only unstable value of \(a\) is approximately 3.117 (for large lateral extent), which corresponds to a wavelength of \(\lambda\approx2H\) \cite{sandberg}. So, near the onset of convection, the preferred mode is a Fourier mode with wavelength approximately equal to \(2H\). For \(Ra>Ra_c\), a finite range of \(a\) is unstable, with stability obtained for smaller and larger \(a\). This can be understood in terms of the effects of permitting smaller or larger \(a\). If the wavelength \(\lambda\) is too large (small \(a\)), the viscous dissipation on the horizontal portions of the rolls would be large enough to stabilize the flow, while if the wavelength is too small (large \(a\)), the heat flux between parallel warm and cold streams would be large enough to stabilize the flow.
+
+A more accurate {\it nonlinear} stability analysis, also performed for a laterally infinite domain, reveals a more restricted stability curve, known as the Eckhaus instability curve. This stability curve is generally used to predict the stability of rolls. Nonlinear stability analysis predicts a more restricted range in \(a\) that yields instability. In finite domains, the presence of lateral boundaries even further restricts the range of \(a\) that yields instability. In the region outside of the Eckhaus stability curve, but within the marginal stability curve, different instability forms appear, such as zig-zag and cross-rolls, that may be stable. For these non-roll forms, the Prandtl number plays an important part in predicting existence.
+
+%The amplitudes \(\tilde{V}_x(z)\) and \(\tilde{V}_z(z)\) are determined by the boundary conditions imposed at the plates.
+
+Inspired by phase transitions in materials, the stability of Rayleigh-B\'enard convection can be assessed through the use of a potential \(\varphi\), defined as a polynomial of velocity:
+
+\beq
+\label{eq:LandauPotential}
+\varphi=\varphi_0+a_1V+\frac{a_2}{2}V^2+\frac{a_3}{3}V^3+\frac{a_4}{4}V^4+\cdots
+\eeq
+
+If small perturbations in velocity result in an equilibrium position at the bottom of a potential well, the system is stable. Therefore, \(\varphi\) should be concave upwards in regions of stable states. Provided the material properties (aside from density) are nearly independent of temperature, symmetry exists between upward and downward motions, such that \(\varphi(V)\) should equal \(\varphi(-V)\). This requirement causes all odd terms in Eq. \eqref{eq:LandauPotential} to be zero. Truncating the potential to \(\mathscr{O}(V^6)\), this results in:
+
+\beq
+\varphi=\varphi_0+\frac{a_2}{2}V^2+\frac{a_4}{4}V^4
+\eeq
+
+For \(Ra<Ra_c\), \(V=0\) corresponds to a stable equilibrium, so \(a_2>0\) in order to obtain a concave upward shape at \(V=0\). For \(Ra>Ra_c\), however, \(V=0\) is an unstable equilibrium, and the potential must be concave down at \(V=0\), which requires \(a_2<0\). This suggests a reasonable choice for \(a_2\) is:
+
+\beq
+\label{eq:a2}
+a_2\propto-\frac{Ra-Ra_c}{Ra_c}
+\eeq
+
+Equilibrium is obtained where \(\partial\varphi/\partial V=0\):
+
+\beq
+\label{eq:PotentialGradient}
+\frac{\partial\varphi}{\partial V}=V\left(a_2+a_4V^2\right)
+\eeq
+
+Clearly, \(V=0\) is an unstable equilibrium. Solving for the roots of the quadratic in parentheses in Eq. \eqref{eq:PotentialGradient} gives two additional solutions for velocity at (stable) equilibrium points:
+
+\beq
+\label{eq:EquilibriumAmplitude}
+V=\pm a_5\sqrt{\epsilon}
+\eeq
+
+where Eq. \eqref{eq:a2} has been used to insert the assumed proportionality for \(a_2\), with the assumption that any remaining proportionality coefficients are bundled into a redefined \(a_5\equiv \sqrt{1/a_4}\), and \(\varepsilon\) is defined as:
+
+\beq
+\varepsilon\equiv\frac{Ra-Ra_c}{Ra_c}
+\eeq
+
+Eq. \eqref{eq:EquilibriumAmplitude} shows that the equilibrium amplitude of the convective velocity increases with the square root of the departure from \(Ra_c\). By varying the Rayleigh number, the maximum amplitudes of the vertical and horizontal velocity components has been found to agree very well with Eq. \eqref{eq:EquilibriumAmplitude}, indicating a normal bifurcation. The maximum velocity scales as \(\kappa/H\).
+
+% provides analytic expressions for maximum velocity amplitudes, but only for Pr >> 1 \cite{berge}
+
+A scaling proportional to \(\sqrt{\epsilon}\) is only observed for the fundamental harmonic mode - the second and third harmonic modes scale as \(\epsilon\) and \(\epsilon^{1.5}\), respectively \cite{berge}.
+
+If non-Boussinesq effects are very strong, then symmetry between \(V\) and \(-V\) is not obtained, and the odd terms in Eq. \eqref{eq:LandauPotential} retained. Hexagonal structures may form, but these are only stable for a limited range of \(\varepsilon\), beyond which a transition to rolls occurs \cite{sandberg}. This occurs because rolls are more effective at heat transfer than the hexagonal structures.
+
+\subsubsection{Transient Behavior}
+
+The relationship between the rate of change of the velocity amplitude and the potential is given by \cite{berge}:
+
+\beqa
+\label{eq:TransientTime}
+\tau_0\frac{\partial V}{\partial t}=&\ -\frac{\partial\varphi}{\partial V}\\
+=&\ \varepsilon V-\frac{V^3}{V_0^2}\\
+\eeqa
+
+where \(\tau_0\) is a characteristic time scale and \(a_4=1/V_0^2\) has been assumed. Eq. \eqref{eq:TransientTime} indicates that for small times such that \(V^3\ll V\), the cubic term on the right hand side of Eq. \eqref{eq:TransientTime} can be neglected, which indicates that the initial slope \(\partial V/\partial t\) tends to zero with \(\varepsilon\). Therefore, the response time of the instability diverges at \(\varepsilon=0\). This is known as ``critical slowing down,'' since the time dependence of the perturbation becomes slower and slower near the critical point. For very long times, \(V\) tends to a limit due to the nonlinear terms in Eq. \eqref{eq:TransientTime}. The time response of a thermal perturbation on one of the plates scales as \cite{berge}:
+
+\beq
+\tau_0=\frac{H^2}{\kappa}\frac{1+1.954Pr}{38.44Pr}
+\eeq
+
+After the convection begins, there is a slow relaxation of the structure. In 3-D, defects move and the pattern rearranges. In addition, a vertical vorticity component is present, which generates secondary flows that are large on a scale relative to \(H\). The lower the Prandtl number, the more significant the vorticity-induced secondary flows. This relaxation time is often much longer than the horizontal thermal diffusion time, but for most experiments conducted to-date with moderate to high Prandtl number fluids, eventually a steady-state is obtained \cite{berge}. However, for low Prandtl number fluids, it has been observed that a chaotic state persists, with convective turbulent motion. There is little experimental data regarding this natural convection-driven turbulence. Additional considerations regarding 3-D flow phenomena is available in the literature \cite{berge}.
+
+\subsubsection{Spatial Distortions}
+
+Far from lateral boundaries, the velocity components can be described as sinusoidal Fourier components. But near the boundaries, these components must tend to zero. The extent over which the spatial effects of lateral boundaries are experienced depends on the Rayleigh number. For a given Rayleigh number, the marginal stability curve shows that a finite extent of wavenumbers are unstable. This \(\Delta a\) corresponds directly to a spatial width \(\xi\) that is inversely proportional in magnitude:
+
+\beq
+\xi=\frac{1}{\Delta a}
+\eeq
+
+This relationship can be understood by recognizing that at the boundary, the normal velocity must go to zero. The wider the range in wavenumbers permitted, the smaller the possible spatial extent over which a wave can be damped to zero. If the marginal stability curve is approximated as a parabola, then the finite range of permitted wavenumbers is proportional to:
+
+\beq
+\Delta a\propto\sqrt{Ra-Ra_c}
+\eeq
+
+This assumption shows that as \(Ra-Ra_c\rightarrow0\), \(\xi\) diverges. Hence, the perturbation of lateral boundary effects becomes more and more significant as \(Ra-Ra_c\rightarrow0\). Near the lateral boundaries, the velocity amplitude is exponentially damped according to \(\xi\).
+
+\clearpage
+\section{Governing Equations}
+\label{sec:Equations}
+This section presents the equations most commonly used to analyze Rayleigh-B\'enard convection, though it should be noted that the compressible Euler equations are used in Pronghorn. The purpose in deriving these equations is to provide the background for using approximate solutions to validate Pronghorn simulation of Rayleigh-B\'enard convection. The most common approximation made is termed the ``Boussinesq approximation.'' the starting point for deriving the Boussinesq equations is the Navier-Stokes equations, listed here without derivation:
+
+\beq
+\label{eq:Mass}
+\frac{\partial\rho}{\partial t}+\frac{\partial(\rho V_i)}{\partial x_i}=0
+\eeq
+
+\beq
+\label{eq:Mom}
+\frac{\partial(\rho V_i)}{\partial t}+\frac{\partial(\rho V_iV_j)}{\partial x_j}=-\frac{\partial P}{\partial x_i}+\frac{\partial}{\partial x_j}\left\lbrack\mu\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)-\frac{2\mu}{3}\frac{\partial V_k}{\partial x_k}\delta_{ij}\right\rbrack+\rho g_i
+\eeq
+
+\begin{subequations}
+\label{eq:EnergyNS}
+\begin{eqnarray}
+\frac{\partial(\rho E)}{\partial t}+\frac{\partial(\rho HV_i)}{\partial x_i}&=&\rho g_iV_i+\frac{\partial}{\partial x_j}\left\lbrack\mu V_i\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)-\frac{2\mu}{3}\frac{\partial V_k}{\partial x_k}V_i\delta_{ij}\right\rbrack+\frac{\partial}{\partial x_i}\left(k\frac{\partial T}{\partial x_i}\right)+\dot{q}\\
+\frac{\partial(\rho e)}{\partial t}+\frac{\partial(\rho eV_i)}{\partial x_i}&=&-P\delta_{ij}\frac{\partial V_i}{\partial x_j}+\left\lbrack\mu\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)-\frac{2\mu}{3}\frac{\partial V_k}{\partial x_k}\delta_{ij}\right\rbrack\frac{\partial V_i}{\partial x_j}+\frac{\partial}{\partial x_i}\left(k\frac{\partial T}{\partial x_i}\right)+\dot{q}\hspace{1cm}\\
+\rho C_p\frac{\partial T}{\partial t}+\rho C_pV_i\frac{\partial T}{\partial x_i}&=&\left\lbrack\mu\left(\frac{\partial V_i}{\partial x_j}+\frac{\partial V_j}{\partial x_i}\right)-\frac{2\mu}{3}\frac{\partial V_k}{\partial x_k}\delta_{ij}\right\rbrack\frac{\partial V_i}{\partial x_j}+\frac{\partial}{\partial x_i}\left(k\frac{\partial T}{\partial x_i}\right)+\dot{q}
+\end{eqnarray}
+\end{subequations}
+
+Several equivalent forms of an energy equation are provided, since many of the references that derive the Boussinesq approximation use different forms of the energy equation, and comparison between different references is desirable. The volume dissipative term in the momentum and energy equations, Eqs. \eqref{eq:Mom} and \eqref{eq:EnergyNS}, is neglected, as is common practice. Likewise, compression work in Eq. \eqref{eq:EnergyNS}c is neglected.  
+
+The major assumption to be made in simplifying Eqs. \eqref{eq:Mass}, \eqref{eq:Mom}, and \eqref{eq:EnergyNS} is the Boussinesq approximation. This approximation permits the effects of temperature gradients on buoyancy forces to be taken into account without solving the fully compressible Navier-Stokes equations. In the remainder of this section, it is assumed that the vertical direction corresponds to the \(z\)-coordinate and the lateral directions to the \(x\)- and \(y\)-coordinates. The domain consists of a fluid between two isothermal plates oriented perpendicular to the vertical coordinate axis and separated by a distance \(H\) with the \(z\)-coordinate defined over \(0\leq z\leq H\). The dimensions in the \(x\)- and \(y\)-coordinate directions are unspecified, but finite.
+
+Initially, the fluid is stagnant, and the temperature and pressure distributions correspond to the hydrostatic, conductive state. Any flow quantity \(f\) can be expressed as the sum of a (constant) spatial average \(\bar{f}\), an axial variation in steady state \(f_0(z)\) that corresponds to the conductive solution, and a perturbation \(f'(\vv{x},t)\) associated with buoyancy-driven convection:
+
+\beqa
+\label{eq:Expansion}
+f(\vv{x},t)=&\ \bar{f}+f_0(z)+f'(\vv{x},t)\\
+=&\ f(\vv{x},0)+f'(\vv{x},t)
+\eeqa
+
+where the spatial average \(\bar{f}\) is defined to be the average of the conductive solution such that \(f(\vv{x},0)\equiv\bar{f}+f_0(z)\) represents the combined initial solution.
+
+\beq
+\bar{f}\equiv\int_{0}^{H}f(z,0)dz
+\eeq
+
+The essential assumption made in the Boussinesq approximation is that the flow length scale \(H\) is much smaller than the length scaled induced by the variation in the steady-state solution. In other words, the Boussinesq approximation requires:
+
+\beq
+\label{eq:BAssumption}
+H \frac{1}{\bar{f}}\frac{\partial f_0(z)}{\partial z}\ll1
+\eeq
+
+Integrating this equation over \(0\leq z\leq H\) shows that Eq. \eqref{eq:BAssumption} is equivalent to requiring that the maximum variation in the steady-state condition relative to the spatial average be small:
+
+\begin{subequations}
+\label{eq:BA}
+\begin{eqnarray}
+\frac{f_0(H) - f_0(0)}{\bar{f}}&\ll&\ 1\\
+\frac{\Delta f_0}{\bar{f}}&=&\ \epsilon
+\end{eqnarray}
+\end{subequations}
+
+where \(\epsilon\) is a small number such that \(\epsilon^2\approx0\) and:
+
+\beq
+\Delta f_0\equiv f_0(H)-f_0(0)
+\eeq
+
+Performing a Taylor series expansion for \(\rho\) about the constant spatial average \(\bar{\rho}\) assuming an equation of state of the form \(\rho=\rho(P,T)\) gives:
+
+\beqa
+\label{eq:E1}
+\rho=\bar{\rho}+\frac{\partial\bar{\rho}}{\partial P}\left(P-\bar{P}\right)+\frac{\partial\bar{\rho}}{\partial T}\left(T-\bar{T}\right)+\frac{1}{2}\frac{\partial^2\bar{\rho}}{\partial P\partial T}\left(P-\bar{P}\right)\left(T-\bar{T}\right)+\hspace{1cm}\\
+\frac{1}{2}\frac{\partial^2\bar{\rho}}{\partial P^2}\left(P-\bar{P}\right)^2+\frac{1}{2}\frac{\partial^2\bar{\rho}}{\partial T^2}\left(T-\bar{T}\right)^2+\cdots
+\eeqa
+
+If the ideal gas equation of state is assumed, simple expressions for \(\partial\rho/\partial P\) and \(\partial \rho/\partial T\) can be inserted. The ideal gas law equation of state is assumed here only for the purpose of simplifying Eq. \eqref{eq:E1} to the point where certain terms can be neglected - the validity of the final results will still hold for other equations of state, but the derivation process would be much more complicated. For an ideal gas, \(\beta=1/T\) and \(\alpha_T=1/P\), so Eq. \eqref{eq:E1} simplifies to:
+
+\beqa
+\label{eq:E2}
+\rho=\bar{\rho}+\bar{\rho}\left(\frac{P-\bar{P}}{\bar{P}}\right)-\bar{\rho}\left(\frac{T-\bar{T}}{\bar{T}}\right)-\frac{\bar{\rho}}{2}\left(\frac{P-\bar{P}}{\bar{P}}\frac{T-\bar{T}}{\bar{T}}\right)+\frac{\bar{\rho}}{2}\left(\frac{P-\bar{P}}{\bar{P}}\right)^2+\frac{\bar{\rho}}{2}\left(\frac{T-\bar{T}}{\bar{T}}\right)^2+\cdots
+\eeqa
+
+Each of these terms can still be simplified; using the defined expansion in Eq. \eqref{eq:Expansion}, \((P-\bar{P})/\bar{P}\) is:
+
+\beq
+\frac{P-\bar{P}}{\bar{P}}=\frac{P_0(z)}{\bar{P}}+\frac{P'(\vv{x},t)}{\bar{P}}
+\eeq
+
+From the condition in Eq. \eqref{eq:BA}, the first term on the right-hand side is much less than unity, and can be ignored. In order to make statements about the second term, however, one additional approximation is required:
+
+\beq
+\label{eq:BA2}
+\frac{f'(\vv{x},t)}{\bar{f}}\le\mathscr{O}(\epsilon)
+\eeq
+
+This condition on the fluctuating magnitude must be verified {\it after} obtaining the solution to the problem, but generally no experimental evidence has been collected to suggest that Eq. \eqref{eq:BA2} is ever not satisfied if Eq. \eqref{eq:BA} is satisfied \cite{spiegel}. With this additional assumption, all second order and higher terms in Eq. \eqref{eq:E2} are zero; using this and returning to the general form in Eq. \eqref{eq:E1} gives:
+
+\beq
+\label{eq:relationship}
+\frac{\rho-\bar{\rho}}{\bar{\rho}}=\alpha_T\left(P-\bar{P}\right)-\beta\left(T-\bar{T}\right)
+\eeq
+
+The above must also hold for the steady-state initial condition, where the fluctuations are zero, giving:
+
+\beq
+\label{eq:SteadyIC}
+\frac{\rho_0(z)}{\bar{\rho}}=\alpha_TP_0(z)-\beta T_0(z)
+\eeq
+
+Subtracting Eq. \eqref{eq:SteadyIC} from Eq. \eqref{eq:relationship} then gives the following relationship between the fluctuations:
+
+\beq
+\label{eq:FluctuatingIC}
+\frac{\rho'(\vv{x},t)}{\bar{\rho}}=\alpha_TP'(\vv{x},t)-\beta T'(\vv{x},t)
+\eeq
+
+The term proportional to the fluctuating pressure in Eq. \eqref{eq:FluctuatingIC} can be neglected, since its contribution is small when estimated using the axial momentum equation \cite{spiegel}. However, the pressure cannot be neglected in Eq. \eqref{eq:SteadyIC}, since it contributes significantly via hydrostatic effects.
+
+Next, express all variables in the form of the expansion shown in Eq. \eqref{eq:Expansion}. Eq. \eqref{eq:Mass}, after rearrangement and the use of Eq. \eqref{eq:BA}, becomes:
+
+\beqa
+\left(1+\frac{\rho_0(z)}{\bar{\rho}}+\frac{\rho'(\vv{x},t)}{\bar{\rho}}\right)\nabla\cdot\vv{V}'=&\ -\left(\frac{\partial}{\partial t}+\vv{V}'\cdot\nabla\right)\left(\frac{\rho_0(z)}{\bar{\rho}}+\frac{\rho'(\vv{x},t)}{\bar{\rho}}\right)\\
+\nabla\cdot\vv{V}'=&\ -\left(\frac{\partial}{\partial t}+\vv{V}'\cdot\nabla\right)\left\lbrack\epsilon\left(\frac{\rho_0(z)}{\Delta\rho_0}+\frac{\rho'(\vv{x},t)}{\Delta\rho_0}\right)\right\rbrack+\mathscr{O}(\epsilon^2)\\
+\eeqa
+
+where the terms on the left-hand-side cancel because they are small compared to unity (according to Eq. \eqref{eq:BA}). To order \(\epsilon\), the continuity equation simplifies to:
+
+\beq
+\label{eq:BMass}
+\nabla\cdot\vv{V}'=0
+\eeq
+
+To derive the Boussinesq momentum equation, information about the initial steady-state solution is required. The steady-state version of Eq. \eqref{eq:Mom} is obtained by setting all time derivatives to zero and the velocity components to zero, giving:
+
+\beq
+\label{eq:MomSteady}
+0=-\frac{\partial P_0(z)}{\partial z}+\left(\bar{\rho}+\rho_0(z)\right)g_z
+\eeq
+
+Subtracting Eq. \eqref{eq:MomSteady} from Eq. \eqref{eq:Mom}, with all variables expressed in terms of the expansion in Eq. \eqref{eq:Expansion} and using the continuity equation in Eq. \eqref{eq:BMass}, gives:
+
+\beqa
+\label{eq:BMom}
+\left(1+\frac{\rho_0(z)}{\bar{\rho}}+\frac{\rho'(\vv{x},t)}{\bar{\rho}}\right)\left(\frac{\partial V_i'}{\partial t}+V_j'\frac{\partial V_i'}{\partial x_j}\right)=&\ -\frac{1}{\bar{\rho}}\frac{\partial P'(\vv{x},t)}{\partial x_i}+\frac{\mu}{\bar{\rho}}\frac{\partial ^2V_i'}{\partial x_j\partial x_j}+\frac{\rho'(\vv{x},t)}{\bar{\rho}} g_i\\
+\frac{\partial V_i'}{\partial t}+V_j'\frac{\partial V_i'}{\partial x_j}=&\ -\frac{1}{\bar{\rho}}\frac{\partial P'(\vv{x},t)}{\partial x_i}+\frac{\mu}{\bar{\rho}}\frac{\partial ^2V_i'}{\partial x_j\partial x_j}+\epsilon\frac{\rho'(\vv{x},t)}{\Delta\rho_0} g_i\\
+\frac{\partial V_i'}{\partial t}+V_j'\frac{\partial V_i'}{\partial x_j}=&\ -\frac{1}{\bar{\rho}}\frac{\partial P'(\vv{x},t)}{\partial x_i}+\frac{\mu}{\bar{\rho}}\frac{\partial ^2V_i'}{\partial x_j\partial x_j}-\beta T' g_i\\
+\frac{\partial V_i'}{\partial t}+V_j'\frac{\partial V_i'}{\partial x_j}=&\ -\frac{1}{\bar{\rho}}\frac{\partial P'(\vv{x},t)}{\partial x_i}+\frac{\mu}{\bar{\rho}}\frac{\partial ^2V_i'}{\partial x_j\partial x_j}-\beta (T-T(\vv{x},0)) g_i\\
+\eeqa
+
+where Eq. \eqref{eq:BA} has been used and it is assumed for the remainder of this document that \(\mu\) is constant. For the same reason as previously, the terms on the left-hand-side cancel because they are small compared to unity. However, in this case, the gravitational term, which is proportional to \(\epsilon\) does not cancel. The local acceleration \(\partial V_i'/\partial t\) is driven by density fluctuations in the fluid, so by definition must be of the same order as the gravitational acceleration \(g_i\epsilon \rho'/\Delta\rho_0\). Therefore, the gravitational acceleration must be much greater than the local acceleration, and hence the gravitational term cannot be neglected \cite{spiegel}. In the last form of Eq. \eqref{eq:BMom}, Eq. \eqref{eq:FluctuatingIC} has been inserted, completing the Boussinesq form of the momentum equation. 
+
+To derive the Boussinesq energy equation, information about the initial steady-state solution is required. The steady-state version of Eq. \eqref{eq:EnergyNS}c is obtained by setting all time derivatives to zero and the velocity components to zero, giving:
+
+\beq
+\label{eq:EnergyInitial}
+0=\frac{\partial}{\partial x_i}\left(k\frac{\partial T_0(z)}{\partial x_i}\right)+\dot{\bar{q}}+\dot{q}_0(z)
+\eeq
+
+If the heat source is assumed zero and the thermal conductivity is temperature-independent, the solution to Eq. \eqref{eq:EnergyInitial} will be linear between the two boundary condition temperatures. It is assumed in the remainder of this document that the thermal conductivity is independent of temperature. Subtracting Eq. \eqref{eq:EnergyInitial} from Eq. \eqref{eq:EnergyNS}c, expressing all variables in terms of the expansion in Eq. \eqref{eq:Expansion}, and using the continuity equation in Eq. \eqref{eq:BMass} gives:
+
+\beqa
+\label{eq:BEnergy}
+\left(1+\frac{\rho_0(z)}{\bar{\rho}}+\frac{\rho'(\vv{x},t)}{\bar{\rho}}\right)C_p\left\lbrack\frac{\partial T'(\vv{x},t)}{\partial t}+\hat{V}_i\frac{\partial (T_0(z)+T'(\vv{x},t))}{\partial x_i}\right\rbrack=\hspace{2cm}\\
+\frac{\mu}{\bar{\rho}}\left(\frac{\partial V_i'}{\partial x_j}+\frac{\partial V_j'}{\partial x_i}\right)\frac{\partial V_i'}{\partial x_j}+\frac{k}{\bar{\rho}}\frac{\partial^2 T'(\vv{x},t)}{\partial x_i\partial x_i}+\frac{\dot{q}'(\vv{x},t)}{\bar{\rho}}\\
+C_p\left\lbrack\frac{\partial T'(\vv{x},t)}{\partial t}+\hat{V}_i\frac{\partial (T_0(z)+T'(\vv{x},t))}{\partial x_i}\right\rbrack=\hspace{2cm}\\
+\frac{\mu}{\bar{\rho}}\left(\frac{\partial V_i'}{\partial x_j}+\frac{\partial V_j'}{\partial x_i}\right)\frac{\partial V_i'}{\partial x_j}+\frac{k}{\bar{\rho}}\frac{\partial^2 T'(\vv{x},t)}{\partial x_i\partial x_i}+\frac{\dot{q}'(\vv{x},t)}{\bar{\rho}}\\
+\eeqa
+
+Dividing both sides by \(\bar{\rho}\), the terms on the left-hand-side cancel because they are small compared to unity. The Boussinesq equations therefore represent the incompressible Navier-Stokes equations, with the average of the steady-state density, \(\bar{\rho}\), using in all locations except the buoyancy term, which assumes a linear temperature dependence with temperature.
+
+\subsection{Non-dimensionalization}
+
+This section presents the non-dimensionalization of the Boussinesq equations derived in Section \ref{sec:Equations} using three different nondimensionalizations. These nondimensioanl equations will be used to perform a linear stability analysis, which will identify the dimensionless numbers important in determining transitions between stable and unstable convection flows. 
+
+Nondimensional quantities are indicated with \(+\) superscripts, and are defined based on a representative velocity \(U\), dimension \(h\), temperature range \(\Delta T\), time \(h/U\), and gravitational constant \(g\):
+
+\beq
+\label{eq:NonDims}
+V_i^+=\frac{V_i}{U}\hspace{1cm}x_i^+=\frac{x_i}{h}\hspace{1cm}T^+=\frac{T-\bar{T}}{\Delta T}\hspace{1cm}t^+=\frac{t}{h/U}\hspace{1cm}P^+=\frac{P}{\bar{\rho}U^2}\hspace{1cm} g^+=\frac{g_i}{g}
+\eeq
+
+\subsubsection{The Momentum Equation}
+
+The nondimensional momentum equation becomes:
+
+\beq
+\label{eq:NondimMom}
+\frac{U^2}{h}\left(\frac{\partial V_i^+}{\partial t^+}+V_j^+\frac{\partial V_i^+}{\partial x_i^+}\right)=-\frac{1}{\bar{\rho}}\frac{\bar{\rho}U^2}{h}\frac{\partial P^+}{\partial x^+}-\nu\frac{U}{h^2}\frac{\partial}{\partial x_j^+}\left(\frac{\partial V_i^+}{\partial x_j}\right)-\beta T^+\Delta T gg^+
+\eeq
+
+where primes have been dropped on all terms for simplicity. Several equivalent nondimensional forms can be obtained by dividing each term by the nondimensional factor on one of the other terms. Several dimensionless numbers that will be used include the Richardson number \(Ri\), which represents the ratio of buoyancy effects to inertial effects:
+
+\beq
+Ri\equiv\frac{gh}{U^2}
+\eeq
+
+the Rayleigh number, which represents the ratio of buoyancy effects to viscous effects and is represented as Eq. \eqref{eq:Rayleigh}a for a generic characteristics velocity \(U\) and in Eq. \eqref{eq:Rayleigh}b for a specific characteristic velocity \(U=\kappa/h\):
+
+\begin{subequations}
+\label{eq:Rayleigh}
+\begin{eqnarray}
+Ra&\equiv&\frac{\beta\Delta T gh^2}{\nu U}\\
+Ra&\equiv&\frac{\beta\Delta T gh^3}{\nu \kappa}
+\end{eqnarray}
+\end{subequations}
+
+\subsubsubsection{Inertial Scaling}
+Dividing each term by the inertial scaling \(U^2/h\) gives:
+
+\beq
+\frac{\partial V_i^+}{\partial t^+}+V_j^+\frac{\partial V_i^+}{\partial x_i^+}=-\frac{\partial P^+}{\partial x^+}-\frac{1}{Re}\frac{\partial}{\partial x_j^+}\left(\frac{\partial V_i^+}{\partial x_j}\right)-Ri\beta \Delta TT^+g^+
+\eeq
+
+\subsubsubsection{Viscous Scaling}
+Dividing each term by the viscous scaling \(\nu U/h^2\) gives:
+
+\beq
+\label{eq:NonDim2}
+Re\left(\frac{\partial V_i^+}{\partial t^+}+V_j^+\frac{\partial V_i^+}{\partial x_i^+}\right)=-Re\frac{\partial P^+}{\partial x^+}-\frac{\partial}{\partial x_j^+}\left(\frac{\partial V_i^+}{\partial x_j}\right)-Ra T^+g^+
+\eeq
+
+If instead the characteristic pressure is selected as \(\bar{\rho}U^2\nu/\kappa\), the viscous scaling becomes:
+
+\beq
+\label{eq:NonDim3}
+\frac{1}{Pr}\left(\frac{\partial V_i^+}{\partial t^+}+V_j^+\frac{\partial V_i^+}{\partial x_i^+}\right)=-\frac{\partial P^+}{\partial x^+}-\frac{\partial}{\partial x_j^+}\left(\frac{\partial V_i^+}{\partial x_j}\right)-Ra T^+g^+
+\eeq
+
+\subsubsection{The Energy Equation}
+\label{sec:EnergyDim}
+
+The nondimensional energy equation, beginning from Eq. \eqref{eq:BEnergy} with viscous dissipation neglected \cite{spiegel} and no heat source in the fluid, becomes:
+
+\beq
+\bar{\rho}C_p\frac{U\Delta T}{h}\left(\frac{\partial T^+}{\partial t^+}+V_i^+\frac{\partial T^+}{\partial x_i^+}\right)=\frac{k\Delta t}{h^2}\frac{\partial}{\partial x_i^+}\left(\frac{\partial T^+}{\partial x_i^+}\right)
+\eeq
+
+where the same nondimensionalizations in Eq. \eqref{eq:NonDims} with \(U=\kappa/h\) are used. Dividing through by the inertial scaling of \(\bar{\rho}C_pU\Delta T/h\), the above simplifies to:
+
+\beq
+\label{eq:EnergyNonDim}
+\frac{\partial T^+}{\partial t^+}+V_i^+\frac{\partial T^+}{\partial x_i^+}=\frac{\partial}{\partial x_i^+}\left(\frac{\partial T^+}{\partial x_i^+}\right)
+\eeq
+
+\clearpage
+\section{Linear Stability Analysis}
+\label{sec:Stability}
+
+For a sufficiently small temperature difference between the top and bottom of the geometry, there will be no fluid motion, as the destabilizing effects of thermally-driven convection are arrested by viscous and thermal diffusion effects. For fixed fluid properties beyond some temperature gradient, motion will be induced by the buoyancy forces overcoming diffusive effects. This section derives the approximate transition point between the stationary initial state and macroscopic motion using linear stability analysis for a 2-D domain \cite{sandberg}. All stability analysis will be performed with nondimensional equations, and for simplicity in this section all \(+\) superscripts are dropped. Using the following two identities:
+
+\beq
+\vv{V}\cdot\nabla\vv{V}=\nabla\left(\frac{V^2}{2}\right)+\vv{\omega}\times\vv{V}
+\eeq
+
+\beq
+\nabla\times\left(\vv{\omega}\times\vv{V}\right)=\vv{\omega}(\nabla\cdot\vv{V})+(\vv{V}\cdot\nabla)\vv{\omega}-(\vv{\omega}\cdot\nabla)\vv{V}
+\eeq
+
+and taking the curl of the nondimensional momentum equation in Eq. \eqref{eq:NonDim3} gives an equivalent form of the momentum equation:
+
+\beq
+\label{eq:Mom1}
+\frac{1}{Pr}\left\lbrack\frac{\partial\vv{\omega}}{\partial t}+\vv{\omega}(\nabla\cdot\vv{V})+(\vv{V}\cdot\nabla)\vv{\omega}-(\vv{\omega}\cdot\nabla)\vv{V}\right\rbrack=\nabla\cdot\nabla\vv{\omega}+\nabla\times\left(Ra T\vv{e}_z\right)
+\eeq
+
+where the curl of the pressure gradient is zero because the curl of a gradient is by definition zero. For a 2-D domain in \(x\) and \(z\), several simplifications can be made. The vorticity has a single component:
+
+\beq
+\label{eq:Omega2D}
+\vv{\omega}=\left(\frac{\partial V_z}{\partial x}-\frac{\partial V_x}{\partial z}\right)\vv{e}_z
+\eeq
+
+Inserting Eq. \eqref{eq:Omega2D} into Eq. \eqref{eq:Mom1}, expanding the curl on the right hand side, and using the continuity equation in Eq. \eqref{eq:BMass}, Eq. \eqref{eq:Mom1} becomes:
+
+\beq
+\label{eq:Mom1}
+\frac{1}{Pr}\left\lbrack\frac{\partial\omega}{\partial t}+V_x\frac{\partial\omega}{\partial x}+V_z\frac{\partial\omega}{\partial z}\right\rbrack=\nabla\cdot\nabla\omega+Ra\frac{\partial T}{\partial x}
+\eeq
+
+The use of vorticity has therefore permitted the elimination of the pressure field, simplifying the analysis. The energy equation in Eq. \eqref{eq:EnergyNonDim} is:
+
+\beq
+\label{eq:NonDimEnergy}
+\frac{\partial T}{\partial t}+V_x\frac{\partial T}{\partial x}+V_z\frac{\partial T}{\partial z}=\frac{\partial^2T}{\partial x^2}+\frac{\partial T^2}{\partial z^2}
+\eeq
+
+\begin{comment}
+Similarly, axial integration of the momentum equation with zero stress conditions on the left and right walls gives the thermodynamic pressure and the reduced pressure:
+
+\begin{subequations}
+\begin{eqnarray}
+P_0(z)&=&P_0+\rho_0g\left(\beta k\frac{T_0-T_t}{H}\frac{z^2}{2}-z\right)\\
+P'_0(z)&=&P_0+\rho_0g\beta k\frac{T_0-T_t}{H}\frac{z^2}{2}
+\end{eqnarray}
+\end{subequations}
+\end{comment}
+
+\subsection{Linearized Boussinesq Equations}
+
+The Boussinesq equations can be linearized by perturbing the velocity, temperature, and vorticity of the steady-state zero-motion flow by small fluctuations indicated with hat superscripts, multiplied by a small constant \(\epsilon\):
+
+\begin{subequations}
+\begin{eqnarray}
+V_i&\rightarrow&\epsilon\hat{V}_i(\vv{x},t)\\
+\omega&\rightarrow&\epsilon\hat{\omega}(\vv{x},t)\\
+T&\rightarrow& T_0(z)+\epsilon\hat{T}(\vv{x},t)
+\end{eqnarray}
+\end{subequations}
+
+Inserting these linearizations into the governing equations for mass, momentum, and energy conservation in Eqs. \eqref{eq:BMass}, \eqref{eq:NonDim3}, and \eqref{eq:NonDimEnergy}, and assuming \(\epsilon^2\approx0\), gives the following set of linearized Boussinesq equations:
+
+\beq
+\frac{\partial \hat{V}_x}{\partial x}+\frac{\partial \hat{V}_z}{\partial z}=0
+\eeq
+
+\beq
+\frac{1}{Pr}\frac{\partial\hat{\omega}}{\partial t}=\nabla\cdot\nabla\hat{\omega}+Ra\frac{\partial\hat{T}}{\partial x}
+\eeq
+
+\beqa
+\frac{\partial\hat{T}}{\partial t}+\hat{V}_z\frac{\partial T_0(z)}{\partial z}=&\ \frac{\partial^2\hat{T}}{\partial x^2}+\frac{\partial^2\hat{T}}{\partial z^2}\\
+\frac{\partial\hat{T}}{\partial t}+\hat{V}_z=&\ \frac{\partial^2\hat{T}}{\partial x^2}+\frac{\partial^2\hat{T}}{\partial z^2}
+\eeqa
+
+where the initial steady temperature solution in Eq. \eqref{eq:EnergyInitial} was subtracted from the energy equation, and with Dirichlet boundary conditions at \(z=0\) and \(z=h\), the initial temperature profile is linear, i.e. \(T_0(z)=z\). This system of three equations describes three unknowns - \(\hat{V}_x\), \(\hat{V}_y\), and \(\hat{T}\), but these equations can be made simpler by introducing the streamfunction:
+
+\beq
+\hat{V}_x=\frac{\partial\hat{\psi}}{\partial z}
+\eeq
+
+\beq
+\label{eq:VzVorticity}
+\hat{V}_z=-\frac{\partial\hat{\psi}}{\partial x}
+\eeq
+
+The use of a streamfunction automatically satisfies the 2-D, incompressible continuity equation, reducing three equations to only equations for momentum and energy. Inserting the streamfunction into the definition for vorticity in Eq. \eqref{eq:Omega2D} gives:
+
+\beq
+\label{eq:Omega2D_1}
+\omega=-\left(\frac{\partial^2 \hat{\psi}}{\partial x^2}+\frac{\partial^2 \hat{\psi}}{\partial z^2}\right)\vv{e}_z
+\eeq
+
+Inserting Eq. \eqref{eq:Omega2D_1} into the momentum equation and Eq. \eqref{eq:VzVorticity} into the energy equation gives the following simpler equations (with the continuity equation automatically satisfied) now in terms of only two unknowns:
+
+\beq
+\label{eq:Mom3}
+\frac{1}{Pr}\frac{\partial(\nabla^2\hat{\psi})}{\partial t}=\nabla^2\left(\nabla^2\hat{\psi}\right)-Ra\frac{\partial\hat{T}}{\partial x}
+\eeq
+
+\beq
+\label{eq:Energy3}
+\frac{\partial\hat{T}}{\partial t}-\frac{\partial\hat{\psi}}{\partial x}=\frac{\partial^2\hat{T}}{\partial x^2}+\frac{\partial^2\hat{T}}{\partial z^2}
+\eeq
+
+Both of these equations are linear, and because the coefficients are dimensionless numbers that are independent of the coordinates \(t\), \(x\), and \(z\), normal mode stability analysis permits the postulation of a solution of the form:
+
+\begin{subequations}
+\label{eq:LinearAnsatz}
+\begin{eqnarray}
+\hat{\psi}&=&\tilde{\psi}(z)e^{ikx+\sigma t}\\
+\hat{T}&=&\tilde{T}(z)e^{ikx+\sigma t}
+\end{eqnarray}
+\end{subequations}
+
+where \(\tilde{\psi}\) and \(\tilde{T}\) are complex amplitudes, \(k\) is the wave number, and \(\sigma\) is the growth rate. The case when \(\sigma=0\) indicates the transition between stable (negative growth rate of perturbation) and unstable (positive growth rate of perturbation) behavior. Inserting Eq. \eqref{eq:LinearAnsatz} into Eqs. \eqref{eq:Mom3} and \eqref{eq:Energy3} gives:
+
+\beq
+\frac{\sigma}{Pr}\left(\frac{\partial^2\tilde{\psi}(z)}{\partial z^2}-k^2\tilde{\psi}(z)\right)=-Ra\ ik\tilde{T}(z)+\frac{\partial^4\tilde{\psi}(z)}{\partial z^4}-2k^2\frac{\partial^2\tilde{\psi}(z)}{\partial z^2}+k^4\tilde{\psi}(z)
+\eeq
+
+\beq
+\sigma\tilde{T}(z)-ik\tilde{\psi}(z)=-k^2\tilde{T}(z)+\frac{\partial^2\tilde{T}(z)}{\partial z^2}
+\eeq
+
+The boundary between stable and unstable states can be obtained by setting \(\sigma\) to zero. Setting \(\sigma=0\) in the momentum equation gives:
+
+\beq
+\tilde{T}(z)=\frac{1}{Ra\ ik}\left(\frac{\partial^4\tilde{\psi}(z)}{\partial z^4}-2k^2\frac{\partial^2\tilde{\psi}(z)}{\partial z^2}+k^4\tilde{\psi}(z)\right)
+\eeq
+
+Then, inserting this expression for \(\tilde{T}\) into the energy equation while again setting \(\sigma\) to zero gives:
+
+\beq
+k^2\tilde{\psi}(z)=\frac{1}{Ra}\left(-k^2+\frac{\partial^2}{\partial z^2}\right)\left\lbrack\left(\frac{\partial^4\tilde{\psi}(z)}{\partial z^4}-2k^2\frac{\partial^2\tilde{\psi}(z)}{\partial z^2}+k^4\tilde{\psi}(z)\right)\right\rbrack
+\eeq
+
+This represents an eigenvalue problem, where the eigenvalue is \(Ra\) and \(\tilde{\psi}\) are the corresponding eigenfunctions. It is only the Rayleigh number that dictates the transition point between stable and unstable behavior. A pictorial solution to this eigenvalue problem as a function of \(k\) is provided elsewhere \cite{sandberg}. For a domain consisting of two parallel plates with no-slip velocity boundary conditions and Dirichlet temperature conditions, with periodic velocity boundary conditions on the lateral faces, the highest Rayleigh number that has a stable solution for all values of \(k\) is \(Ra=1708\) \cite{sandberg}. For \(Ra>1708\), the solution is only stable for certain values of \(k\), while for \(Ra<1708\), no macroscopic motion should occur.
+
+\clearpage
+\section{Prandtl-Blasius Boundary Layer Theory}
+\label{sec:PBL}
+
+This section discusses the Prandtl-Blasius boundary layer theory that will be used to estimate the required grid resolution for numerical simulation of Rayleigh-B\'enard convection as a function of the dimensionless numbers characterizing the system. Simplifications are made to the Navier-Stokes equations for steady, incompressbile, 2-D flow along a laterally infinite plate to provide simpler governing equations for boundary layer analysis. The steady, incompressible, 2-D versions of the conservation of mass, momentum, and energy equations listed in Eqs. \eqref{eq:Mass}, \eqref{eq:Mom}, and \eqref{eq:EnergyNS} as:
+
+\beq
+\frac{\partial V_x}{\partial x}+\frac{\partial V_z}{\partial z}=0
+\eeq
+
+\begin{subequations}
+\label{eq:PBMom}
+\begin{eqnarray}
+V_x\frac{\partial V_x}{\partial x}+V_z\frac{\partial V_x}{\partial z}&=&-\frac{\partial P}{\partial x}+\nu\left(\frac{\partial^2V_x}{\partial x^2}+\frac{\partial^2V_x}{\partial z^2}\right)\\
+V_x\frac{\partial V_z}{\partial x}+V_z\frac{\partial V_z}{\partial z}&=&-\frac{\partial P}{\partial z}+\nu\left(\frac{\partial^2V_z}{\partial x^2}+\frac{\partial^2V_z}{\partial z^2}\right)
+\end{eqnarray}
+\end{subequations}
+
+\beq
+\label{eq:PBEnergy}
+V_x\frac{\partial T}{\partial x}+V_z\frac{\partial T}{\partial z}=\kappa\left(\frac{\partial^2T}{\partial x^2}+\frac{\partial^2T}{\partial z^2}\right)
+\eeq
+
+It is also assumed that the heat source is zero and viscous energy dissipation is negligible. It is assumed that the momentum and thermal boundary layers are thin, each with a thickness \(\delta\) that is small relative to the chord length \(c\) of the plate, i.e. \(\delta/c\ll1\). For this reason, gravitational effects are neglected. An initial scaling analysis is easier to perform without the presence of the pressure gradient in the momentum equation, so the steady, incompressible, 2-D vorticity equation is used instead of Eq. \eqref{eq:PBMom}:
+
+\beq
+V_x\frac{\partial\omega}{\partial x}+V_z\frac{\partial\omega}{\partial z}=\nu\left(\frac{\partial^2\omega}{\partial x^2}+\frac{\partial^2\omega}{\partial z^2}\right)
+\eeq
+
+where the vorticity vector consists of a single component \(\vv{\omega}=\omega\vv{e}_z\):
+
+\beqa
+\vv{\omega}=&\ \left(\frac{\partial V_z}{\partial x}-\frac{\partial V_x}{\partial z}\right)\vv{e}_z\\
+\equiv&\ \omega\vv{e}_z
+\eeqa
+
+No-slip boundary conditions are applied at the surface of the plate, and in the far-field, the velocity consists of a single component \(\vv{V}\rightarrow U_0\vv{e}_x\), where \(U_0\) is the free-stream velocity. Nondimensionalization of the governing equations will reveal important conditions required to satisfy \(\delta/c\ll 1\). Introduce the following nondimensional quantities, indicated by \(+\) superscripts:
+
+\beq
+x^+=\frac{x}{c}\hspace{0.8cm}z^+=\frac{z}{\delta}\hspace{0.8cm}V_x^+=\frac{V_x}{U_0}\hspace{0.8cm}V_z^+=\frac{V_z}{U_s}\hspace{0.8cm}\omega^+=\frac{\omega}{\omega_s}\hspace{0.8cm}P^+=\frac{P}{\rho U_0^2}\hspace{0.8cm}T^+=\frac{T-T_0}{\Delta T}
+\eeq
+
+The velocity parallel to the plate is scaled according to the free-stream velocity, while the normal velocity is scaled according to an as-yet-undetermined characteristic velocity \(U_s\). Likewise, \(\omega_s\) is not yet determined. Introducing these nondimensional quantities into the continuity equation gives the following nondimensional continuity equation, where \(U_s=U_0\delta/c\) has been selected as the representation for \(U_s\):
+
+\beq
+\frac{\partial V_x^+}{\partial x^+}+\frac{\partial V_z^+}{\partial z^+}=0
+\eeq
+
+Introducing the nondimensional quantities into the vorticity gives a definition for \(\omega_s\):
+
+\beq
+\label{eq:VorticityNonDim}
+\omega=\underbrace{\frac{U_0}{\delta}}_{\omega_s}\underbrace{\left(\frac{\delta^2}{c^2}\frac{\partial V_z^+}{\partial x^+}-\frac{\partial V_x^+}{\partial z^+}\right)}_{\omega^+}
+\eeq
+
+Introducing the nondimensional quantities into the vorticity equation gives Eq. \eqref{eq:NonDimV}a:
+
+\begin{subequations}
+\label{eq:NonDimV}
+\begin{eqnarray}
+V_x^+\frac{\partial\omega^+}{\partial x^+}+V_z^+\frac{\partial \omega^+}{\partial z^+}&=&\frac{\nu c}{U_0\delta ^2}\left(\frac{\delta^2}{c^2}\frac{\partial ^2\omega^+}{\partial x^{+^2}}+\frac{\partial^2\omega^+}{\partial z^{+^2}}\right)\\
+V_x^+\frac{\partial\omega^+}{\partial x^+}+V_z^+\frac{\partial \omega^+}{\partial z^+}&=&\frac{1}{Re_c}\frac{\partial ^2\omega^+}{\partial x^{+^2}}+\frac{\partial^2\omega^+}{\partial z^{+^2}}
+\end{eqnarray}
+\end{subequations}
+
+Noting that \(\delta/c\ll1\), derivatives of vorticity are much greater perpendicular to the plate (across the boundary layer) than parallel to the plate. Setting \(\nu c/U_0\delta^2=1\) provides the condition on the Reynolds number to obtain a thin boundary layer, \(\sqrt{1/Re_c}\ll 1\):
+
+\begin{subequations}
+\label{eq:PBResult}
+\begin{eqnarray}
+\delta&=&\sqrt{\frac{\nu c}{U_0}}\\
+\frac{\delta}{c}&=&\sqrt{\frac{1}{Re_c}}
+\end{eqnarray}
+\end{subequations}
+
+where \(Re_c\) is the Reynolds number based on the chord length. Inserting Eq. \eqref{eq:PBResult} into Eq. \eqref{eq:NonDimV}a gives Eq. \eqref{eq:NonDimV}b. In other words, a thin boundary layer requires a large chord length Reynolds number. In the limit as \(Re_c\rightarrow\infty\), combining Eq. \eqref{eq:VorticityNonDim} with Eq. \eqref{eq:NonDimV}b gives:
+
+\beqa
+V_x^+\frac{\partial ^2V_x^+}{\partial x^{+}\partial z^+}+V_z^+\frac{\partial^2V_x^+}{\partial z^{+^2}}=&\ \frac{\partial^3V_x^+}{\partial z^{+^3}}\\
+\frac{\partial}{\partial z^+}\left(V_x^+\frac{\partial V_x^+}{\partial x^+}\right)+\frac{\partial}{\partial z^+}\left(V_z^+\frac{\partial V_x^+}{\partial z^+}\right)=&\ \frac{\partial^3V_x^+}{\partial z^{+^3}}
+\eeqa
+
+where the chain rule and incompressibility has been used to rearrange the terms. Integrating this differential equation in \(z^+\) gives an equation that is equivalent to the nondimensional form of the \(x\)-direction momentum equation in Eq. \eqref{eq:PBMom}a:
+
+\beq
+V_x^+\frac{\partial V_x^+}{\partial x^+}+V_z^+\frac{\partial V_x^+}{\partial z^+}=\frac{\partial^2V_x^+}{\partial z^{+^2}}+f(x^+)
+\eeq
+
+where \(f(x^+)\) is an arbitrary function of \(x^+\), i.e. the coefficient of integration. This equivalence with the \(x\)-direction momentum equation shows that in the boundary layer approximation,
+
+\beq
+\label{eq:PGrad}
+-\frac{\partial P}{\partial x}=f(x)
+\eeq
+
+The pressure gradient along the streamlines is not a function of the coordinate perpendicular to the streamlines, and at any location \(x^+\), is constant in \(y^+\). Therefore, at the edge of the boundary layer, the pressure obtained from an inviscid solution should have the same streamwise gradient through the boundary layer. Finally, more information can be obtained by nondimensionalizing the \(x\)- and \(z\)-direction momentum equations in Eq. \eqref{eq:PBMom}, giving:
+
+\begin{subequations}
+\label{eq:PBMom2}
+\begin{eqnarray}
+V_x^+\frac{\partial V_x^+}{\partial x^+}+V_z^+\frac{\partial V_x^+}{\partial z^+}&=&-\frac{\partial P^+}{\partial x^+}+\frac{\delta^2}{c^2}\frac{\partial^2V_x^+}{\partial x^{+^2}}+\frac{\partial^2V_x^+}{\partial z^{+^2}}\\
+\frac{\delta^2}{c^2}\left(V_x^+\frac{\partial V_z^+}{\partial x^+}+V_z^+\frac{\partial V_z^+}{\partial z^+}\right)&=&-\frac{\partial P^+}{\partial z^+}+\frac{\delta^2}{c^2}\left(\frac{\delta^2}{c^2}\frac{\partial^2V_z^+}{\partial x^{+^2}}+\frac{\partial^2V_z^+}{\partial z^{+^2}}\right)
+\end{eqnarray}
+\end{subequations}
+
+Finally, nondimensionalization of the energy equation in Eq. \eqref{eq:PBEnergy} gives:
+
+\begin{subequations}
+\label{eq:PBE1}
+\begin{eqnarray}
+V_x^+\frac{\partial T^+}{\partial x^+}+V_z^+\frac{\partial T^+}{\partial z^+}&=&\frac{\kappa c}{U_0\delta^2}\left(\frac{\delta^2}{c^2}\frac{\partial^2T^+}{\partial x^{+^2}}+\frac{\partial^2T^+}{\partial z^{+^2}}\right)\\
+V_x^+\frac{\partial T^+}{\partial x^+}+V_z^+\frac{\partial T^+}{\partial z^+}&=&\frac{1}{Pe_c}\frac{\partial^2T^+}{\partial x^{+^2}}+\frac{\partial^2T^+}{\partial z^{+^2}}
+\end{eqnarray}
+\end{subequations}
+
+Noting that \(\delta/c\ll1\), where \(\delta\) now represents the thickness of the thermal boundary layer, rather than the momentum boundary layer, derivatives of temperature are much greater perpendicular to the plate (across the boundary layer) than parallel to the plate. Setting \(\kappa c/U_0\delta^2=1\) provides the condition on the Peclet number to obtain a thin thermal boundary layer, \(\sqrt{1/Pe_c}\ll1\):
+
+\begin{subequations}
+\label{eq:Pe}
+\begin{eqnarray}
+\delta&=&\frac{\kappa c}{U_0}\\
+\frac{\delta}{c}&=&\sqrt{\frac{1}{Pe_c}}
+\end{eqnarray}
+\end{subequations}
+
+where \(Pe_c\) is the Peclet number based on the chord length. Inserting Eq. \eqref{eq:Pe} into Eq. \eqref{eq:PBE1}a gives Eq. \eqref{eq:PBE1}b. In other words, a thin thermal boundary layer requires a large chord length Peclet number. The boundary layer approximation assumes \(\delta/c\ll1\), allowing many terms in Eqs. \eqref{eq:PBMom2} and \eqref{eq:PBE1}b to be negligibly small, giving the boundary layer equations:
+
+\beq
+\frac{\partial V_x^+}{\partial x^+}+\frac{\partial V_z^+}{\partial z^+}=0
+\eeq
+
+\begin{subequations}
+\label{eq:BL2}
+\begin{eqnarray}
+V_x^+\frac{\partial V_x^+}{\partial x^+}+V_z^+\frac{\partial V_x^+}{\partial z^+}&=&-\frac{\partial P^+}{\partial x^+}+\frac{\partial^2V_x^+}{\partial z^{+^2}}\\
+0&=&\frac{\partial P^+}{\partial z^+}
+\end{eqnarray}
+\end{subequations}
+
+\beq
+V_x^+\frac{\partial T^+}{\partial x^+}+V_z^+\frac{\partial T^+}{\partial z^+}=\frac{\partial^2T^+}{\partial z^{+^2}}
+\eeq
+
+Eq. \eqref{eq:BL2} shows that the pressure is independent of the coordinate perpendicular to the boundary layer, which shows that the pressure is only a function of \(x\). This agrees with Eq. \eqref{eq:PGrad}. Outside of the boundary layer, if the pressure does not vary substantially with \(x\), then the \(\partial P^+/\partial x^+\) term can be neglected. 
+
+The boundary layer equations can be solved numerically by introducing the stream function to form a similarity equation \cite{shiskina}. This similarity transformation is performed by nondimensionalizing the vertical distance by the momentum boundary layer thickness \(\delta_{mom}\). Based purely on the dimensional arguments presented thus far, both the momentum and thermal boundary layer thicknesses should scale as \(1/\sqrt{Re}\), with the thermal boundary layer thickness also having a dependency on the Prandtl number since \(Pe=Re\cdot Pr\):
+
+\beq
+\delta_{mom}\propto\frac{1}{\sqrt{Re}}
+\eeq
+
+\beq
+\delta_{th}\propto\frac{f(Pr)}{\sqrt{Re}}
+\eeq
+
+Based on Eq. \eqref{eq:Pe}, \(f(Pr)=\sqrt{Pr}\). Numerical solution of the similarity problem shows that this scaling only holds for small Prandtl number, with slightly weaker dependence on Prandtl number for higher Prandtl numbers \cite{shiskina}:
+
+\beq
+f(Pr)=\begin{cases}Pr^{1/2} & Pr\ll 1\\
+Pr^{1/3} & Pr\gg1
+\end{cases}
+\eeq
+
+\subsection{Grid Refinement}
+\label{sec:Grid}
+When performing simulation of Rayleigh-B\'enard convection, correct resolution of the momentum and thermal boundary layers is required to obtain accurate simulation results, especially prediction of Nusselt numbers \cite{shiskina}. At every point in the mesh, when performing direct numerical simulation, the grid size should be smaller than the more limiting of the Kolmogorov and Batchelor scales. Using this feature, and boundary layer thicknesses for Rayleigh-B\'enard convection, Shiskina et. al recommend the following grid size \(h_{global}\) to be satisfied by all elements in the computational mesh \cite{shiskina}:
+
+\beq
+h_{global}\leq\begin{cases}\frac{Pr^{1/2}H}{Ra^{1/4}(Nu-1)^{1/4}} & Pr\leq1\\
+\frac{H}{Ra^{1/4}(Nu-1)^{1/4}} & Pr>1
+\end{cases}
+\eeq
+
+The number of nodes required in the momentum and thermal boundary layers may be more stringent than these global estimates. For \(Pr=0.7\), Shiskina et. al find that the number of nodes to be placed in the thermal and momentum boundary layers along all edges of the domain are approximately \cite{shiskina}:
+
+\beq
+N_{th}\approx0.35Ra^{0.15}
+\eeq
+
+\beq
+N_{mom}\approx0.31Ra^{0.15}
+\eeq
+
+Note that the numerical prefactors likely depend strongly on \(Pr\), and should therefore only be used as a guide. As can be seen, both the global mesh refinement and boundary layer refinement increase with the Rayleigh and Nusselt numbers, which suggests that simulation with extremely large Rayleigh numbers due to the lack of a viscous diffusion term in the Pronghorn momentum equation will require a very large number of elements. The grid refinement suggestions described in this section have been utilized successfully for direct numerical simulation of Rayleigh-B\'enard convection in the literature \cite{poel}.
+
+For \(0.001\leq Pr<100\) and for a single Rayleigh number of \(Ra=10^6\), a \(2\times2\times1\) aspect ratio domain was modeled with \(64\times64\times32\) elements (with additional refinement in the momentum boundary layers for small Prandtl numbers), giving less than 3\% difference in the Nusselt number compared to a grid two times as refined \cite{schmalzl}; this can be used with the above results to estimate the grid refinement for larger Rayleigh numbers.
+
+\begin{comment}
+\subsection{Streamfunction Form}
+The boundary layer equations derived in Section \ref{sec:PBL} are incompressible and two-dimensional, permitting the insertion of the stream function \(\psi\) in place of velocity, automatically satisfying the continuity equation:
+
+\beq
+V_x=\frac{\partial\psi}{\partial z}
+\eeq
+
+\beq
+V_z=-\frac{\partial\psi}{\partial x}
+\eeq
+\end{comment}
+
+
+\clearpage
+\section{Numerical Simulation}
+
+Many researchers have performed numerical simulations of Rayleigh-B\'enard convection, typically by solving the Boussinesq equations in nondimensional form for a range of Rayleigh and Prandtl numbers.
+
+\subsection{Boundary Conditions}
+
+The side walls are assumed adiabatic, which appears to be the most common boundary condition imposed on the lateral walls for the energy equation \cite{chandra,verma,poel,schmalzl}. 
+
+The no-penetration condition is imposed on the side walls due to the lack of a viscous stress term in the momentum equation; most researchers impose no-slip boundary conditions \cite{chandra,verma,poel}, free slip boundary conditions \cite{verma}, or periodic boundary conditions \cite{sandberg}. Many researchers impose a small disturbance in the fields in order to initiate instability \cite{schmalzl,sandberg}.
+
+\subsection{Geometry}
+
+The aspect ratio of the domain has an important effect on the simulation results. For simplicity, an aspect ratio of unity is selected here, which has also been simulated in the literature \cite{chandra}.
+
+\clearpage
+
+\clearpage
+\providecommand*{\phantomsection}{}
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{unsrt}
+\bibliography{rayleigh_benard}
+
+
+\end{document}
