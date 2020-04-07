@@ -109,7 +109,37 @@
 
 This document contains information regarding the theory and modeling of fluids that is outside the scope of the Pronghorn theory manual, but is useful for obtaining a deeper understanding of the fluid flow equations. To avoid repetition, refer to the Pronghorn theory manual for the detailed derivations of the Navier-Stokes equations and definitions of all of the notation used in this document.
 
+\section{The Euler Equations}
+
 The Navier-Stokes equations are five tightly coupled equations for the components of velocity and two thermodynamic quantities. There is some flexibility in which thermodynamic quantities can be the solution variables, which gives rise to many different, but mathematically equivalent, forms of the equations. 
+
+By conservation of mass, the Euler equations can equivalently be written in non-conservative form as:
+
+\beq
+\frac{\partial\vv{\mathscr{U}}}{\partial t}+\vv{V}\cdot\frac{\partial\vv{\mathscr{U}}_i}{\partial x_i}+\frac{1}{\rho}\vv{\mathscr{S}}=0
+\eeq
+
+where \(\vv{\mathscr{U}}\) is a vector of primitive solution variables and \(\vv{\mathscr{S}}\) represents the remaining terms. These vectors are defined as:
+
+\beq
+\vv{\mathscr{U}}=\begin{bmatrix}\rho\\ V_1\\V_2\\V_3\\H\end{bmatrix}
+\eeq
+
+\beq
+\vv{\mathscr{S}}=\begin{bmatrix}\rho^2\frac{\partial V_i}{\partial x_i}\\\frac{\partial P}{\partial x_1}\\\frac{\partial P}{\partial x_2}\\\frac{\partial P}{\partial x_3}\\\frac{\partial P}{\partial t}\end{bmatrix}
+\eeq
+
+When the \(i\)-th component of \(\vv{\mathscr{S}}\) is zero, then in steady-state (such that the \(\partial\vv{\mathscr{U}}/\partial t\) term is absent), the \(i\)-th component of \(\vv{\mathscr{U}}\) must be constant along streamlines. When the \(i\)-th component of \(\vv{\mathscr{U}}\) is constant along streamlines, then because all streamlines originate from the inlet boundaries, provided uniform inflow conditions exist, then the \(i\)-th component of \(\vv{\mathscr{U}}\) is uniform throughout the entire flow field. For the mass, momentum, and energy equations, we therefore have three possible scenarios:
+
+\begin{enumerate}
+\item Mass equation - if \(\rho^2\frac{\partial V_i}{\partial x_i}=0\), this implies that the flow is incompressible, and regardless of steady-state or transient flows, \(\rho\) is constant everywhere in the flow field.
+\item Momentum equations - if \(P\) is constant in the \(i\)-th coordinate direction, then in steady-state, the \(i\)-th component of velocity is constant along streamlines.
+\item Energy equation - if \(\partial P/\partial t=0\), in general the flow must be steady-state, in which case \(H\) is constant along streamlines. 
+\end{enumerate}
+
+Simulation results for very low viscous surface friction compare well with zero viscous friction, suggesting that the Euler equations satisfy the limit of the Navier-Stokes equations as the viscosity tends to zero \cite{hoffman}.  
+
+If a steady-state flow is characterized by uniform inlet conditions such that \(H\) and \(s\) are constant everywhere in the flow field, then Eq. \eqref{eq:MomentumEqn}b shows that the entire flow must be irrotational. But, an even more general vorticity observation comes from inviscid theory - vorticity is constant in any streamtube. This can be reasoned by consideration of the forces acting on a fluid particle. With the Euler equations, all forces either act from the center of mass (gravity, if not neglected) or normal to the fluid particle (pressure), and none can cause rotation. So, all streamlines emanating from an irrotational region will remain irrotational. So, provided inflow conditions are uniform, then the entire domain is irrotational. Viscous flows typically remain nearly irrotational outside of boundary layers.
 
 \section{Equivalent Forms and Simplifications of the Navier-Stokes Equations}
 
@@ -292,6 +322,58 @@ Inserting Eqs. \eqref{eq:R1}b and \eqref{eq:R2} into Eq. \eqref{eq:ContinuityEqn
 \eeq
 
 where \(Ma_i\equiv V_i/c\). Recall that this equation is valid for irrotational and isentropic flow.
+
+\subsection{The Influence of Mach Number}
+For sufficiently small Mach numbers, the flow can be assumed incompressible, and the error made in assuming incompressible flow can be quantified based on the magnitude of the Mach number. Expand the stagnation pressure for an ideal gas in a power series about the Mach number:
+
+\begin{subequations}
+\label{eq:MachExpansion}
+\begin{eqnarray}
+\frac{P_{stag}}{P}&=&\ 1+\frac{\gamma}{2}Ma^2+\frac{\gamma}{8}Ma^4+\frac{\gamma(2-\gamma)}{48}Ma^6+\mathscr{O}(Ma^8)\\
+P_{stag}&=&\ P+\frac{1}{2}\rho V^2+\frac{\gamma}{8}Ma^4+\frac{\gamma(2-\gamma)}{48}Ma^6+\mathscr{O}(Ma^8)
+\end{eqnarray}
+\end{subequations}
+
+As can be seen, the leading two terms contributing to the stagnation pressure are the thermodynamic pressure and the dynamic pressure. For an incompressible fluid, the Bernoulli equation shows that the stagnation pressure is simply equal to the sum of these first two terms. So, the influence of compressibility on the stagnation pressure is manifested in the \(\mathscr{O}(Ma^4)\) term. When scaled relative to the thermodynamic or dynamic pressures, the relative correction on these terms due to compressibility effects can be approximated. The relative correction on the thermodynamic pressure is:
+
+\beq
+\label{eq:PTCorrection}
+\frac{\gamma}{8}Ma^4
+\eeq
+
+while the relative correction on the dynamic pressure is:
+
+\beq
+\label{eq:PDCorrection}
+\frac{Ma^2}{4}
+\eeq
+
+These effects become of equal importance at \(Ma=\sqrt{2/\gamma}\), where below this limit the dynamic pressure correction is generally more significant than the thermodynamic pressure correction.
+
+\subsection{Shock Conditions}
+
+The Rankine-Hugoniot conditions are the boundary conditions imposed at a shock surface, which are simply the same boundary conditions that are derived from consideration of a general interface:
+
+\beq
+\rho\vv{V}'\cdot\vv{n}\biggr\lvert_{1}^{2}
+\eeq
+
+\beq
+\label{eq:StagPressureJump}
+\rho V_i'\vv{V}'\cdot\vv{n}\biggr\rvert_{1}^2=P\biggr\rvert_{1}^2
+\eeq
+
+\beq
+\rho H\vv{V}'\cdot\vv{n}\biggr\rvert_{1}^2=0
+\eeq
+
+where \(\vv{V}'\) is the velocity of a control volume moving relative to the interface and \(1\) and \(2\) denote the two sides of the shock (in the directions normal to the shock). Eq. \eqref{eq:StagPressureJump} shows that the stagnation pressure is not constant over the jump. For the ideal gas law, variation in the stagnation pressure is related to a variation in entropy, which shows that entropy must change over a shock \cite{hirsch}. If the shock intensity is uniform, then the region downstream of the shock can be isentropic, in which case the entire flow domain is still irrotational. But, for shocks of nonuniform intensity, such as curved shocks, the entropy generation downstream is also nonuniform, in which case vorticity is generated downstream. So, even for an initially irrotational flow, the Euler equations {\it can} generate vorticity via nonuniform intensity shocks. This feature will be important in explaining the occurrence of flow separation for inviscid transonic flows in Section \ref{sec:Supersonic}.
+
+The jump in entropy over a shock must be positive from the second law of thermodynamics, though mathematically, the Euler equations permit both positive and negative entropy jumps as solutions. So, the solution of the Euler equations must be supplanted by an entropy condition that guarantees that entropy increase across a shock. Because the right-hand side of Eq. \eqref{eq:EntropyEquation} must always be positive, this entropy condition requires that in the limit of vanishing viscosity and thermal conductivity:
+
+\beq
+\frac{\partial s}{\partial t}+\vv{V}\cdot\nabla s\geq0
+\eeq
 
 \subsection{Incompressible Flow}
 
