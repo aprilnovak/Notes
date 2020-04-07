@@ -185,6 +185,69 @@ Then, if the flow is assumed incompressible, for \(e=e(\rho,s)\), \(e\) will be 
 \nabla\left(\frac{1}{2}V^2+\frac{P}{\rho}+gz\right)=0
 \eeq
 
+\subsection{The Vorticity Equation}
+
+While the Crocco-Vazsonyi equation is one equivalent form of the momentum equation that contains vorticity, the momentum equation can be entirely cast in terms of vorticity by taking the curl of the momentum equation. Taking the curl of the momentum equation gives:
+
+\beq
+\label{eq:Equiv4}
+\nabla\times\left(\frac{\partial \vv{V}}{\partial t}+\vv{V}\cdot\nabla\vv{V}\right)=-\nabla\times\frac{\nabla P}{\rho}+\nabla\times\left(\frac{\nabla\cdot\tau}{\rho}\right)
+\eeq
+
+where gravity is assumed to be a conservative vector field, and hence cancels since the curl of a conservative vector field is zero. Now, several vector calculus identities are introduced that will be useful in identifying several equivalent manipulations of Eq. \eqref{eq:Equiv4}. These identities are as follows:
+
+\beq
+\label{eq:VectorCalculusIdentityCrossProduct}
+\nabla\times\frac{\nabla P}{\rho}=-\frac{\nabla\rho\times\nabla P}{\rho^2}
+\eeq
+
+\beq
+\label{eq:VorticityIdentity}
+\nabla\times(\vv{\omega}\times\vv{V})=\vv{\omega}(\nabla\cdot\vv{V})+(\vv{V}\cdot\nabla)\vv{\omega}-(\vv{\omega}\cdot\nabla)\vv{V}
+\eeq
+
+\beq
+\nabla\times(\nabla\times\vv{\omega})=-\nabla^2\vv{\omega}
+\eeq
+
+where \(\nabla\times\nabla P\) must equal zero due to vector calculus properties and \(\nabla\cdot\vv{\omega}=0\) by definition in Eq. \eqref{eq:VorticityIdentity}. In addition to the above three identities, Eq. \eqref{eq:VorticityIdentity1} will be used. 
+
+Now, several equivalent forms of the vorticity equation are derived using a variety of identities that are either derived in the Pronghorn theory manual or in this document. All of these equivalent forms are represented in Eq. \eqref{eq:VorticityEquation}. Inserting Eq. \eqref{eq:VectorCalculusIdentityCrossProduct} into Eq. \eqref{eq:Equiv4} gives Eq. \eqref{eq:VorticityEquation}a. Then, the velocity on the left-hand-side of Eq. \eqref{eq:VorticityEquation}a can be transformed into vorticity by using 1) the fact that because a gradient is a spatial derivative, the curl can be brought inside the time derivative, and 2) the identity in Eq. \eqref{eq:VorticityIdentity1}; these transformations give Eq. \eqref{eq:VorticityEquation}b. Eq. \eqref{eq:VorticityEquation}c can be obtained using the continuity equation and the vector identity in Eq. \eqref{eq:VorticityIdentity}. Eq. \eqref{eq:VorticityEquation}d is obtained by multiplying Eq. \eqref{eq:VorticityEquation}c by \(1/\rho\) and grouping terms.
+
+\begin{subequations}
+\label{eq:VorticityEquation}
+\begin{eqnarray}
+\nabla\times\left(\frac{\partial \vv{V}}{\partial t}+\vv{V}\cdot\nabla\vv{V}\right)&=&\frac{\nabla\rho\times\nabla P}{\rho^2}+\nabla\times\left(\frac{\nabla\cdot\tau}{\rho}\right)\\
+\frac{\partial\vv{\omega}}{\partial t}+\nabla\times(\vv{\omega}\times\vv{V})&=&\frac{\nabla\rho\times\nabla P}{\rho^2}+\nabla\times\left(\frac{\nabla\cdot\tau}{\rho}\right)\\
+\frac{d\vv{\omega}}{dt}+\vv{\omega}\left(-\frac{1}{\rho}\frac{d\rho}{dt}\right)-\vv{\omega}\cdot\nabla\vv{V}&=&\frac{\nabla\rho\times\nabla P}{\rho^2}+\nabla\times\left(\frac{\nabla\cdot\tau}{\rho}\right)\\
+\frac{d}{dt}\left(\frac{\vv{\omega}}{\rho}\right)-\frac{\vv{\omega}}{\rho}\cdot\nabla\vv{V}&=&\frac{1}{\rho}\frac{\nabla\rho\times\nabla P}{\rho^2}+\frac{1}{\rho}\nabla\times\left(\frac{\nabla\cdot\tau}{\rho}\right)
+\end{eqnarray}
+\end{subequations}
+
+For incompressible flow, \(\tau=\mu\nabla\vv{V}\); assuming constant viscosity, the viscous shear stress term that appears in each of the vorticity equations in Eq. \eqref{eq:VorticityEquation} can be replaced by:
+
+\beqa
+\label{eq:ViscousReplacement}
+\nabla\times\left(\frac{\nabla\cdot\tau}{\rho}\right)\rightarrow&\ \nabla\times(\nu\nabla^2\vv{V})\\
+=&\ \nu\nabla^2\vv{\omega}\\
+=&\ -\nu\nabla\times(\nabla\times\vv{\omega})
+\eeqa
+
+If density is assumed to be a function of pressure and temperature, then \(\nabla\rho\times\nabla P\) will allow some terms to cancel, giving a simpler vorticity equation. By expressing the spatial gradient of density through a chain rule in terms of the spatial gradients of pressure and temperature, and introducing definitions for the compressibility and thermal expansion, density is of the form:
+
+\beq
+\label{eq:DensityPT}
+\nabla\rho=\rho\alpha_T\nabla P-\beta\rho\nabla T
+\eeq
+
+Inserting Eq. \eqref{eq:DensityPT} into the first term on the right hand side of Eq. \eqref{eq:VorticityEquation} gives:
+
+\beq
+\label{eq:DensitySubstitution}
+\frac{\nabla\rho\times\nabla P}{\rho^2}\rightarrow -\frac{\beta\rho\nabla T\times\nabla P}{\rho^2}
+\eeq
+
+Further, if the flow is barotropic (density is only a function of pressure), then the \(\beta\) term in Eq. \eqref{eq:DensityPT} is zero, causing Eq. \eqref{eq:DensitySubstitution} to be zero. A flow can be barotropic if the flow is incompressible, isothermal, or isentropic. 
 
 \subsection{Potential Flow}
 Because potential flows assume isentropic flows, density can be expressed entirely as a function of velocity. To rewrite the above equation, use Eq. \eqref{eq:EnthalpyEqn}, simplified for isentropic flows:
